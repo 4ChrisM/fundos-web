@@ -38,7 +38,7 @@ Todo lo editable está en `lib/manifest.js`.
 - [ ] **Preguntas frecuentes:** revisar las respuestas (condiciones de devolución de la reserva, construcción, plazos).
 - [ ] **Destacados y cercanías:** las distancias se miden desde cada pueblo, no desde el proyecto. Reemplazar por los tiempos reales.
 - [ ] **Mi compra:** es un módulo nuevo que se propone sobre Fundos 360°. Hoy la sección lo muestra como vista previa.
-- [ ] **Fotos:** las ilustraciones son intencionales, pero se pueden sumar fotos de dron reales: hoy la portada de cada apartado (`foto` en el manifiesto) usa fotos de Wikimedia Commons con crédito; reemplazarlas por fotos del cliente.
+- [ ] **Fotos:** las ilustraciones son intencionales, pero se pueden sumar fotos de dron reales: hoy las fotos de cada proyecto son vistas aéreas sacadas de sus recorridos 360° (`foto` y `tourFoto` en el manifiesto).
 - [ ] **Equipo:** fotos, nombres y presentaciones del equipo real (uso autorizado), en `lib/manifest.js` (`equipo`). Falta, si se quiere: el cargo de cada persona (hoy "Equipo comercial"), y su WhatsApp propio. El video no tiene subtítulos: conviene agregarlos (o enviarnos el texto) para quienes lo vean sin sonido.
 - [ ] **Videos:** la propuesta no incluye videos. El sitio ya está preparado: basta con subir el archivo o pegar el enlace (ver "Videos" más abajo).
 - [ ] **Concurso:** el sitio actual tiene una página de concurso; se puede sumar como banner o sección cuando esté definido.

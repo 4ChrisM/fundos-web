@@ -36,7 +36,7 @@ const B = "http://127.0.0.1:8765/";
   await d.fill("#v-nombre", "Ana"); await d.fill("#v-telefono", "+56 9 1111 2222");
   await d.check('input[name="horario"][value="videollamada"]', { force: true });
   await d.fill("#v-mensaje", "Busco algo cerca de un río");
-  await d.check('input[name="acepto"]');
+  await d.check('#visita input[name="acepto"]');
   await d.click('.visit-form button[type="submit"]'); await d.waitForTimeout(300);
   out.waMsg = await d.evaluate(() => document.querySelector("[data-visit-msg]").textContent);
   out.fallbackColor = await d.evaluate(() => { const a = document.querySelector("[data-visit-fallback]"); const cs = getComputedStyle(a); return cs.color + " / " + cs.backgroundColor + " / " + cs.textDecorationLine; });
