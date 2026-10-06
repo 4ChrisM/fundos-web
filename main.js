@@ -1945,14 +1945,28 @@
     function state(v) { if (v) stage.setAttribute("data-state", v); return stage.getAttribute("data-state"); }
     function setText(sel, txt) { $$(sel, root).forEach(function (el) { el.textContent = txt; }); }
     function art(id) { return $('.project[data-project="' + id + '"] .project-art svg'); }
+    // Fondo con foto real del proyecto (tourFoto en el manifiesto); si no hay, la ilustración de su tarjeta
+    function fondo(p, box, mini) {
+      var f = p.tourFoto, src;
+      if (f && (mini ? f.mini || f.src : f.src)) {
+        var img = document.createElement("img");
+        img.alt = ""; img.decoding = "async";
+        if (mini) { img.src = f.mini || f.src; img.width = 80; img.height = 80; img.loading = "lazy"; }
+        else {
+          img.src = f.src; img.width = 1600; img.height = 1000;
+          if (f.src2x) { img.srcset = f.src + " 800w, " + f.src2x + " 1600w"; img.sizes = "(min-width: 1024px) 70vw, 100vw"; }
+        }
+        box.appendChild(img);
+      } else if ((src = art(p.id))) box.appendChild(src.cloneNode(true));
+    }
 
     // Miniaturas del selector, tomadas de la ilustración de cada proyecto
     picks.forEach(function (a) {
       var p = proyecto(a.getAttribute("data-tour-pick"));
       if (!p || !p.tour) { a.hidden = true; return; }
       a.href = p.tour;
-      var src = art(p.id), box = $(".tour-pick-art", a);
-      if (src && box) box.appendChild(src.cloneNode(true));
+      var box = $(".tour-pick-art", a);
+      if (box) fondo(p, box, true);
       a.addEventListener("click", function (e) {
         if (blocked) { select(p.id, false); return; } // sin marco: el enlace abre el recorrido en otra pestaña y la sección se pone al día
         e.preventDefault();
@@ -1970,8 +1984,7 @@
       if (nav && act && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: act.offsetLeft - (nav.clientWidth - act.offsetWidth) / 2, behavior: reduced ? "auto" : "smooth" });
       if (changed) {
         poster.innerHTML = "";
-        var src = art(id);
-        if (src) poster.appendChild(src.cloneNode(true));
+        fondo(p, poster, false);
         setText("[data-tour-name], [data-tour-hud-name], [data-tour-dock-name]", p.nombre);
         setText("[data-tour-region]", p.region + " · " + p.zona);
         setText("[data-tour-label]", "al recorrido 360° de " + p.nombre);

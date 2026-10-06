@@ -1094,7 +1094,8 @@ html:not(.js) .plan-zoom { display: none; }
   transition: border-color .3s, box-shadow .4s var(--ease-out), transform .4s var(--ease-out);
 }
 .tour-pick-art { position: relative; flex: none; width: 56px; height: 56px; overflow: hidden; border-radius: 10px; background: var(--g800); }
-.tour-pick-art svg { width: 100%; height: 100%; }
+.tour-pick-art svg, .tour-pick-art img { width: 100%; height: 100%; }
+.tour-pick-art img { object-fit: cover; }
 .tour-pick-text { display: grid; gap: .2rem; line-height: 1.1; }
 .tour-pick-text strong { font: 600 1.35rem/1 var(--serif); }
 .tour-pick-text small { font-size: .74rem; font-weight: 600; color: var(--n600); }
@@ -1113,7 +1114,8 @@ html:not(.js) .plan-zoom { display: none; }
   box-shadow: 0 40px 80px -40px rgba(10, 20, 14, .65);
 }
 .tour-poster, .tour-veil, .tour-frame { position: absolute; inset: 0; }
-.tour-poster svg { width: 100%; height: 100%; transform-origin: 50% 62%; animation: tourDrift 26s var(--ease-soft) infinite alternate; }
+.tour-poster svg, .tour-poster img { width: 100%; height: 100%; transform-origin: 50% 62%; animation: tourDrift 26s var(--ease-soft) infinite alternate; }
+.tour-poster img { object-fit: cover; }
 .tour-poster .pl { transform: translate(calc(var(--mx) * var(--d) * -26px), calc(var(--my) * var(--d) * -10px)); transition: transform 1.2s var(--ease-out); }
 .tour-veil {
   background:
@@ -1450,7 +1452,7 @@ body.tour-lock { overflow: hidden; }
 /* Con el recorrido abierto, los adornos del portal quedan quietos detrás del visor */
 .tour-dot { animation: none; }
 .tour-stage[data-state="live"] .tour-dot { animation: tourLive 2s infinite; }
-.tour-stage[data-state="live"] .tour-ring, .tour-stage[data-state="live"] .tour-lens::before, .tour-stage[data-state="live"] .tour-poster svg { animation-play-state: paused; }
+.tour-stage[data-state="live"] .tour-ring, .tour-stage[data-state="live"] .tour-lens::before, .tour-stage[data-state="live"] .tour-poster svg, .tour-stage[data-state="live"] .tour-poster img { animation-play-state: paused; }
 .tour-drag .i { animation-iteration-count: 6; }
 .plan-canvas.is-switching svg { opacity: .55; transition: opacity .12s; }
 
@@ -1593,7 +1595,7 @@ h2 em { text-wrap: balance; }
   html { scroll-behavior: auto; }
   .stars .tw, .hero-scroll .i, .phone, .lot-ring { animation: none; }
   .hero-video { transition: none; }
-  .hero-tour-orb::after, .tour-poster svg, .tour-ring, .tour-lens::before, .tour-dot, .tour-drag .i { animation: none; }
+  .hero-tour-orb::after, .tour-poster svg, .tour-poster img, .tour-ring, .tour-lens::before, .tour-dot, .tour-drag .i { animation: none; }
   .tour-stage[data-state="live"] .tour-dot, .faq details[open] p { animation: none; }
   .tour-frame { transition: none; }
   .ticker-track { animation: none; }

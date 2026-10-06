@@ -122,6 +122,10 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   CC BY 4.0); Marchigüe = viñedos de Viña Montes, valle de Colchagua (Tjeerd Wiersma, CC BY 2.0; no es Marchigüe mismo,
   por eso dice "valle de Colchagua"). Reemplazar por fotos propias del cliente cuando las tenga. La red de la nube no llega
   a Commons: se bajaron con un flujo temporal de GitHub Actions (rama `claude/amazing-fermi-knnnar`, ya borrado).
+- **Fondos del recorrido 360°** (`#recorrido`, antes de entrar, y miniaturas del selector): fotos aéreas reales de cada
+  parcela sacadas de la panorámica de su propio tour 3DVista (`tourFoto` en el manifiesto, `assets/img/tour-ID-*`; sin
+  `tourFoto` se usa la ilustración de la tarjeta). Se arman con `tools/tour_fondo.py` (ver su encabezado). Los tours
+  no se alcanzan desde la nube: las caras se bajaron con un flujo temporal de GitHub Actions, ya borrado.
 - `assets/img` fotos y logos (WebP) · `assets/video` saludo del equipo (MP4 H.264 + WebM de respaldo + portada) ·
   `assets/fonts` Cormorant Garamond y Mulish autoalojadas.
 
