@@ -8,7 +8,8 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
 ## Dónde está publicado
 - **Sitio público:** https://fundos.biplot.cl/ (GitHub Pages desde `main` de `4ChrisM/fundos-web`, dominio en `CNAME`;
   DNS: CNAME `fundos` de biplot.cl → `4chrism.github.io`). Lleva `noindex`. Hasta octubre 2026 vivió en
-  `Biplot/biplot` (`propuestas/fundos-inmobiliaria/`, donde queda su historial de cambios); esa dirección ahora redirige aquí.
+  `Biplot/biplot` (`propuestas/fundos-inmobiliaria/`, donde queda su historial de cambios). Esa dirección debe redirigir
+  aquí: ver en README el pendiente "Activar la redirección" (espera el certificado HTTPS).
 - **Sistema del cliente:** Fundos 360° (`4ChrisM/fundos-os`, Next.js + Supabase, módulo de leads). Ver en README el
   pendiente de conectar el formulario y la disponibilidad.
 - **Vista previa privada (artefacto de Claude):** https://claude.ai/artifact/NthH9NFHsid6PzqL8HN9wU
