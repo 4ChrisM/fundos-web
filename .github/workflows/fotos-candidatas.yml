@@ -1,0 +1,21 @@
+# Temporal: baja fotos candidatas de Wikimedia Commons (la red de la sesión en la nube no llega a Commons).
+name: fotos-candidatas
+on:
+  push:
+    branches: ["claude/**"]
+    paths: ["tools/otros/buscar.txt"]
+permissions:
+  contents: write
+jobs:
+  bajar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install pillow
+      - run: python3 tools/otros/bajar_candidatas.py
+      - run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add tools/otros/candidatas
+          git commit -m "Fotos candidatas desde Commons" || exit 0
+          git push
