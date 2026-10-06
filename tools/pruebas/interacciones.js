@@ -89,16 +89,19 @@ const ARGS = ["--proxy-server=" + (process.env.HTTPS_PROXY || "http://127.0.0.1:
   results.afterFinderSummary = await page.locator("[data-summary]").textContent();
   results.scrollAfterFinder = await page.evaluate(() => Math.round(document.getElementById("plano").getBoundingClientRect().top));
 
-  // Ficha de proyecto
+  // Conoce cada proyecto: "Conocer el proyecto" lleva al apartado con ese proyecto elegido
   await page.evaluate(() => document.getElementById("proyectos").scrollIntoView({ behavior: "instant" }));
   await page.waitForTimeout(800);
-  await page.locator('[data-open-project="malalcahuello"]').click();
-  await page.waitForTimeout(700);
-  results.dialogOpen = await page.locator("#proyecto").evaluate(d => d.open);
-  await page.screenshot({ path: "i-dialog.png" });
-  await page.keyboard.press("Escape");
-  await page.waitForTimeout(300);
-  results.dialogClosed = !(await page.locator("#proyecto").evaluate(d => d.open));
+  await page.locator('.project[data-project="marchigue"] a[href="#proyecto-marchigue"]').click();
+  await page.waitForTimeout(1200);
+  results.fichaProyecto = await page.evaluate(() => ({
+    elegido: document.querySelector("[data-py-tab][aria-selected=true]").dataset.pyTab,
+    titulo: document.querySelector(".py h3").textContent,
+    top: Math.round(document.getElementById("conoce").getBoundingClientRect().top),
+    caracteristicas: document.querySelectorAll(".py-why li").length,
+    hash: location.hash
+  }));
+  await page.locator(".py").screenshot({ path: "i-ficha.png" });
 
   // Simulador en modo financiamiento (pestaña de "Tu compra")
   await page.evaluate(() => document.querySelector('[data-tc-tab="simulador"]').click());

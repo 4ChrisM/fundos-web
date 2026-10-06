@@ -15,7 +15,7 @@ const B = "http://127.0.0.1:8765/";
     const r = await pg.evaluate((W) => {
       const over = [];
       document.querySelectorAll("body *").forEach(e => {
-        const cs = getComputedStyle(e); if (cs.display === "none" || cs.visibility === "hidden" || e.closest("svg,.ticker,.sr-only,[hidden],.plan-canvas,.tour-picker,.plan-cats,.projects,.sellers,.tc-tabs,dialog:not([open])")) return;
+        const cs = getComputedStyle(e); if (cs.display === "none" || cs.visibility === "hidden" || e.closest("svg,.ticker,.sr-only,[hidden],.plan-canvas,.tour-picker,.plan-cats,.projects,.sellers,.tc-tabs,.py-tabs,dialog:not([open])")) return;
         const b = e.getBoundingClientRect(); if (b.width && (b.right > W + 1 || b.left < -1)) over.push((e.className && e.className.baseVal === undefined ? e.className : e.tagName).toString().slice(0, 40) + "@" + Math.round(b.left) + "-" + Math.round(b.right));
       });
       return { sw: document.documentElement.scrollWidth, over: [...new Set(over)].slice(0, 8) };
