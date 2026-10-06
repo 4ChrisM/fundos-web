@@ -1,0 +1,32 @@
+{
+ "w": 1675,
+ "h": 1551,
+ "capas": [
+  {
+   "src": "assets/entorno/sat-z12.webp",
+   "bbox": [
+    -73.1,
+    -41.55,
+    -72.35,
+    -41.05
+   ],
+   "zoom": 12,
+   "w": 2185,
+   "h": 1939,
+   "desde": 1.5
+  },
+  {
+   "src": "assets/entorno/sat-detalle.webp",
+   "bbox": [
+    -73.05,
+    -41.52,
+    -72.8,
+    -41.28
+   ],
+   "zoom": null,
+   "w": 2400,
+   "h": 3072,
+   "desde": 2.4
+  }
+ ]
+}

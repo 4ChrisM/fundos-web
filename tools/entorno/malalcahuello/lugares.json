@@ -1,0 +1,470 @@
+{
+ "imagen": {
+  "_nota": "Sentinel-2 cloudless 2016 de EOX (CC BY 4.0), descargado a mano con GetMap WMS en EPSG:3857 (layers=s2cloudless_3857; bbox en metros = los de 'originales'). Regenerar: python3 tools/entorno_build.py --proyecto malalcahuello --locales",
+  "modo": "mercator",
+  "src": "assets/entorno/malalcahuello/sat-z11.webp",
+  "zoom": 11,
+  "bbox": [
+   -71.95,
+   -38.93,
+   -70.85,
+   -38.3
+  ],
+  "calidad": 74,
+  "zoomMax": 5,
+  "capas": [
+   {
+    "src": "assets/entorno/malalcahuello/sat-detalle.webp",
+    "zoom": null,
+    "bbox": [
+     -71.42,
+     -38.53,
+     -71.18,
+     -38.4
+    ],
+    "calidad": 68,
+    "desde": 2.2,
+    "original": "detalle"
+   }
+  ],
+  "creditoCorto": [
+   {
+    "texto": "Rutas © OpenStreetMap",
+    "url": "https://www.openstreetmap.org/copyright"
+   },
+   {
+    "texto": "Imagen: Sentinel-2 cloudless 2016 de EOX, CC BY 4.0",
+    "url": "https://s2maps.eu"
+   }
+  ],
+  "credito": {
+   "texto": "Imagen satelital: Sentinel-2 cloudless - s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016 & 2017), CC BY 4.0; color ajustado",
+   "url": "https://s2maps.eu",
+   "enlace": "s2maps.eu",
+   "licUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "originales": {
+   "base": {
+    "archivo": "entorno/malalcahuello/originales/sentinel-base.jpg",
+    "bbox": [
+     -71.95,
+     -38.93,
+     -70.85,
+     -38.3
+    ],
+    "wms": "bbox=-8009437,-4711649,-7886985,-4621892&width=4000&height=2932"
+   },
+   "detalle": {
+    "archivo": "entorno/malalcahuello/originales/sentinel-detalle.jpg",
+    "bbox": [
+     -71.42,
+     -38.53,
+     -71.18,
+     -38.4
+    ],
+    "wms": "bbox=-7950438,-4654569,-7923721,-4636087&width=2400&height=1660"
+   }
+  },
+  "original": "base"
+ },
+ "creditos": [
+  {
+   "texto": "Rutas, distancias y tiempos: OSRM (Project OSRM) sobre datos © colaboradores de OpenStreetMap, licencia ODbL",
+   "url": "https://www.openstreetmap.org/copyright",
+   "enlace": "openstreetmap.org/copyright"
+  }
+ ],
+ "metodo": [],
+ "categorias": {
+  "naturaleza": {
+   "nombre": "Naturaleza",
+   "color": "#9DB59A",
+   "icono": "parque"
+  },
+  "ciudad": {
+   "nombre": "Ciudades",
+   "color": "#A7B8C4",
+   "icono": "ciudad"
+  },
+  "servicios": {
+   "nombre": "Servicios",
+   "color": "#D3A58F",
+   "icono": "tren"
+  }
+ },
+ "anillos": [
+  10,
+  25,
+  50
+ ],
+ "resumen": [
+  "lonquimay",
+  "malalcahuello",
+  "corralco",
+  "lago_icalma"
+ ],
+ "dato": {
+  "titulo": "Dato curioso",
+  "icono": "agua",
+  "lugar": "laguna_galletue",
+  "texto": "A {min} en auto de tu parcela está la laguna Galletué, donde nace el río Biobío, el segundo río más largo de Chile; su cauce pasa a menos de 2 km del predio."
+ },
+ "paisaje": [],
+ "pagina": {
+  "marca": "Malalcahuello",
+  "kicker": "Sector Lolén · Lonquimay, La Araucanía",
+  "lead": "En la cordillera de La Araucanía, junto al río Lolén y a minutos de Lonquimay: volcanes, araucarias, lagunas, termas y nieve. Elige un lugar y te mostramos el camino desde tu parcela.",
+  "volver": "./#proyectos"
+ },
+ "proyecto": {
+  "id": "proyecto",
+  "nombre": "Fundos Malalcahuello",
+  "lat": -38.4743056,
+  "lon": -71.2566389,
+  "sub": "Sector Lolén, junto a la Ruta 181-CH (camino a Liucura) · Lonquimay",
+  "texto": "Fundos Malalcahuello está en el sector Lolén, en la cordillera de La Araucanía, a 20 minutos de Lonquimay. Desde aquí se llega a la Reserva Nacional Malalcahuello, al centro de ski Corralco, a las termas y a las lagunas donde nace el río Biobío.",
+  "manifiesto": "malalcahuello"
+ },
+ "lugares": [
+  {
+   "id": "volcan_lonquimay",
+   "nombre": "Volcán Lonquimay",
+   "corto": "V. Lonquimay",
+   "cat": "naturaleza",
+   "icono": "volcan",
+   "lat": -38.379178,
+   "lon": -71.589909,
+   "sinCamino": "Cumbre sin camino; se ve desde Corralco y Malalcahuello",
+   "sub": "Estratovolcán de 2.865 m en la Reserva Nacional Malalcahuello",
+   "texto": "Es un estratovolcán de 2.865 m que domina el paisaje entre Malalcahuello y Lonquimay. Su última erupción fue entre 1988 y 1990 y salió por el Cráter Navidad, en su flanco nororiente. En su ladera sureste funciona el centro de montaña Corralco.",
+   "nota": "Para subir a la cumbre se necesita experiencia, equipo de alta montaña y, idealmente, un guía. La ruta habitual sale desde Corralco.",
+   "revisar": true
+  },
+  {
+   "id": "crater_navidad",
+   "nombre": "Cráter Navidad",
+   "corto": "Cráter Navidad",
+   "cat": "naturaleza",
+   "icono": "volcan",
+   "lat": -38.36852,
+   "lon": -71.55243,
+   "destino": [
+    -38.381275,
+    -71.548228
+   ],
+   "sub": "Cono volcánico nacido el 25 de diciembre de 1988",
+   "texto": "Este cono adventicio del volcán Lonquimay se formó en la erupción que comenzó el 25 de diciembre de 1988, y de esa fecha viene su nombre. Está a unos 3,5 km al nororiente de la cumbre principal. Su colada de lava bajó por el valle del Lolco y todavía se ve como un gran campo de escoria oscura.",
+   "nota": "El camino de ripio desde Corralco (unos 7,5 km) solo se abre en temporada sin nieve, más o menos de diciembre a mayo.",
+   "destinoTxt": "hasta el mirador del Cráter Navidad (Ruta R-785, ripio)",
+   "llegada": "Mirador Cráter Navidad",
+   "via": [
+    [
+     -38.470954,
+     -71.570849
+    ]
+   ],
+   "revisar": true
+  },
+  {
+   "id": "corralco",
+   "nombre": "Corralco, centro de montaña y ski",
+   "corto": "Corralco",
+   "cat": "naturaleza",
+   "icono": "parque",
+   "lat": -38.418687,
+   "lon": -71.547322,
+   "destino": [
+    -38.418941,
+    -71.547238
+   ],
+   "sub": "Ski y montaña en la ladera del volcán Lonquimay",
+   "texto": "Es un centro de ski y montaña en la ladera sureste del volcán Lonquimay, dentro de la Reserva Nacional Malalcahuello. La base y el hotel están a unos 1.450 m de altitud. En invierno se esquía y en verano hay trekking y bicicleta de montaña.",
+   "nota": "Hay que pagar ticket o pase. En invierno lleve cadenas, porque el camino de acceso suele tener nieve y hielo.",
+   "destinoTxt": "hasta la base del centro de ski y el hotel",
+   "llegada": "Base Corralco",
+   "via": [
+    [
+     -38.470954,
+     -71.570849
+    ]
+   ],
+   "revisar": true
+  },
+  {
+   "id": "termas_malalcahuello",
+   "nombre": "Termas de Malalcahuello",
+   "corto": "Termas",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -38.49224,
+   "lon": -71.58596,
+   "destino": [
+    -38.492313,
+    -71.586155
+   ],
+   "sub": "Complejo termal a 1,5 km de Malalcahuello",
+   "texto": "Es un complejo termal con hotel y piscinas de agua termal. Queda a unos 2 km de la Ruta 181-CH y a 1,5 km del pueblo de Malalcahuello, en la comuna de Curacautín.",
+   "nota": "La entrada es pagada. Revise horarios y si es necesario reservar.",
+   "destinoTxt": "hasta el hotel y las piscinas termales",
+   "llegada": "Termas de Malalcahuello",
+   "revisar": true
+  },
+  {
+   "id": "reserva_malalcahuello",
+   "nombre": "Reserva Nacional Malalcahuello",
+   "corto": "R.N. Malalcahuello",
+   "cat": "naturaleza",
+   "icono": "parque",
+   "lat": -38.471114,
+   "lon": -71.570753,
+   "destino": [
+    -38.470954,
+    -71.570849
+   ],
+   "sub": "Bosques de araucaria y senderos a los pies del Lonquimay",
+   "texto": "La reserva fue creada en 1931, tiene unas 13.882 ha y la administra Conaf. Protege bosques de araucaria, coigüe, roble, lenga y ñirre en las laderas del volcán Lonquimay. Tiene senderos de distinta dificultad, como Piedra Santa y Araucaria Milenaria.",
+   "nota": "Es un área administrada por Conaf. Antes de ir, revise en conaf.cl qué senderos están habilitados, porque a agosto de 2026 solo algunos estaban abiertos.",
+   "destinoTxt": "hasta la guardería de Conaf, junto a la Ruta 181-CH",
+   "llegada": "Guardería Conaf",
+   "revisar": true
+  },
+  {
+   "id": "tunel_las_raices",
+   "nombre": "Túnel Las Raíces",
+   "corto": "Túnel Las Raíces",
+   "cat": "naturaleza",
+   "icono": "tren",
+   "lat": -38.537179,
+   "lon": -71.507613,
+   "destino": [
+    -38.560377,
+    -71.495443
+   ],
+   "sub": "Túnel de 4.528 m, construido para el ferrocarril (1930–1939)",
+   "texto": "Este túnel de 4.528 m pasa bajo la cordillera de Las Raíces y une Curacautín con Lonquimay. Se construyó entre 1930 y 1939 como túnel ferroviario, pensando en un tren bioceánico que nunca se terminó. Hoy es parte de la Ruta 181-CH y es el túnel carretero más largo de Chile.",
+   "nota": "Se cruza camino a Malalcahuello. En invierno puede haber restricciones por nieve; revise el estado del camino.",
+   "destinoTxt": "hasta la boca oriente del túnel, por la Ruta 181-CH",
+   "llegada": "Boca oriente (peaje)",
+   "revisar": true
+  },
+  {
+   "id": "laguna_galletue",
+   "nombre": "Laguna Galletué",
+   "corto": "L. Galletué",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -38.680989,
+   "lon": -71.289165,
+   "destino": [
+    -38.694804,
+    -71.266451
+   ],
+   "sub": "Laguna cordillerana donde nace el río Biobío",
+   "texto": "Esta laguna de la cordillera de Lonquimay tiene unas 1.000 ha. En su ribera oriente nace el río Biobío, que también recibe las aguas de la cercana laguna Icalma. Desde la Ruta 181-CH se llega por caminos secundarios que salen desde el sector Liucura.",
+   "nota": "Los caminos son secundarios y en invierno puede haber nieve. Para pescar se necesita licencia de pesca recreativa.",
+   "destinoTxt": "hasta la ribera sureste, junto a la Ruta R-955",
+   "llegada": "Ribera de Galletué",
+   "revisar": true
+  },
+  {
+   "id": "lago_icalma",
+   "nombre": "Lago Icalma",
+   "corto": "Lago Icalma",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -38.796227,
+   "lon": -71.287009,
+   "destino": [
+    -38.810949,
+    -71.28289
+   ],
+   "sub": "Lago de origen glaciar junto al paso fronterizo Icalma",
+   "texto": "Es un lago de origen glaciar en la comuna de Lonquimay. En su orilla sur está la localidad de Icalma, con playa y camping. A pocos kilómetros queda el paso Icalma, que lleva a Villa Pehuenia, en Argentina.",
+   "nota": "El acceso final es por la Ruta S-51-R. En invierno puede haber nieve.",
+   "destinoTxt": "hasta Villa Icalma, en la orilla sur del lago",
+   "llegada": "Villa Icalma",
+   "revisar": true
+  },
+  {
+   "id": "batea_mahuida",
+   "nombre": "Volcán Batea Mahuida",
+   "corto": "Batea Mahuida",
+   "cat": "naturaleza",
+   "icono": "volcan",
+   "lat": -38.816278,
+   "lon": -71.185278,
+   "sinCamino": "Se ve desde Icalma; se sube por el lado argentino, cruzando el paso Icalma",
+   "sub": "Volcán de 1.948 m en el límite con Argentina, junto a Icalma",
+   "texto": "Es un volcán apagado de 1.948 m en el límite entre Chile y Argentina, frente a Icalma. Su nombre en mapudungun significa “cerro con forma de batea”, por su cumbre plana, donde hay dos lagunas en lo que fue su cráter. Por el lado argentino, a unos 10 km de Villa Pehuenia, funciona un parque de nieve.",
+   "nota": "Para subir se cruza a Argentina por el paso Icalma: lleve documentos y revise el estado del paso antes de viajar.",
+   "revisar": true
+  },
+  {
+   "id": "laguna_san_pedro",
+   "nombre": "Laguna San Pedro",
+   "corto": "L. San Pedro",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -38.440495,
+   "lon": -71.332568,
+   "destino": [
+    -38.439049,
+    -71.333643
+   ],
+   "sub": "Humedal de origen glaciar a pasos de Lonquimay",
+   "texto": "Es una laguna de origen glaciar, cerrada en parte por una morrena. Es un geositio del Geoparque Kütralkura. Su humedal sirve de lugar de nidificación y alimentación para aves, y la comunidad local la usa para recrearse.",
+   "nota": "Se sale de Lonquimay por el camino a Troyo, pasando junto al aeródromo.",
+   "destinoTxt": "hasta la laguna por la Ruta R-791 (camino a Troyo)",
+   "llegada": "Laguna San Pedro",
+   "revisar": true
+  },
+  {
+   "id": "salto_princesa",
+   "nombre": "Salto de la Princesa",
+   "corto": "Salto Princesa",
+   "cat": "naturaleza",
+   "icono": "cascada",
+   "lat": -38.474682,
+   "lon": -71.67251,
+   "destino": [
+    -38.475107,
+    -71.672699
+   ],
+   "sub": "Cascada sobre columnas de basalto, en la Ruta 181-CH",
+   "texto": "Es una cascada de unos 25 m. Se forma donde el estero La Gloria cae sobre columnas de basalto antes de llegar al río Cautín. Queda junto a la Ruta 181-CH, a unos 22 km de Curacautín, en dirección a Malalcahuello.",
+   "nota": "Al final hay un tramo corto de ripio y un sendero fácil.",
+   "destinoTxt": "hasta el acceso del salto, junto a la Ruta 181-CH",
+   "llegada": "Acceso Salto de la Princesa",
+   "revisar": true
+  },
+  {
+   "id": "paso_pino_hachado",
+   "nombre": "Paso Pino Hachado",
+   "corto": "Pino Hachado",
+   "cat": "naturaleza",
+   "icono": "info",
+   "lat": -38.663464,
+   "lon": -70.896843,
+   "destino": [
+    -38.643552,
+    -70.942111
+   ],
+   "sub": "Paso internacional a Argentina, a 1.884 m",
+   "texto": "Es uno de los principales pasos de los Andes del sur. Une la Ruta 181-CH con la Ruta Nacional 242, hacia Las Lajas, en Neuquén, a 1.884 m de altitud. El complejo fronterizo chileno está a unos 4,7 km del límite y reemplazó a las antiguas instalaciones de Liucura.",
+   "nota": "Se cierra con frecuencia por nieve. Antes de viajar, revise el estado y los horarios en pasosfronterizos.gov.cl.",
+   "destinoTxt": "hasta el Complejo Fronterizo Pino Hachado (control chileno)",
+   "llegada": "Complejo Fronterizo",
+   "revisar": true
+  },
+  {
+   "id": "lonquimay",
+   "nombre": "Lonquimay",
+   "corto": "Lonquimay",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -38.454057,
+   "lon": -71.370537,
+   "destino": [
+    -38.453892,
+    -71.37001
+   ],
+   "sub": "Capital comunal, a 17 km del proyecto",
+   "texto": "Es la capital de la comuna. Fue fundada el 25 de enero de 1897 como fuerte Villa Portales, en el valle del Alto Biobío, a unos 925 m de altitud. Ahí están el municipio, el hospital, la bencinera, el terminal de buses y el comercio básico.",
+   "destinoTxt": "hasta la Plaza de Armas",
+   "llegada": "Plaza de Armas",
+   "revisar": true
+  },
+  {
+   "id": "malalcahuello",
+   "nombre": "Malalcahuello",
+   "corto": "Malalcahuello",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -38.475169,
+   "lon": -71.58159,
+   "destino": [
+    -38.474996,
+    -71.581704
+   ],
+   "sub": "Pueblo de montaña, puerta de entrada a la reserva y a Corralco",
+   "texto": "Es un pueblo de montaña de la comuna de Curacautín, a unos 972 m de altitud, junto a la Reserva Nacional Malalcahuello. Su nombre viene del mapudungun: malal (corral) y kawellu (caballo). Tiene alojamiento, restaurantes y servicios turísticos.",
+   "destinoTxt": "hasta la plaza del pueblo",
+   "llegada": "Plaza de Malalcahuello",
+   "revisar": true
+  },
+  {
+   "id": "curacautin",
+   "nombre": "Curacautín",
+   "corto": "Curacautín",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -38.437468,
+   "lon": -71.888337,
+   "destino": [
+    -38.43785,
+    -71.888384
+   ],
+   "sub": "Ciudad de servicios en el valle del Cautín",
+   "texto": "Es la capital de la comuna del mismo nombre y la ciudad con más servicios del sector, con comercio y terminal de buses. Es la puerta de entrada a los parques nacionales Tolhuaca y Conguillío.",
+   "destinoTxt": "hasta la Plaza de Armas",
+   "llegada": "Plaza de Armas",
+   "revisar": true
+  },
+  {
+   "id": "hospital_lonquimay",
+   "nombre": "Hospital Comunitario Intercultural de Lonquimay",
+   "corto": "Hospital",
+   "cat": "servicios",
+   "icono": "salud",
+   "lat": -38.458348,
+   "lon": -71.365811,
+   "destino": [
+    -38.458291,
+    -71.36488
+   ],
+   "sub": "Hospital público de la comuna (Manuel Rodríguez 1641)",
+   "texto": "Es el hospital comunitario intercultural de Lonquimay y pertenece al Servicio de Salud Araucanía Norte. Está en Manuel Rodríguez 1641, en la entrada sur del pueblo.",
+   "destinoTxt": "hasta el hospital, por calle Manuel Rodríguez",
+   "llegada": "Hospital de Lonquimay",
+   "revisar": true
+  },
+  {
+   "id": "copec_lonquimay",
+   "nombre": "Bencinera Copec Lonquimay",
+   "corto": "Copec",
+   "cat": "servicios",
+   "icono": "fuel",
+   "lat": -38.449502,
+   "lon": -71.372771,
+   "destino": [
+    -38.449592,
+    -71.372747
+   ],
+   "sub": "Estación de servicio en Diego Portales / 21 de Mayo",
+   "texto": "Es la estación de servicio Copec de Lonquimay, en el sector norte del centro, junto a Av. Diego Portales y al lado del terminal de buses.",
+   "nota": "Conviene cargar combustible antes de ir a Icalma, Galletué o Pino Hachado.",
+   "destinoTxt": "hasta la estación de servicio",
+   "llegada": "Copec",
+   "revisar": true
+  },
+  {
+   "id": "terminal_lonquimay",
+   "nombre": "Terminal de Buses Lonquimay",
+   "corto": "Terminal buses",
+   "cat": "servicios",
+   "icono": "info",
+   "lat": -38.449294,
+   "lon": -71.37246,
+   "destino": [
+    -38.449403,
+    -71.372521
+   ],
+   "sub": "Buses interurbanos hacia Curacautín y Temuco",
+   "texto": "Es el terminal de buses de Lonquimay. Desde aquí salen buses interurbanos que cruzan el túnel Las Raíces hacia Curacautín y Temuco.",
+   "nota": "Algunas empresas, como Buses Bío Bío, tienen su propia oficina en el centro (I. Carrera Pinto 206).",
+   "destinoTxt": "hasta el terminal de buses",
+   "llegada": "Terminal de buses",
+   "revisar": true
+  }
+ ]
+}

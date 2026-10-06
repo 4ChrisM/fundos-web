@@ -1,0 +1,19 @@
+{
+ "w": 1602,
+ "h": 1174,
+ "capas": [
+  {
+   "src": "assets/entorno/malalcahuello/sat-detalle.webp",
+   "bbox": [
+    -71.42,
+    -38.53,
+    -71.18,
+    -38.4
+   ],
+   "zoom": null,
+   "w": 2400,
+   "h": 1660,
+   "desde": 2.2
+  }
+ ]
+}

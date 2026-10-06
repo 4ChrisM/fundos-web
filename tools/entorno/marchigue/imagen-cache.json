@@ -1,0 +1,19 @@
+{
+ "w": 1311,
+ "h": 1552,
+ "capas": [
+  {
+   "src": "assets/entorno/marchigue/sat-detalle.webp",
+   "bbox": [
+    -71.78,
+    -34.52,
+    -71.56,
+    -34.36
+   ],
+   "zoom": null,
+   "w": 2400,
+   "h": 2116,
+   "desde": 2.2
+  }
+ ]
+}

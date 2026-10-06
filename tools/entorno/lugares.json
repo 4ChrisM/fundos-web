@@ -1,0 +1,629 @@
+{
+ "imagen": {
+  "_nota": "Sentinel-2 cloudless 2016 de EOX (CC BY 4.0), descargado a mano con GetMap WMS en EPSG:3857 (layers=s2cloudless_3857; bbox en metros = los de 'originales'). Regenerar: python3 tools/entorno_build.py --locales (o --teselas si la red permite tiles.maps.eox.at).",
+  "modo": "mercator",
+  "src": "assets/entorno/sat-z11.webp",
+  "zoom": 11,
+  "bbox": [
+   -73.3,
+   -41.7,
+   -72.15,
+   -40.9
+  ],
+  "calidad": 74,
+  "zoomMax": 5,
+  "capas": [
+   {
+    "src": "assets/entorno/sat-z12.webp",
+    "zoom": 12,
+    "bbox": [
+     -73.1,
+     -41.55,
+     -72.35,
+     -41.05
+    ],
+    "calidad": 70,
+    "desde": 1.5,
+    "original": "base"
+   },
+   {
+    "src": "assets/entorno/sat-detalle.webp",
+    "zoom": null,
+    "bbox": [
+     -73.05,
+     -41.52,
+     -72.8,
+     -41.28
+    ],
+    "calidad": 68,
+    "desde": 2.4,
+    "original": "detalle"
+   }
+  ],
+  "creditoCorto": [
+   {
+    "texto": "Rutas © OpenStreetMap",
+    "url": "https://www.openstreetmap.org/copyright"
+   },
+   {
+    "texto": "Imagen: Sentinel-2 cloudless 2016 de EOX, CC BY 4.0",
+    "url": "https://s2maps.eu"
+   }
+  ],
+  "credito": {
+   "texto": "Imagen satelital: Sentinel-2 cloudless - s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016 & 2017), CC BY 4.0; color ajustado",
+   "url": "https://s2maps.eu",
+   "enlace": "s2maps.eu",
+   "licUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "originales": {
+   "base": {
+    "archivo": "entorno/originales/sentinel-base.jpg",
+    "bbox": [
+     -73.3,
+     -41.7,
+     -72.15,
+     -40.9
+    ],
+    "wms": "bbox=-8159719,-5116146,-8031701,-4997603&width=4000&height=3704"
+   },
+   "detalle": {
+    "archivo": "entorno/originales/sentinel-detalle.jpg",
+    "bbox": [
+     -73.05,
+     -41.52,
+     -72.8,
+     -41.28
+    ],
+    "wms": "bbox=-8131889,-5089347,-8104059,-5053730&width=2400&height=3072"
+   }
+  },
+  "original": "base"
+ },
+ "creditos": [
+  {
+   "texto": "Rutas, distancias y tiempos: OSRM (Project OSRM) sobre datos © colaboradores de OpenStreetMap, licencia ODbL",
+   "url": "https://www.openstreetmap.org/copyright",
+   "enlace": "openstreetmap.org/copyright"
+  },
+  {
+   "texto": "Textos: folleto de Fundos Puerto Varas y BiPlot, con datos de fuentes públicas (Sernageomin, Conaf, EFE, Municipalidad de Puerto Montt, Wikipedia y OpenStreetMap)"
+  }
+ ],
+ "metodo": [
+  "Rutas por camino y tiempos en auto calculados desde el Pasaje El Encanto con OSRM, sobre la red vial de OpenStreetMap. Son tiempos sin tráfico: en temporada alta, con lluvia o nieve pueden ser mayores.",
+  "Donde no hay camino directo (la cumbre del volcán Calbuco) mostramos la distancia en línea recta, marcada con “≈” y una línea punteada.",
+  "Cada ubicación se verificó con al menos dos fuentes públicas: Sernageomin, Conaf, EFE, Municipalidad de Puerto Montt, Wikipedia y OpenStreetMap.",
+  "Los anillos punteados marcan 5, 10 y 20 km alrededor de la parcela."
+ ],
+ "categorias": {
+  "naturaleza": {
+   "nombre": "Naturaleza",
+   "color": "#9DB59A",
+   "icono": "parque"
+  },
+  "ciudad": {
+   "nombre": "Ciudades",
+   "color": "#A7B8C4",
+   "icono": "ciudad"
+  },
+  "servicios": {
+   "nombre": "Servicios",
+   "color": "#D3A58F",
+   "icono": "tren"
+  }
+ },
+ "anillos": [
+  5,
+  10,
+  20
+ ],
+ "resumen": [
+  "alerce",
+  "pmontt",
+  "pvaras",
+  "aeropuerto"
+ ],
+ "dato": {
+  "titulo": "Dato curioso",
+  "icono": "tren",
+  "lugar": "estacion_alerce",
+  "texto": "A {min} en auto de tu parcela está la estación Alerce del tren Llanquihue–Puerto Montt (EFE): desde ahí llegas en tren a Puerto Montt, Puerto Varas o Llanquihue."
+ },
+ "paisaje": [
+  {
+   "nombre": "Lago Llanquihue",
+   "lat": -41.1,
+   "lon": -72.84
+  },
+  {
+   "nombre": "Seno de Reloncaví",
+   "lat": -41.585,
+   "lon": -72.86
+  },
+  {
+   "nombre": "Lago Chapo",
+   "lat": -41.455,
+   "lon": -72.52,
+   "tam": "sm"
+  }
+ ],
+ "proyecto": {
+  "id": "proyecto",
+  "nombre": "Fundos Puerto Varas",
+  "lat": -41.3700833,
+  "lon": -72.8781389,
+  "sub": "Pasaje El Encanto · Ruta La Colonia",
+  "texto": "Parcelas planas de 5.000 m², con rol propio y vista despejada a los volcanes Osorno y Calbuco, en el punto intermedio entre Puerto Montt y Puerto Varas: la tranquilidad del campo con la ciudad a minutos."
+ },
+ "lugares": [
+  {
+   "id": "alerce",
+   "nombre": "Alerce",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -41.396889,
+   "lon": -72.903694,
+   "lado": "l",
+   "prioridad": 1,
+   "destino": [
+    -41.39642,
+    -72.904697
+   ],
+   "destinoTxt": "hasta el centro",
+   "llegada": "Av. Los Alerces con Violeta Parra",
+   "sub": "Conectividad y crecimiento",
+   "serv": [
+    [
+     "bank",
+     "BancoEstado"
+    ],
+    [
+     "compras",
+     "Supermercados"
+    ],
+    [
+     "salud",
+     "Cesfam"
+    ],
+    [
+     "school",
+     "Colegios"
+    ],
+    [
+     "tren",
+     "Estación de tren"
+    ]
+   ],
+   "texto": "La ciudad satélite de Puerto Montt, a minutos de la parcela: Cesfam, BancoEstado, supermercados, colegios y la estación del tren Llanquihue–Puerto Montt para el día a día.",
+   "revisar": true,
+   "video": {
+    "original": "entorno/videos/ALERCE FINAL.mp4",
+    "portadaSeg": 3.7
+   }
+  },
+  {
+   "id": "parque",
+   "nombre": "Parque y Vivero Alerce",
+   "cat": "naturaleza",
+   "icono": "parque",
+   "lat": -41.393003,
+   "lon": -72.889266,
+   "lado": "r",
+   "prioridad": 2,
+   "destino": [
+    -41.393773,
+    -72.888252
+   ],
+   "destinoTxt": "hasta la entrada",
+   "sub": "Bosque y vivero de especies nativas",
+   "texto": "Un espacio natural ubicado en Alerce, ideal para disfrutar de áreas verdes, caminar, descansar y conectar con la naturaleza sin alejarse de la ciudad.",
+   "nota": "Parque municipal administrado por la Delegación de Alerce; revisa horarios antes de ir.",
+   "revisar": true,
+   "corto": "Vivero Alerce",
+   "video": {
+    "original": "entorno/videos/PARQUE.mp4"
+   }
+  },
+  {
+   "id": "pvaras",
+   "nombre": "Puerto Varas",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -41.31782,
+   "lon": -72.98278,
+   "lado": "l",
+   "prioridad": 1,
+   "destino": [
+    -41.318146,
+    -72.982743
+   ],
+   "destinoTxt": "hasta la Plaza de Armas",
+   "llegada": "Plaza de Armas",
+   "sub": "Vida · lago · servicios",
+   "serv": [
+    [
+     "bank",
+     "Bancos"
+    ],
+    [
+     "store",
+     "Almacenes"
+    ],
+    [
+     "fuel",
+     "Bencinera"
+    ],
+    [
+     "tren",
+     "Estación de tren"
+    ],
+    [
+     "school",
+     "Colegios"
+    ],
+    [
+     "salud",
+     "Hospitales"
+    ]
+   ],
+   "texto": "Una de las ciudades más encantadoras del sur de Chile, a orillas del lago Llanquihue y con una vista privilegiada al volcán Osorno. Disfruta de su gastronomía, naturaleza, actividades náuticas y su tradicional arquitectura. Un destino para disfrutar en cada estación del año.",
+   "foto": {
+    "commons": "File:Puerto Varas sunrise lago Llanquihue 1030897.jpg",
+    "alt": "Amanecer en Puerto Varas frente al lago Llanquihue"
+   },
+   "video": {
+    "original": "entorno/videos/PUERTO VARAS.mp4",
+    "portadaSeg": 5.0
+   }
+  },
+  {
+   "id": "lago",
+   "nombre": "Lago Llanquihue",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -41.255,
+   "lon": -72.93,
+   "lado": "r",
+   "prioridad": 2,
+   "destino": [
+    -41.316443,
+    -72.982607
+   ],
+   "destinoTxt": "hasta la costanera de Puerto Varas",
+   "llegada": "Costanera de Puerto Varas",
+   "sub": "Segundo lago más grande de Chile",
+   "texto": "Disfruta de sus aguas navegando, practicando kayak, pesca y deportes náuticos, rodeado de paisajes únicos y vistas privilegiadas al volcán Osorno.",
+   "foto": {
+    "commons": "File:Volcán Osorno y lago Llanquihue desde el sector Los Riscos.jpg",
+    "alt": "Volcán Osorno sobre el lago Llanquihue"
+   },
+   "sinRotulo": true,
+   "video": {
+    "original": "entorno/videos/LAGO LLANQUIHUE FINAL.mp4"
+   }
+  },
+  {
+   "id": "pmontt",
+   "nombre": "Puerto Montt",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -41.471785,
+   "lon": -72.939644,
+   "lado": "l",
+   "prioridad": 1,
+   "destino": [
+    -41.472147,
+    -72.939658
+   ],
+   "destinoTxt": "hasta la Plaza de Armas",
+   "llegada": "Plaza de Armas",
+   "sub": "Servicios · ciudad",
+   "serv": [
+    [
+     "bank",
+     "Bancos"
+    ],
+    [
+     "store",
+     "Almacenes"
+    ],
+    [
+     "fuel",
+     "Bencinera"
+    ],
+    [
+     "tren",
+     "Estación de tren"
+    ],
+    [
+     "school",
+     "Colegios"
+    ],
+    [
+     "salud",
+     "Hospitales"
+    ],
+    [
+     "avion",
+     "Aeropuerto"
+    ]
+   ],
+   "texto": "Capital de la Región de Los Lagos y puerta de entrada al sur de Chile. Disfruta de su costanera, gastronomía, comercio, mercados, navegación y conexión con destinos como Chiloé y la Patagonia.",
+   "foto": {
+    "commons": "File:Parque Costanera, Puerto Montt - A74057020240105.jpg",
+    "alt": "Parque Costanera de Puerto Montt"
+   },
+   "video": {
+    "original": "entorno/videos/PUERTO MONT FINAL.mp4",
+    "portadaSeg": 2.3
+   }
+  },
+  {
+   "id": "pacifico",
+   "nombre": "Océano Pacífico",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -41.505,
+   "lon": -72.915,
+   "lado": "r",
+   "prioridad": 2,
+   "destino": [
+    -41.472726,
+    -72.939828
+   ],
+   "destinoTxt": "hasta la costanera de Puerto Montt",
+   "llegada": "Costanera de Puerto Montt",
+   "sub": "Seno de Reloncaví · costanera de Puerto Montt",
+   "texto": "El océano Pacífico ofrece la posibilidad de disfrutar de playas, pesca, navegación y paisajes costeros únicos.",
+   "sinRotulo": true
+  },
+  {
+   "id": "osorno",
+   "nombre": "Volcán Osorno",
+   "cat": "naturaleza",
+   "icono": "volcan",
+   "lat": -41.105117,
+   "lon": -72.49655,
+   "lado": "r",
+   "prioridad": 1,
+   "destino": [
+    -41.127903,
+    -72.529722
+   ],
+   "destinoTxt": "hasta el centro de esquí",
+   "llegada": "Centro de Ski & Montaña",
+   "sub": "2.652 m · esquí en invierno, montaña todo el año",
+   "texto": "Un ícono del sur de Chile donde puedes disfrutar de esquí, snowboard, trekking y senderismo, rodeado de paisajes cordilleranos y vistas privilegiadas al lago Llanquihue.",
+   "nota": "En invierno se exigen cadenas en el camino al volcán.",
+   "foto": {
+    "commons": "File:Vulkan Osorno, Puerto Varas, Chile (10986368703).jpg",
+    "alt": "Volcán Osorno nevado"
+   },
+   "video": {
+    "original": "entorno/videos/VOLCAN OSORNO FINAL.mp4"
+   }
+  },
+  {
+   "id": "petrohue",
+   "nombre": "Saltos del Petrohué",
+   "corto": "Saltos del Petrohué",
+   "cat": "naturaleza",
+   "icono": "cascada",
+   "lat": -41.17222,
+   "lon": -72.44694,
+   "lado": "r",
+   "prioridad": 1,
+   "destino": [
+    -41.171111,
+    -72.449178
+   ],
+   "destinoTxt": "hasta el acceso del parque",
+   "llegada": "Sector Saltos (Conaf)",
+   "sub": "Parque Nacional Vicente Pérez Rosales",
+   "texto": "Un imperdible del sur de Chile, donde puedes recorrer senderos, contemplar las impresionantes cascadas y disfrutar de vistas únicas del río Petrohué, el lago Todos los Santos y el volcán Osorno.",
+   "nota": "Entrada pagada (Conaf): se compra en pasesparques.cl o en el lugar.",
+   "foto": {
+    "commons": "File:Osorno Volcano and Petrohué Waterfalls.jpg",
+    "alt": "Saltos del Petrohué con el volcán Osorno al fondo"
+   },
+   "revisar": true,
+   "video": {
+    "original": "entorno/videos/SALTOS DE PETROHUE.mp4"
+   }
+  },
+  {
+   "id": "calbuco",
+   "nombre": "Volcán Calbuco",
+   "cat": "naturaleza",
+   "icono": "volcan",
+   "lat": -41.33242,
+   "lon": -72.61822,
+   "lado": "r",
+   "prioridad": 1,
+   "sub": "2.003 m · se ve desde toda la zona",
+   "sinCamino": "No hay camino a la cumbre: se disfruta desde los miradores de la zona",
+   "texto": "Uno de los volcanes más activos y emblemáticos de la Región de Los Lagos, al oriente de Puerto Varas y Puerto Montt, entre el lago Llanquihue y el lago Chapo. Su silueta nevada domina el paisaje de toda la zona y ofrece un entorno privilegiado para la naturaleza, el trekking y los paisajes cordilleranos.",
+   "foto": {
+    "commons": "File:Volcán Calbuco y Puerto Montt.jpg",
+    "alt": "Volcán Calbuco visto desde Puerto Montt"
+   },
+   "revisar": true,
+   "video": {
+    "original": "entorno/videos/CALBUCO FINAL.mp4"
+   }
+  },
+  {
+   "id": "estacion_alerce",
+   "nombre": "Estación Alerce",
+   "corto": "Estación Alerce",
+   "cat": "servicios",
+   "icono": "tren",
+   "lat": -41.399333,
+   "lon": -72.919334,
+   "lado": "l",
+   "prioridad": 2,
+   "destino": [
+    -41.399369,
+    -72.919051
+   ],
+   "destinoTxt": "hasta la estación",
+   "sub": "Tren Llanquihue–Puerto Montt (EFE)",
+   "texto": "Estación del tren Llanquihue–Puerto Montt de EFE, en Alerce Histórico. Conecta con Puerto Montt, Puerto Varas y Llanquihue.",
+   "revisar": true
+  },
+  {
+   "id": "angelmo",
+   "nombre": "Caleta Angelmó",
+   "cat": "ciudad",
+   "icono": "pez",
+   "lat": -41.4864,
+   "lon": -72.9636,
+   "lado": "l",
+   "prioridad": 3,
+   "destino": [
+    -41.485666,
+    -72.963131
+   ],
+   "destinoTxt": "hasta la feria",
+   "sub": "Feria artesanal y cocinerías",
+   "texto": "Caleta de pescadores de Puerto Montt con feria artesanal, venta de productos del mar y cocinerías de comida típica.",
+   "revisar": true,
+   "foto": {
+    "commons": "File:Angelmo Puerto Montt1.JPG",
+    "alt": "Caleta Angelmó en Puerto Montt"
+   }
+  },
+  {
+   "id": "frutillar",
+   "nombre": "Frutillar y Teatro del Lago",
+   "corto": "Frutillar",
+   "cat": "ciudad",
+   "icono": "teatro",
+   "lat": -41.1394,
+   "lon": -73.0259,
+   "lado": "r",
+   "prioridad": 2,
+   "destino": [
+    -41.140021,
+    -73.028608
+   ],
+   "destinoTxt": "hasta el Teatro del Lago",
+   "sub": "Teatro del Lago · costanera",
+   "texto": "Ciudad fundada por colonos alemanes a orillas del lago Llanquihue, conocida por el Teatro del Lago, su costanera y las vistas abiertas a los volcanes.",
+   "revisar": true,
+   "foto": {
+    "commons": "File:Frutillar-Theatro-del-Lago-1030906-PSD.jpg",
+    "alt": "Teatro del Lago en Frutillar"
+   },
+   "video": {
+    "original": "entorno/videos/FRUTILLAR.mp4",
+    "portadaSeg": 4.5
+   }
+  },
+  {
+   "id": "todos_santos",
+   "nombre": "Lago Todos los Santos",
+   "corto": "Todos los Santos",
+   "cat": "naturaleza",
+   "icono": "barco",
+   "lat": -41.1369,
+   "lon": -72.3993,
+   "lado": "r",
+   "prioridad": 3,
+   "destino": [
+    -41.136946,
+    -72.399462
+   ],
+   "destinoTxt": "hasta el embarcadero de Petrohué",
+   "sub": "Embarcadero de Petrohué",
+   "texto": "Lago cordillerano del Parque Nacional Vicente Pérez Rosales, el más antiguo de Chile (1926). Desde el embarcadero de Petrohué salen navegaciones con vista a los volcanes Osorno y Puntiagudo.",
+   "revisar": true,
+   "foto": {
+    "commons": "File:Lago Todos los Santos, X Región de Los Lagos, Chile.jpg",
+    "alt": "Lago Todos los Santos"
+   }
+  },
+  {
+   "id": "alerce_andino",
+   "nombre": "Parque Nacional Alerce Andino",
+   "corto": "Alerce Andino",
+   "cat": "naturaleza",
+   "icono": "parque",
+   "lat": -41.4537,
+   "lon": -72.6355,
+   "lado": "r",
+   "prioridad": 3,
+   "destino": [
+    -41.453679,
+    -72.635541
+   ],
+   "destinoTxt": "hasta el sector Correntoso",
+   "sub": "Bosques de alerce milenario (Conaf)",
+   "texto": "Parque nacional que protege bosques de alerce milenario, con senderos hacia lagunas y miradores. El sector Correntoso es el acceso más cercano desde Alerce.",
+   "revisar": true,
+   "nota": "Revisa horarios y accesos en Conaf antes de ir.",
+   "foto": {
+    "commons": "File:Laguna Fría Parque Nacional Alerce Andino.jpg",
+    "alt": "Laguna Fría en el Parque Nacional Alerce Andino"
+   }
+  },
+  {
+   "id": "aeropuerto",
+   "nombre": "Aeropuerto El Tepual",
+   "corto": "Aeropuerto",
+   "cat": "servicios",
+   "icono": "avion",
+   "lat": -41.4334,
+   "lon": -73.0984,
+   "lado": "l",
+   "prioridad": 1,
+   "destino": [
+    -41.43396,
+    -73.09872
+   ],
+   "destinoTxt": "hasta el terminal",
+   "sub": "Puerto Montt (PMC) · vuelos nacionales",
+   "texto": "El aeropuerto principal de la Región de Los Lagos, con vuelos nacionales regulares, entre ellos a Santiago. Se llega desde la Ruta 5 por la Ruta 226.",
+   "revisar": true
+  },
+  {
+   "id": "hospital",
+   "nombre": "Hospital Puerto Montt",
+   "corto": "Hospital",
+   "cat": "servicios",
+   "icono": "salud",
+   "lat": -41.44855,
+   "lon": -72.95734,
+   "lado": "r",
+   "prioridad": 2,
+   "destino": [
+    -41.44926,
+    -72.95729
+   ],
+   "destinoTxt": "hasta el hospital",
+   "sub": "Dr. Eduardo Schütz Schroeder · urgencia 24 h",
+   "texto": "Hospital público de alta complejidad del Servicio de Salud del Reloncaví, con urgencia las 24 horas, en el sector alto de Puerto Montt.",
+   "revisar": true
+  },
+  {
+   "id": "mall",
+   "nombre": "Mall Paseo Costanera",
+   "corto": "Paseo Costanera",
+   "cat": "servicios",
+   "icono": "compras",
+   "lat": -41.4727,
+   "lon": -72.9372,
+   "lado": "r",
+   "prioridad": 3,
+   "destino": [
+    -41.47247,
+    -72.93599
+   ],
+   "destinoTxt": "hasta el estacionamiento",
+   "sub": "Centro de Puerto Montt",
+   "texto": "Centro comercial frente a la costanera de Puerto Montt, con tiendas, farmacias y servicios.",
+   "revisar": true
+  }
+ ]
+}

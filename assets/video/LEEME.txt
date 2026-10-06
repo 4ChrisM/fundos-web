@@ -1,0 +1,6 @@
+Videos propios del sitio (opcional).
+
+- portada.mp4: video de fondo del hero (sin sonido, 10-20 s, H.264 1920 px, < 8 MB).
+- <proyecto>.mp4: video de cada proyecto, si no se usa YouTube o Vimeo.
+
+Las rutas se configuran en lib/manifest.js.

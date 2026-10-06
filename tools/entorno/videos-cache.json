@@ -1,0 +1,83 @@
+{
+ "alerce": {
+  "mp4": "assets/entorno/videos/alerce.mp4",
+  "webm": "assets/entorno/videos/alerce.webm",
+  "poster": "assets/entorno/videos/alerce.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 4.5,
+  "audio": true
+ },
+ "parque": {
+  "mp4": "assets/entorno/videos/parque.mp4",
+  "webm": "assets/entorno/videos/parque.webm",
+  "poster": "assets/entorno/videos/parque.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 6.3,
+  "audio": true
+ },
+ "lago": {
+  "mp4": "assets/entorno/videos/lago.mp4",
+  "webm": "assets/entorno/videos/lago.webm",
+  "poster": "assets/entorno/videos/lago.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 5.8,
+  "audio": true
+ },
+ "pmontt": {
+  "mp4": "assets/entorno/videos/pmontt.mp4",
+  "webm": "assets/entorno/videos/pmontt.webm",
+  "poster": "assets/entorno/videos/pmontt.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 7.6,
+  "audio": true
+ },
+ "osorno": {
+  "mp4": "assets/entorno/videos/osorno.mp4",
+  "webm": "assets/entorno/videos/osorno.webm",
+  "poster": "assets/entorno/videos/osorno.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 8.4,
+  "audio": true
+ },
+ "petrohue": {
+  "mp4": "assets/entorno/videos/petrohue.mp4",
+  "webm": "assets/entorno/videos/petrohue.webm",
+  "poster": "assets/entorno/videos/petrohue.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 8.5,
+  "audio": true
+ },
+ "calbuco": {
+  "mp4": "assets/entorno/videos/calbuco.mp4",
+  "webm": "assets/entorno/videos/calbuco.webm",
+  "poster": "assets/entorno/videos/calbuco.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 5.4,
+  "audio": true
+ },
+ "pvaras": {
+  "mp4": "assets/entorno/videos/pvaras.mp4",
+  "webm": "assets/entorno/videos/pvaras.webm",
+  "poster": "assets/entorno/videos/pvaras.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 6.2,
+  "audio": true
+ },
+ "frutillar": {
+  "mp4": "assets/entorno/videos/frutillar.mp4",
+  "webm": "assets/entorno/videos/frutillar.webm",
+  "poster": "assets/entorno/videos/frutillar.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 5.5,
+  "audio": true
+ }
+}

@@ -1,0 +1,442 @@
+{
+ "imagen": {
+  "_nota": "Sentinel-2 cloudless 2016 de EOX (CC BY 4.0), descargado a mano con GetMap WMS en EPSG:3857 (layers=s2cloudless_3857; bbox en metros = los de 'originales'). Regenerar: python3 tools/entorno_build.py --proyecto marchigue --locales",
+  "modo": "mercator",
+  "src": "assets/entorno/marchigue/sat-z11.webp",
+  "zoom": 11,
+  "bbox": [
+   -72.12,
+   -34.78,
+   -71.22,
+   -33.9
+  ],
+  "calidad": 74,
+  "zoomMax": 5,
+  "capas": [
+   {
+    "src": "assets/entorno/marchigue/sat-detalle.webp",
+    "zoom": null,
+    "bbox": [
+     -71.78,
+     -34.52,
+     -71.56,
+     -34.36
+    ],
+    "calidad": 68,
+    "desde": 2.2,
+    "original": "detalle"
+   }
+  ],
+  "creditoCorto": [
+   {
+    "texto": "Rutas © OpenStreetMap",
+    "url": "https://www.openstreetmap.org/copyright"
+   },
+   {
+    "texto": "Imagen: Sentinel-2 cloudless 2016 de EOX, CC BY 4.0",
+    "url": "https://s2maps.eu"
+   }
+  ],
+  "credito": {
+   "texto": "Imagen satelital: Sentinel-2 cloudless - s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016 & 2017), CC BY 4.0; color ajustado",
+   "url": "https://s2maps.eu",
+   "enlace": "s2maps.eu",
+   "licUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "originales": {
+   "base": {
+    "archivo": "entorno/marchigue/originales/sentinel-base.jpg",
+    "bbox": [
+     -72.12,
+     -34.78,
+     -71.22,
+     -33.9
+    ],
+    "wms": "bbox=-8028361,-4134024,-7928174,-4015382&width=3400&height=4026"
+   },
+   "detalle": {
+    "archivo": "entorno/marchigue/originales/sentinel-detalle.jpg",
+    "bbox": [
+     -71.78,
+     -34.52,
+     -71.56,
+     -34.36
+    ],
+    "wms": "bbox=-7990513,-4098840,-7966022,-4077244&width=2400&height=2116"
+   }
+  },
+  "original": "base"
+ },
+ "creditos": [
+  {
+   "texto": "Rutas, distancias y tiempos: OSRM (Project OSRM) sobre datos © colaboradores de OpenStreetMap, licencia ODbL",
+   "url": "https://www.openstreetmap.org/copyright",
+   "enlace": "openstreetmap.org/copyright"
+  }
+ ],
+ "metodo": [],
+ "categorias": {
+  "naturaleza": {
+   "nombre": "Naturaleza",
+   "color": "#9DB59A",
+   "icono": "parque"
+  },
+  "ciudad": {
+   "nombre": "Ciudades",
+   "color": "#A7B8C4",
+   "icono": "ciudad"
+  },
+  "servicios": {
+   "nombre": "Servicios",
+   "color": "#D3A58F",
+   "icono": "tren"
+  }
+ },
+ "anillos": [
+  10,
+  25,
+  50
+ ],
+ "resumen": [
+  "marchigue",
+  "pichilemu",
+  "santa_cruz",
+  "lago_rapel"
+ ],
+ "dato": {
+  "titulo": "El tren que pasaba por Marchigüe",
+  "icono": "tren",
+  "texto": "Marchigüe tuvo estación en el ramal ferroviario San Fernando–Pichilemu, que llegó a la costa en 1926 y llevó pasajeros hasta 1986. Varios de sus bienes son hoy Monumento Histórico."
+ },
+ "paisaje": [],
+ "pagina": {
+  "marca": "Marchigüe",
+  "kicker": "Marchigüe · Valle de Colchagua, O'Higgins",
+  "lead": "En el secano costero del valle de Colchagua: viñas, pueblos típicos y, a una hora, el surf de Pichilemu. Elige un lugar y te mostramos el camino desde tu parcela.",
+  "volver": "./#proyectos"
+ },
+ "proyecto": {
+  "id": "proyecto",
+  "nombre": "Fundos Marchigüe",
+  "lat": -34.4661944,
+  "lon": -71.7074722,
+  "sub": "Ruta I-674 · Marchigüe, O'Higgins",
+  "texto": "Fundos Marchigüe está en el valle de Colchagua, a 20 minutos del pueblo de Marchigüe. Desde aquí se llega a las viñas de la Ruta del Vino, a Santa Cruz y a la costa de Pichilemu, con su surf y sus salinas.",
+  "manifiesto": "marchigue"
+ },
+ "lugares": [
+  {
+   "id": "marchigue",
+   "nombre": "Marchigüe",
+   "corto": "Marchigüe",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -34.4001,
+   "lon": -71.61824,
+   "destino": [
+    -34.400015,
+    -71.618496
+   ],
+   "sub": "Pueblo cabecera de la comuna · Plaza Ignacio Carrera Pinto",
+   "texto": "Capital de la comuna de Marchigüe, en el secano costero del valle de Colchagua, provincia Cardenal Caro. Su plaza de armas es la Plaza Ignacio Carrera Pinto y en el pueblo están el hospital, la municipalidad y el comercio básico.",
+   "destinoTxt": "hasta la plaza",
+   "llegada": "Plaza de Marchigüe",
+   "revisar": true
+  },
+  {
+   "id": "santa_cruz",
+   "nombre": "Santa Cruz",
+   "corto": "Santa Cruz",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -34.640473,
+   "lon": -71.366087,
+   "destino": [
+    -34.640582,
+    -71.366333
+   ],
+   "sub": "Ciudad del valle de Colchagua · Plaza de Armas",
+   "texto": "Es la principal ciudad del valle de Colchagua y el punto de partida habitual para visitar viñas. En su Plaza de Armas están la parroquia y el reloj carillón, y ahí funciona la oficina de la Ruta del Vino de Colchagua, que organiza visitas a viñas asociadas.",
+   "nota": "Oficina Ruta del Vino: confirmar horarios antes de ir.",
+   "destinoTxt": "hasta la Plaza de Armas",
+   "llegada": "Plaza de Armas",
+   "revisar": true
+  },
+  {
+   "id": "museo_colchagua",
+   "nombre": "Museo de Colchagua",
+   "corto": "Museo Colchagua",
+   "cat": "ciudad",
+   "icono": "teatro",
+   "lat": -34.640117,
+   "lon": -71.364185,
+   "destino": [
+    -34.640469,
+    -71.36383
+   ],
+   "sub": "Av. Errázuriz 145 · Santa Cruz",
+   "texto": "Museo privado de la Fundación Cardoen, inaugurado en 1995 a pasos de la Plaza de Armas de Santa Cruz. Su colección reúne cerca de 7.000 piezas de paleontología, arqueología e historia de Chile y América.",
+   "nota": "Abre todos los días; conviene reservar unas 3 horas para la visita.",
+   "destinoTxt": "hasta la entrada del museo",
+   "llegada": "Museo de Colchagua",
+   "revisar": true
+  },
+  {
+   "id": "pichilemu",
+   "nombre": "Pichilemu",
+   "corto": "Pichilemu",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -34.38419,
+   "lon": -72.01128,
+   "destino": [
+    -34.384556,
+    -72.011235
+   ],
+   "sub": "Capital provincial y balneario · Parque Ross",
+   "texto": "Capital de la provincia Cardenal Caro y principal balneario de la costa de O'Higgins. Frente a la playa principal está el Parque Agustín Ross, que junto al antiguo casino es Monumento Histórico desde 1988. La ola de La Puntilla, junto al centro, es la más usada para aprender surf.",
+   "destinoTxt": "hasta el Parque Ross y la playa principal",
+   "llegada": "Parque Ross",
+   "revisar": true
+  },
+  {
+   "id": "lolol",
+   "nombre": "Lolol",
+   "corto": "Lolol",
+   "cat": "ciudad",
+   "icono": "ciudad",
+   "lat": -34.72778,
+   "lon": -71.64403,
+   "destino": [
+    -34.727678,
+    -71.644144
+   ],
+   "sub": "Pueblo y Zona Típica · valle de Colchagua",
+   "texto": "Pueblo de arquitectura tradicional cuyo centro fue declarado Zona Típica por el Consejo de Monumentos Nacionales en 2003. Está unos 30 km al oeste de Santa Cruz y en sus alrededores hay varias viñas.",
+   "destinoTxt": "hasta la plaza",
+   "llegada": "Plaza de Lolol",
+   "revisar": true
+  },
+  {
+   "id": "punta_de_lobos",
+   "nombre": "Punta de Lobos",
+   "corto": "Punta de Lobos",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -34.42558,
+   "lon": -72.04766,
+   "destino": [
+    -34.42558,
+    -72.047657
+   ],
+   "sub": "Reserva Mundial de Surf · Pichilemu",
+   "texto": "Punta rocosa al sur de Pichilemu, conocida en todo el mundo por el surf. En 2013 fue nombrada Reserva Mundial de Surf, la séptima del mundo. Sus acantilados sirven de mirador hacia el mar.",
+   "nota": "Es una ola para surfistas con experiencia; desde el final del camino se puede mirar sin entrar al agua.",
+   "destinoTxt": "hasta el final del camino de acceso",
+   "llegada": "Punta de Lobos",
+   "revisar": true
+  },
+  {
+   "id": "laguna_cahuil",
+   "nombre": "Laguna de Cáhuil y salinas",
+   "corto": "Cáhuil",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -34.4803,
+   "lon": -72.0182,
+   "destino": [
+    -34.4803,
+    -72.0182
+   ],
+   "sub": "Humedal y sal de mar artesanal · Pichilemu",
+   "texto": "Laguna costera en la desembocadura del estero Nilahue, unos 15 km al sur de Pichilemu. En sus orillas (Cáhuil, La Villa y Barrancas) se produce sal de mar de forma artesanal.",
+   "destinoTxt": "hasta el puente de Cáhuil",
+   "llegada": "Puente Cáhuil",
+   "revisar": true
+  },
+  {
+   "id": "bucalemu",
+   "nombre": "Bucalemu",
+   "corto": "Bucalemu",
+   "cat": "naturaleza",
+   "icono": "pez",
+   "lat": -34.64012,
+   "lon": -72.04583,
+   "destino": [
+    -34.64025,
+    -72.045812
+   ],
+   "sub": "Caleta y balneario · Paredones",
+   "texto": "Balneario y caleta de pescadores de la comuna de Paredones, al sur de Pichilemu. Tiene una playa extensa, un mirador sobre la caleta y restaurantes de productos del mar.",
+   "destinoTxt": "hasta el mirador de la caleta",
+   "llegada": "Caleta Bucalemu",
+   "revisar": true
+  },
+  {
+   "id": "playa_matanzas",
+   "nombre": "Playa de Matanzas",
+   "corto": "Matanzas",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -33.962572,
+   "lon": -71.877169,
+   "destino": [
+    -33.962588,
+    -71.877167
+   ],
+   "sub": "Surf, windsurf y kite · Navidad",
+   "texto": "Caleta y playa de la comuna de Navidad, conocida por sus vientos y olas y muy usada para windsurf, kitesurf y surf. Frente a la caleta están los islotes Lobos y Los Pájaros.",
+   "destinoTxt": "hasta la caleta de pescadores",
+   "llegada": "Caleta Matanzas",
+   "revisar": true
+  },
+  {
+   "id": "lago_rapel",
+   "nombre": "Lago Rapel",
+   "corto": "Lago Rapel",
+   "cat": "naturaleza",
+   "icono": "agua",
+   "lat": -34.04139,
+   "lon": -71.58861,
+   "destino": [
+    -34.041453,
+    -71.588577
+   ],
+   "sub": "Muro de la central y mirador · Litueche / Navidad",
+   "texto": "El muro de la central hidroeléctrica Rapel, una presa de arco de 112 m de altura, forma el Lago Rapel, el mayor lago artificial de Chile. Por su coronamiento pasa un camino público con vista al embalse.",
+   "nota": "Los accesos públicos para bañarse están en localidades como Llallauquén, El Manzano y Las Balsas.",
+   "destinoTxt": "hasta el muro de la represa",
+   "llegada": "Central Rapel",
+   "revisar": true
+  },
+  {
+   "id": "vina_montgras",
+   "nombre": "Viña MontGras",
+   "corto": "MontGras",
+   "cat": "naturaleza",
+   "icono": "parque",
+   "lat": -34.563792,
+   "lon": -71.401691,
+   "destino": [
+    -34.563812,
+    -71.401204
+   ],
+   "sub": "Camino Isla de Yáquil s/n · Palmilla",
+   "texto": "Viña fundada en 1993 en Isla de Yáquil, valle de Colchagua. Su centro de visitas abre todo el año y ofrece recorridos con degustación.",
+   "nota": "Los tours requieren reserva.",
+   "destinoTxt": "hasta el centro de visitas",
+   "llegada": "Viña MontGras",
+   "revisar": true
+  },
+  {
+   "id": "vina_santa_cruz",
+   "nombre": "Viña Santa Cruz",
+   "corto": "Viña Sta. Cruz",
+   "cat": "naturaleza",
+   "icono": "parque",
+   "lat": -34.703452,
+   "lon": -71.56775,
+   "destino": [
+    -34.703452,
+    -71.56775
+   ],
+   "sub": "Ruta I-72 · Lolol",
+   "texto": "Viña del sector de Lolol que, además de degustaciones, tiene un teleférico al cerro Chamán con muestras de culturas originarias y un observatorio astronómico.",
+   "nota": "Cierra los lunes; los tours requieren reserva.",
+   "destinoTxt": "hasta el acceso de la viña",
+   "llegada": "Viña Santa Cruz",
+   "revisar": true
+  },
+  {
+   "id": "vina_montes",
+   "nombre": "Viña Montes (Apalta)",
+   "corto": "Viña Montes",
+   "cat": "naturaleza",
+   "icono": "parque",
+   "lat": -34.61235,
+   "lon": -71.27367,
+   "destino": [
+    -34.61604,
+    -71.273905
+   ],
+   "sub": "Valle de Apalta · Santa Cruz",
+   "texto": "Viña en el valle de Apalta, uno de los sectores vitivinícolas más reconocidos de Colchagua. Ofrece recorridos por viñedos y bodega, y tiene restaurante.",
+   "nota": "Visitas con reserva previa.",
+   "destinoTxt": "hasta la entrada por Camino a Millahue de Apalta",
+   "llegada": "Viña Montes",
+   "revisar": true
+  },
+  {
+   "id": "hospital_marchigue",
+   "nombre": "Hospital de Marchigüe",
+   "corto": "Hospital",
+   "cat": "servicios",
+   "icono": "salud",
+   "lat": -34.39882,
+   "lon": -71.61712,
+   "destino": [
+    -34.398791,
+    -71.617203
+   ],
+   "sub": "Laureano Cornejo 410 · Marchigüe",
+   "texto": "Hospital público de baja complejidad del Servicio de Salud O'Higgins, en el pueblo de Marchigüe. Es el centro de salud más cercano al proyecto.",
+   "destinoTxt": "hasta el hospital",
+   "llegada": "Hospital Marchigüe",
+   "revisar": true
+  },
+  {
+   "id": "hospital_santa_cruz",
+   "nombre": "Hospital de Santa Cruz",
+   "corto": "Hosp. Sta. Cruz",
+   "cat": "servicios",
+   "icono": "salud",
+   "lat": -34.63444,
+   "lon": -71.35733,
+   "destino": [
+    -34.635146,
+    -71.356542
+   ],
+   "sub": "Av. Errázuriz 921 · Santa Cruz",
+   "texto": "Hospital público de mediana complejidad del Servicio de Salud O'Higgins; es el de referencia para atenciones que no se resuelven en Marchigüe.",
+   "destinoTxt": "hasta Av. Errázuriz",
+   "llegada": "Hospital Santa Cruz",
+   "revisar": true
+  },
+  {
+   "id": "supermercado_santa_cruz",
+   "nombre": "Supermercado Líder Santa Cruz",
+   "corto": "Líder",
+   "cat": "servicios",
+   "icono": "compras",
+   "lat": -34.6410106,
+   "lon": -71.3740746,
+   "destino": [
+    -34.641009,
+    -71.374084
+   ],
+   "sub": "Av. Rafael Casanova 344 · Santa Cruz",
+   "texto": "Hipermercado en el centro de Santa Cruz, la opción más completa para compras grandes. En Marchigüe hay supermercados y almacenes locales para lo básico.",
+   "destinoTxt": "hasta el supermercado",
+   "llegada": "Líder Santa Cruz",
+   "revisar": true
+  },
+  {
+   "id": "terminal_santa_cruz",
+   "nombre": "Terminal de buses de Santa Cruz",
+   "corto": "Terminal buses",
+   "cat": "servicios",
+   "icono": "info",
+   "lat": -34.642343,
+   "lon": -71.371968,
+   "destino": [
+    -34.642209,
+    -71.371923
+   ],
+   "sub": "Av. Rafael Casanova 480 · Santa Cruz",
+   "texto": "Terminal de buses interurbanos de Santa Cruz, con servicios a Santiago, Rancagua, San Fernando y Pichilemu, entre otros destinos.",
+   "destinoTxt": "hasta el terminal",
+   "llegada": "Terminal Santa Cruz",
+   "revisar": true
+  }
+ ]
+}
