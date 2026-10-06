@@ -19,6 +19,7 @@ def limpio(v):
 
 
 os.makedirs(OUT, exist_ok=True)
+OUT = os.path.join(OUT, "r2"); os.makedirs(OUT, exist_ok=True)
 meta = {}
 for linea in open(os.path.join(AQUI, "buscar.txt"), encoding="utf-8"):
     linea = linea.strip()

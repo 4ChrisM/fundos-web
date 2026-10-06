@@ -1,14 +1,14 @@
 # grupo | categoría de Commons o búsqueda
-mal | Category:Malalcahuello
-mal | Category:Malalcahuello-Nalcas National Reserve
-mal | Category:Lonquimay (volcano)
-mal | Category:Lonquimay
-mal | Category:Tolhuaca (volcano)
-mal | Malalcahuello araucaria
-mal | Lonquimay volcán
-mar | Category:Marchigüe
-mar | Marchigüe
-mar | Category:Colchagua Valley
-mar | Colchagua viñedo
-mar | Category:Vineyards in Colchagua Province
-mar | Category:Cardenal Caro Province
+mar | Category:Marchihue
+mar | Marchihue
+mar | Category:Marchigüe Commune
+mar | Category:Colchagua Province
+mar | Category:Santa Cruz, Chile
+mar | Valle de Colchagua
+mar | Colchagua vineyard
+mar | Colchagua Valley landscape
+mar | Category:Viña Montes
+mar | Category:Lolol
+mar | Lolol viñedos
+mar | Peralillo viñedo
+mar | Pichilemu campo
