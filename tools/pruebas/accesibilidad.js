@@ -27,7 +27,7 @@ const ARGS = ["--proxy-server=" + process.env.HTTPS_PROXY, "--ignore-certificate
   const d = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
   d.on("pageerror", e => logs.push("D " + e.message));
   await d.goto(B, { waitUntil: "networkidle" }); await d.waitForTimeout(800); await clasica(d);
-  out.formDesc = await d.evaluate(() => ({ nombre: document.getElementById("v-nombre").getAttribute("aria-describedby"), acepto: document.querySelector('[name="acepto"]').getAttribute("aria-invalid") }));
+  out.formDesc = await d.evaluate(() => ({ nombre: document.getElementById("v-nombre").getAttribute("aria-describedby"), acepto: document.querySelector('#visita [name="acepto"]').getAttribute("aria-invalid") }));
   out.waFloatTop = await d.evaluate(() => { const w = document.querySelector(".wa-float"); return [w.className, getComputedStyle(w).visibility]; });
   out.priceValText = await d.evaluate(() => document.getElementById("f-precio").getAttribute("aria-valuetext"));
   out.pieValText = await d.evaluate(() => document.getElementById("s-pie") && document.getElementById("s-pie").getAttribute("aria-valuetext"));
@@ -59,7 +59,7 @@ const ARGS = ["--proxy-server=" + process.env.HTTPS_PROXY, "--ignore-certificate
   out.afterImm = await d.evaluate(() => ({ imm: document.querySelector(".is-immersive") !== null, inert: document.querySelectorAll("[data-tour-inert],[inert]").length, focus: document.activeElement.getAttribute("aria-label") || document.activeElement.className }));
   // envío del formulario: inerte detrás de la confirmación
   await d.fill("#v-nombre", "Ana Pérez"); await d.fill("#v-telefono", "+56 9 1111 2222");
-  await d.evaluate(() => { const c = document.querySelector('[name="acepto"]'); if (!c.checked) c.click(); });
+  await d.evaluate(() => { const c = document.querySelector('#visita [name="acepto"]'); if (!c.checked) c.click(); });
   const pop = d.context().waitForEvent("page", { timeout: 4000 }).catch(() => null);
   await d.evaluate(() => document.querySelector(".visit-form [type=submit]").click()); await d.waitForTimeout(600); await pop;
   out.formOk = await d.evaluate(() => { const f = document.querySelector(".visit-form"); return { ok: !document.querySelector(".form-ok").hidden, inertKids: [...f.children].filter(c => c.inert).length, kids: f.children.length }; });

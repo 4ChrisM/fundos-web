@@ -27,10 +27,10 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261006c">
-<script defer src="lib/manifest.js?v=20261006c"></script>
-<script defer src="lib/planos.js?v=20261006c"></script>
-<script defer src="main.js?v=20261006c"></script>
+<link rel="stylesheet" href="styles.css?v=20261006d">
+<script defer src="lib/manifest.js?v=20261006d"></script>
+<script defer src="lib/planos.js?v=20261006d"></script>
+<script defer src="main.js?v=20261006d"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -245,17 +245,52 @@
     <div class="hero-grain"></div>
     <div class="hero-shade"></div>
   </div>
-  <div class="hero-inner">
-    <p class="kicker hero-kicker"><span class="pv-badge">Nuevo proyecto</span> <span class="nw">Pasaje El Encanto · Ruta La Colonia</span></p>
-    <h1 class="hero-title" id="pv-title">
-      <span class="line"><span>Fundos</span></span>
-      <span class="line"><span><em>Puerto Varas.</em></span></span>
-    </h1>
-    <p class="hero-sub">Tu parcela plana de 5.000&nbsp;m², con rol propio y vista a los volcanes Osorno y Calbuco. Entre Puerto Montt y Puerto Varas, a 25 minutos de cada una.</p>
-    <div class="hero-actions">
-      <a class="btn btn-gold btn-lg" href="#plano" data-pv-plan>Ver parcelas disponibles<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-      <a class="btn btn-ghost btn-lg" href="entorno.html#tour-360"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrer en 360°</a>
+  <div class="hero-inner pv-hero-in">
+    <div class="pv-hero-txt">
+      <p class="kicker hero-kicker"><span class="pv-badge">Nuevo proyecto</span> <span class="nw">Pasaje El Encanto · Ruta La Colonia</span></p>
+      <h1 class="hero-title" id="pv-title">
+        <span class="line"><span>Fundos</span></span>
+        <span class="line"><span><em>Puerto Varas.</em></span></span>
+      </h1>
+      <p class="hero-sub">Tu parcela plana de 5.000&nbsp;m², con rol propio y vista a los volcanes Osorno y Calbuco. Entre Puerto Montt y Puerto Varas, a 25 minutos de cada una.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold btn-lg" href="#plano" data-pv-plan>Ver parcelas disponibles<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-ghost btn-lg" href="entorno.html#tour-360"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrer en 360°</a>
+      </div>
     </div>
+
+    <!-- Formulario rápido: arma el mensaje y lo envía por WhatsApp (mismo flujo que el de la visita) -->
+    <form class="pv-lead" data-pv-lead novalidate aria-labelledby="pv-lead-t">
+      <p class="pv-lead-k">Precios de lanzamiento</p>
+      <h2 class="pv-lead-t" id="pv-lead-t">Recibe el plano y los precios</h2>
+      <div class="pv-lead-f">
+        <label for="pl-nombre">Nombre</label>
+        <input id="pl-nombre" name="nombre" type="text" autocomplete="name" required placeholder="Tu nombre">
+        <p class="pv-lead-err" data-err="nombre">Cuéntanos tu nombre.</p>
+      </div>
+      <div class="pv-lead-f">
+        <label for="pl-telefono">WhatsApp o teléfono</label>
+        <input id="pl-telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" required placeholder="+56 9 1234 5678">
+        <p class="pv-lead-err" data-err="telefono">Ingresa un teléfono válido.</p>
+      </div>
+      <div class="pv-lead-f">
+        <label for="pl-correo">Correo <small>(opcional)</small></label>
+        <input id="pl-correo" name="correo" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.cl">
+        <p class="pv-lead-err" data-err="correo">Revisa tu correo.</p>
+      </div>
+      <label class="pv-lead-ok-c">
+        <input type="checkbox" name="acepto" required>
+        <span>Acepto que Fundos me contacte por WhatsApp o teléfono.</span>
+      </label>
+      <p class="pv-lead-err" data-err="acepto">Necesitamos tu autorización para contactarte.</p>
+      <button class="btn btn-gold" type="submit"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero el plano y los precios</button>
+      <div class="pv-lead-done" data-pv-lead-done hidden tabindex="-1">
+        <p class="pv-lead-t">Último paso: envíanos tu mensaje</p>
+        <blockquote data-pv-lead-msg></blockquote>
+        <a class="btn btn-gold" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-pv-lead-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</a>
+        <button class="link-btn" type="button" data-pv-lead-edit>Editar mis datos</button>
+      </div>
+    </form>
   </div>
   <dl class="pv-stats">
     <div><dt>Desde</dt><dd data-pv-desde>$27.990.000</dd></div>
@@ -819,8 +854,8 @@
     <div class="otros">
       <article class="otro reveal" data-otro="malalcahuello">
         <figure class="otro-art otro-foto" data-otro-art>
-          <img src="assets/img/zona-malalcahuello-700.webp" srcset="assets/img/zona-malalcahuello-700.webp 700w, assets/img/zona-malalcahuello-1200.webp 1200w" sizes="(min-width: 900px) 260px, (min-width: 560px) 40vw, 100vw" width="1200" height="800" loading="lazy" decoding="async" alt="Volcán Lonquimay nevado y araucarias en la Reserva Nacional Malalcahuello" style="object-position: 58% 50%">
-          <figcaption><span>Volcán Lonquimay, Reserva Malalcahuello</span><a href="https://commons.wikimedia.org/wiki/File:Araucaria_araucana_kz35.jpg" target="_blank" rel="noopener">Foto: Krzysztof Ziarnek · CC BY 4.0</a></figcaption>
+          <img src="assets/img/tour-malalcahuello-800.webp" srcset="assets/img/tour-malalcahuello-800.webp 800w, assets/img/tour-malalcahuello-1600.webp 1600w" sizes="(min-width: 900px) 260px, (min-width: 560px) 40vw, 100vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Vista aérea de la parcelación de Malalcahuello y su entorno" style="object-position: 40% 50%">
+          <figcaption><span>Vista aérea de la parcela</span></figcaption>
         </figure>
         <div class="otro-b">
           <p class="otro-meta">La Araucanía · Cordillera</p>
@@ -836,8 +871,8 @@
       </article>
       <article class="otro reveal" data-otro="marchigue">
         <figure class="otro-art otro-foto" data-otro-art>
-          <img src="assets/img/zona-marchigue-700.webp" srcset="assets/img/zona-marchigue-700.webp 700w, assets/img/zona-marchigue-1200.webp 1200w" sizes="(min-width: 900px) 260px, (min-width: 560px) 40vw, 100vw" width="1200" height="595" loading="lazy" decoding="async" alt="Viñedos y lomajes en el valle de Colchagua" style="object-position: 45% 50%">
-          <figcaption><span>Viñedos del valle de Colchagua</span><a href="https://commons.wikimedia.org/wiki/File:Vi%C3%B1a_Montes_(20348984418).jpg" target="_blank" rel="noopener">Foto: Tjeerd Wiersma · CC BY 2.0</a></figcaption>
+          <img src="assets/img/tour-marchigue-800.webp" srcset="assets/img/tour-marchigue-800.webp 800w, assets/img/tour-marchigue-1600.webp 1600w" sizes="(min-width: 900px) 260px, (min-width: 560px) 40vw, 100vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Vista aérea de la parcelación de Marchigüe y su entorno" style="object-position: 35% 60%">
+          <figcaption><span>Vista aérea de la parcela</span></figcaption>
         </figure>
         <div class="otro-b">
           <p class="otro-meta">O'Higgins · Valle de Colchagua</p>

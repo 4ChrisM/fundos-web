@@ -1839,8 +1839,8 @@
         ? '<img src="' + esc(f.src) + '"' + (f.src2x ? ' srcset="' + esc(f.src) + ' 700w, ' + esc(f.src2x) + ' 1200w" sizes="(min-width: 1200px) 1140px, 100vw"' : "") +
           ' width="' + (f.w || 1200) + '" height="' + (f.h || 800) + '" alt="' + esc(f.alt || "") + '" decoding="async" style="object-position:' + esc(f.pos || "50% 50%") + '">'
         : "";
-      var cred = f.credito ? '<p class="py-cred">' + (f.lugar ? "<span>" + esc(f.lugar) + "</span>" : "") +
-        (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener">Foto: ' + esc(f.credito) + "</a>" : "<span>Foto: " + esc(f.credito) + "</span>") + "</p>" : "";
+      var cred = f.lugar || f.credito ? '<p class="py-cred">' + (f.lugar ? "<span>" + esc(f.lugar) + "</span>" : "") +
+        (!f.credito ? "" : f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener">Foto: ' + esc(f.credito) + "</a>" : "<span>Foto: " + esc(f.credito) + "</span>") + "</p>" : "";
       var stats = '<dl class="py-stats">' +
         (d0 ? "<div><dt>Desde</dt><dd>" + clp(d0) + "</dd></div>" : "") +
         "<div><dt>Disponibles</dt><dd>" + disp + " <small>de " + p.lotes.length + "</small></dd></div>" +
@@ -1924,6 +1924,46 @@
     select(lista[0].id);
     fromHash();
     sec.hidden = false;
+  }
+
+  /* =============================================================
+     Formulario de la portada de Puerto Varas: pocos datos, el mensaje se revisa y se envía por WhatsApp
+     ============================================================= */
+  function initPvLead() {
+    var form = $("[data-pv-lead]");
+    if (!form) return;
+    var p = proyecto(B.destacado), done = $("[data-pv-lead-done]", form), wa = $("[data-pv-lead-wa]", form);
+    var el = form.elements;
+    var rules = {
+      nombre: function (v) { return v.trim().length >= 2; },
+      telefono: function (v) { var d = v.replace(/\D/g, ""); return d.length >= 8 && d.length <= 15; },
+      correo: function (v) { v = v.trim(); return !v || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); },
+      acepto: function (_, i) { return i.checked; }
+    };
+    function check(n) {
+      var i = el[n], ok = rules[n](i.value || "", i), err = $('[data-err="' + n + '"]', form);
+      i.setAttribute("aria-invalid", ok ? "false" : "true");
+      if (err) { err.id = err.id || "pl-err-" + n; err.classList.toggle("is-shown", !ok); if (ok) i.removeAttribute("aria-describedby"); else i.setAttribute("aria-describedby", err.id); }
+      return ok;
+    }
+    Object.keys(rules).forEach(function (n) {
+      el[n].addEventListener(el[n].type === "checkbox" ? "change" : "input", function () { if (el[n].getAttribute("aria-invalid") === "true") check(n); });
+    });
+    function inert(on) { form.classList.toggle("is-done", on); [].forEach.call(form.children, function (ch) { if (ch !== done) ch.inert = on; }); }
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var bad = Object.keys(rules).filter(function (n) { return !check(n); });
+      if (bad.length) { el[bad[0]].focus(); return; }
+      var correo = el.correo.value.trim();
+      var msg = "Hola Fundos, soy " + el.nombre.value.trim() + ". Quiero recibir el plano de disponibilidad y la lista de precios de lanzamiento de Fundos de " + (p ? p.nombre : "Puerto Varas") + "." +
+        " Mi teléfono: " + el.telefono.value.trim() + "." + (correo ? " Mi correo: " + correo + "." : "");
+      wa.href = waHref(msg);
+      $("[data-pv-lead-msg]", form).textContent = msg;
+      done.hidden = false;
+      inert(true);
+      done.focus();
+    });
+    $("[data-pv-lead-edit]", form).addEventListener("click", function () { done.hidden = true; inert(false); el.nombre.focus(); });
   }
 
   /* =============================================================
@@ -2687,6 +2727,7 @@
     safe(initCompra, "initCompra");
     safe(initSellers, "initSellers");
     safe(initPV, "initPV");
+    safe(initPvLead, "initPvLead");
     safe(initOffscreen, "initOffscreen");
     $$('input[type="range"]').forEach(paintRange);
   }

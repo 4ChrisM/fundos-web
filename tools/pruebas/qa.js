@@ -43,7 +43,7 @@ async function page(browser, w, h, mob) {
   await d.evaluate(() => document.querySelector("[data-d-reserve]").click()); await W(1500);
   out.intent = await d.evaluate(() => { const b = document.querySelector("[data-visit-intent]"); return [b.hidden, b.textContent.trim()]; });
   await d.fill("#v-nombre", "Ana"); await d.fill("#v-telefono", "+56 9 1111 2222");
-  await d.evaluate(() => { const c = document.querySelector('[name="acepto"]'); if (!c.checked) c.click(); document.querySelector(".visit-form [type=submit]").click(); }); await W(500);
+  await d.evaluate(() => { const c = document.querySelector('#visita [name="acepto"]'); if (!c.checked) c.click(); document.querySelector(".visit-form [type=submit]").click(); }); await W(500);
   out.reserveMsg = await d.evaluate(() => [document.querySelector("[data-visit-msg]").textContent, document.querySelector("[data-visit-note]").textContent]);
   // enlace a lote inexistente
   await d.goto(B + "#lote-marchigue-99", { waitUntil: "networkidle" }); await W(1200);
