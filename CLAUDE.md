@@ -41,6 +41,14 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   "Cotizar" (precarga el formulario de visita) y "Ver lotes". El plano de Puerto Varas (ancho, `.plan.is-wide`) va con
   el detalle a la derecha y baja de alto (`layoutPlan`); el panel toma el alto del plano y muestra 3 lotes más baratos. Las pruebas usan `tools/pruebas/_vista.js` (`clasica()` deja
   la página como antes: pestaña Proyectos con el plano en Malalcahuello).
+- **Conoce cada proyecto** (`#conoce`, pestaña Proyectos, `initFichas` en `main.js`): un apartado por proyecto, más
+  chico que la pestaña Puerto Varas (foto de portada con crédito, desde/disponibles/superficie/reserva, características,
+  "Cerca de tu parcela" con enlace al mapa del entorno, "Ver lotes", "Cotizar", 360° y video). Se arma **solo desde el
+  manifiesto** (`foto`, `caracteristicas` con `icono` = `<symbol id="i-…">`, `descripcion`, `cercanias`, `tour`, `video`,
+  `entorno`): un proyecto nuevo aparece en el selector sin tocar HTML. El cliente no quiere una pestaña por proyecto
+  (vendrán muchos): el selector es una franja que se desliza. El destacado no se repite (su botón lleva a su pestaña).
+  Enlace directo `#proyecto-ID` (abre la pestaña y elige el proyecto); "Conocer el proyecto" de las tarjetas y de "otros
+  proyectos" lleva ahí. Reemplazó la antigua ficha en ventana (`#proyecto`, `data-open-project`). Sin JavaScript no se ve.
 - `index.html` todo el contenido (se lee sin JS) · `styles.css` tokens del manual + estilos · `main.js` módulos IIFE
   (`initPlan`, `initTour`, `initSim`, `initVisit`, `initSellers`, `initVideo`, `initCompra`, …) aislados con `safe()`.
 - `lib/manifest.js` **único lugar de datos**: contacto, proyectos, lotes (`[n, categoría, estado]`), categorías de
@@ -59,7 +67,7 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
     rutas y sus `originales/`) y escriben `lib/entorno-ID.js` y `assets/entorno/ID/`. Se abren con
     `entorno.html?p=ID` (lista blanca en el cargador al final de `entorno.html`; sin `p` es Puerto Varas) y la llave
     `pagina` pone marca, bajada, texto y enlace de vuelta. En el sitio: `entorno` del proyecto en el manifiesto
-    (botón de la ficha) y enlaces "Descubre el entorno" en las tarjetas de proyectos y de "otros proyectos".
+    (apartado "Conoce cada proyecto") y enlaces "Descubre el entorno" en las tarjetas de proyectos y de "otros proyectos".
     La coordenada que dio el cliente para **Malalcahuello está en el sector Lolén (comuna de Lonquimay)**, a 20 min de
     Lonquimay y 50 min del pueblo de Malalcahuello; el mapa incluye el pueblo y el volcán Batea Mahuida (pedido del
     cliente). En Marchigüe el nombre del sector no está confirmado. Todos los textos de lugares de estos dos mapas

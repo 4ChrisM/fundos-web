@@ -13,7 +13,7 @@ Se corren desde una carpeta temporal porque guardan capturas (`ux/*.png`). Cada 
 
 | Archivo | Qué verifica |
 |---|---|
-| `interacciones.js` | Recorrido general: panel del lote, favoritos, filtros, lista, buscador, ficha de proyecto, simulador, formulario, enlaces `#lote-…`, teclado y hoja inferior en celular |
+| `interacciones.js` | Recorrido general: panel del lote, favoritos, filtros, lista, buscador, apartado "Conoce cada proyecto", simulador, formulario, enlaces `#lote-…`, teclado y hoja inferior en celular |
 | `plano.js` | Plano en celular y escritorio: hoja inferior, chips de precio, teclado, tooltip, favoritos, lista |
 | `flujos.js` | Buscador → plano, sin resultados, mensajes de WhatsApp, simulador con lote |
 | `qa.js` | Correcciones de la QA final: foco sin saltos, panel fijo, tooltip, zoom con teclado, reserva, encuadre de chips, hoja sin desplazar la página, teléfono horizontal |

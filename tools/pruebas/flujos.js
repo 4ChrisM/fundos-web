@@ -27,10 +27,10 @@ const B = "http://127.0.0.1:8765/";
   await d.evaluate(() => document.querySelector("#recorrido").scrollIntoView({ behavior: "instant" }));
   await d.click("[data-tour-visit]"); await d.waitForTimeout(300);
   const msg1 = await d.inputValue("#v-mensaje");
-  await d.evaluate(() => document.querySelector("#proyectos").scrollIntoView({ behavior: "instant" }));
-  await d.click('[data-open-project="puerto-varas"]'); await d.waitForTimeout(500);
-  out.dialogFacts = await d.evaluate(() => document.querySelector("[data-pd-facts]").textContent);
-  await d.click('[data-act="visita"]'); await d.waitForTimeout(500);
+  await d.evaluate(() => document.querySelector("#conoce").scrollIntoView({ behavior: "instant" }));
+  await d.click('[data-py-tab="marchigue"]'); await d.waitForTimeout(300);
+  out.fichaStats = await d.evaluate(() => document.querySelector(".py-stats").textContent);
+  await d.click('[data-py-act="cotizar"]'); await d.waitForTimeout(500);
   out.stale = { before: msg1, after: await d.inputValue("#v-mensaje"), proyecto: await d.inputValue("#v-proyecto") };
   // mensaje de WhatsApp
   await d.fill("#v-nombre", "Ana"); await d.fill("#v-telefono", "+56 9 1111 2222");

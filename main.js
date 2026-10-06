@@ -123,6 +123,7 @@
       if (!el && /^lote-/.test(id)) el = $("#plano");
       if (!el && /^recorrido-/.test(id)) el = $("#recorrido");
       if (!el && /^equipo-\d+$/.test(id)) el = $("#nosotros");
+      if (!el && /^proyecto-/.test(id)) el = $("#conoce");
       return el;
     }
     function vistaPara(hash) {
@@ -329,7 +330,7 @@
     $$(".project[data-project]").forEach(function (card) {
       var p = proyecto(card.getAttribute("data-project"));
       if (!p) return;
-      $$("[data-goto-plan], [data-open-project], .art-360", card).forEach(function (a) {
+      $$('[data-goto-plan], .art-360, a[href^="#proyecto-"], a[href="#puerto-varas"]', card).forEach(function (a) {
         if (!$(".sr-only", a)) a.insertAdjacentHTML("beforeend", '<span class="sr-only"> de ' + esc(p.nombre) + "</span>");
       });
     });
@@ -1490,7 +1491,7 @@
     document.addEventListener("click", function (e) {
       if (e.defaultPrevented) return;
       var a = e.target.closest && e.target.closest('a[href="#plano"]');
-      if (!a || a.hasAttribute("data-open-project")) return;
+      if (!a) return;
       e.preventDefault();
       landPlan();
     });
@@ -1809,63 +1810,120 @@
   }
 
   /* =============================================================
-     Ficha de proyecto (dialog)
+     Conoce cada proyecto (pestaña Proyectos): un apartado por proyecto, armado desde el manifiesto.
+     Selector que crece con los proyectos; enlace directo #proyecto-ID. El destacado tiene su pestaña.
      ============================================================= */
-  function initDialog() {
-    var dlg = $("[data-pdialog]");
-    if (!dlg || typeof dlg.showModal !== "function") return; // sin soporte: los enlaces navegan normal
-    var art = $("[data-pd-art]", dlg), logo = $("[data-pd-logo]", dlg);
-    var f = {
-      meta: $("[data-pd-meta]", dlg), title: $("[data-pd-title]", dlg), desc: $("[data-pd-desc]", dlg),
-      list: $("[data-pd-list]", dlg), near: $("[data-pd-near]", dlg), note: $("[data-pd-near-note]", dlg),
-      map: $("[data-pd-map]", dlg), actions: $("[data-pd-actions]", dlg)
-    };
-    var check = '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>';
-    var arrow = '<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg>';
+  function initFichas() {
+    var sec = $("[data-py]");
+    if (!sec) return;
+    var tabs = $("[data-py-tabs]", sec), panel = $("[data-py-panel]", sec);
+    var lista = (B.proyectos || []).filter(function (p) { return p.id !== B.destacado && p.estado !== "oculto"; });
+    if (!lista.length) return;
+    var dest = proyecto(B.destacado), cur = "";
+    var ico = function (n, cls) { return '<svg class="i' + (cls ? " " + cls : "") + '" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; };
 
-    function open(id) {
-      var p = proyecto(id);
-      if (!p) return;
-      var src = $('.project[data-project="' + id + '"] .project-art svg');
-      art.innerHTML = "";
-      if (src) art.appendChild(src.cloneNode(true));
-      if (logo) {
-        logo.hidden = !p.logo;
-        if (p.logo) { logo.src = p.logo; logo.alt = "Fundos de " + p.nombre; }
-      }
-      f.meta.textContent = p.region + " · " + p.zona;
-      f.title.textContent = p.nombre;
-      f.desc.textContent = p.descripcion;
-      f.list.innerHTML = (p.destacados || []).map(function (x) { return "<li>" + check + "<span>" + esc(x) + "</span></li>"; }).join("");
-      f.near.innerHTML = (p.cercanias || []).map(function (c) { return "<li><span>" + esc(c[0]) + "</span><span>" + esc(c[1]) + "</span></li>"; }).join("");
-      var facts = $("[data-pd-facts]", dlg);
-      if (facts) facts.innerHTML = p.lotes.length
-        ? "<span>Desde <b>" + clp(desde(p)) + "</b></span><span><b>" + disponibles(p).length + "</b> de " + p.lotes.length + " disponibles</span><span>Parcelas de <b>" + m2(p.lotes[0].m2) + "</b></span><span>Reserva <b>" + clp(RESERVA) + "</b></span>"
+    tabs.innerHTML = lista.map(function (p) {
+      var f = p.foto || {};
+      return '<button type="button" role="tab" id="py-tab-' + p.id + '" aria-controls="py-panel" aria-selected="false" tabindex="-1" data-py-tab="' + p.id + '">' +
+        (f.src ? '<img src="' + esc(f.src) + '" alt="" width="56" height="56" loading="lazy" decoding="async" style="object-position:' + esc(f.pos || "50% 50%") + '">' : '<span class="py-tab-dot" aria-hidden="true"></span>') +
+        '<span><strong>' + esc(p.nombre) + '</strong><small>' + esc(p.region) + '</small></span></button>';
+    }).join("") + (dest ? '<a class="py-tab-dest" href="#puerto-varas">' + ico("sparkle") + '<span><strong>' + esc(dest.nombre) + '</strong><small>Ver su pestaña</small></span></a>' : "");
+
+    function tiempo(t) {
+      var x = String(t).split(" · ");
+      return x.length > 1 ? "<b>" + esc(x[1]) + "</b><small>" + esc(x[0]) + "</small>" : "<b>" + esc(t) + "</b>";
+    }
+    function render(p) {
+      var f = p.foto || {}, d0 = desde(p), disp = disponibles(p).length;
+      var hero = f.src
+        ? '<img src="' + esc(f.src) + '"' + (f.src2x ? ' srcset="' + esc(f.src) + ' 700w, ' + esc(f.src2x) + ' 1200w" sizes="(min-width: 1200px) 1140px, 100vw"' : "") +
+          ' width="' + (f.w || 1200) + '" height="' + (f.h || 800) + '" alt="' + esc(f.alt || "") + '" decoding="async" style="object-position:' + esc(f.pos || "50% 50%") + '">'
         : "";
-      f.note.textContent = p.cercaniasNota || "";
-      f.map.href = p.mapa || "#";
-      f.actions.innerHTML = '<a class="btn btn-dark" href="#plano" data-act="plano">Ver lotes disponibles' + arrow + '</a><a class="btn btn-line" href="#visita" data-act="visita">Agendar una visita</a>';
-      if (p.video) f.actions.insertAdjacentHTML("beforeend", '<button class="btn btn-line" type="button" data-act="video"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>Ver video</button>');
-      if (p.tour) f.actions.insertAdjacentHTML("beforeend", '<a class="btn btn-line" href="#recorrido" data-act="tour"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrido 360°</a>');
-      if (p.entorno) f.actions.insertAdjacentHTML("beforeend", '<a class="btn btn-line" href="' + esc(p.entorno) + '"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>Descubre el entorno</a>');
-      $$("[data-act]", f.actions).forEach(function (a) {
+      var cred = f.credito ? '<p class="py-cred">' + (f.lugar ? "<span>" + esc(f.lugar) + "</span>" : "") +
+        (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener">Foto: ' + esc(f.credito) + "</a>" : "<span>Foto: " + esc(f.credito) + "</span>") + "</p>" : "";
+      var stats = '<dl class="py-stats">' +
+        (d0 ? "<div><dt>Desde</dt><dd>" + clp(d0) + "</dd></div>" : "") +
+        "<div><dt>Disponibles</dt><dd>" + disp + " <small>de " + p.lotes.length + "</small></dd></div>" +
+        "<div><dt>Parcelas</dt><dd>" + m2(p.lotes.length ? p.lotes[0].m2 : 5000) + "</dd></div>" +
+        "<div><dt>Reserva</dt><dd>" + clp(RESERVA) + "</dd></div></dl>";
+      var cars = p.caracteristicas || (p.destacados || []).map(function (t) { return { icono: "check", titulo: t }; });
+      var why = '<ul class="py-why">' + cars.map(function (c) {
+        return "<li>" + ico(c.icono || "check") + "<div><h4>" + esc(c.titulo) + "</h4>" + (c.texto ? "<p>" + esc(c.texto) + "</p>" : "") + "</div></li>";
+      }).join("") + "</ul>";
+      var near = (p.cercanias || []).length ? '<div class="py-near"><h4>Cerca de tu parcela</h4><ul>' + p.cercanias.map(function (c) {
+        return "<li>" + tiempo(c[1]) + "<span>" + esc(c[0]) + "</span></li>";
+      }).join("") + "</ul>" + (p.cercaniasNota ? "<p>" + esc(p.cercaniasNota) + "</p>" : "") +
+        (p.entorno ? '<a class="py-near-map" href="' + esc(p.entorno) + '">' + ico("compass") + "Explorar el mapa del entorno</a>" : "") + "</div>" : "";
+      var acts = '<div class="py-acts">' +
+        '<a class="btn btn-gold" href="#plano" data-py-act="plano">Ver lotes disponibles' + ico("arrow", "i-go") + "</a>" +
+        '<a class="btn btn-ghost" href="#visita" data-py-act="cotizar">' + ico("send") + "Cotizar " + esc(p.nombre) + "</a>" +
+        (p.tour ? '<a class="btn btn-ghost" href="#recorrido" data-py-act="tour">' + ico("360") + "Recorrido 360°</a>" : "") +
+        (p.video ? '<button class="btn btn-ghost" type="button" data-py-act="video">' + ico("play") + "Ver video</button>" : "") +
+        "</div>";
+      panel.innerHTML =
+        '<article class="py" aria-labelledby="py-t-' + p.id + '">' +
+          '<div class="py-hero">' + hero + '<div class="py-hero-in"><p class="kicker">' + esc(p.region + " · " + p.zona) + '</p>' +
+            '<h3 id="py-t-' + p.id + '">Fundos <em>' + esc(p.nombre) + "</em></h3>" +
+            (p.descripcion ? '<p class="py-desc">' + esc(p.descripcion) + "</p>" : "") + "</div>" + cred + "</div>" +
+          stats +
+          '<div class="py-body">' + why + near + "</div>" + acts +
+        "</article>";
+      $$("[data-py-act]", panel).forEach(function (a) {
         a.addEventListener("click", function (e) {
-          var act = a.getAttribute("data-act");
+          var act = a.getAttribute("data-py-act");
           if (act === "plano") Plan.apply({ id: p.id, soloDisponibles: true });
-          if (act === "tour") { e.preventDefault(); dlg.close(); Tour.open(p.id, true); return; }
-          if (act === "video") { dlg.close(); Video.open(p.id); return; }
-          if (act === "visita") Visit.prefill({ proyecto: p.nombre, mensaje: "" });
-          dlg.close();
+          if (act === "cotizar") Visit.prefill({ proyecto: p.nombre, mensaje: "Quiero cotizar una parcela en " + p.nombre + ": precios, disponibilidad y formas de pago.", scroll: true });
+          if (act === "tour") { e.preventDefault(); Tour.open(p.id, true); }
+          if (act === "video") Video.open(p.id);
         });
       });
-      dlg.showModal();
-      dlg.scrollTop = 0;
     }
-    $$("[data-open-project]").forEach(function (a) {
-      a.addEventListener("click", function (e) { e.preventDefault(); open(a.getAttribute("data-open-project")); });
+    function select(id, focus) {
+      var p = proyecto(id);
+      if (!p || lista.indexOf(p) < 0) p = lista[0];
+      if (p.id !== cur) { cur = p.id; render(p); }
+      $$("[data-py-tab]", tabs).forEach(function (b) {
+        var on = b.getAttribute("data-py-tab") === p.id;
+        b.setAttribute("aria-selected", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+        if (on && focus) b.focus();
+      });
+      panel.setAttribute("aria-labelledby", "py-tab-" + p.id);
+    }
+    $$("[data-py-tab]", tabs).forEach(function (b, i, all) {
+      b.addEventListener("click", function () {
+        select(b.getAttribute("data-py-tab"));
+        try { history.replaceState(null, "", "#proyecto-" + cur); } catch (x) { /* marco sin historial */ }
+      });
+      b.addEventListener("keydown", function (e) {
+        var k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key], j = e.key === "Home" ? 0 : e.key === "End" ? all.length - 1 : k ? (i + k + all.length) % all.length : -1;
+        if (j < 0) return;
+        e.preventDefault();
+        all[j].click();
+        all[j].focus();
+      });
     });
-    $("[data-pd-close]", dlg).addEventListener("click", function () { dlg.close(); });
-    dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+    function fromHash() {
+      var m = /^#proyecto-(.+)$/.exec(location.hash);
+      if (m) select(decodeURIComponent(m[1]));
+    }
+    // Los enlaces #proyecto-ID eligen su proyecto antes de que la página salte al apartado
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#proyecto-"]');
+      if (a) select(a.getAttribute("href").slice(10));
+    }, true);
+    // #proyecto-ID no es un elemento: el salto al apartado lo hace este módulo
+    window.addEventListener("hashchange", function () {
+      if (!/^#proyecto-/.test(location.hash)) return;
+      fromHash();
+      window.requestAnimationFrame(function () {
+        var y = window.scrollY + sec.getBoundingClientRect().top - navBottomPx() - 8;
+        window.scrollTo({ top: Math.max(0, y), behavior: reduced ? "auto" : "smooth" });
+      });
+    });
+    select(lista[0].id);
+    fromHash();
+    sec.hidden = false;
   }
 
   /* =============================================================
@@ -2599,6 +2657,7 @@
     window.__fundosBoot = true;
     document.documentElement.classList.add("js");
     safe(initContact, "initContact");
+    safe(initFichas, "initFichas");
     safe(initVistas, "initVistas");
     safe(initNav, "initNav");
     safe(initReveals, "initReveals");
@@ -2610,7 +2669,6 @@
     safe(initTour, "initTour");
     safe(initVideo, "initVideo");
     safe(initFinder, "initFinder");
-    safe(initDialog, "initDialog");
     safe(initMobileBar, "initMobileBar");
     safe(initFaq, "initFaq");
     safe(initCompra, "initCompra");

@@ -69,13 +69,13 @@ const { vista, proyecto, clasica } = require("./_vista");
     await page.click("#plano [data-tour-open]");
     await page.waitForTimeout(2500);
     console.log("from plan", await st(), await page.$eval("[data-tour-name]", e => e.textContent));
-    // Desde la ficha del proyecto
-    await page.evaluate(() => document.querySelector("#proyectos").scrollIntoView({ behavior: "instant" }));
-    await page.click('[data-open-project="malalcahuello"]');
-    await page.waitForTimeout(500);
-    await page.click('[data-act="tour"]');
+    // Desde el apartado "Conoce cada proyecto"
+    await page.evaluate(() => document.querySelector("#conoce").scrollIntoView({ behavior: "instant" }));
+    await page.click('[data-py-tab="malalcahuello"]');
+    await page.waitForTimeout(300);
+    await page.click('[data-py-act="tour"]');
     await page.waitForTimeout(2500);
-    console.log("from dialog", await st(), await page.$eval("[data-tour-name]", e => e.textContent), "dialog open", await page.$eval("#proyecto", d => d.open));
+    console.log("from ficha", await st(), await page.$eval("[data-tour-name]", e => e.textContent));
     // Ver lotes desde el recorrido
     await page.click("[data-tour-plan]");
     await page.waitForTimeout(1200);
