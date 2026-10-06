@@ -109,6 +109,11 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
     no deja incrustarlo (CSP) o no carga en 15 s, ofrece abrirlo aparte. El proxy de la nube bloquea netlify: probar
     con `page.route` que responda una página simulada.
     Revisión: `tools/pruebas/entorno.js` (los 17 lugares en 1920, 1440, 1280, 1100, 390, 320 y 844×390; `MIN=1` con paneles minimizados).
+- Fotos de las tarjetas de "otros proyectos" (`assets/img/zona-*`, 700 y 1200 px): de Wikimedia Commons con crédito
+  en la foto (obligatorio): Malalcahuello = volcán Lonquimay y araucarias en la Reserva Malalcahuello (Krzysztof Ziarnek,
+  CC BY 4.0); Marchigüe = viñedos de Viña Montes, valle de Colchagua (Tjeerd Wiersma, CC BY 2.0; no es Marchigüe mismo,
+  por eso dice "valle de Colchagua"). Reemplazar por fotos propias del cliente cuando las tenga. La red de la nube no llega
+  a Commons: se bajaron con un flujo temporal de GitHub Actions (rama `claude/amazing-fermi-knnnar`, ya borrado).
 - `assets/img` fotos y logos (WebP) · `assets/video` saludo del equipo (MP4 H.264 + WebM de respaldo + portada) ·
   `assets/fonts` Cormorant Garamond y Mulish autoalojadas.
 
