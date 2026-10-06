@@ -2519,7 +2519,7 @@
       var o = proyecto(card.getAttribute("data-otro"));
       if (!o) return;
       var d0 = desde(o), src = $('.project[data-project="' + o.id + '"] .project-art svg'), art = $("[data-otro-art]", card);
-      if (src && art) art.appendChild(src.cloneNode(true));
+      if (src && art && !$("img", art)) art.appendChild(src.cloneNode(true));
       $$("[data-otro-disp]", card).forEach(function (el) { el.textContent = disponibles(o).length; });
       if (d0) $$("[data-otro-desde]", card).forEach(function (el) { el.textContent = clp(d0); });
       if (o.resumen) $$("[data-otro-txt]", card).forEach(function (el) { el.textContent = o.resumen; });
