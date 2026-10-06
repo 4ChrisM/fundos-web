@@ -48,7 +48,6 @@ Todo lo editable está en `lib/manifest.js`.
 
 Publicada en https://fundos.biplot.cl/ (cada cambio entra por un pull request a `main`).
 
-- [ ] **Activar la redirección desde la dirección antigua:** al 6-oct-2026 GitHub Pages aún no emitía el certificado HTTPS de `fundos.biplot.cl` (Chrome: `ERR_CERT_COMMON_NAME_INVALID`), así que se deshizo la redirección (Biplot/biplot#48) y la propuesta sigue también en `biplot.cl/propuestas/fundos-inmobiliaria/`. Cuando https://fundos.biplot.cl/ cargue con candado ("Enforce HTTPS" marcado en Settings → Pages; si no se emite, borrar y volver a guardar el dominio), revertir en `Biplot/biplot` el commit `890a5fb` (PR #48): vuelve la versión que solo redirige. Hasta entonces, cambiar la web **solo aquí**.
 
 - [ ] **Conectar con Fundos 360° (`4ChrisM/fundos-os`):** que el formulario de visita cree el lead en Fundos 360° (además de abrir WhatsApp) y que el plano lea la disponibilidad real de las parcelas. El webhook actual (`/api/leads/webhook`) pide una clave secreta y no sirve para una página pública: hay que agregar en Fundos 360° una ruta pública para la web (p. ej. `/api/leads/web`) con campo trampa, límite de envíos y solo desde fundos.biplot.cl, que cree el lead con origen "Sitio web", proyecto y parcela, en "pendiente de llamado"; y otra de solo lectura con la disponibilidad por proyecto.
 
