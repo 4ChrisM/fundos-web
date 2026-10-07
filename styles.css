@@ -1880,20 +1880,6 @@ html:not(.js) .tc-tabs { display: none; }
 .sellers-head .team-faces { margin: 0; font-size: .92rem; }
 .sellers-head .faces-lg img { width: 38px; height: 38px; border-width: 2px; }
 .sellers-head .faces-lg img + img { margin-left: -10px; }
-.sellers-nav { display: none; gap: .5rem; }
-.sellers-arrow[data-sellers-prev] .i { transform: scaleX(-1); }
-
-/* Equipo en carrusel horizontal (una fila, se desliza) */
-.sellers.sellers { display: grid; grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: min(72vw, 260px); gap: .9rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 2px; padding: 4px 2px 14px; margin-inline: -2px; scrollbar-width: thin; overscroll-behavior-x: contain; }
-.sellers > li { scroll-snap-align: start; }
-.sellers .member-cta { grid-column: auto; min-width: 0; align-content: end; }
-.sellers .member-cta h4 { font-size: clamp(1.5rem, 2.2vw, 1.9rem); }
-.sellers .member-cta p { font-size: .9rem; }
-@media (min-width: 960px) {
-  .sellers.sellers { grid-auto-columns: calc((100% - 3 * 1.1rem) / 4.4); gap: 1.1rem; }
-  .sellers-nav { display: flex; }
-}
-@media (min-width: 720px) and (max-width: 959px) { .sellers.sellers { grid-auto-columns: calc((100% - 2 * .9rem) / 3.3); } }
 
 /* Proyectos en carrusel en el celular (antes 3 tarjetas apiladas) */
 @media (max-width: 719px) {
@@ -1910,7 +1896,7 @@ html:not(.js) .tc-tabs { display: none; }
 }
 .nav::after { content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: calc(var(--avance, 0) * 100%); background: var(--gold); opacity: 0; transition: opacity .3s; pointer-events: none; }
 .nav.is-solid::after { opacity: .9; }
-@media (prefers-reduced-motion: reduce) { .sellers.sellers, .projects { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) { .projects { scroll-behavior: auto; } }
 
 /* Computador: leyenda del plano en una franja baja para que la herramienta completa quepa en la pantalla */
 @media (min-width: 960px) {
@@ -2258,3 +2244,36 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 /* Sin desenfoque disponible: el fondo se oscurece algo más para que se lea */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .pv-lead { background: rgba(10, 20, 14, .72); } }
 @media (prefers-reduced-motion: reduce) { .pv-lead { animation: none; } }
+
+/* ---------------- Equipo en galería ----------------
+   Computador: una fila de paneles; el que tiene el cursor (o el foco) se ensancha y muestra su saludo.
+   Celular y tablet: grilla de 2 o 3 columnas. La tarjeta "Conversemos" va en su propia fila. */
+.sellers.sellers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.sellers > li { min-width: 0; }
+.sellers.sellers .member-cta { grid-column: 1 / -1; }
+.sellers .member-cta h4 { font-size: clamp(1.5rem, 2.2vw, 1.9rem); }
+.sellers .member-cta p { font-size: .9rem; }
+.seller-short { display: none; }
+@media (min-width: 600px) { .sellers.sellers { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; } }
+@media (min-width: 960px) {
+  .sellers.sellers { display: flex; flex-wrap: wrap; gap: .7rem; }
+  .sellers > .seller { flex: 1 1 0; height: clamp(420px, 56vh, 540px); transition: flex-grow .65s var(--ease-out); }
+  .sellers > .seller:hover, .sellers > .seller:focus-within { flex-grow: 3.4; }
+  .sellers.sellers .member-cta { flex: 1 1 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .6rem 2rem; min-height: 0; padding: 1.2rem 1.6rem; }
+  .sellers.sellers .member-cta .faces { grid-row: span 2; margin: 0; }
+  .sellers.sellers .member-cta h4 { grid-column: 2; }
+  .sellers.sellers .member-cta p { grid-column: 2; margin: 0; }
+  .sellers.sellers .member-cta .btn { grid-column: 3; grid-row: 1 / span 2; }
+  .seller .seller-card { height: 100%; aspect-ratio: auto; }
+  .seller .seller-card img, .seller .seller-vid { object-position: 50% 22%; }
+  /* Angosto: solo el nombre corto en vertical; ensanchado: la ficha completa */
+  .seller-short { display: block; position: absolute; z-index: 1; left: 50%; bottom: 1.2rem; transform: translateX(-50%) rotate(180deg); writing-mode: vertical-rl; font: 600 1.35rem/1 var(--serif); color: var(--n050); white-space: nowrap; transition: opacity .3s; }
+  .seller-info { opacity: 0; transform: translateY(8px); transition: opacity .35s .1s, transform .45s .1s var(--ease-out); }
+  .seller-badge { width: 32px; height: 32px; padding: 0; justify-content: center; font-size: 0; gap: 0; }
+  .seller-badge .i { width: 13px; height: 13px; }
+  .seller:hover .seller-short, .seller:focus-within .seller-short { opacity: 0; }
+  .seller:hover .seller-info, .seller:focus-within .seller-info { opacity: 1; transform: none; }
+  .seller:hover .seller-badge, .seller:focus-within .seller-badge { width: auto; height: auto; padding: .32rem .7rem; gap: .35rem; font-size: .74rem; }
+  .seller-card:hover img { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .sellers > .seller, .seller-info { transition: none; } }
