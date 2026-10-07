@@ -127,6 +127,11 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   "Conoce cada proyecto" (`foto`; si alguna vez se usa una foto ajena, `credito` y `url` muestran el crédito). Antes
   hubo fotos de Wikimedia Commons; se reemplazaron por estas. Se arman con `tools/tour_fondo.py` (ver su encabezado). Los tours
   no se alcanzan desde la nube: las caras se bajaron con un flujo temporal de GitHub Actions, ya borrado.
+- **Vitrina para otros sitios** (`vitrina.html`, generada por `tools/vitrina_build.py` desde la sección `#entorno` de
+  `index.html`; volver a correrlo si esa sección cambia): la sección "El entorno" sola, para incrustarla con un
+  `<iframe>` (por ejemplo en Squarespace). Enlaces en pestaña nueva y avisa su alto con `postMessage({fundosVitrina})`.
+  Código para pegar en un Bloque de código de Squarespace: `docs/squarespace-vitrina.html` (con alto de respaldo si
+  el script no corre; los scripts en bloques de código requieren plan Business o superior).
 - `assets/img` fotos y logos (WebP) · `assets/video` saludo del equipo (MP4 H.264 + WebM de respaldo + portada) ·
   `assets/fonts` Cormorant Garamond y Mulish autoalojadas.
 
