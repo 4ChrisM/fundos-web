@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<script>if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add("embed");</script>
 <title>Descubre tu entorno · Fundos Puerto Varas</title>
 <meta name="description" content="Lo que rodea a Fundos Puerto Varas, en Alerce, Región de Los Lagos: volcanes, lagos, ciudades y servicios, con rutas por camino y tiempos estimados en auto desde tu parcela.">
 <meta property="og:type" content="website">
@@ -442,6 +443,19 @@ a { color: inherit; }
   .pin.home::before { animation: none; }
   .pin-c, .world img.detail, .star path { transition: none; }
 }
+
+/* ---------- Modo incrustado (entorno.html?embed=1, en un iframe de otro sitio) ----------
+   Sin barra superior, alto fijo (el iframe se ajusta al contenido: nada depende del alto de la ventana) y el
+   tour 360° dentro del escenario */
+html.embed { --top-h: 0px; }
+html.embed body { min-height: 0; }
+html.embed .top { display: none; }
+html.embed .map { height: 440px; min-height: 0; }
+html.embed .t360 { position: absolute; inset: 0; z-index: 40; }
+@media (min-width: 1100px) {
+  html.embed .stage { height: 720px; min-height: 0; }
+  html.embed .map { height: auto; }
+}
 </style>
 </head>
 <body>
@@ -590,6 +604,7 @@ a { color: inherit; }
   if (/^5690+$/.test(WA)) WA = "";   // número de ejemplo: el botón lleva al formulario de visita
   var reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var wide = window.matchMedia ? matchMedia("(min-width: 1100px)") : { matches: true };
+  var EMBED = document.documentElement.classList.contains("embed");
 
   var map = $("[data-map]"), world = $("[data-world]"), pinsBox = $("[data-pins]"), scapeBox = $("[data-scape]"), svg = $("[data-overlay]");
   var rCas = $("[data-r-casing]"), rLine = $("[data-r-line]"), rEnd = $("[data-r-end]"), rDot = $("[data-r-dot]"), rHalo = $("[data-r-halo]");
@@ -1057,7 +1072,7 @@ a { color: inherit; }
   });
   map.addEventListener("touchmove", function (e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
   map.addEventListener("wheel", function (e) {
-    if (!wide.matches && !(e.ctrlKey || e.metaKey)) { showHint("Para acercar, mantén Ctrl (⌘ en Mac) y usa la rueda"); return; }
+    if ((!wide.matches || EMBED) && !(e.ctrlKey || e.metaKey)) { showHint("Para acercar, mantén Ctrl (⌘ en Mac) y usa la rueda"); return; }
     e.preventDefault(); cancelAnimationFrame(raf); stopTour();
     world.classList.add("is-moving"); clearTimeout(wheelT); wheelT = setTimeout(function () { world.classList.remove("is-moving"); queueLabels(); }, 160);
     var p = mpos(e); zoomAt(p.x, p.y, Math.exp(-e.deltaY * (e.deltaMode ? .05 : .0022)));
@@ -1414,6 +1429,11 @@ a { color: inherit; }
     var mr = rect(map), inView = mr.bottom > 80 && mr.top < innerHeight - 80;
     var k = Math.min(kMax(), Math.max(V.k * 2.4, kMin() * 3)), f0 = free();
     var go = function () {
+      // Incrustado y angosto: el tour ocupa el lugar del mapa (el iframe es más alto que la pantalla)
+      var em = EMBED && !wide.matches;
+      t3.style.top = em ? Math.round(rect(map).top - rect(root).top) + "px" : "";
+      t3.style.height = em ? Math.round(map.offsetHeight) + "px" : "";
+      t3.style.bottom = em ? "auto" : "";
       t3.hidden = false; t3Inert(true);
       t3Clip(true, function () { $("[data-t360-x]").focus({ preventScroll: true }); });
     };
@@ -1464,6 +1484,9 @@ a { color: inherit; }
       var mr = rect(map), pr = rect(panel), cr = rect(card), zr = rect(zoomUi);
       l = pr.right + 16; r = cr.left - 16 - l >= 460 ? cr.left - 16 : zr.left - 16;
       t = Math.max(mr.top, 0) + 16; b = Math.min(mr.bottom, innerHeight) - 16;
+    } else if (EMBED) {
+      // Incrustado en un iframe alto: el video se abre sobre el mapa, donde está mirando la persona
+      var me = rect(map); l = 12; r = innerWidth - 12; t = me.top + 12; b = me.bottom - 12;
     } else { l = 12; r = innerWidth - 12; t = 12; b = innerHeight - 12; }
     var w = Math.min(r - l, 760, (b - t - bar) * ar), h = w / ar + bar;
     vp.style.width = Math.round(w) + "px";
@@ -1550,6 +1573,26 @@ a { color: inherit; }
   if (byId[h0]) select(h0, { ms: 0 }); else fitAll(0);
   if (h0 === "tour-360") openT360();   // enlace directo al tour: entorno.html#tour-360
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(queueLabels);
+})();
+</script>
+<script>
+// Modo incrustado: los enlaces que salen del mapa abren en otra pestaña y la página avisa su alto al sitio que la
+// contiene (postMessage {fundosEntorno: alto}) para que el iframe se ajuste
+(function () {
+  if (!document.documentElement.classList.contains("embed")) return;
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href]");
+    if (a && a.getAttribute("href").charAt(0) !== "#" && !a.target) a.target = "_blank";
+  }, true);
+  if (window.parent === window) return;
+  var last = 0;
+  function send() {
+    var h = Math.ceil(document.documentElement.getBoundingClientRect().height);
+    if (h !== last) { last = h; window.parent.postMessage({ fundosEntorno: h }, "*"); }
+  }
+  if ("ResizeObserver" in window) new ResizeObserver(send).observe(document.documentElement);
+  window.addEventListener("load", send);
+  send();
 })();
 </script>
 </body>
