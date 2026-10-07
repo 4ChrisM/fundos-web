@@ -1718,6 +1718,14 @@ h2 em { text-wrap: balance; }
 .seller-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; filter: saturate(.92); transition: transform .7s var(--ease-out); }
 .seller-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 20, 14, 0) 42%, rgba(10, 20, 14, .6) 66%, rgba(10, 20, 14, .95) 100%); }
 .seller-card:hover img { transform: scale(1.04); }
+/* Saludo al pasar el cursor: el video (recortado como la foto) aparece sobre ella */
+.seller-vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; opacity: 0; transition: opacity .35s var(--ease-out); pointer-events: none; }
+.seller-card.is-playing .seller-vid { opacity: 1; }
+.seller-card.is-playing .seller-badge { opacity: 0; }
+.seller-badge { transition: opacity .25s; }
+.seller-snd { position: absolute; z-index: 2; top: .7rem; left: .7rem; right: .7rem; display: flex; align-items: center; gap: .4rem; width: fit-content; padding: .35rem .7rem; border-radius: 999px; background: rgba(10, 20, 14, .8); font-size: .72rem; font-weight: 700; opacity: 0; transform: translateY(-4px); transition: opacity .25s, transform .25s; pointer-events: none; }
+.seller-snd .i { width: .9em; height: .9em; color: var(--gold); }
+.seller-card.is-muted .seller-snd { opacity: 1; transform: none; }
 .seller-card:focus-visible { outline: 3px solid var(--gold-ink); outline-offset: 3px; }
 .seller-info { position: absolute; z-index: 1; left: .95rem; right: .95rem; bottom: .85rem; display: grid; gap: .15rem; }
 .seller-info strong { font: 600 clamp(1.1rem, 1.6vw, 1.3rem)/1.1 var(--serif); }
@@ -1725,7 +1733,7 @@ h2 em { text-wrap: balance; }
 .seller-more { display: inline-flex; align-items: center; gap: .35rem; margin-top: .4rem; font-size: .84rem; font-weight: 700; color: var(--n050); }
 .seller-more .i { width: 1em; height: 1em; transition: transform .3s var(--ease-out); }
 .seller-card:hover .seller-more .i { transform: translateX(3px); }
-.seller-badge { position: absolute; z-index: 1; top: .7rem; left: .7rem; display: inline-flex; align-items: center; gap: .35rem; padding: .32rem .7rem; border-radius: 999px; background: rgba(10, 20, 14, .72); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); font-size: .74rem; font-weight: 700; }
+.seller-badge { position: absolute; z-index: 2; top: .7rem; left: .7rem; display: inline-flex; align-items: center; gap: .35rem; padding: .32rem .7rem; border-radius: 999px; background: rgba(10, 20, 14, .72); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); font-size: .74rem; font-weight: 700; }
 .seller-badge .i { width: .9em; height: .9em; color: var(--gold); }
 
 .sdialog {
