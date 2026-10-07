@@ -1,0 +1,18 @@
+<!-- Fundos Puerto Varas · Mapa interactivo del entorno (pegar en un Bloque de código de Squarespace) -->
+<style>
+  .fundos-mapa { width: 100%; max-width: 1600px; margin: 0 auto; }
+  .fundos-mapa iframe { display: block; width: 100%; height: 720px; border: 0; border-radius: 16px; background: #0A140E; }
+  @media (max-width: 1099px) { .fundos-mapa iframe { height: 1500px; } }
+</style>
+<div class="fundos-mapa">
+  <iframe src="https://fundos.biplot.cl/entorno.html?embed=1" title="Mapa del entorno de Fundos Puerto Varas" loading="lazy" allow="fullscreen; autoplay; gyroscope; accelerometer; xr-spatial-tracking" allowfullscreen></iframe>
+</div>
+<script>
+  // Ajusta el alto del iframe a su contenido (el mapa avisa su alto)
+  window.addEventListener("message", function (e) {
+    if (e.origin !== "https://fundos.biplot.cl" || !e.data || !e.data.fundosEntorno) return;
+    document.querySelectorAll(".fundos-mapa iframe").forEach(function (f) {
+      if (f.contentWindow === e.source) f.style.height = e.data.fundosEntorno + "px";
+    });
+  });
+</script>

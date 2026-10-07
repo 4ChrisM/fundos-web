@@ -132,6 +132,11 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `<iframe>` (por ejemplo en Squarespace). Enlaces en pestaña nueva y avisa su alto con `postMessage({fundosVitrina})`.
   Código para pegar en un Bloque de código de Squarespace: `docs/squarespace-vitrina.html` (con alto de respaldo si
   el script no corre; los scripts en bloques de código requieren plan Business o superior).
+  El **mapa interactivo** completo también se incrusta: `entorno.html?embed=1` (se combina con `p=`) quita la barra
+  superior, fija el alto (mapa 720 px en computador, 440 px en angosto) para que nada dependa del alto del iframe,
+  pide Ctrl para la rueda (la página de afuera sigue bajando), abre el video y el tour sobre el mapa en pantallas
+  angostas, abre en pestaña nueva los enlaces que salen del mapa y avisa su alto con `postMessage({fundosEntorno})`.
+  Código para Squarespace: `docs/squarespace-mapa.html`.
 - `assets/img` fotos y logos (WebP) · `assets/video` saludo del equipo (MP4 H.264 + WebM de respaldo + portada) ·
   `assets/fonts` Cormorant Garamond y Mulish autoalojadas.
 
