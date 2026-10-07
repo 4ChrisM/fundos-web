@@ -179,6 +179,13 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
 ## Decisiones tomadas con el cliente
 - Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la foto del equipo, que queda de respaldo.
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
+  Saludos en video (octubre 2026): Mari, Jeanette, Stefy y Elvys (grabados por el cliente en la misma oficina). Su foto
+  es un cuadro del mismo video (`assets/img/equipo-ID.webp`, cabeza y hombros) y `video.tarjeta` es el saludo con ese
+  mismo recorte: al pasar el cursor (computador) la foto se vuelve video con sonido; si el navegador aún no deja sonar,
+  parte en silencio con "Haz clic para verlo con sonido" y el clic abre la ficha con el saludo completo. Quienes no
+  tienen video quedan como estaban. **Marjorie Castellón salió del equipo** (pedido del cliente). Elvys aún sin
+  apellido ni presentación escrita. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
+  originales no van a `main`; se convierten con ffmpeg a MP4 + WebM con `loudnorm`).
   No suponer género ni cargos: hoy todos dicen "Equipo comercial" hasta tener los cargos reales.
 - Santo Domingo fuera de la propuesta. No bajar videos de internet: solo material propio del cliente.
 - Planos con líneas rectas como el masterplan. En computador la herramienta completa (proyectos, filtros, chips,

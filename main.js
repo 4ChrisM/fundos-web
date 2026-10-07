@@ -2424,6 +2424,58 @@
         '<span class="seller-more">Ver ficha' + arrow + '</span></span></button>';
       list.insertBefore(li, cta);
     });
+    // Saludo al pasar el cursor (computador): el video recortado como la foto reemplaza a la foto, con sonido.
+    // Si el navegador aún no deja sonar (nadie ha hecho clic en la página), parte en silencio y avisa.
+    var hoverOk = mm("(hover: hover) and (pointer: fine)"), vids = [];
+    function hoverVideo(card, g) {
+      var t = g.video.tarjeta, v = null, timer = 0, hint = null;
+      if (!t || reduced) return;
+      function stop() {
+        clearTimeout(timer);
+        card.classList.remove("is-playing", "is-muted");
+        if (v) { v.pause(); }
+      }
+      function start() {
+        if (!v) {
+          v = document.createElement("video");
+          [[t.mp4, "video/mp4"], [t.webm, "video/webm"]].forEach(function (x) {
+            if (!x[0]) return;
+            var so = document.createElement("source"); so.src = x[0]; so.type = x[1]; v.appendChild(so);
+          });
+          v.className = "seller-vid"; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto";
+          v.setAttribute("aria-hidden", "true"); v.tabIndex = -1;
+          v.addEventListener("ended", function () { card.classList.remove("is-playing", "is-muted"); });
+          card.insertBefore(v, card.firstChild.nextSibling);
+          hint = document.createElement("span");
+          hint.className = "seller-snd"; hint.setAttribute("aria-hidden", "true");
+          hint.innerHTML = '<svg class="i"><use href="#i-play"/></svg>Haz clic para verlo con sonido';
+          card.appendChild(hint);
+          vids.push(stop);
+        }
+        vids.forEach(function (f) { if (f !== stop) f(); });
+        try { v.currentTime = 0; } catch (x) { /* aún sin datos */ }
+        v.muted = false;
+        var go = function () { card.classList.add("is-playing"); };
+        var p = v.play();
+        if (p && p.then) p.then(go).catch(function () {
+          v.muted = true;
+          var q = v.play();
+          if (q && q.then) q.then(function () { go(); card.classList.add("is-muted"); }).catch(function () {});
+        }); else go();
+      }
+      card.addEventListener("pointerenter", function (e) {
+        if (e.pointerType !== "mouse" || !hoverOk.matches) return;
+        clearTimeout(timer); timer = setTimeout(start, 140);
+      });
+      card.addEventListener("pointerleave", stop);
+      // Clic mientras se ve el saludo: la ficha lo sigue mostrando completo y con sonido (el clic ya lo permite)
+      card.addEventListener("click", function () { card.dataset.saludo = card.classList.contains("is-playing") ? "1" : ""; stop(); });
+    }
+    gente.forEach(function (g, i) {
+      var card = $('[data-seller="' + i + '"]', list);
+      if (card && g.video) hoverVideo(card, g);
+    });
+
     // El scroll-snap se quedaba "pegado" a la tarjeta final al insertar las demás: volver al inicio
     list.scrollLeft = 0;
     requestAnimationFrame(function () { list.scrollLeft = 0; });
@@ -2453,7 +2505,7 @@
     }
     function photo(g) {
       media.innerHTML = '<img src="' + esc(g.foto) + '" alt="' + esc(g.nombre ? g.nombre + ", del equipo de Fundos" : "Integrante del equipo de Fundos Inmobiliaria") + '" width="600" height="750" decoding="async">' +
-        (g.video ? '<button type="button" class="sd-play" data-sd-play><span class="sd-play-dot" aria-hidden="true"><svg class="i"><use href="#i-play"/></svg></span>Ver su saludo<small>12 s · con sonido</small></button>' : "");
+        (g.video ? '<button type="button" class="sd-play" data-sd-play><span class="sd-play-dot" aria-hidden="true"><svg class="i"><use href="#i-play"/></svg></span>Ver su saludo<small>' + (g.video.dur ? Math.round(g.video.dur) + " s · " : "") + 'con sonido</small></button>' : "");
     }
     function playVideo(g) {
       var v = document.createElement("video");
@@ -2489,7 +2541,11 @@
     function open(i) { show(i); if (!dlg.open) dlg.showModal(); }
     list.addEventListener("click", function (e) {
       var b = e.target.closest("[data-seller]");
-      if (b) open(+b.getAttribute("data-seller"));
+      if (b) {
+        open(+b.getAttribute("data-seller"));
+        if (b.dataset.saludo === "1" && gente[cur].video) playVideo(gente[cur]);
+        b.dataset.saludo = "";
+      }
     });
     dlg.addEventListener("click", function (e) {
       if (e.target === dlg || e.target.closest("[data-sd-close]")) { dlg.close(); return; }
