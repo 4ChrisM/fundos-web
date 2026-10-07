@@ -137,6 +137,10 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   pide Ctrl para la rueda (la página de afuera sigue bajando), abre el video y el tour sobre el mapa en pantallas
   angostas, abre en pestaña nueva los enlaces que salen del mapa y avisa su alto con `postMessage({fundosEntorno})`.
   Código para Squarespace: `docs/squarespace-mapa.html`.
+- **Medición de visitas** (`lib/analitica.js`, cargado en `index.html`, `entorno.html` y `vitrina.html`): Google
+  Analytics 4 y/o Microsoft Clarity, solo si `analitica.ga4` / `analitica.clarity` del manifiesto tienen ID (vacío =
+  no se carga nada). Eventos con un solo escucha de clics: `generate_lead` (se abre WhatsApp desde un formulario),
+  `contacto_whatsapp`, `tour_360`, `ver_lotes`, `ver_entorno`; dentro de un iframe marca `incrustado`.
 - `assets/img` fotos y logos (WebP) · `assets/video` saludo del equipo (MP4 H.264 + WebM de respaldo + portada) ·
   `assets/fonts` Cormorant Garamond y Mulish autoalojadas.
 

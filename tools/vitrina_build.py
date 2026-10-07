@@ -38,6 +38,7 @@ pagina = f'''<!DOCTYPE html>
 </svg>
 {sec}
 <script src="lib/manifest.js?v={version}"></script>
+<script src="lib/analitica.js?v={version}"></script>
 <script src="main.js?v={version}"></script>
 <script>
   // Avisa el alto al sitio que incrusta esta página (el iframe se ajusta solo)
