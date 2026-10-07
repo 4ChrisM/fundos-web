@@ -2420,6 +2420,7 @@
       li.innerHTML = '<button type="button" class="seller-card" data-seller="' + i + '" aria-haspopup="dialog">' +
         '<img src="' + esc(g.foto) + '" alt="" width="600" height="750" loading="lazy" decoding="async">' +
         (g.video ? '<span class="seller-badge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>Saludo en video</span>' : "") +
+        '<span class="seller-short" aria-hidden="true">' + esc(corto(g)) + '</span>' +
         '<span class="seller-info"><strong>' + esc(titulo(g)) + '</strong>' + (g.nombre ? '<span>' + esc(sub(g)) + '</span>' : "") +
         '<span class="seller-more">Ver ficha' + arrow + '</span></span></button>';
       list.insertBefore(li, cta);
@@ -2476,17 +2477,7 @@
       if (card && g.video) hoverVideo(card, g);
     });
 
-    // El scroll-snap se quedaba "pegado" a la tarjeta final al insertar las demás: volver al inicio
-    list.scrollLeft = 0;
-    requestAnimationFrame(function () { list.scrollLeft = 0; });
 
-    // Flechas del carrusel (computador)
-    $$("[data-sellers-prev], [data-sellers-next]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        var card = $("li", list), step = card ? card.getBoundingClientRect().width + 16 : 260;
-        list.scrollBy({ left: (b.hasAttribute("data-sellers-next") ? 1 : -1) * step * 2, behavior: reduced ? "auto" : "smooth" });
-      });
-    });
 
     var dlg = $("[data-sdialog]");
     if (!dlg || typeof dlg.showModal !== "function") return;

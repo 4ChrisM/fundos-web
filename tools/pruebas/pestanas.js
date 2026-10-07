@@ -39,9 +39,11 @@ const { vista, proyecto, clasica } = require("./_vista");
     await p.screenshot({ path: `ux/tc-${tag}-nos.png` });
     r.nosH = await p.$eval("#nosotros", e => +(e.offsetHeight / innerHeight).toFixed(2));
     if (tag === "d") {
-      const before = await p.$eval("[data-sellers]", e => e.scrollLeft);
-      await p.click("[data-sellers-next]", { force: true }); await p.waitForTimeout(800);
-      r.sellersScroll = [before, await p.$eval("[data-sellers]", e => e.scrollLeft)];
+      // Galería del equipo: el panel con el cursor se ensancha (antes era un carrusel con flechas)
+      const ancho = () => p.$eval('[data-seller="1"]', e => Math.round(e.closest("li").getBoundingClientRect().width));
+      const before = await ancho();
+      await p.hover('[data-seller="1"]'); await p.waitForTimeout(900);
+      r.galeria = [before, await ancho()];
     }
     await vista(p, "proyectos");
     await p.evaluate(() => document.getElementById("proyectos").scrollIntoView());
