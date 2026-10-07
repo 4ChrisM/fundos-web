@@ -1,0 +1,18 @@
+<!-- Fundos Puerto Varas · El entorno (pegar en un Bloque de código de Squarespace) -->
+<style>
+  .fundos-vitrina { width: 100%; max-width: 1400px; margin: 0 auto; }
+  .fundos-vitrina iframe { display: block; width: 100%; height: 680px; border: 0; border-radius: 16px; background: #0A140E; }
+  @media (max-width: 959px) { .fundos-vitrina iframe { height: 1240px; } }
+</style>
+<div class="fundos-vitrina">
+  <iframe src="https://fundos.biplot.cl/vitrina.html" title="El entorno de Fundos Puerto Varas" loading="lazy" allow="fullscreen; autoplay"></iframe>
+</div>
+<script>
+  // Ajusta el alto del iframe a su contenido (la página de Fundos avisa su alto)
+  window.addEventListener("message", function (e) {
+    if (e.origin !== "https://fundos.biplot.cl" || !e.data || !e.data.fundosVitrina) return;
+    document.querySelectorAll(".fundos-vitrina iframe").forEach(function (f) {
+      if (f.contentWindow === e.source) f.style.height = e.data.fundosVitrina + "px";
+    });
+  });
+</script>
