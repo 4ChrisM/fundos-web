@@ -2679,6 +2679,8 @@
     // Construcciones genéricas: medidas por defecto, alto y estilo de volumen
     var TIPOS = [
       { id: "casa", nombre: "Casa", w: 12, h: 10, alto: 3.2, forma: "caja", muro: "#3A3833", techo: "#5B5751", ventanas: true, puerta: true },
+      { id: "casa2", nombre: "Casa de dos pisos", w: 10, h: 8, alto: 6, pisos: 2, forma: "caja", muro: "#E9E3D6", techo: "#4F4B45", ventanas: true, puerta: true, faja: "#8C6A44" },
+      { id: "piscina", nombre: "Piscina", w: 8, h: 4, alto: 0, forma: "piscina", cuenta: false },
       { id: "visitas", nombre: "Casa de visitas", w: 8, h: 6, alto: 2.9, forma: "caja", muro: "#CDBFA4", techo: "#5B5751", ventanas: true, puerta: true },
       { id: "quincho", nombre: "Quincho", w: 6, h: 5, alto: 2.7, forma: "pergola", muro: "#8A6A45", techo: "#6E5A43", piso: "#D6C29C" },
       { id: "garaje", nombre: "Estacionamiento", w: 6, h: 5, alto: 2.5, forma: "pergola", muro: "#6F6C66", techo: "#8F8B83", piso: "#D9D3C6" },
@@ -2700,8 +2702,12 @@
     function snap(v) { return Math.round(v * 2) / 2; }
     function fmt(n) { return String(Math.round(n * 10) / 10).replace(".", ","); }
     function tipo(id) { return TIPOS.filter(function (x) { return x.id === id; })[0]; }
-    function area(it) { return it.w * it.h; }
-    function total() { return S.items.reduce(function (a, it) { return a + area(it); }, 0); }
+    // Superficie construida: la huella por cada piso; la piscina (sin techo) se muestra pero no suma
+    function pisos(it) { return tipo(it.tipo).pisos || 1; }
+    function area(it) { return it.w * it.h * pisos(it); }
+    function cuenta(it) { return tipo(it.tipo).cuenta !== false; }
+    function total() { return S.items.reduce(function (a, it) { return a + (cuenta(it) ? area(it) : 0); }, 0); }
+    function m2Txt(it) { return fmt(area(it)) + " m²" + (pisos(it) > 1 ? " en " + pisos(it) + " pisos" : "") + (cuenta(it) ? "" : " (no suma)"); }
     function limite() { return (S.lote ? S.lote.m2 : 5000) * PCT; }
     function lotes(p) { return p.lotes.filter(function (l) { return l.estado !== "vendida" && planos[p.id].lotes[l.n]; }); }
     function parse(d) {
@@ -2856,6 +2862,7 @@
     function volumen(g, it, t, bad) {
       var cs = corners(it), H = t.alto, iso = S.vista === "iso";
       var techo = bad ? "#E9A08C" : t.techo;
+      if (t.forma === "piscina") { piscina(g, it, cs, bad); return; }
       if (!iso) {
         mk("polygon", { points: pts(cs), fill: t.forma === "pergola" ? tono(t.techo, 0.25) : techo, class: "casa-planta", "data-act": "move" }, g);
         if (t.forma === "pergola") for (var k = 1; k < 4; k++) {
@@ -2894,16 +2901,44 @@
           mk("polygon", { points: pts([at(0.8, 0), at(1.85, 0), at(1.85, Math.min(2.2, H - 0.4)), at(0.8, Math.min(2.2, H - 0.4))]), fill: "#9C7443", class: "casa-puerta" }, g);
           desde = 2.6;
         }
+        var np = t.pisos || 1, hp = H / np;
+        if (t.faja) for (var f = 1; f < np; f++) {
+          mk("polygon", { points: pts([at(0, f * hp - 0.12), at(c.L, f * hp - 0.12), at(c.L, f * hp + 0.18), at(0, f * hp + 0.18)]), fill: bad ? "#A85843" : tono(t.faja, luz), class: "casa-faja" }, g);
+        }
         if (!t.ventanas) return;
-        var libre = c.L - desde - 0.8, nV = Math.floor((libre + 0.9) / 3.1);
-        if (nV < 1) return;
-        var vw = Math.min(2.4, (libre - (nV - 1) * 0.9) / nV), paso = (libre - nV * vw) / Math.max(1, nV - 1);
-        for (var v = 0; v < nV; v++) {
-          var d0 = desde + (nV === 1 ? (libre - vw) / 2 : v * (vw + paso)), z0 = H * 0.3, z1 = H * 0.78;
-          mk("polygon", { points: pts([at(d0, z0), at(d0 + vw, z0), at(d0 + vw, z1), at(d0, z1)]), class: "casa-vidrio" }, g);
+        for (var pf = 0; pf < np; pf++) {
+          var ini = pf === 0 ? desde : 0.8, libre = c.L - ini - 0.8, nV = Math.floor((libre + 0.9) / 3.1);
+          if (nV < 1) continue;
+          var vw = Math.min(2.4, (libre - (nV - 1) * 0.9) / nV), paso = (libre - nV * vw) / Math.max(1, nV - 1);
+          for (var v = 0; v < nV; v++) {
+            var d0 = ini + (nV === 1 ? (libre - vw) / 2 : v * (vw + paso)), z0 = pf * hp + hp * 0.3, z1 = pf * hp + hp * 0.78;
+            mk("polygon", { points: pts([at(d0, z0), at(d0 + vw, z0), at(d0 + vw, z1), at(d0, z1)]), class: "casa-vidrio" }, g);
+          }
         }
       });
       mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], H]; })), fill: techo, class: "casa-techo", "data-act": "move" }, g);
+    }
+    // Piscina: borde de piedra, muros interiores del fondo y agua (en planta, borde y agua)
+    function piscina(g, it, cs, bad) {
+      var iso = S.vista === "iso", b = 0.5;
+      var inn = corners({ x: it.x, y: it.y, w: Math.max(0.5, it.w - 2 * b), h: Math.max(0.5, it.h - 2 * b), rot: it.rot });
+      mk("polygon", { points: pts(cs), class: "casa-pisc-borde" + (bad ? " is-bad" : ""), "data-act": "move" }, g);
+      if (iso) {
+        var hd = 0.9;
+        for (var i = 0; i < 4; i++) {
+          var a = inn[i], c2 = inn[(i + 1) % 4], nx = c2[1] - a[1], ny = -(c2[0] - a[0]);
+          if (nx + ny < -0.01) mk("polygon", { points: pts([[a[0], a[1], 0], [c2[0], c2[1], 0], [c2[0], c2[1], -hd], [a[0], a[1], -hd]]), class: "casa-pisc-muro", "data-act": "move" }, g);
+        }
+        mk("polygon", { points: pts(inn.map(function (q) { return [q[0], q[1], -0.25]; })), class: "casa-agua", "data-act": "move" }, g);
+      } else {
+        mk("polygon", { points: pts(inn), class: "casa-agua", "data-act": "move" }, g);
+      }
+      // Brillos en el agua
+      var z = iso ? -0.25 : 0, at = function (u2, v2) { return [inn[0][0] + (inn[1][0] - inn[0][0]) * u2 + (inn[3][0] - inn[0][0]) * v2, inn[0][1] + (inn[1][1] - inn[0][1]) * u2 + (inn[3][1] - inn[0][1]) * v2, z]; };
+      [[0.2, 0.35, 0.45], [0.5, 0.6, 0.78]].forEach(function (r) {
+        var p1 = P.apply(null, at(r[0], r[1])), p2 = P.apply(null, at(r[2], r[1]));
+        mk("line", { x1: num(p1[0]), y1: num(p1[1]), x2: num(p2[0]), y2: num(p2[1]), class: "casa-brillo" }, g);
+      });
     }
     function arbol(g, t) {
       var x = t[0], y = t[1], h = t[2], r = h * 0.42, iso = S.vista === "iso";
@@ -2962,6 +2997,7 @@
       var gs = mk("g", { class: "casa-sombras" }, svg);
       if (iso) S.items.forEach(function (it) {
         var t = tipo(it.tipo), cs = corners(it), H = t.alto;
+        if (!H) return;
         var sh = hull(cs.concat(cs.map(function (q) { return [q[0] + SOL[0] * H, q[1] + SOL[1] * H]; })));
         mk("polygon", { points: pts(sh), class: "casa-sombra" }, gs);
       });
@@ -2969,7 +3005,7 @@
       var huellas = S.items.map(function (it) { return corners(it, 1.5); });
       var cosas = S.arboles.filter(function (t) { return !huellas.some(function (h) { return inside(t, h); }); })
         .map(function (t) { return { z: prof(t[0], t[1]), t: t }; })
-        .concat(S.items.map(function (it, i) { return { z: prof(it.x, it.y), it: it, i: i }; }))
+        .concat(S.items.map(function (it, i) { return { z: tipo(it.tipo).forma === "piscina" ? -1e9 : prof(it.x, it.y), it: it, i: i }; }))
         .sort(function (a, b) { return a.z - b.z; });
       cosas.forEach(function (c) {
         if (c.t) { arbol(mk("g", { class: "casa-arbol" }, svg), c.t); return; }
@@ -3020,11 +3056,11 @@
       el.box.hidden = !it;
       if (it) {
         el.name.textContent = it.nombre;
-        el.selm2.textContent = fmt(area(it)) + " m²";
+        el.selm2.textContent = m2Txt(it);
         if (document.activeElement !== el.w) el.w.value = Math.round(it.w * 10) / 10;
         if (document.activeElement !== el.h) el.h.value = Math.round(it.h * 10) / 10;
       }
-      var lista = S.items.map(function (x) { return x.nombre.toLowerCase() + " de " + fmt(area(x)) + " m²"; });
+      var lista = S.items.map(function (x) { return x.nombre.toLowerCase() + " de " + fmt(area(x)) + " m²" + (pisos(x) > 1 ? " (" + pisos(x) + " pisos)" : ""); });
       el.wa.href = waHref("Hola Fundos, dibujé mi casa en el lote " + S.lote.n + " de " + S.p.nombre + ": " + (lista.join(", ") || "sin construcciones") +
         ". En total " + fmt(tot) + " m² de " + m2(lim) + " permitidos. ¿Me ayudan a evaluarlo?");
     }

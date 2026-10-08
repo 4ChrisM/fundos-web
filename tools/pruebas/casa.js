@@ -47,6 +47,10 @@ const B = "http://127.0.0.1:8765/";
     await p.click('[data-c-vista="planta"]');
     r.planta = await p.evaluate(() => [document.querySelectorAll(".casa-planta").length, document.querySelectorAll(".casa-vidrio").length]);
     await p.click('[data-c-vista="iso"]');
+    // Casa de dos pisos (suma 2 pisos) y piscina (no suma)
+    const t0 = await p.evaluate(() => parseFloat(document.querySelector("[data-c-total]").textContent.replace(".", "").replace(",", ".")));
+    await p.click('[data-tipo="casa2"]'); await p.click('[data-tipo="piscina"]');
+    r.dosPisosYPiscina = [t0, await p.evaluate(() => document.querySelector("[data-c-total]").textContent), await p.evaluate(() => document.querySelectorAll(".casa-agua").length)];
     r.wa = (await p.getAttribute("[data-c-wa]", "href")).includes("permitidos");
     r.ancho = await p.evaluate(() => document.documentElement.scrollWidth);
     await p.screenshot({ path: "ux/casa-" + w + ".png" });

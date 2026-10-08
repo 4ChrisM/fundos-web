@@ -127,14 +127,19 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   el sueño"): el lote real (forma de `lib/planos.js` escalada a su superficie en m², con su lado más largo horizontal)
   en **vista isométrica** (`P()`/`suelo()` proyectan y devuelven al suelo; botón "Planta" para verlo desde arriba),
   pasto con cuadrícula de 5/10 m, largo de cada deslinde, árboles de ambientación (siempre los mismos por lote; se
-  apartan donde se construye) y construcciones genéricas en volumen con sombra (`TIPOS`: casa y casa de visitas con
-  ventanas y puerta, quincho y estacionamiento como pérgola, bodega). La elegida muestra cotas en metros, la esquina
+  apartan donde se construye) y construcciones genéricas en volumen con sombra (`TIPOS`: casa, **casa de dos pisos**
+  (ventanas por piso y faja; cuenta la huella × 2 pisos), casa de visitas, quincho y estacionamiento como pérgola, bodega y
+  **piscina** (borde, muros interiores y agua; `cuenta: false`: se muestra pero no suma a lo construido). La elegida muestra cotas en metros, la esquina
   dorada (tamaño, centro fijo, 2 a 40 m, pasos de 0,5 m) y el círculo (giro, 5°); se arrastra con mouse o dedo (sin
   desplazar la página). Zoom, "ver el lote completo", pantalla completa; parte acercada a la casa (`acercar()`).
   Teclado: flechas (siguen la pantalla en 3D; Mayús = 5 m), R gira, Supr quita. Medidor contra el **10 % de la
   superficie** (regla que dio el cliente; `PCT`), aviso si se pasa o si algo queda fuera, y "Enviar mi diseño a un
   asesor" por WhatsApp. Desde el detalle del lote: "Dibuja tu casa en este lote" (`[data-d-casa]`, `Casa.set`). Solo
   lotes no vendidos. Texto legal: referencial, la DOM fija superficie, distanciamientos y permiso. Prueba: `tools/pruebas/casa.js`.
+  **Acceso visible** (el cliente lo encontraba escondido): "Diseña tu casa" con etiqueta "Nuevo" en la barra (`.nl-casa`;
+  en la franja de celular, "Tu casa" con un punto) y en el menú (`.menu-casa`), y un aviso con imagen (`.casa-promo`,
+  `#disena-inicio` en Inicio tras "Por qué" y `#disena-proyectos` en Proyectos tras las tarjetas). La imagen
+  (`assets/img/tu-casa-800/1400.webp`) es una captura de la propia herramienta (casa de dos pisos, piscina y quincho).
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el

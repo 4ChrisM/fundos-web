@@ -27,11 +27,11 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261008i">
-<script defer src="lib/manifest.js?v=20261008i"></script>
-<script defer src="lib/analitica.js?v=20261008i"></script>
-<script defer src="lib/planos.js?v=20261008i"></script>
-<script defer src="main.js?v=20261008i"></script>
+<link rel="stylesheet" href="styles.css?v=20261008j">
+<script defer src="lib/manifest.js?v=20261008j"></script>
+<script defer src="lib/analitica.js?v=20261008j"></script>
+<script defer src="lib/planos.js?v=20261008j"></script>
+<script defer src="main.js?v=20261008j"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -197,6 +197,7 @@
     <a href="#proyectos-inicio" data-vista-link="proyectos">Proyectos</a>
     <a href="#tu-compra" data-vista-link="compra">Tu compra</a>
     <a href="#nosotros" data-vista-link="equipo">Equipo</a>
+    <a class="nl-casa" href="#tu-casa" aria-label="Diseña tu casa (nuevo)"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg><span class="nl-l" aria-hidden="true">Diseña tu casa</span><span class="nl-c" aria-hidden="true">Tu casa</span><span class="nl-new" aria-hidden="true">Nuevo</span></a>
   </nav>
   <div class="nav-actions">
     <a class="nav-portal" href="#portal"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Mi compra</a>
@@ -219,6 +220,7 @@
       <a href="#proyectos-inicio" data-menu-link data-vista-link="proyectos">Proyectos</a>
       <a href="#tu-compra" data-menu-link data-vista-link="compra">Tu compra</a>
       <a href="#nosotros" data-menu-link data-vista-link="equipo">Equipo</a>
+      <a class="menu-casa" href="#tu-casa" data-menu-link><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Diseña tu casa<span class="nl-new">Nuevo</span></a>
       <span class="menu-sub">
         <a href="#plano" data-menu-link>Elige tu parcela</a>
         <a href="#recorrido" data-menu-link>Recorrido 360°</a>
@@ -326,6 +328,19 @@
       <h3>Infraestructura y servicios</h3>
       <ul><li><svg class="i" aria-hidden="true"><use href="#i-gate"/></svg><div><strong>Acceso controlado</strong><span>Portón de ingreso exclusivo en el Pasaje El Encanto: seguridad, privacidad y orden.</span></div></li><li><svg class="i" aria-hidden="true"><use href="#i-road"/></svg><div><strong>Caminos de alta resistencia</strong><span>Vías interiores estabilizadas, aptas para todo tipo de vehículos durante todo el año.</span></div></li><li><svg class="i" aria-hidden="true"><use href="#i-bolt"/></svg><div><strong>Factibilidad eléctrica</strong><span>Red eléctrica en la entrada del loteo, lista para tramitar tu empalme.</span></div></li><li><svg class="i" aria-hidden="true"><use href="#i-drop"/></svg><div><strong>Autonomía hídrica</strong><span>Captación subterránea individual (noria o pozo profundo), aprovechando las napas de la zona.</span></div></li></ul>
     </div>
+  </div>
+</section>
+
+<!-- Invitación a "Tu casa" (diseña tu parcela en 3D) -->
+<section class="section cream casa-promo" id="disena-inicio" data-vista="inicio" aria-labelledby="disena-inicio-t">
+  <div class="container casa-promo-in">
+    <div class="casa-promo-txt reveal">
+      <p class="kicker"><span class="pv-badge">Nuevo</span> Diseña tu parcela</p>
+      <h2 id="disena-inicio-t">Imagina tu casa <em>en tu parcela.</em></h2>
+      <p class="lead">Elige un lote y ubica tu casa, la piscina y el quincho a escala en 3D. Mira cuánto puedes construir: hasta 500&nbsp;m² en una parcela de 5.000&nbsp;m².</p>
+      <a class="btn btn-gold btn-lg" href="#tu-casa"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Diseñar mi casa<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+    <a class="casa-promo-img reveal" href="#tu-casa" tabindex="-1" aria-hidden="true"><img src="assets/img/tu-casa-800.webp" srcset="assets/img/tu-casa-800.webp 800w, assets/img/tu-casa-1400.webp 1400w" sizes="(min-width: 960px) 600px, 92vw" width="1400" height="900" alt="" loading="lazy" decoding="async"></a>
   </div>
 </section>
 
@@ -638,6 +653,19 @@
 <!-- ============================== CONOCE CADA PROYECTO ==============================
      Se arma desde lib/manifest.js (foto, caracteristicas, cercanias…): un proyecto nuevo solo necesita sus datos.
      Enlace directo: #proyecto-ID. El proyecto destacado tiene su propia pestaña y aquí solo se enlaza. -->
+<!-- Invitación a "Tu casa" (diseña tu parcela en 3D) -->
+<section class="section cream casa-promo" id="disena-proyectos" data-vista="proyectos" aria-labelledby="disena-proyectos-t">
+  <div class="container casa-promo-in">
+    <div class="casa-promo-txt reveal">
+      <p class="kicker"><span class="pv-badge">Nuevo</span> Diseña tu parcela</p>
+      <h2 id="disena-proyectos-t">Imagina tu casa <em>en tu parcela.</em></h2>
+      <p class="lead">Elige un lote y ubica tu casa, la piscina y el quincho a escala en 3D. Mira cuánto puedes construir: hasta 500&nbsp;m² en una parcela de 5.000&nbsp;m².</p>
+      <a class="btn btn-gold btn-lg" href="#tu-casa"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Diseñar mi casa<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+    <a class="casa-promo-img reveal" href="#tu-casa" tabindex="-1" aria-hidden="true"><img src="assets/img/tu-casa-800.webp" srcset="assets/img/tu-casa-800.webp 800w, assets/img/tu-casa-1400.webp 1400w" sizes="(min-width: 960px) 600px, 92vw" width="1400" height="900" alt="" loading="lazy" decoding="async"></a>
+  </div>
+</section>
+
 <section class="section dark py-sec" id="conoce" data-vista="proyectos" aria-labelledby="conoce-title" data-py hidden>
   <div class="container">
     <header class="section-head reveal">
