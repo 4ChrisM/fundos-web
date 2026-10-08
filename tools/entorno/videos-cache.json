@@ -79,5 +79,14 @@
   "h": 720,
   "dur": 5.5,
   "audio": true
+ },
+ "angelmo": {
+  "mp4": "assets/entorno/videos/angelmo.mp4",
+  "webm": "assets/entorno/videos/angelmo.webm",
+  "poster": "assets/entorno/videos/angelmo.webp",
+  "w": 1280,
+  "h": 720,
+  "dur": 8.5,
+  "audio": true
  }
 }

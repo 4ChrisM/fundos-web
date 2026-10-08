@@ -27,11 +27,11 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261008e">
-<script defer src="lib/manifest.js?v=20261008e"></script>
-<script defer src="lib/analitica.js?v=20261008e"></script>
-<script defer src="lib/planos.js?v=20261008e"></script>
-<script defer src="main.js?v=20261008e"></script>
+<link rel="stylesheet" href="styles.css?v=20261008g">
+<script defer src="lib/manifest.js?v=20261008g"></script>
+<script defer src="lib/analitica.js?v=20261008g"></script>
+<script defer src="lib/planos.js?v=20261008g"></script>
+<script defer src="main.js?v=20261008g"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -373,7 +373,7 @@
         <a href="entorno.html#osorno" data-pv-route="osorno"><img src="assets/entorno/videos/osorno.webp" alt="" width="1280" height="720" loading="lazy" decoding="async"><span><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>Volcán Osorno<small>1 h 30</small></span></a>
         <a href="entorno.html#petrohue" data-pv-route="petrohue"><img src="assets/entorno/videos/petrohue.webp" alt="" width="1280" height="720" loading="lazy" decoding="async"><span><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>Saltos del Petrohué<small>1 h 20</small></span></a>
         <a href="entorno.html#frutillar" data-pv-route="frutillar"><img src="assets/entorno/videos/frutillar.webp" alt="" width="1280" height="720" loading="lazy" decoding="async"><span><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>Frutillar<small>45 min</small></span></a>
-        <a href="entorno.html#pvaras" data-pv-route="pvaras"><img src="assets/entorno/videos/pvaras.webp" alt="" width="1280" height="720" loading="lazy" decoding="async"><span><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>Puerto Varas<small>25 min</small></span></a>
+        <a href="entorno.html#angelmo" data-pv-route="angelmo"><img src="assets/entorno/videos/angelmo.webp" alt="" width="1280" height="720" loading="lazy" decoding="async"><span><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>Caleta Angelmó<small>30 min</small></span></a>
       </div>
       <div class="pv-ent-acts">
         <a class="btn btn-gold" href="entorno.html">Explorar el entorno<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -388,7 +388,8 @@
   <span class="vista-ancla" id="proyectos-inicio" aria-hidden="true"></span>
   <div class="hero-art" aria-hidden="true">
     <picture class="hero-photo">
-      <img src="assets/img/equipo-portada-900.webp" srcset="assets/img/equipo-portada-900.webp 900w, assets/img/equipo-portada-1600.webp 1600w" sizes="(min-width: 960px) 58vw, 100vw" alt="" width="1600" height="1600" loading="lazy" decoding="async">
+      <source media="(max-width: 959px)" srcset="assets/video/portada-movil.webp" width="720" height="900">
+      <img src="assets/video/portada-900.webp" srcset="assets/video/portada-900.webp 900w, assets/video/portada.webp 1600w" sizes="(min-width: 960px) 58vw, 100vw" alt="" width="1600" height="900" loading="lazy" decoding="async">
     </picture>
     <div class="hero-grain"></div>
     <div class="hero-shade"></div>
@@ -476,7 +477,8 @@
     <div class="projects">
       <!-- Malalcahuello -->
       <article class="project reveal" data-project="malalcahuello">
-        <div class="project-art">
+        <div class="project-art has-foto">
+          <img class="project-foto" src="assets/img/tour-malalcahuello-800.webp" srcset="assets/img/tour-malalcahuello-800.webp 800w, assets/img/tour-malalcahuello-1600.webp 1600w" sizes="(min-width: 1100px) 400px, (min-width: 700px) 50vw, 92vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Vista aérea de la parcelación de Malalcahuello" style="object-position: 40% 50%">
           <svg viewBox="0 0 600 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
             <rect width="600" height="380" fill="url(#g-ma-sky)"/>
             <circle cx="470" cy="78" r="60" fill="url(#g-moon)"/>
@@ -529,7 +531,8 @@
 
       <!-- Marchigüe -->
       <article class="project reveal" data-project="marchigue">
-        <div class="project-art">
+        <div class="project-art has-foto">
+          <img class="project-foto" src="assets/img/tour-marchigue-800.webp" srcset="assets/img/tour-marchigue-800.webp 800w, assets/img/tour-marchigue-1600.webp 1600w" sizes="(min-width: 1100px) 400px, (min-width: 700px) 50vw, 92vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Vista aérea de la parcelación de Marchigüe" style="object-position: 35% 60%">
           <svg viewBox="0 0 600 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
             <rect width="600" height="380" fill="url(#g-mc-sky)"/>
             <circle cx="430" cy="150" r="90" fill="#FFF3D6" opacity=".35"/>
@@ -580,7 +583,8 @@
 
       <!-- Puerto Varas -->
       <article class="project reveal" data-project="puerto-varas">
-        <div class="project-art">
+        <div class="project-art has-foto">
+          <img class="project-foto" src="assets/img/tour-puerto-varas-800.webp" srcset="assets/img/tour-puerto-varas-800.webp 800w, assets/img/tour-puerto-varas-1600.webp 1600w" sizes="(min-width: 1100px) 400px, (min-width: 700px) 50vw, 92vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Vista aérea de la parcelación de Puerto Varas" style="object-position: 50% 55%">
           <svg viewBox="0 0 600 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
             <rect width="600" height="380" fill="url(#g-pv-sky)"/>
             <g class="pl" style="--d:.2">
@@ -1143,9 +1147,17 @@
           <li><span class="value-icon"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg></span><div><h3>Confianza</h3><p>Cada terreno que ofrecemos está respaldado y verificado.</p></div></li>
         </ul>
       </div>
-      <figure class="team-photo reveal">
-        <img src="assets/img/equipo-grupo-800.webp" srcset="assets/img/equipo-grupo-800.webp 800w, assets/img/equipo-grupo-1400.webp 1400w" sizes="(min-width: 960px) 54vw, 92vw" alt="El equipo de Fundos Inmobiliaria, con la polera de la marca, sentado en un banco bajo los árboles" width="1400" height="1050" loading="lazy" decoding="async">
-        <figcaption>El equipo de Fundos Inmobiliaria</figcaption>
+      <figure class="team-photo team-mosaic reveal" aria-label="El equipo de Fundos Inmobiliaria">
+        <ul class="team-mosaic-grid">
+          <li><img src="assets/img/equipo-mari.webp" alt="Mari" width="600" height="800" loading="lazy" decoding="async"></li>
+          <li><img src="assets/img/equipo-valentina.webp" alt="Valentina" width="600" height="800" loading="lazy" decoding="async"></li>
+          <li><img src="assets/img/equipo-jeanette.webp" alt="Jeanette" width="600" height="800" loading="lazy" decoding="async"></li>
+          <li><img src="assets/img/equipo-stefy.webp" alt="Stefy" width="600" height="800" loading="lazy" decoding="async"></li>
+          <li><img src="assets/img/equipo-diego.webp" alt="Diego" width="600" height="800" loading="lazy" decoding="async"></li>
+          <li><img src="assets/img/equipo-geonela.webp" alt="Geonela" width="600" height="800" loading="lazy" decoding="async"></li>
+          <li><img src="assets/img/equipo-elvys.webp" alt="Elvys" width="600" height="800" loading="lazy" decoding="async"></li>
+          <li class="team-mosaic-brand"><a href="#equipo"><img src="assets/img/isotipo-174.webp" alt="" width="58" height="42" loading="lazy" decoding="async"><span><strong>El equipo de Fundos</strong>Conoce a cada uno</span></a></li>
+        </ul>
       </figure>
     </div>
 

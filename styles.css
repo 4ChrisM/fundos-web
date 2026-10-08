@@ -442,6 +442,11 @@ input[type="range"]:focus-visible { outline: 2px solid var(--gold); outline-offs
 }
 .project-art { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--g800); }
 .project-art svg { width: 100%; height: 100%; }
+.project-foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease-out); }
+.project:hover .project-foto { transform: scale(1.04); }
+.project-art.has-foto > svg { display: none; }
+.project-art.has-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(8, 18, 12, .35), rgba(8, 18, 12, 0) 35%, rgba(8, 18, 12, 0) 65%, rgba(8, 18, 12, .45)); pointer-events: none; }
+.project-art.has-foto > :not(img):not(svg) { z-index: 1; }
 .project-art .pl { transform: translateX(calc(var(--mx) * var(--d) * 16px)); transition: transform 1s var(--ease-out); }
 .project-body { display: flex; flex-direction: column; gap: .9rem; padding: 1.4rem 1.4rem 1.5rem; }
 .project-meta { display: flex; align-items: center; gap: .4rem; font: 700 .7rem/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--gold-ink); }
@@ -1659,6 +1664,16 @@ h2 em { text-wrap: balance; }
 .team-faces strong { color: var(--g900); }
 .team-photo { position: relative; margin: 0; }
 .team-photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-lg); box-shadow: var(--shadow-card); }
+/* Mosaico del equipo actual (reemplaza la foto grupal: ya no corresponde al equipo) */
+.team-mosaic-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-card); aspect-ratio: 4 / 3.4; }
+.team-mosaic-grid li { position: relative; min-height: 0; overflow: hidden; background: var(--g800); }
+.team-photo .team-mosaic-grid img { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: 50% 12%; border-radius: 0; box-shadow: none; transition: transform .8s var(--ease-out); }
+.team-mosaic-grid li:hover img { transform: scale(1.05); }
+.team-mosaic-brand a { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem; padding: .6rem; background: var(--g900); color: var(--n050); text-align: center; font: 600 .82rem/1.3 var(--sans); text-decoration: none; }
+.team-photo .team-mosaic-brand img { position: static; width: 52px; height: auto; object-fit: contain; }
+.team-mosaic-brand a:hover span { color: var(--gold); }
+.team-mosaic-brand a:focus-visible { outline: 2px solid var(--gold); outline-offset: -4px; }
+.team-mosaic-brand strong { display: block; margin-bottom: .2rem; font: 500 1.15rem/1.15 var(--serif); color: var(--gold); }
 .team-photo figcaption { position: absolute; left: 1rem; bottom: 1rem; padding: .45rem .95rem; border-radius: 999px; background: rgba(10, 20, 14, .72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: var(--n050); font-size: .82rem; font-weight: 700; }
 .team-list { grid-template-columns: 1fr 1fr; }
 .member-media { position: relative; display: block; border-radius: 999px 999px 18px 18px; }
@@ -2280,3 +2295,9 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
   .seller-info strong { font-size: 1.45rem; }
 }
 @media (prefers-reduced-motion: reduce) { .seller .seller-card { transition: none; } }
+@media (max-width: 599px) {
+  .team-mosaic-grid { gap: 4px; }
+  .team-mosaic-brand a { gap: .35rem; padding: .3rem; font-size: .68rem; }
+  .team-mosaic-brand strong { font-size: .86rem; }
+  .team-photo .team-mosaic-brand img { width: 36px; }
+}

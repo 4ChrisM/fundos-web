@@ -89,7 +89,7 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
     mismo ajuste de color para todas (si no, se notan los bordes). Con red, `--teselas` hace lo mismo desde las teselas.
   - Videos del cliente (tomas de dron de 4 a 9 s con música): `video.original` en `lugares.json`; `--videos` los
     convierte a `assets/entorno/videos/<id>.mp4|.webm|.webp` (1280 px, ~2,5 Mb/s, portada en `portadaSeg` o a la
-    mitad). Los originales no van en `main` (pesan ~100 MB): están en el commit `b65d98e` de `Biplot/biplot`, rama
+    mitad). Los originales no van en `main` (pesan ~100 MB): Angelmó en `ba2889f` de este repo; el resto en el commit `b65d98e` de `Biplot/biplot`, rama
     `claude/modest-feynman-vqi1ih` ("Add files via upload") y el cliente los tiene; sin original, `--videos` deja lo
     ya convertido. En el mapa, al terminar la animación de la ruta aparece "Ver video" bajo la píldora (`vBtn`,
     ubicado en `labels()`); la ficha muestra la portada con botón; la ventana flotante (`openVideo`) va entre el panel
@@ -183,7 +183,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   (HLG): convertir a SDR con `zscale` + `tonemap` antes de codificar.
 
 ## Decisiones tomadas con el cliente
-- Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la foto del equipo, que queda de respaldo.
+- Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la portada de Proyectos; de respaldo, un cuadro del mismo video (`portada.webp`, `portada-movil.webp`). La foto grupal del equipo se quitó (incluía a Marjorie, que salió): en Nosotros va un mosaico con las fotos actuales (`.team-mosaic`, actualizarlo si cambia el equipo). Las tarjetas de proyectos (`.project-art.has-foto`) usan la vista aérea de cada parcela; la ilustración SVG queda oculta (la clonan otros módulos como respaldo).
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
   Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Stefy, Diego, Geonela y Elvys; grabados por el cliente en la misma oficina). Todas las
   fotos (`assets/img/equipo-ID.webp`, **cuerpo completo**, 3:4 como las tarjetas) son de una sesión del cliente en la misma
