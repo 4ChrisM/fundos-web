@@ -179,13 +179,13 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
 ## Decisiones tomadas con el cliente
 - Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la foto del equipo, que queda de respaldo.
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
-  Saludos en video (octubre 2026): Mari, Jeanette, Stefy y Elvys (grabados por el cliente en la misma oficina). Su foto
-  es un cuadro del mismo video (`assets/img/equipo-ID.webp`, cabeza y hombros) y `video.tarjeta` es el saludo con ese
-  mismo recorte: al pasar el cursor (computador) la foto se vuelve video con sonido; si el navegador aún no deja sonar,
+  Saludos en video (octubre 2026): Mari, Jeanette, Stefy y Elvys (grabados por el cliente en la misma oficina). Todas las
+  fotos (`assets/img/equipo-ID.webp`, cabeza y hombros) son de una sesión del cliente en la misma oficina, recortadas con
+  la cara en la misma posición y tamaño que el saludo (`video.tarjeta`) para que el cambio foto→video no salte; esa foto
+  completa es también la portada del video en la ficha: al pasar el cursor (computador) la foto se vuelve video con sonido; si el navegador aún no deja sonar,
   parte en silencio con "Haz clic para verlo con sonido" y el clic abre la ficha con el saludo completo. Quienes no
-  tienen video quedan como estaban. Portada de cada saludo: un cuadro con sonrisa, ojos abiertos y de frente
-  (Elvys 9,5 s, Jeanette 1,5 s, Mari 4,5 s, Stefy 8,5 s del original; originales en el historial: `0475102`, `2eafd5d`,
-  `d0152bd`, `679a800`). El equipo es una **galería en filas** (el cliente no quería deslizar ni paneles chicos):
+  tienen video quedan como estaban. Videos originales en el historial (`0475102`, `2eafd5d`, `d0152bd`, `679a800`);
+  fotos originales en `f87e740`. El equipo es una **galería en filas** (el cliente no quería deslizar ni paneles chicos):
   tarjetas grandes, 4 por fila en computador ("Conversemos" en el último lugar), 3 en tablet y 2 en celular; el
   saludo se reproduce en la misma tarjeta. **Marjorie Castellón salió del equipo** (pedido del cliente). Elvys aún sin
   apellido ni presentación escrita. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
