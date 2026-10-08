@@ -2715,12 +2715,12 @@
       { id: "garaje", nombre: "Estacionamiento", w: 6, h: 5, alto: 2.5, forma: "pergola", muro: "#6F6C66", techo: "#8F8B83", piso: "#D9D3C6" },
       { id: "bodega", nombre: "Bodega", w: 4, h: 3, alto: 2.4, forma: "caja", techoOp: true, dosAguas: true, muro: "#A07D50", techo: "#5B5751", puerta: true }
     ];
-    var S = { p: null, lote: null, poly: [], arboles: [], acceso: null, camino: true, ang: 0, hora: 17, estacion: "verano", items: [], sel: -1, seq: 0, vista: "iso", zoom: 1, pan: [0, 0], base: [0, 0, 100, 100] };
+    var S = { p: null, lote: null, poly: [], arboles: [], acceso: null, camino: true, vida: true, ang: 0, hora: 17, estacion: "verano", items: [], sel: -1, seq: 0, vista: "iso", zoom: 1, pan: [0, 0], base: [0, 0, 100, 100] };
     var el = {
       total: $("[data-c-total]", root), max: $("[data-c-max]", root), bar: $("[data-c-bar]", root), msg: $("[data-c-msg]", root),
       meter: $("[data-c-meter]", root), add: $("[data-c-add]", root), box: $("[data-c-sel]", root), name: $("[data-c-sel-name]", root),
       selm2: $("[data-c-sel-m2]", root), w: $("[data-c-w]", root), h: $("[data-c-h]", root), rot: $("[data-c-rot]", root),
-      del: $("[data-c-del]", root), wa: $("[data-c-wa]", root), techo: $("[data-c-techo-wrap]", root), camino: $("[data-c-camino]", root), lbl: $("[data-c-lbl]", root), full: $("[data-c-full]", root)
+      del: $("[data-c-del]", root), wa: $("[data-c-wa]", root), techo: $("[data-c-techo-wrap]", root), camino: $("[data-c-camino]", root), vida: $("[data-c-vida]", root), lbl: $("[data-c-lbl]", root), full: $("[data-c-full]", root)
     };
     var con = proyectos.filter(function (p) { return planos[p.id] && p.lotes && p.lotes.length; })
       .sort(function (a, b) { return (b.id === DESTACADO) - (a.id === DESTACADO); });
@@ -3160,12 +3160,17 @@
       // Construcciones y árboles, de atrás hacia adelante
       var huellas = S.items.map(function (it) { return corners(it, 1.5); });
       if (cam) huellas.push(cam.zona);
+      var vida = escena(cam);
+      vida.forEach(function (v) { huellas.push(v.huella); });
       var cosas = S.arboles.filter(function (t) { return !huellas.some(function (h) { return inside(t, h); }); })
         .map(function (t) { return { z: prof(t[0], t[1]), t: t }; })
+        .concat(vida)
         .concat(S.items.map(function (it, i) { return { z: tipo(it.tipo).forma === "piscina" ? -1e9 : prof(it.x, it.y), it: it, i: i }; }))
         .sort(function (a, b) { return a.z - b.z; });
       cosas.forEach(function (c) {
         if (c.t) { arbol(mk("g", { class: "casa-arbol" }, svg), c.t); return; }
+        if (c.auto) { auto(mk("g", { class: "casa-deco" }, svg), c.auto); return; }
+        if (c.persona) { persona(mk("g", { class: "casa-deco" }, svg), c.persona); return; }
         var it = c.it, i = c.i, bad = fuera(it), on = i === S.sel;
         var g = mk("g", { class: "casa-it casa-" + it.tipo + (on ? " is-sel" : "") + (bad ? " is-bad" : ""), tabindex: "0", role: "button", "data-i": i,
           "aria-label": it.nombre + ", " + fmt(it.w) + " por " + fmt(it.h) + " metros" + (bad ? ", fuera del lote" : "") }, svg);
@@ -3213,6 +3218,80 @@
       if (o) o.textContent = (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm;
       stage.setAttribute("data-luz", S.luz.fase);
     }
+    // Vida en la parcela: autos en el camino y personas cerca de la casa, la piscina y el quincho (no cuentan ni se eligen)
+    var ROPA = ["#2F5D8A", "#B9854A", "#7B3F61", "#3E6B4A", "#C4473A"];
+    function escena(cam) {
+      if (!S.vida) return [];
+      var out = [], casa = S.items.filter(function (x) { return tipo(x.tipo).vivienda; })[0];
+      var gente = function (x, y, k) {
+        var p = { x: x, y: y, ropa: ROPA[k % ROPA.length], alto: k % 3 === 2 ? 1.2 : 1.72 };
+        if (!inside([x, y], S.poly) || S.items.some(function (o) { return tipo(o.tipo).forma === "caja" && inside([x, y], corners(o, 0.3)); })) return;
+        out.push({ z: prof(x, y) + 0.01, persona: p, huella: [[x - 0.6, y - 0.6], [x + 0.6, y - 0.6], [x + 0.6, y + 0.6], [x - 0.6, y + 0.6]] });
+      };
+      if (cam) {
+        var d = cam.d, n = cam.n, c = [cam.casa.x, cam.casa.y];
+        var e = Math.max.apply(null, corners(cam.casa).map(function (q) { return (q[0] - c[0]) * -d[0] + (q[1] - c[1]) * -d[1]; }));
+        var ang = Math.atan2(d[1], d[0]) * 180 / Math.PI;
+        var a1 = { x: c[0] - d[0] * (e + 3.2), y: c[1] - d[1] * (e + 3.2), rot: ang, color: "#A63D2F" };
+        out.push({ z: prof(a1.x, a1.y), auto: a1, huella: corners({ x: a1.x, y: a1.y, w: 5.5, h: 3, rot: ang }) });
+        if (cam.L > e + 16) {
+          var a2 = { x: cam.p0[0] + d[0] * 5.5, y: cam.p0[1] + d[1] * 5.5, rot: ang + 180, color: "#E4E2DC" };
+          out.push({ z: prof(a2.x, a2.y), auto: a2, huella: corners({ x: a2.x, y: a2.y, w: 5.5, h: 3, rot: ang }) });
+        }
+        // Una pareja junto al auto, frente a la casa
+        var b = [c[0] - d[0] * (e + 1.6) + n[0] * 3.1, c[1] - d[1] * (e + 1.6) + n[1] * 3.1];
+        gente(b[0], b[1], 0); gente(b[0] + n[0] * 0.9 - d[0] * 0.5, b[1] + n[1] * 0.9 - d[1] * 0.5, 1);
+      } else if (casa) {
+        var k0 = corners(casa).sort(function (p1, p2) { return prof(p2[0], p2[1]) - prof(p1[0], p1[1]); })[0];
+        gente(k0[0] + 1.6, k0[1] + 1.6, 0); gente(k0[0] + 2.6, k0[1] + 1.2, 1);
+      }
+      S.items.forEach(function (it, i) {
+        var t = tipo(it.tipo);
+        if (t.forma === "piscina") {   // alguien al borde de la piscina y un niño
+          var k1 = corners(it, 1).sort(function (p1, p2) { return prof(p2[0], p2[1]) - prof(p1[0], p1[1]); });
+          gente(k1[0][0], k1[0][1], 2); gente(k1[1][0], k1[1][1], 3);
+        } else if (t.id === "quincho") gente(it.x, it.y, 4 + i);
+      });
+      return out;
+    }
+    // Caja con muros visibles sombreados según el sol (para autos)
+    function caja(g, x, y, l, w, rot, z0, z1, color, arriba) {
+      var o = { x: x, y: y, w: l, h: w, rot: rot }, cs = corners(o), iso = S.vista === "iso";
+      if (!iso) { mk("polygon", { points: pts(cs), fill: arriba || color }, g); return; }
+      for (var i = 0; i < 4; i++) {
+        var a = cs[i], b = cs[(i + 1) % 4], nx = b[1] - a[1], ny = -(b[0] - a[0]), L = Math.hypot(nx, ny);
+        if ((nx + ny) / L <= 0.01) continue;
+        mk("polygon", { points: pts([[a[0], a[1], z0], [b[0], b[1], z0], [b[0], b[1], z1], [a[0], a[1], z1]]), fill: tono(color, cara([nx / L, ny / L])) }, g);
+      }
+      mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], z1]; })), fill: arriba || tono(color, 0.08) }, g);
+    }
+    function auto(g, a) {
+      var r = a.rot * Math.PI / 180, dx = Math.cos(r), dy = Math.sin(r);
+      if (S.alt > 0) {
+        var cs = corners({ x: a.x, y: a.y, w: 4.4, h: 1.8, rot: a.rot });
+        mk("polygon", { points: pts(hull(cs.concat(cs.map(function (q) { return [q[0] + SOL[0] * 1.4, q[1] + SOL[1] * 1.4]; })))), class: "casa-sombra" }, g);
+      }
+      caja(g, a.x, a.y, 3.6, 1.7, a.rot, 0, 0.34, "#1E1E1C");                    // ruedas
+      caja(g, a.x, a.y, 4.4, 1.8, a.rot, 0.3, 0.95, a.color);                     // carrocería
+      caja(g, a.x - dx * 0.25, a.y - dy * 0.25, 2.3, 1.56, a.rot, 0.95, 1.45, "#8FA9B6", tono(a.color, -0.05));   // cabina con vidrios
+    }
+    function persona(g, p) {
+      var iso = S.vista === "iso", h = p.alto, s = h / 1.72;
+      if (S.alt > 0) {
+        var sh = P(p.x + SOL[0] * h * 0.5, p.y + SOL[1] * h * 0.5, 0);
+        mk("ellipse", { cx: num(sh[0]), cy: num(sh[1]), rx: num(0.35 + Math.hypot(SOL[0], SOL[1]) * h * 0.25), ry: num(iso ? 0.22 : 0.35), class: "casa-sombra" }, g);
+      }
+      if (!iso) {
+        var q = P(p.x, p.y, 0);
+        mk("circle", { cx: num(q[0]), cy: num(q[1]), r: num(0.32 * s), fill: p.ropa }, g);
+        mk("circle", { cx: num(q[0]), cy: num(q[1]), r: num(0.16 * s), fill: "#D9AE8C" }, g);
+        return;
+      }
+      var p0 = P(p.x, p.y, 0.05), p1 = P(p.x, p.y, 0.85 * s), p2 = P(p.x, p.y, 1.4 * s), ph = P(p.x, p.y, 1.6 * s);
+      mk("line", { x1: num(p0[0]), y1: num(p0[1]), x2: num(p1[0]), y2: num(p1[1]), stroke: amb("#3B3A36"), "stroke-width": num(0.36 * s), "stroke-linecap": "round" }, g);
+      mk("line", { x1: num(p1[0]), y1: num(p1[1]), x2: num(p2[0]), y2: num(p2[1]), stroke: amb(p.ropa), "stroke-width": num(0.58 * s), "stroke-linecap": "round" }, g);
+      mk("circle", { cx: num(ph[0]), cy: num(ph[1]), r: num(0.2 * s), fill: "#D9AE8C" }, g);
+    }
     function camino() {
       if (!S.camino || !S.acceso) return null;
       var it = S.items.filter(function (x) { return tipo(x.tipo).vivienda; })[0];
@@ -3228,7 +3307,8 @@
         l0: off(ini, a), l1: off([it.x, it.y], a), r0: off(ini, -a), r1: off([it.x, it.y], -a),
         zona: [off(ini, a + 1.5), off([it.x, it.y], a + 1.5), off([it.x, it.y], -a - 1.5), off(ini, -a - 1.5)],
         postes: [off(p0, a + 0.6), off(p0, -a - 0.6)],
-        afuera: [p0[0] - d[0] * 4.5, p0[1] - d[1] * 4.5]
+        afuera: [p0[0] - d[0] * 4.5, p0[1] - d[1] * 4.5],
+        d: d, n: n, p0: p0, L: L, casa: it
       };
     }
     function panel() {
@@ -3249,6 +3329,7 @@
         if (it) $$("[data-c-techo]", el.techo).forEach(function (b) { b.setAttribute("aria-pressed", (b.getAttribute("data-c-techo") === "dos") === !!it.dos ? "true" : "false"); });
       }
       if (el.camino) el.camino.setAttribute("aria-pressed", S.camino ? "true" : "false");
+      if (el.vida) el.vida.setAttribute("aria-pressed", S.vida ? "true" : "false");
       if (it) {
         el.name.textContent = it.nombre;
         el.selm2.textContent = m2Txt(it);
@@ -3285,6 +3366,7 @@
       b.addEventListener("click", function () { var it = S.items[S.sel]; if (it) { it.dos = b.getAttribute("data-c-techo") === "dos"; draw(); } });
     });
     if (el.camino) el.camino.addEventListener("click", function () { S.camino = !S.camino; draw(); });
+    if (el.vida) el.vida.addEventListener("click", function () { S.vida = !S.vida; draw(); });
     // Sol: hora, época del año y "ver el día" (animación de la mañana a la noche)
     var hr = $("[data-c-hora]", root), play = $("[data-c-dia]", root), anim = 0;
     function parar() { if (anim) { window.cancelAnimationFrame(anim); anim = 0; play.classList.remove("is-on"); } }

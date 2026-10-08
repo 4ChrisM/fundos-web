@@ -77,6 +77,11 @@ const B = "http://127.0.0.1:8765/";
       r.techoCamino = await p.evaluate(() => [document.querySelectorAll(".casa-cumbrera").length, document.querySelectorAll(".casa-camino-ripio").length, document.querySelectorAll(".casa-deslindes .is-acceso").length]);
       await p.click("[data-c-camino]");
       r.sinCamino = await p.evaluate(() => document.querySelectorAll(".casa-camino-ripio").length);
+      await p.click("[data-c-camino]");
+      // Autos y personas de ambientación (se apagan con su botón)
+      const v1 = await p.evaluate(() => document.querySelectorAll(".casa-deco").length);
+      await p.click("[data-c-vida]");
+      r.vida = [v1, await p.evaluate(() => document.querySelectorAll(".casa-deco").length)];
     }
     out[w] = r;
     await ctx.close();
