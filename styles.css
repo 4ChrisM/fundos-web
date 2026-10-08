@@ -2246,34 +2246,19 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 @media (prefers-reduced-motion: reduce) { .pv-lead { animation: none; } }
 
 /* ---------------- Equipo en galería ----------------
-   Computador: una fila de paneles; el que tiene el cursor (o el foco) se ensancha y muestra su saludo.
-   Celular y tablet: grilla de 2 o 3 columnas. La tarjeta "Conversemos" va en su propia fila. */
+   Tarjetas grandes en filas (4 en computador, 3 en tablet, 2 en celular); el saludo se reproduce en la misma tarjeta. */
 .sellers.sellers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
 .sellers > li { min-width: 0; }
 .sellers.sellers .member-cta { grid-column: 1 / -1; }
 .sellers .member-cta h4 { font-size: clamp(1.5rem, 2.2vw, 1.9rem); }
 .sellers .member-cta p { font-size: .9rem; }
-.seller-short { display: none; }
 @media (min-width: 600px) { .sellers.sellers { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; } }
 @media (min-width: 960px) {
-  .sellers.sellers { display: flex; flex-wrap: wrap; gap: .7rem; }
-  .sellers > .seller { flex: 1 1 0; height: clamp(420px, 56vh, 540px); transition: flex-grow .65s var(--ease-out); }
-  .sellers > .seller:hover, .sellers > .seller:focus-within { flex-grow: 3.4; }
-  .sellers.sellers .member-cta { flex: 1 1 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .6rem 2rem; min-height: 0; padding: 1.2rem 1.6rem; }
-  .sellers.sellers .member-cta .faces { grid-row: span 2; margin: 0; }
-  .sellers.sellers .member-cta h4 { grid-column: 2; }
-  .sellers.sellers .member-cta p { grid-column: 2; margin: 0; }
-  .sellers.sellers .member-cta .btn { grid-column: 3; grid-row: 1 / span 2; }
-  .seller .seller-card { height: 100%; aspect-ratio: auto; }
-  .seller .seller-card img, .seller .seller-vid { object-position: 50% 22%; }
-  /* Angosto: solo el nombre corto en vertical; ensanchado: la ficha completa */
-  .seller-short { display: block; position: absolute; z-index: 1; left: 50%; bottom: 1.2rem; transform: translateX(-50%) rotate(180deg); writing-mode: vertical-rl; font: 600 1.35rem/1 var(--serif); color: var(--n050); white-space: nowrap; transition: opacity .3s; }
-  .seller-info { opacity: 0; transform: translateY(8px); transition: opacity .35s .1s, transform .45s .1s var(--ease-out); }
-  .seller-badge { width: 32px; height: 32px; padding: 0; justify-content: center; font-size: 0; gap: 0; }
-  .seller-badge .i { width: 13px; height: 13px; }
-  .seller:hover .seller-short, .seller:focus-within .seller-short { opacity: 0; }
-  .seller:hover .seller-info, .seller:focus-within .seller-info { opacity: 1; transform: none; }
-  .seller:hover .seller-badge, .seller:focus-within .seller-badge { width: auto; height: auto; padding: .32rem .7rem; gap: .35rem; font-size: .74rem; }
-  .seller-card:hover img { transform: none; }
+  /* Computador: 4 por fila; la tarjeta "Conversemos" ocupa el último lugar de la segunda fila */
+  .sellers.sellers { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.2rem; }
+  .sellers.sellers .member-cta { grid-column: auto; align-content: end; }
+  .seller .seller-card { transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out); }
+  .seller .seller-card:hover, .seller .seller-card:focus-visible { transform: translateY(-6px); box-shadow: 0 30px 60px -28px rgba(10, 20, 14, .6); }
+  .seller-info strong { font-size: 1.45rem; }
 }
-@media (prefers-reduced-motion: reduce) { .sellers > .seller, .seller-info { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .seller .seller-card { transition: none; } }

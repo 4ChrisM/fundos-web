@@ -2420,7 +2420,6 @@
       li.innerHTML = '<button type="button" class="seller-card" data-seller="' + i + '" aria-haspopup="dialog">' +
         '<img src="' + esc(g.foto) + '" alt="" width="600" height="750" loading="lazy" decoding="async">' +
         (g.video ? '<span class="seller-badge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>Saludo en video</span>' : "") +
-        '<span class="seller-short" aria-hidden="true">' + esc(corto(g)) + '</span>' +
         '<span class="seller-info"><strong>' + esc(titulo(g)) + '</strong>' + (g.nombre ? '<span>' + esc(sub(g)) + '</span>' : "") +
         '<span class="seller-more">Ver ficha' + arrow + '</span></span></button>';
       list.insertBefore(li, cta);

@@ -185,9 +185,9 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   parte en silencio con "Haz clic para verlo con sonido" y el clic abre la ficha con el saludo completo. Quienes no
   tienen video quedan como estaban. Portada de cada saludo: un cuadro con sonrisa, ojos abiertos y de frente
   (Elvys 9,5 s, Jeanette 1,5 s, Mari 4,5 s, Stefy 8,5 s del original; originales en el historial: `0475102`, `2eafd5d`,
-  `d0152bd`, `679a800`). El equipo es una **galería** (el cliente no quería deslizar): en computador una fila de paneles
-  que se ensancha con el cursor (nombre corto en vertical cuando está angosto) y "Conversemos" en una franja abajo;
-  en celular y tablet, grilla de 2 o 3 columnas. **Marjorie Castellón salió del equipo** (pedido del cliente). Elvys aún sin
+  `d0152bd`, `679a800`). El equipo es una **galería en filas** (el cliente no quería deslizar ni paneles chicos):
+  tarjetas grandes, 4 por fila en computador ("Conversemos" en el último lugar), 3 en tablet y 2 en celular; el
+  saludo se reproduce en la misma tarjeta. **Marjorie Castellón salió del equipo** (pedido del cliente). Elvys aún sin
   apellido ni presentación escrita. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
   originales no van a `main`; se convierten con ffmpeg a MP4 + WebM con `loudnorm`).
   No suponer género ni cargos: hoy todos dicen "Equipo comercial" hasta tener los cargos reales.
