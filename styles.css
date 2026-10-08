@@ -2404,3 +2404,32 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
   .casa-meter { padding: .8rem 1rem; }
   .casa-meter-v strong { font-size: 1.6rem; }
 }
+.casa-faja { stroke: none; }
+.casa-pisc-borde { fill: #ECE6DA; stroke: #A79F8F; stroke-width: calc(var(--cu) * .1); }
+.casa-pisc-borde.is-bad { fill: #F4C4B6; stroke: #B23A1E; }
+.casa-pisc-muro { fill: #4F9FB8; }
+.casa-agua { fill: #79C3D8; stroke: rgba(30, 90, 110, .35); stroke-width: calc(var(--cu) * .1); }
+.casa-brillo { stroke: rgba(255, 255, 255, .7); stroke-width: calc(var(--cu) * .18); stroke-linecap: round; pointer-events: none; }
+
+/* ---------------- Acceso visible a "Tu casa": menú y aviso con imagen ---------------- */
+.nl-new { display: inline-block; margin-left: .4rem; padding: .18rem .42rem; border-radius: 999px; background: var(--gold); color: var(--g900); font: 800 .56rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; vertical-align: .14em; }
+.nav-links a.nl-casa { display: inline-flex; align-items: center; gap: .35rem; color: var(--gold); }
+.nav-links a.nl-casa .i { width: 16px; height: 16px; }
+.nav-links a.nl-casa:hover { color: var(--gold-2, #E2C48F); }
+.menu-links a.menu-casa { display: inline-flex; align-items: center; gap: .5rem; color: var(--gold); }
+.menu-links a.menu-casa .i { width: .9em; height: .9em; }
+.casa-promo-in { display: grid; gap: 1.6rem; align-items: center; }
+@media (min-width: 960px) { .casa-promo-in { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 3rem; } }
+.casa-promo-txt .kicker .pv-badge { margin-right: .5rem; }
+.casa-promo-txt h2 { margin-top: .6rem; }
+.casa-promo-txt .lead { margin-top: .9rem; max-width: 46ch; }
+.casa-promo-txt .btn { margin-top: 1.4rem; }
+.casa-promo-img { display: block; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-card); border: 1px solid #CFC7B6; background: #EDE6DA; }
+.casa-promo-img img { display: block; width: 100%; height: auto; transition: transform .8s var(--ease-out); }
+.casa-promo-img:hover img { transform: scale(1.03); }
+.nl-casa .nl-c { display: none; }
+@media (max-width: 1023px) {
+  .nl-casa .nl-l, .nl-casa .nl-new { display: none; }
+  .nl-casa .nl-c { display: inline; }
+  .nav-links a.nl-casa::before { content: ""; position: absolute; top: .55rem; right: .25rem; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+}
