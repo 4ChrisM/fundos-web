@@ -180,8 +180,9 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
 - Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la foto del equipo, que queda de respaldo.
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
   Saludos en video (octubre 2026): Mari, Jeanette, Stefy y Elvys (grabados por el cliente en la misma oficina). Todas las
-  fotos (`assets/img/equipo-ID.webp`, cabeza y hombros) son de una sesión del cliente en la misma oficina, recortadas con
-  la cara en la misma posición y tamaño que el saludo (`video.tarjeta`) para que el cambio foto→video no salte; esa foto
+  fotos (`assets/img/equipo-ID.webp`, **cuerpo completo**, 3:4 como las tarjetas) son de una sesión del cliente en la misma
+  oficina; foto y saludo de la tarjeta (`video.tarjeta`) se recortan con la misma ventana (90 % del cuadro) y la cara en
+  el mismo lugar para que el cambio foto→video no salte; esa foto
   completa es también la portada del video en la ficha: al pasar el cursor (computador) la foto se vuelve video con sonido; si el navegador aún no deja sonar,
   parte en silencio con "Haz clic para verlo con sonido" y el clic abre la ficha con el saludo completo. Quienes no
   tienen video quedan como estaban. Videos originales en el historial (`0475102`, `2eafd5d`, `d0152bd`, `679a800`);
