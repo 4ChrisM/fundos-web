@@ -1932,8 +1932,14 @@
   function initPvLead() {
     var form = $("[data-pv-lead]");
     if (!form) return;
-    var p = proyecto(B.destacado), done = $("[data-pv-lead-done]", form), wa = $("[data-pv-lead-wa]", form);
+    var done = $("[data-pv-lead-done]", form), wa = $("[data-pv-lead-wa]", form), sel = $("[data-pv-lead-proy]", form);
     var el = form.elements;
+    // Selector de proyecto desde el manifiesto: el destacado primero (lanzamiento) y luego el resto
+    if (sel) {
+      sel.innerHTML = proyectos.slice().sort(function (a, b) { return (b.id === B.destacado) - (a.id === B.destacado); }).map(function (o) {
+        return '<option value="' + esc(o.id) + '"' + (o.id === B.destacado ? " selected" : "") + ">" + esc(o.nombre) + (o.id === B.destacado ? " · lanzamiento" : "") + "</option>";
+      }).join("");
+    }
     var rules = {
       nombre: function (v) { return v.trim().length >= 2; },
       telefono: function (v) { var d = v.replace(/\D/g, ""); return d.length >= 8 && d.length <= 15; },
@@ -1954,8 +1960,8 @@
       e.preventDefault();
       var bad = Object.keys(rules).filter(function (n) { return !check(n); });
       if (bad.length) { el[bad[0]].focus(); return; }
-      var correo = el.correo.value.trim();
-      var msg = "Hola Fundos, soy " + el.nombre.value.trim() + ". Quiero recibir el plano de disponibilidad y la lista de precios de lanzamiento de Fundos de " + (p ? p.nombre : "Puerto Varas") + "." +
+      var correo = el.correo.value.trim(), p = proyecto(sel ? sel.value : B.destacado) || proyecto(B.destacado);
+      var msg = "Hola Fundos, soy " + el.nombre.value.trim() + ". Quiero recibir el plano de disponibilidad y la lista de precios " + (p && p.id === B.destacado ? "de lanzamiento " : "") + "de Fundos " + (p ? p.nombre : "Puerto Varas") + "." +
         " Mi teléfono: " + el.telefono.value.trim() + "." + (correo ? " Mi correo: " + correo + "." : "");
       wa.href = waHref(msg);
       $("[data-pv-lead-msg]", form).textContent = msg;
@@ -2672,6 +2678,14 @@
         a.addEventListener("click", function () { Plan.apply({ id: p.id, soloDisponibles: true }); });
       });
     }
+    // Franja "Nuestros proyectos" de la portada
+    $$("[data-pv-proy]").forEach(function (a) {
+      var o = proyecto(a.getAttribute("data-pv-proy"));
+      if (!o || o.id === "puerto-varas") return;
+      var d0 = desde(o);
+      $$("[data-proy-disp]", a).forEach(function (el) { el.textContent = disponibles(o).length; });
+      if (d0) $$("[data-proy-desde]", a).forEach(function (el) { el.textContent = clp(d0); });
+    });
     $$("[data-otro]").forEach(function (card) {
       var o = proyecto(card.getAttribute("data-otro"));
       if (!o) return;

@@ -27,11 +27,11 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261008d">
-<script defer src="lib/manifest.js?v=20261008d"></script>
-<script defer src="lib/analitica.js?v=20261008d"></script>
-<script defer src="lib/planos.js?v=20261008d"></script>
-<script defer src="main.js?v=20261008d"></script>
+<link rel="stylesheet" href="styles.css?v=20261008e">
+<script defer src="lib/manifest.js?v=20261008e"></script>
+<script defer src="lib/analitica.js?v=20261008e"></script>
+<script defer src="lib/planos.js?v=20261008e"></script>
+<script defer src="main.js?v=20261008e"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -191,7 +191,7 @@
     <span class="nav-where" data-nav-where aria-hidden="true"></span>
   </div>
   <nav class="nav-links" aria-label="Principal">
-    <a href="#puerto-varas" data-vista-link="inicio">Puerto Varas<span class="nl-new">Nuevo</span></a>
+    <a href="#puerto-varas" data-vista-link="inicio">Inicio</a>
     <a href="#proyectos-inicio" data-vista-link="proyectos">Proyectos</a>
     <a href="#tu-compra" data-vista-link="compra">Tu compra</a>
     <a href="#nosotros" data-vista-link="equipo">Equipo</a>
@@ -213,7 +213,7 @@
       <button class="icon-btn" type="button" aria-label="Cerrar menú" data-menu-close><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
     </div>
     <nav class="menu-links" aria-label="Menú móvil">
-      <a href="#puerto-varas" data-menu-link data-vista-link="inicio">Puerto Varas</a>
+      <a href="#puerto-varas" data-menu-link data-vista-link="inicio">Inicio</a>
       <a href="#proyectos-inicio" data-menu-link data-vista-link="proyectos">Proyectos</a>
       <a href="#tu-compra" data-menu-link data-vista-link="compra">Tu compra</a>
       <a href="#nosotros" data-menu-link data-vista-link="equipo">Equipo</a>
@@ -236,7 +236,7 @@
 
 <main id="contenido">
 
-<!-- ============================ PUERTO VARAS (pestaña de inicio) ============================ -->
+<!-- ============================ INICIO (portada con el proyecto destacado, Puerto Varas) ============================ -->
 <section class="hero pv-hero" id="puerto-varas" data-pvhero data-vista="inicio" aria-labelledby="pv-title">
   <div class="hero-art" aria-hidden="true">
     <picture class="hero-photo">
@@ -248,22 +248,30 @@
   </div>
   <div class="hero-inner pv-hero-in">
     <div class="pv-hero-txt">
-      <p class="kicker hero-kicker"><span class="pv-badge">Nuevo proyecto</span> <span class="nw">Pasaje El Encanto · Ruta La Colonia</span></p>
+      <p class="kicker hero-kicker">Parcelas de 5.000&nbsp;m² <span class="nw">con rol propio</span></p>
       <h1 class="hero-title" id="pv-title">
-        <span class="line"><span>Fundos</span></span>
-        <span class="line"><span><em>Puerto Varas.</em></span></span>
+        <span class="line"><span>Tu lugar en el campo,</span></span>
+        <span class="line"><span><em>a tu nombre.</em></span></span>
       </h1>
-      <p class="hero-sub">Tu parcela plana de 5.000&nbsp;m², con rol propio y vista a los volcanes Osorno y Calbuco. Entre Puerto Montt y Puerto Varas, a 25 minutos de cada una.</p>
+      <p class="hero-sub">Proyectos en Malalcahuello, Marchigüe y Puerto Varas. <span class="pv-new"><span class="pv-badge">Nuevo</span><strong>Fundos Puerto Varas:</strong> parcelas planas con vista a los volcanes Osorno y Calbuco, a 25 minutos de Puerto Montt y de Puerto Varas.</span></p>
       <div class="hero-actions">
-        <a class="btn btn-gold btn-lg" href="#plano" data-pv-plan>Ver parcelas disponibles<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-gold btn-lg" href="#plano" data-pv-plan>Ver parcelas en Puerto Varas<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         <a class="btn btn-ghost btn-lg" href="entorno.html#tour-360"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrer en 360°</a>
       </div>
     </div>
 
     <!-- Formulario rápido: arma el mensaje y lo envía por WhatsApp (mismo flujo que el de la visita) -->
     <form class="pv-lead" data-pv-lead novalidate aria-labelledby="pv-lead-t">
-      <p class="pv-lead-k">Precios de lanzamiento</p>
+      <p class="pv-lead-k">Cotiza sin compromiso</p>
       <h2 class="pv-lead-t" id="pv-lead-t">Recibe el plano y los precios</h2>
+      <div class="pv-lead-f">
+        <label for="pl-proyecto">Proyecto</label>
+        <select id="pl-proyecto" name="proyecto" data-pv-lead-proy>
+          <option value="puerto-varas" selected>Puerto Varas · lanzamiento</option>
+          <option value="malalcahuello">Malalcahuello</option>
+          <option value="marchigue">Marchigüe</option>
+        </select>
+      </div>
       <div class="pv-lead-f">
         <label for="pl-nombre">Nombre</label>
         <input id="pl-nombre" name="nombre" type="text" autocomplete="name" required placeholder="Tu nombre">
@@ -293,19 +301,21 @@
       </div>
     </form>
   </div>
-  <dl class="pv-stats">
-    <div><dt>Desde</dt><dd data-pv-desde>$27.990.000</dd></div>
-    <div><dt>Disponibles</dt><dd><span data-pv-disp>78</span> parcelas</dd></div>
-    <div><dt>Terreno</dt><dd>100&nbsp;% plano</dd></div>
-    <div><dt>Escritura</dt><dd>Rol propio</dd></div>
-  </dl>
+  <nav class="pv-proys" aria-label="Nuestros proyectos">
+    <p class="pv-proys-k">Nuestros proyectos</p>
+    <ul>
+      <li><a href="#por-que" data-pv-proy="puerto-varas"><img src="assets/img/tour-puerto-varas-mini.webp" alt="" width="160" height="160" loading="lazy" decoding="async"><span><strong>Puerto Varas <span class="pv-badge">Nuevo</span></strong><small>Los Lagos · desde <b data-pv-desde>$27.990.000</b> · <b data-pv-disp>78</b> disponibles</small></span></a></li>
+      <li><a href="#proyecto-malalcahuello" data-pv-proy="malalcahuello"><img src="assets/img/tour-malalcahuello-mini.webp" alt="" width="160" height="160" loading="lazy" decoding="async"><span><strong>Malalcahuello</strong><small>La Araucanía · desde <b data-proy-desde>$9.990.000</b> · <b data-proy-disp>17</b> disponibles</small></span></a></li>
+      <li><a href="#proyecto-marchigue" data-pv-proy="marchigue"><img src="assets/img/tour-marchigue-mini.webp" alt="" width="160" height="160" loading="lazy" decoding="async"><span><strong>Marchigüe</strong><small>O'Higgins · desde <b data-proy-desde>$7.990.000</b> · <b data-proy-disp>12</b> disponibles</small></span></a></li>
+    </ul>
+  </nav>
   <button class="hero-video-toggle" type="button" data-pv-toggle aria-label="Pausar el video de portada" hidden><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
 </section>
 
 <section class="section light pv-porque" id="por-que" data-vista="inicio" aria-labelledby="porque-title">
   <div class="container">
     <header class="section-head reveal">
-      <p class="kicker">Tu refugio autónomo y sustentable</p>
+      <p class="kicker">Nuevo proyecto · Fundos Puerto Varas</p>
       <h2 id="porque-title">Tranquilidad de campo, <em>a minutos de la ciudad</em></h2>
       <p class="lead">Fundos de Puerto Varas son 79 parcelas diseñadas con respeto por el entorno natural, en el Pasaje El Encanto (Ruta La Colonia): a minutos de la energía costera de Puerto Montt y del encanto lacustre de Puerto Varas.</p>
     </header>

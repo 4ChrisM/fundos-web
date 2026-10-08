@@ -1947,7 +1947,6 @@ html.js[data-vista="equipo"] [data-vista]:not([data-vista~="equipo"]) { display:
 .vista-ancla { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
 .nav-links a[aria-current="page"] { color: var(--n050); }
 .nav-links a[aria-current="page"]::after { transform: scaleX(1); transform-origin: left; }
-.nl-new { display: inline-block; margin-left: .45rem; padding: .18rem .42rem; border-radius: 999px; background: var(--gold); color: var(--g900); font: 800 .56rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; vertical-align: .14em; }
 .menu-links a[aria-current="page"] { color: var(--gold); }
 .menu-sub { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; padding-top: .8rem; }
 .menu-links .menu-sub a { border: 0; font: 700 .95rem/1.4 var(--sans); color: var(--cream-70); padding: .3rem 0; }
@@ -1969,7 +1968,6 @@ html.js[data-vista="equipo"] [data-vista]:not([data-vista~="equipo"]) { display:
   html.js .nav::before { bottom: calc(-1 * var(--tabs-h) - 20px); }
   html.js { scroll-padding-top: calc(var(--nav-h) + var(--tabs-h) + 8px); }
   html.js .hero { padding-top: calc(var(--nav-h) + var(--tabs-h) + 2rem); }
-  .nl-new { display: none; }
 }
 
 /* ---------------- Portada de Puerto Varas ---------------- */
@@ -1987,22 +1985,39 @@ html.js[data-vista="equipo"] [data-vista]:not([data-vista~="equipo"]) { display:
 .pv-hero .hero-title { max-width: none; }
 .pv-hero .hero-sub { max-width: 46ch; }
 .pv-badge { display: inline-block; margin-right: .6rem; padding: .32rem .6rem; border-radius: 999px; background: var(--gold); color: var(--g900); letter-spacing: .14em; }
-.pv-stats {
+/* Franja "Nuestros proyectos" al pie de la portada: deja claro desde el inicio que hay más de un proyecto */
+.pv-proys {
   position: absolute; z-index: 2; left: 0; right: 0; bottom: 0;
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: min(1240px, 100%); margin-inline: auto; padding: 0 var(--gutter) 1.4rem;
+  width: min(1240px, 100%); margin-inline: auto; padding: 0 var(--gutter) 1.6rem;
   animation: fadeUp 1s var(--ease-out) .9s both;
 }
-.pv-stats > div { padding: .8rem 1rem .8rem 0; border-top: 1px solid rgba(247, 245, 240, .22); }
-.pv-stats dt { font: 700 .66rem/1.2 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
-.pv-stats dd { margin-top: .3rem; font: 500 clamp(1.35rem, 2.4vw, 1.9rem)/1.1 var(--serif); color: var(--n050); font-variant-numeric: lining-nums; }
-@media (min-width: 720px) { .pv-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-bottom: 2rem; } .pv-stats > div + div { padding-left: 1.2rem; border-left: 1px solid rgba(247, 245, 240, .14); } }
+.pv-proys-k { margin-bottom: .6rem; font: 700 .66rem/1.2 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+.pv-proys ul { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; margin: 0; padding: 0; list-style: none; }
+.pv-proys a {
+  display: flex; align-items: center; gap: .8rem; height: 100%; padding: .5rem .9rem .5rem .5rem;
+  border: 1px solid rgba(247, 245, 240, .2); border-radius: var(--r-md, 14px); color: var(--n050); text-decoration: none;
+  background: rgba(10, 20, 14, .38); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  transition: border-color .2s, background-color .2s, transform .25s var(--ease-out);
+}
+.pv-proys a:hover { border-color: var(--gold); background: rgba(10, 20, 14, .55); transform: translateY(-2px); }
+.pv-proys a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.pv-proys img { flex: none; width: 56px; height: 56px; border-radius: 10px; object-fit: cover; }
+.pv-proys strong { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; font: 500 1.28rem/1.15 var(--serif); }
+.pv-proys strong .pv-badge { margin: 0; padding: .22rem .45rem; font: 800 .54rem/1 var(--sans); }
+.pv-proys small { display: block; margin-top: .2rem; font-size: .76rem; line-height: 1.35; color: rgba(247, 245, 240, .74); }
+.pv-proys small b { font-weight: 700; color: var(--n050); font-variant-numeric: lining-nums; }
+@media (min-width: 720px) { .pv-proys ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.pv-new { display: block; margin-top: .7rem; }
+.pv-new .pv-badge { margin-right: .5rem; padding: .26rem .5rem; font: 800 .58rem/1 var(--sans); vertical-align: .15em; }
+.pv-new strong { color: var(--n050); }
 .pv-hero .hero-video-toggle { left: auto; right: var(--gutter); bottom: auto; top: calc(var(--nav-h) + 1rem); }
 @media (max-width: 1023px) { .pv-hero .hero-video-toggle { top: calc(var(--nav-h) + var(--tabs-h) + .8rem); } }
+/* Bajo 1100 px la pausa queda arriba a la derecha: el antetítulo no pasa por debajo */
+@media (max-width: 1099px) { .pv-hero .hero-kicker { padding-right: 3.4rem; } }
 /* Celular: los datos van debajo de los botones (abajo está la barra de WhatsApp) */
 @media (max-width: 719px) {
   .pv-hero { min-height: 0; padding-bottom: 1.5rem; justify-content: flex-start; }
-  .pv-stats { position: static; margin-top: 2rem; padding: 0; }
+  .pv-proys { position: static; margin-top: 2rem; padding: 0; }
   .pv-hero .hero-inner { padding-top: 1rem; }
 }
 /* Pestañas sin portada: el contenido parte bajo la barra superior */
@@ -2060,7 +2075,7 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 @media (prefers-reduced-motion: reduce) {
   .pv-map .rt.draw { stroke-dasharray: none; }
   .pv-lbl { transition: none; }
-  .pv-stats { animation: none; }
+  .pv-proys { animation: none; }
 }
 @media (max-width: 1023px) {
   html.js .tc-bar { top: calc(66px + var(--tabs-h)); }
@@ -2211,14 +2226,16 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .pv-lead-f { display: grid; gap: .3rem; }
 .pv-lead-f label { font-size: .74rem; font-weight: 700; color: rgba(247, 245, 240, .82); }
 .pv-lead-f label small { font-weight: 500; color: rgba(247, 245, 240, .6); }
-.pv-lead input:not([type="checkbox"]) {
+.pv-lead input:not([type="checkbox"]), .pv-lead select {
   width: 100%; min-height: 44px; padding: .6rem .8rem; border: 1px solid rgba(247, 245, 240, .26); border-radius: var(--r-sm);
   background: rgba(6, 13, 9, .28); color: var(--n050); font: inherit; font-size: .95rem;
   transition: border-color .2s, background-color .2s;
 }
 .pv-lead input::placeholder { color: rgba(247, 245, 240, .5); }
-.pv-lead input:not([type="checkbox"]):hover { border-color: rgba(247, 245, 240, .42); }
-.pv-lead input:not([type="checkbox"]):focus { outline: none; border-color: var(--gold); background: rgba(6, 13, 9, .42); }
+.pv-lead select { appearance: none; padding-right: 2.2rem; background-image: linear-gradient(45deg, transparent 50%, var(--gold) 50%), linear-gradient(135deg, var(--gold) 50%, transparent 50%); background-position: calc(100% - 1.15rem) 52%, calc(100% - .8rem) 52%; background-size: 6px 6px; background-repeat: no-repeat; cursor: pointer; }
+.pv-lead select option { background: var(--g900); color: var(--n050); }
+.pv-lead select:hover, .pv-lead input:not([type="checkbox"]):hover { border-color: rgba(247, 245, 240, .42); }
+.pv-lead select:focus, .pv-lead input:not([type="checkbox"]):focus { outline: none; border-color: var(--gold); background: rgba(6, 13, 9, .42); }
 .pv-lead :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .pv-lead input[aria-invalid="true"] { border-color: #F0A08C; }
 .pv-lead-ok-c { display: flex; gap: .55rem; align-items: flex-start; font-size: .76rem; line-height: 1.4; color: rgba(247, 245, 240, .78); cursor: pointer; }
