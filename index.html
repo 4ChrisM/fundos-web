@@ -21,17 +21,17 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Fundos Inmobiliaria","url":"https://www.fundosinmobiliaria.com/","slogan":"La tierra como punto de partida.","areaServed":["Malalcahuello","Marchigüe","Puerto Varas"],"address":{"@type":"PostalAddress","addressCountry":"CL"}}
 </script>
-<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
+<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"compra","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
 <link rel="preload" as="image" href="assets/video/puerto-varas.webp" media="(min-width: 960px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/video/puerto-varas-movil.webp" media="(max-width: 959px)" fetchpriority="high">
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261008g">
-<script defer src="lib/manifest.js?v=20261008g"></script>
-<script defer src="lib/analitica.js?v=20261008g"></script>
-<script defer src="lib/planos.js?v=20261008g"></script>
-<script defer src="main.js?v=20261008g"></script>
+<link rel="stylesheet" href="styles.css?v=20261008h">
+<script defer src="lib/manifest.js?v=20261008h"></script>
+<script defer src="lib/analitica.js?v=20261008h"></script>
+<script defer src="lib/planos.js?v=20261008h"></script>
+<script defer src="main.js?v=20261008h"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -175,6 +175,8 @@
   <symbol id="i-road" viewBox="0 0 24 24"><path d="M8 3L4 21M16 3l4 18M12 4v3M12 10.5v3M12 17v3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
   <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5L5 13.5h6l-1 8 8-11h-6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
   <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s6 6.4 6 10.6a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.2 14.5a2.9 2.9 0 0 0 2.6 2.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M3.5 11L12 4l8.5 7M6 9.5V20h12V9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5.5h4V20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4v4h-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5.5v13M16 5.5v13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
 </svg>
@@ -836,6 +838,7 @@
               <div><dt>Valor por m²</dt><dd data-d-m2price></dd></div>
             </dl>
             <a class="lot-sim" href="#simulador" data-d-sim>Simular el pago de este lote<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="lot-sim" href="#tu-casa" data-d-casa>Dibuja tu casa en este lote<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
           </div>
         </div>
       </div>
@@ -913,6 +916,7 @@
       <div class="tc-tabs" role="tablist" aria-labelledby="tc-title">
         <a class="tc-tab" href="#como-comprar" role="tab" id="tc-tab-como-comprar" data-tc-tab="como-comprar"><svg class="i" aria-hidden="true"><use href="#i-doc"/></svg>Cómo comprar</a>
         <a class="tc-tab" href="#simulador" role="tab" id="tc-tab-simulador" data-tc-tab="simulador"><svg class="i" aria-hidden="true"><use href="#i-receipt"/></svg>Simulador</a>
+        <a class="tc-tab" href="#tu-casa" role="tab" id="tc-tab-tu-casa" data-tc-tab="tu-casa"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Tu casa</a>
         <a class="tc-tab" href="#preguntas" role="tab" id="tc-tab-preguntas" data-tc-tab="preguntas"><svg class="i" aria-hidden="true"><use href="#i-people"/></svg>Preguntas</a>
         <a class="tc-tab" href="#portal" role="tab" id="tc-tab-portal" data-tc-tab="portal"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Mi compra</a>
       </div>
@@ -1042,6 +1046,59 @@
     </div>
   </div>
 </section>
+<!-- Diseña tu parcela: dibuja tu casa a escala sobre el lote real y mide cuánto puedes construir (initCasa) -->
+<section class="section light tc-panel casa-sec" id="tu-casa" data-tc-panel aria-labelledby="casa-title">
+  <div class="container">
+    <header class="section-head casa-head reveal">
+      <p class="kicker">Diseña tu parcela</p>
+      <h2 id="casa-title">¿Cuánto puedes <em>construir?</em></h2>
+      <p class="lead">En una parcela de 5.000&nbsp;m² puedes construir hasta <strong>500&nbsp;m²</strong>: el 10&nbsp;% de la superficie. Elige tu lote, ubica tu casa a escala y mira cuánto espacio te queda.</p>
+    </header>
+    <div class="casa reveal" data-casa>
+      <noscript><p class="casa-noscript">Activa JavaScript para dibujar tu casa sobre el lote. En una parcela de 5.000&nbsp;m² puedes construir hasta 500&nbsp;m² (10&nbsp;%).</p></noscript>
+      <div class="casa-side">
+        <div class="casa-pick">
+          <div class="field">
+            <label for="c-proyecto">Proyecto</label>
+            <select id="c-proyecto" data-c-proyecto></select>
+          </div>
+          <div class="field">
+            <label for="c-lote">Lote</label>
+            <select id="c-lote" data-c-lote></select>
+          </div>
+        </div>
+        <div class="casa-meter" data-c-meter>
+          <p class="casa-meter-k">Construcción</p>
+          <p class="casa-meter-v"><strong data-c-total>0 m²</strong> <span>de <b data-c-max>500 m²</b> permitidos</span></p>
+          <div class="casa-bar" aria-hidden="true"><span data-c-bar></span></div>
+          <p class="casa-meter-msg" role="status" data-c-msg></p>
+        </div>
+        <div class="casa-add">
+          <p class="casa-add-k" id="c-add-k">Agrega a tu parcela</p>
+          <div class="casa-add-b" role="group" aria-labelledby="c-add-k" data-c-add></div>
+        </div>
+        <div class="casa-sel" data-c-sel hidden>
+          <p class="casa-sel-t"><span data-c-sel-name>Casa</span> <small data-c-sel-m2></small></p>
+          <div class="casa-sel-f">
+            <div class="field"><label for="c-ancho">Ancho <small>m</small></label><input id="c-ancho" type="number" inputmode="decimal" min="2" max="40" step="0.5" data-c-w></div>
+            <div class="field"><label for="c-largo">Largo <small>m</small></label><input id="c-largo" type="number" inputmode="decimal" min="2" max="40" step="0.5" data-c-h></div>
+          </div>
+          <div class="casa-sel-b">
+            <button class="btn btn-ghost btn-sm" type="button" data-c-rot><svg class="i" aria-hidden="true"><use href="#i-rotate"/></svg>Girar 15°</button>
+            <button class="btn btn-ghost btn-sm" type="button" data-c-del><svg class="i" aria-hidden="true"><use href="#i-close"/></svg>Quitar</button>
+          </div>
+        </div>
+        <a class="btn btn-gold casa-wa" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-c-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar mi diseño a un asesor</a>
+      </div>
+      <figure class="casa-stage">
+        <svg class="casa-svg" data-c-svg role="img" aria-labelledby="c-svg-t"><title id="c-svg-t">Lote a escala con las construcciones</title></svg>
+        <figcaption class="casa-help" data-c-help>Arrastra para mover. Usa la esquina para cambiar el tamaño y el círculo para girar. Con teclado: flechas para mover.</figcaption>
+      </figure>
+    </div>
+    <p class="casa-legal">Referencial. La forma del lote sale del plano del proyecto y se lleva a su superficie; la superficie construible, los distanciamientos a los deslindes y el permiso de edificación los fija la Dirección de Obras de la comuna.</p>
+  </div>
+</section>
+
 <section class="section cream tc-panel" id="preguntas" data-tc-panel aria-labelledby="faq-title">
   <div class="container faq-grid">
     <header class="section-head faq-head reveal">
