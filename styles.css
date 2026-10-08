@@ -2337,34 +2337,61 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .casa-sel-b { display: flex; flex-wrap: wrap; gap: .5rem; }
 .casa-sel-b .btn { color: var(--g900); border-color: var(--n200); }
 .casa-wa { justify-content: center; }
-.casa-stage { position: relative; margin: 0; border-radius: var(--r-lg); background: #E9E4D6; overflow: hidden; box-shadow: var(--shadow-card); }
-.casa-svg { display: block; width: 100%; height: clamp(340px, 62vh, 620px); user-select: none; -webkit-user-select: none; }
-@media (max-width: 959px) { .casa-svg { height: clamp(320px, 92vw, 520px); } }
-.casa-lote { fill: #B9C9A0; }
-.casa-grid path { fill: none; stroke: rgba(10, 20, 14, .14); stroke-width: calc(var(--cu) * .12); }
-.casa-borde { fill: none; stroke: var(--g900); stroke-width: calc(var(--cu) * .45); stroke-linejoin: round; stroke-dasharray: calc(var(--cu) * 1.6) calc(var(--cu) * .8); }
-.casa-escala path { fill: none; stroke: var(--g900); stroke-width: calc(var(--cu) * .35); }
-.casa-escala text, .casa-lote-t { fill: var(--g900); font-family: var(--sans); font-weight: 700; dominant-baseline: middle; }
+.casa-stage { position: relative; margin: 0; border: 1px solid #CFC7B6; border-radius: var(--r-lg); background: #EDE6DA; overflow: hidden; box-shadow: var(--shadow-card); }
+.casa-stage:fullscreen { display: flex; flex-direction: column; border-radius: 0; }
+.casa-stage:fullscreen .casa-svg { flex: 1; height: auto; }
+.casa-svg { display: block; width: 100%; height: clamp(380px, 66vh, 640px); user-select: none; -webkit-user-select: none; }
+.casa-svg.is-zoom { touch-action: none; cursor: grab; }
+@media (max-width: 959px) { .casa-svg { height: clamp(340px, 100vw, 540px); } }
+@media (max-width: 599px) {
+  .casa-ctrl { right: .5rem; bottom: .5rem; gap: .3rem; }
+  .casa-ctrl button { width: 38px; height: 38px; }
+  .casa-vista { top: .5rem; left: .5rem; }
+  .casa-lbl { left: .7rem; bottom: .7rem; max-width: calc(100% - 4rem); }
+}
+.casa-fondo { fill: #EDE6DA; }
+.casa-lote { fill: #D3DDBE; }
+.casa-grid path { fill: none; }
+.casa-grid .g5 { stroke: rgba(255, 255, 255, .45); stroke-width: calc(var(--cu) * .1); }
+.casa-grid .g10 { stroke: rgba(255, 255, 255, .8); stroke-width: calc(var(--cu) * .16); }
+.casa-borde { fill: none; stroke: #6B6457; stroke-width: calc(var(--cu) * .22); stroke-linejoin: round; pointer-events: none; }
+.casa-deslindes text { fill: #4B463D; font-family: var(--sans); font-weight: 700; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+.casa-sombra { fill: rgba(54, 46, 34, .2); pointer-events: none; }
 .casa-it { cursor: grab; touch-action: none; outline: none; }
-.casa-it rect:first-child { fill: #F7F5F0; stroke: var(--g900); stroke-width: calc(var(--cu) * .35); transition: fill .15s; }
-.casa-quincho rect:first-child { fill: #EBD9B4; }
-.casa-garaje rect:first-child { fill: #D9D6CE; }
-.casa-bodega rect:first-child { fill: #D8C3A0; }
-.casa-visitas rect:first-child { fill: #F2E9D8; }
-.casa-it.is-sel rect:first-child { stroke: var(--gold-ink); stroke-width: calc(var(--cu) * .55); }
-.casa-it:focus-visible rect:first-child { stroke: var(--gold-ink); stroke-width: calc(var(--cu) * .7); }
-.casa-it.is-bad rect:first-child { fill: #F4C4B6; stroke: #B23A1E; }
-.casa-h { fill: var(--gold); stroke: var(--g900); stroke-width: calc(var(--cu) * .25); }
-.casa-h-rot { cursor: grab; }
+.casa-it polygon, .casa-it line { stroke-linejoin: round; }
+.casa-techo { stroke: rgba(0, 0, 0, .25); stroke-width: calc(var(--cu) * .08); }
+.casa-vidrio { fill: #D7E7EE; stroke: #23211D; stroke-width: calc(var(--cu) * .12); pointer-events: none; }
+.casa-puerta { stroke: #3A2C1A; stroke-width: calc(var(--cu) * .1); pointer-events: none; }
+.casa-planta { stroke: #2C2A26; stroke-width: calc(var(--cu) * .2); }
+.casa-viga { stroke: rgba(0, 0, 0, .35); stroke-width: calc(var(--cu) * .18); pointer-events: none; }
+.casa-it:focus-visible .casa-techo, .casa-it:focus-visible .casa-planta { stroke: var(--gold-ink); stroke-width: calc(var(--cu) * .5); }
+.casa-arbol { pointer-events: none; }
+.casa-tronco { stroke: #6E5537; stroke-width: calc(var(--cu) * .45); stroke-linecap: round; }
+.casa-copa { fill: #7E9A67; stroke: rgba(40, 60, 30, .25); stroke-width: calc(var(--cu) * .12); }
+.casa-copa-luz { fill: rgba(255, 255, 255, .14); }
+.casa-sel-borde { fill: none; stroke: var(--gold); stroke-width: calc(var(--cu) * .4); pointer-events: none; }
+.casa-cota { stroke: #4B463D; stroke-width: calc(var(--cu) * .12); }
+.casa-cota-t { fill: #4B463D; font-family: var(--sans); font-weight: 600; text-anchor: middle; dominant-baseline: middle; paint-order: stroke; stroke: #EDE6DA; stroke-width: calc(var(--cu) * .5); }
+.casa-selg { pointer-events: none; }
+.casa-it-h { pointer-events: auto; cursor: grab; touch-action: none; }
+.casa-h { fill: var(--gold); stroke: var(--g900); stroke-width: calc(var(--cu) * .18); }
 .casa-h-size { cursor: nwse-resize; }
-.casa-h-line { stroke: var(--g900); stroke-width: calc(var(--cu) * .2); }
-.casa-it-t, .casa-it-m { fill: var(--g900); font-family: var(--sans); text-anchor: middle; pointer-events: none; }
-.casa-it-t { font-weight: 800; }
-.casa-it-m { font-weight: 600; fill: #3B4A3F; }
+.casa-h-ico { color: var(--g900); }
+.casa-it-t { fill: var(--g900); font-family: var(--sans); font-weight: 800; text-anchor: middle; paint-order: stroke; stroke: rgba(247, 245, 240, .9); stroke-width: calc(var(--cu) * .6); stroke-linejoin: round; }
+.casa-vista { position: absolute; top: .8rem; left: .8rem; display: flex; padding: 3px; border: 1px solid #CFC7B6; border-radius: 999px; background: rgba(247, 245, 240, .92); }
+.casa-vista button { min-width: 64px; min-height: 36px; padding: .3rem .8rem; border: 0; border-radius: 999px; background: none; color: var(--g900); font: 700 .78rem/1 var(--sans); cursor: pointer; }
+.casa-vista button[aria-pressed="true"] { background: var(--g900); color: var(--n050); }
+.casa-lienzo { position: relative; }
+.casa-stage:fullscreen .casa-lienzo { flex: 1; display: flex; flex-direction: column; }
+.casa-ctrl { position: absolute; right: .8rem; bottom: .8rem; display: grid; gap: .4rem; }
+.casa-ctrl button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #B9B1A2; border-radius: 6px; background: rgba(250, 248, 243, .95); color: var(--g900); cursor: pointer; }
+.casa-ctrl button:hover { border-color: var(--g900); }
+.casa-ctrl .i { width: 18px; height: 18px; }
+.casa-vista button:focus-visible, .casa-ctrl button:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+.casa-lbl { position: absolute; left: 1rem; bottom: .9rem; font: 700 .66rem/1.2 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: #4B463D; pointer-events: none; }
 .casa-help { padding: .6rem .9rem; border-top: 1px solid rgba(10, 20, 14, .1); background: rgba(247, 245, 240, .7); font-size: .78rem; color: var(--n600); }
 .casa-legal { margin-top: 1rem; font-size: .76rem; color: var(--n600); max-width: 80ch; }
 .casa-noscript { padding: 1rem; border-radius: var(--r-lg); background: var(--n050); }
-.casa-it-t.is-out, .casa-it-m.is-out { paint-order: stroke; stroke: rgba(247, 245, 240, .85); stroke-width: calc(var(--cu) * .5); stroke-linejoin: round; }
 /* Celular y tablet: el lote va justo bajo el medidor; los controles para agregar y editar, después */
 @media (max-width: 959px) {
   .casa-side { display: contents; }

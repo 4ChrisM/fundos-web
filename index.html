@@ -27,11 +27,11 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261008h">
-<script defer src="lib/manifest.js?v=20261008h"></script>
-<script defer src="lib/analitica.js?v=20261008h"></script>
-<script defer src="lib/planos.js?v=20261008h"></script>
-<script defer src="main.js?v=20261008h"></script>
+<link rel="stylesheet" href="styles.css?v=20261008i">
+<script defer src="lib/manifest.js?v=20261008i"></script>
+<script defer src="lib/analitica.js?v=20261008i"></script>
+<script defer src="lib/planos.js?v=20261008i"></script>
+<script defer src="main.js?v=20261008i"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -1091,8 +1091,21 @@
         <a class="btn btn-gold casa-wa" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-c-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar mi diseño a un asesor</a>
       </div>
       <figure class="casa-stage">
-        <svg class="casa-svg" data-c-svg role="img" aria-labelledby="c-svg-t"><title id="c-svg-t">Lote a escala con las construcciones</title></svg>
-        <figcaption class="casa-help" data-c-help>Arrastra para mover. Usa la esquina para cambiar el tamaño y el círculo para girar. Con teclado: flechas para mover.</figcaption>
+        <div class="casa-lienzo">
+        <svg class="casa-svg" data-c-svg role="img" aria-labelledby="c-svg-t"><title id="c-svg-t">Tu lote a escala con las construcciones</title></svg>
+        <div class="casa-vista" role="group" aria-label="Vista">
+          <button type="button" data-c-vista="iso" aria-pressed="true">3D</button>
+          <button type="button" data-c-vista="planta" aria-pressed="false">Planta</button>
+        </div>
+        <div class="casa-ctrl" role="group" aria-label="Zoom">
+          <button type="button" data-c-zoom="in" aria-label="Acercar"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          <button type="button" data-c-zoom="out" aria-label="Alejar"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button>
+          <button type="button" data-c-zoom="fit" aria-label="Ver el lote completo"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg></button>
+          <button type="button" data-c-full aria-label="Pantalla completa" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-expand"/></svg></button>
+        </div>
+        <p class="casa-lbl" data-c-lbl>Lote</p>
+        </div>
+        <figcaption class="casa-help" data-c-help>Arrastra la casa para moverla. La esquina dorada cambia el tamaño y el círculo la gira. Con teclado: flechas para mover y R para girar.</figcaption>
       </figure>
     </div>
     <p class="casa-legal">Referencial. La forma del lote sale del plano del proyecto y se lleva a su superficie; la superficie construible, los distanciamientos a los deslindes y el permiso de edificación los fija la Dirección de Obras de la comuna.</p>

@@ -123,15 +123,18 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
     no deja incrustarlo (CSP) o no carga en 15 s, ofrece abrirlo aparte. El proxy de la nube bloquea netlify: probar
     con `page.route` que responda una página simulada.
     Revisión: `tools/pruebas/entorno.js` (los 17 lugares en 1920, 1440, 1280, 1100, 390, 320 y 844×390; `MIN=1` con paneles minimizados).
-- **Tu casa** (`#tu-casa`, pestaña de "Tu compra", `initCasa` en `main.js`, pedido del cliente oct-2026): el lote
-  real (forma de `lib/planos.js` escalada a su superficie en m², centrada en su punto `l`) con cuadrícula de 10 m y
-  escala; construcciones a escala (casa, casa de visitas, quincho, estacionamiento, bodega) que se arrastran, cambian de
-  tamaño por la esquina (centro fijo, de 2 a 40 m, pasos de 0,5 m) y giran con el círculo (5°) o con "Girar 15°";
-  teclado: flechas (Mayús = 5 m), R gira, Supr quita. Medidor contra el **10 % de la superficie** (regla que dio el
-  cliente; `PCT` en `initCasa`), aviso si se pasa o si algo queda fuera del lote, y "Enviar mi diseño a un asesor"
-  por WhatsApp. Un lote largo se gira 90° si así llena mejor el recuadro (el plano no tiene norte). Desde el detalle
-  del lote en el plano: "Dibuja tu casa en este lote" (`[data-d-casa]`, `Casa.set`). Solo lotes no vendidos. Texto
-  legal: referencial, la DOM fija superficie, distanciamientos y permiso. Prueba: `tools/pruebas/casa.js`.
+- **Tu casa** (`#tu-casa`, pestaña de "Tu compra", `initCasa` en `main.js`, pedido del cliente oct-2026, "para vender
+  el sueño"): el lote real (forma de `lib/planos.js` escalada a su superficie en m², con su lado más largo horizontal)
+  en **vista isométrica** (`P()`/`suelo()` proyectan y devuelven al suelo; botón "Planta" para verlo desde arriba),
+  pasto con cuadrícula de 5/10 m, largo de cada deslinde, árboles de ambientación (siempre los mismos por lote; se
+  apartan donde se construye) y construcciones genéricas en volumen con sombra (`TIPOS`: casa y casa de visitas con
+  ventanas y puerta, quincho y estacionamiento como pérgola, bodega). La elegida muestra cotas en metros, la esquina
+  dorada (tamaño, centro fijo, 2 a 40 m, pasos de 0,5 m) y el círculo (giro, 5°); se arrastra con mouse o dedo (sin
+  desplazar la página). Zoom, "ver el lote completo", pantalla completa; parte acercada a la casa (`acercar()`).
+  Teclado: flechas (siguen la pantalla en 3D; Mayús = 5 m), R gira, Supr quita. Medidor contra el **10 % de la
+  superficie** (regla que dio el cliente; `PCT`), aviso si se pasa o si algo queda fuera, y "Enviar mi diseño a un
+  asesor" por WhatsApp. Desde el detalle del lote: "Dibuja tu casa en este lote" (`[data-d-casa]`, `Casa.set`). Solo
+  lotes no vendidos. Texto legal: referencial, la DOM fija superficie, distanciamientos y permiso. Prueba: `tools/pruebas/casa.js`.
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el

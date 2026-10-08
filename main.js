@@ -2667,36 +2667,39 @@
   }
 
   /* =============================================================
-     Tu casa: el lote real (forma de lib/planos.js llevada a su superficie en m²) con construcciones a escala
-     que se mueven, giran y cambian de tamaño; mide lo construido contra el 10 % de la superficie
+     Tu casa: el lote real (forma de lib/planos.js llevada a su superficie en m²) en vista isométrica, con
+     construcciones genéricas a escala (volumen, ventanas, sombra) que se mueven, giran y cambian de tamaño;
+     mide lo construido contra el 10 % de la superficie. También en planta (vista desde arriba).
      ============================================================= */
   function initCasa() {
     var root = $("[data-casa]"), planos = B.planos || {};
     if (!root) return;
-    var svg = $("[data-c-svg]", root), selP = $("[data-c-proyecto]", root), selL = $("[data-c-lote]", root);
-    var NS = "http://www.w3.org/2000/svg", PCT = 0.10;
+    var svg = $("[data-c-svg]", root), stage = $(".casa-stage", root), selP = $("[data-c-proyecto]", root), selL = $("[data-c-lote]", root);
+    var NS = "http://www.w3.org/2000/svg", PCT = 0.10, CI = Math.cos(Math.PI / 6), SI = 0.5;
+    // Construcciones genéricas: medidas por defecto, alto y estilo de volumen
     var TIPOS = [
-      { id: "casa", nombre: "Casa", w: 12, h: 10 },
-      { id: "visitas", nombre: "Casa de visitas", w: 8, h: 6 },
-      { id: "quincho", nombre: "Quincho", w: 6, h: 5 },
-      { id: "garaje", nombre: "Estacionamiento", w: 6, h: 5 },
-      { id: "bodega", nombre: "Bodega", w: 4, h: 3 }
+      { id: "casa", nombre: "Casa", w: 12, h: 10, alto: 3.2, forma: "caja", muro: "#3A3833", techo: "#5B5751", ventanas: true, puerta: true },
+      { id: "visitas", nombre: "Casa de visitas", w: 8, h: 6, alto: 2.9, forma: "caja", muro: "#CDBFA4", techo: "#5B5751", ventanas: true, puerta: true },
+      { id: "quincho", nombre: "Quincho", w: 6, h: 5, alto: 2.7, forma: "pergola", muro: "#8A6A45", techo: "#6E5A43", piso: "#D6C29C" },
+      { id: "garaje", nombre: "Estacionamiento", w: 6, h: 5, alto: 2.5, forma: "pergola", muro: "#6F6C66", techo: "#8F8B83", piso: "#D9D3C6" },
+      { id: "bodega", nombre: "Bodega", w: 4, h: 3, alto: 2.4, forma: "caja", muro: "#A07D50", techo: "#5B5751", puerta: true }
     ];
-    var S = { p: null, lote: null, poly: [], items: [], sel: -1, seq: 0, vb: [0, 0, 100, 100] };
+    var S = { p: null, lote: null, poly: [], arboles: [], items: [], sel: -1, seq: 0, vista: "iso", zoom: 1, pan: [0, 0], base: [0, 0, 100, 100] };
     var el = {
       total: $("[data-c-total]", root), max: $("[data-c-max]", root), bar: $("[data-c-bar]", root), msg: $("[data-c-msg]", root),
       meter: $("[data-c-meter]", root), add: $("[data-c-add]", root), box: $("[data-c-sel]", root), name: $("[data-c-sel-name]", root),
       selm2: $("[data-c-sel-m2]", root), w: $("[data-c-w]", root), h: $("[data-c-h]", root), rot: $("[data-c-rot]", root),
-      del: $("[data-c-del]", root), wa: $("[data-c-wa]", root)
+      del: $("[data-c-del]", root), wa: $("[data-c-wa]", root), lbl: $("[data-c-lbl]", root), full: $("[data-c-full]", root)
     };
     var con = proyectos.filter(function (p) { return planos[p.id] && p.lotes && p.lotes.length; })
       .sort(function (a, b) { return (b.id === DESTACADO) - (a.id === DESTACADO); });
     if (!con.length) return;
     selP.innerHTML = con.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.nombre) + "</option>"; }).join("");
 
-    function num(v) { return Math.round(v * 10) / 10; }
+    function num(v) { return Math.round(v * 100) / 100; }
     function snap(v) { return Math.round(v * 2) / 2; }
-    function fmt(n) { return String(num(n)).replace(".", ","); }
+    function fmt(n) { return String(Math.round(n * 10) / 10).replace(".", ","); }
+    function tipo(id) { return TIPOS.filter(function (x) { return x.id === id; })[0]; }
     function area(it) { return it.w * it.h; }
     function total() { return S.items.reduce(function (a, it) { return a + area(it); }, 0); }
     function limite() { return (S.lote ? S.lote.m2 : 5000) * PCT; }
@@ -2709,7 +2712,7 @@
     function polyArea(pts) {
       var a = 0;
       for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) a += (pts[j][0] + pts[i][0]) * (pts[j][1] - pts[i][1]);
-      return Math.abs(a / 2);
+      return a / 2;
     }
     function inside(pt, pts) {
       var c = false;
@@ -2719,8 +2722,14 @@
       }
       return c;
     }
-    function corners(it) {
-      var r = it.rot * Math.PI / 180, c = Math.cos(r), s = Math.sin(r), hw = it.w / 2, hh = it.h / 2;
+    function distSeg(p, a, b) {
+      var dx = b[0] - a[0], dy = b[1] - a[1], t = clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy || 1), 0, 1);
+      return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
+    }
+    function distBorde(p) { var d = Infinity; for (var i = 0; i < S.poly.length; i++) d = Math.min(d, distSeg(p, S.poly[i], S.poly[(i + 1) % S.poly.length])); return d; }
+    function corners(it, m) {
+      m = m || 0;
+      var r = it.rot * Math.PI / 180, c = Math.cos(r), s = Math.sin(r), hw = it.w / 2 + m, hh = it.h / 2 + m;
       return [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]].map(function (q) { return [it.x + q[0] * c - q[1] * s, it.y + q[0] * s + q[1] * c]; });
     }
     function local(it, x, y) {
@@ -2730,43 +2739,44 @@
     function fuera(it) {
       var cs = corners(it);
       if (!cs.every(function (q) { return inside(q, S.poly); })) return true;
-      return S.poly.some(function (v) { return inside(v, cs); });   // una esquina del lote que entra en la construcción
+      return S.poly.some(function (v) { return inside(v, cs); });
     }
+    function choca(ca, cb) { return ca.some(function (q) { return inside(q, cb); }) || cb.some(function (q) { return inside(q, ca); }); }
 
-    // Lote en metros: se escala el polígono del plano a la superficie del lote, centrado en su punto de etiqueta
+    // Proyección: isométrica (suelo en z = 0) o planta; "prof" ordena lo que se dibuja (lo más cercano, al final)
+    function P(x, y, z) { return S.vista === "iso" ? [(x - y) * CI, (x + y) * SI - (z || 0)] : [x, y]; }
+    function suelo(sx, sy) { if (S.vista !== "iso") return [sx, sy]; var a = sx / CI, b = sy / SI; return [(a + b) / 2, (b - a) / 2]; }
+    function prof(x, y) { return x + y; }
+    function pts(list) { return list.map(function (q) { var s = q.length === 2 ? P(q[0], q[1], 0) : P(q[0], q[1], q[2]); return num(s[0]) + "," + num(s[1]); }).join(" "); }
+
+    // Lote en metros, con su lado más largo horizontal (el plano no indica el norte; la forma no cambia)
     function setLote(n) {
       var g = planos[S.p.id].lotes[n];
       S.lote = S.p.lotes.filter(function (l) { return l.n === n; })[0];
       if (!g || !S.lote) return;
-      var raw = parse(g.d), k = Math.sqrt(S.lote.m2 / polyArea(raw)), l0 = g.l;
-      S.poly = raw.map(function (q) { return [(q[0] - l0[0]) * k, (q[1] - l0[1]) * k]; });
-      S.giro = false;
-      encuadre();
+      var raw = parse(g.d), k = Math.sqrt(S.lote.m2 / Math.abs(polyArea(raw))), l0 = g.l;
+      var poly = raw.map(function (q) { return [(q[0] - l0[0]) * k, (q[1] - l0[1]) * k]; });
+      var best = 0, ang = 0;
+      poly.forEach(function (a, i) { var b = poly[(i + 1) % poly.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L > best) { best = L; ang = Math.atan2(b[1] - a[1], b[0] - a[0]); } });
+      var c = Math.cos(-ang), s = Math.sin(-ang);
+      S.poly = poly.map(function (q) { return [q[0] * c - q[1] * s, q[0] * s + q[1] * c]; });
+      if (polyArea(S.poly) > 0) S.poly.reverse();   // mismo sentido que las construcciones: la normal (dy, −dx) apunta hacia afuera
       selL.value = String(n);
-      // Las construcciones se conservan al cambiar de lote: vuelven al centro si quedan fuera
-      S.items.forEach(function (it, i) { if (fuera(it)) { it.x = 0; it.y = i * 3; it.rot = 0; } });
+      arboles(n);
+      S.items.forEach(function (it, i) { if (fuera(it)) { it.x = 0; it.y = i * 4; it.rot = 0; } });
       if (!S.items.length) add("casa");
+      encuadre();
+      acercar();
       draw();
     }
-    // Un lote largo se gira 90° si así llena mejor el recuadro (el plano no indica el norte; la forma no cambia)
-    function quiereGiro() {
-      var xs = S.poly.map(function (q) { return q[0]; }), ys = S.poly.map(function (q) { return q[1]; });
-      var la = (Math.max.apply(null, ys) - Math.min.apply(null, ys)) / (Math.max.apply(null, xs) - Math.min.apply(null, xs) || 1);
-      var r = svg.getBoundingClientRect(), sa = r.height ? r.width / r.height : 1;
-      return (la > 1.3 && sa > 1.1) || (la < 1 / 1.3 && sa < 1 / 1.1);
-    }
-    function girar() {
-      S.poly = S.poly.map(function (q) { return [-q[1], q[0]]; });
-      S.items.forEach(function (it) { var x = it.x; it.x = -it.y; it.y = x; it.rot = (it.rot + 90) % 360; });
-      S.giro = !S.giro;
-    }
-    function encuadre() {
-      if (quiereGiro()) girar();
-      var xs = S.poly.map(function (q) { return q[0]; }), ys = S.poly.map(function (q) { return q[1]; });
-      var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
-      var pad = Math.max(x1 - x0, y1 - y0) * 0.08 + 4;
-      S.vb = [x0 - pad, y0 - pad, x1 - x0 + 2 * pad, y1 - y0 + 2 * pad + 6];
-      svg.setAttribute("viewBox", S.vb.join(" "));
+    // Vista inicial: acercada a la construcción elegida (el botón de la casa muestra el lote completo)
+    function acercar() {
+      var it = S.items[S.sel] || S.items[0];
+      S.zoom = 1; S.pan = [0, 0];
+      if (!it) return;
+      var c = P(it.x, it.y, 0), b = S.base, z = S.vista === "iso" ? 2.1 : 1.6;
+      S.zoom = z;
+      S.pan = [c[0] - (b[0] + b[2] / 2), c[1] - (b[1] + b[3] / 2)];
     }
     function setProyecto(id, n) {
       S.p = proyecto(id) || con[0];
@@ -2778,25 +2788,47 @@
       var lo = ls.filter(function (l) { return l.n === n; })[0] || ls.filter(function (l) { return l.estado === "disponible"; })[0] || ls[0];
       if (lo) setLote(lo.n);
     }
+    // Árboles de ambientación cerca de los deslindes (siempre los mismos para cada lote); no cuentan como construcción
+    function arboles(n) {
+      var seed = n * 9301 + 49297, rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+      var xs = S.poly.map(function (q) { return q[0]; }), ys = S.poly.map(function (q) { return q[1]; });
+      var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+      S.arboles = [];
+      for (var i = 0; i < 400 && S.arboles.length < 14; i++) {
+        var p = [x0 + rnd() * (x1 - x0), y0 + rnd() * (y1 - y0)];
+        if (!inside(p, S.poly)) continue;
+        var d = distBorde(p);
+        if (d < 2.5 || d > 9) continue;
+        if (S.arboles.some(function (t) { return Math.hypot(t[0] - p[0], t[1] - p[1]) < 8; })) continue;
+        S.arboles.push([p[0], p[1], 3.6 + rnd() * 2.4]);
+      }
+    }
+    function encuadre() {
+      var ps = [];
+      S.poly.forEach(function (q) { ps.push(P(q[0], q[1], 0)); ps.push(P(q[0], q[1], 6)); });
+      var xs = ps.map(function (q) { return q[0]; }), ys = ps.map(function (q) { return q[1]; });
+      var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+      var pad = Math.max(x1 - x0, y1 - y0) * 0.07 + 3;
+      S.base = [x0 - pad, y0 - pad, x1 - x0 + 2 * pad, y1 - y0 + 2 * pad];
+    }
+    function viewBox() {
+      var b = S.base, w = b[2] / S.zoom, h = b[3] / S.zoom, cx = b[0] + b[2] / 2 + S.pan[0], cy = b[1] + b[3] / 2 + S.pan[1];
+      return [cx - w / 2, cy - h / 2, w, h];
+    }
 
-    function add(tipo) {
-      var t = TIPOS.filter(function (x) { return x.id === tipo; })[0];
+    function add(id) {
+      var t = tipo(id);
       if (!t) return;
       var it = { key: ++S.seq, tipo: t.id, nombre: t.nombre, w: t.w, h: t.h, x: 0, y: 0, rot: 0 };
-      // Lugar libre cerca del centro: se prueba en espiral hasta que quepa sin salirse
-      // (con 4 m de holgura entre construcciones para que se lean sus rótulos)
-      for (var i = 0; i < 80; i++) {
-        var a = i * 2.4, r = i * 1.8;
+      // Lugar libre cerca del centro, con 4 m de holgura entre construcciones
+      for (var i = 0; i < 90; i++) {
+        var a = i * 2.4, r = i * 1.6;
         it.x = snap(Math.cos(a) * r); it.y = snap(Math.sin(a) * r);
-        var holgado = { x: it.x, y: it.y, w: it.w + 8, h: it.h + 8, rot: it.rot };
-        if (!fuera(it) && !S.items.some(function (o) { return choca(o, holgado); })) break;
+        var cs = corners(it, 4);
+        if (!fuera(it) && !S.items.some(function (o) { return choca(corners(o), cs); })) break;
       }
       S.items.push(it);
       S.sel = S.items.length - 1;
-    }
-    function choca(a, b) {
-      var ca = corners(a), cb = corners(b);
-      return ca.some(function (q) { return inside(q, cb); }) || cb.some(function (q) { return inside(q, ca); });
     }
 
     function mk(tag, at, parent) {
@@ -2805,49 +2837,172 @@
       if (parent) parent.appendChild(n);
       return n;
     }
+    function tono(hex, f) {   // aclara (f > 0) u oscurece (f < 0) un color
+      var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+      var m = function (v) { return Math.round(f > 0 ? v + (255 - v) * f : v * (1 + f)); };
+      return "rgb(" + m(r) + "," + m(g) + "," + m(b) + ")";
+    }
+    function hull(p) {
+      p = p.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+      var cr = function (o, a, b) { return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); };
+      var lo = [], up = [];
+      p.forEach(function (q) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); });
+      p.slice().reverse().forEach(function (q) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); });
+      return lo.slice(0, -1).concat(up.slice(0, -1));
+    }
+    var SOL = [-0.2, 0.85];   // sombra por metro de alto (cae hacia la izquierda, como con sol de la tarde)
+
+    // Volumen genérico: muros visibles con sombreado, ventanas, puerta y techo
+    function volumen(g, it, t, bad) {
+      var cs = corners(it), H = t.alto, iso = S.vista === "iso";
+      var techo = bad ? "#E9A08C" : t.techo;
+      if (!iso) {
+        mk("polygon", { points: pts(cs), fill: t.forma === "pergola" ? tono(t.techo, 0.25) : techo, class: "casa-planta", "data-act": "move" }, g);
+        if (t.forma === "pergola") for (var k = 1; k < 4; k++) {
+          var a = [cs[0][0] + (cs[1][0] - cs[0][0]) * k / 4, cs[0][1] + (cs[1][1] - cs[0][1]) * k / 4], b = [cs[3][0] + (cs[2][0] - cs[3][0]) * k / 4, cs[3][1] + (cs[2][1] - cs[3][1]) * k / 4];
+          mk("line", { x1: num(a[0]), y1: num(a[1]), x2: num(b[0]), y2: num(b[1]), class: "casa-viga" }, g);
+        }
+        return;
+      }
+      if (t.piso) mk("polygon", { points: pts(cs), fill: t.piso, "data-act": "move" }, g);
+      var caras = [];
+      for (var i = 0; i < 4; i++) {
+        var a2 = cs[i], b2 = cs[(i + 1) % 4], nx = b2[1] - a2[1], ny = -(b2[0] - a2[0]);   // normal hacia afuera (esquinas en sentido horario en pantalla)
+        var L = Math.hypot(nx, ny);
+        caras.push({ a: a2, b: b2, n: [nx / L, ny / L], L: L });
+      }
+      var vis = caras.filter(function (c) { return c.n[0] + c.n[1] > 0.01; });
+      if (t.forma === "pergola") {
+        var e = 0.22, post = cs.map(function (q) { return [q[0] + (it.x - q[0]) * e / (it.w / 2), q[1] + (it.y - q[1]) * e / (it.h / 2)]; });
+        post.slice().sort(function (p1, p2) { return prof(p1[0], p1[1]) - prof(p2[0], p2[1]); }).forEach(function (q) {
+          var s0 = P(q[0], q[1], 0), s1 = P(q[0], q[1], H);
+          mk("line", { x1: num(s0[0]), y1: num(s0[1]), x2: num(s1[0]), y2: num(s1[1]), stroke: tono(t.muro, -0.15), "stroke-width": 0.3, "data-act": "move" }, g);
+        });
+        vis.forEach(function (c) {
+          mk("polygon", { points: pts([[c.a[0], c.a[1], H - 0.3], [c.b[0], c.b[1], H - 0.3], [c.b[0], c.b[1], H], [c.a[0], c.a[1], H]]), fill: tono(t.techo, -0.25), "data-act": "move" }, g);
+        });
+        mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], H]; })), fill: techo, class: "casa-techo", "data-act": "move" }, g);
+        return;
+      }
+      var puerta = t.puerta ? vis.slice().sort(function (c1, c2) { return (c2.n[0] + c2.n[1]) - (c1.n[0] + c1.n[1]); })[0] : null;
+      vis.forEach(function (c) {
+        var luz = c.n[0] < c.n[1] ? 0.1 : -0.22;   // la cara izquierda recibe más luz
+        mk("polygon", { points: pts([[c.a[0], c.a[1], 0], [c.b[0], c.b[1], 0], [c.b[0], c.b[1], H], [c.a[0], c.a[1], H]]), fill: bad ? "#C9705A" : tono(t.muro, luz), "data-act": "move" }, g);
+        var at = function (d, z) { return [c.a[0] + (c.b[0] - c.a[0]) * d / c.L, c.a[1] + (c.b[1] - c.a[1]) * d / c.L, z]; };
+        var desde = 0.8;
+        if (c === puerta && c.L > 2.6) {
+          mk("polygon", { points: pts([at(0.8, 0), at(1.85, 0), at(1.85, Math.min(2.2, H - 0.4)), at(0.8, Math.min(2.2, H - 0.4))]), fill: "#9C7443", class: "casa-puerta" }, g);
+          desde = 2.6;
+        }
+        if (!t.ventanas) return;
+        var libre = c.L - desde - 0.8, nV = Math.floor((libre + 0.9) / 3.1);
+        if (nV < 1) return;
+        var vw = Math.min(2.4, (libre - (nV - 1) * 0.9) / nV), paso = (libre - nV * vw) / Math.max(1, nV - 1);
+        for (var v = 0; v < nV; v++) {
+          var d0 = desde + (nV === 1 ? (libre - vw) / 2 : v * (vw + paso)), z0 = H * 0.3, z1 = H * 0.78;
+          mk("polygon", { points: pts([at(d0, z0), at(d0 + vw, z0), at(d0 + vw, z1), at(d0, z1)]), class: "casa-vidrio" }, g);
+        }
+      });
+      mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], H]; })), fill: techo, class: "casa-techo", "data-act": "move" }, g);
+    }
+    function arbol(g, t) {
+      var x = t[0], y = t[1], h = t[2], r = h * 0.42, iso = S.vista === "iso";
+      if (!iso) { mk("circle", { cx: num(x), cy: num(y), r: num(r), class: "casa-copa" }, g); return; }
+      var s0 = P(x, y, 0), s1 = P(x, y, h * 0.55), sc = P(x, y, h * 0.62);
+      var sh = P(x + SOL[0] * h * 0.6, y + SOL[1] * h * 0.6, 0);
+      mk("ellipse", { cx: num(sh[0]), cy: num(sh[1]), rx: num(r * 1.05), ry: num(r * 0.55), class: "casa-sombra" }, g);
+      mk("line", { x1: num(s0[0]), y1: num(s0[1]), x2: num(s1[0]), y2: num(s1[1]), class: "casa-tronco" }, g);
+      mk("circle", { cx: num(sc[0]), cy: num(sc[1]), r: num(r), class: "casa-copa" }, g);
+      mk("circle", { cx: num(sc[0] - r * 0.28), cy: num(sc[1] - r * 0.3), r: num(r * 0.5), class: "casa-copa-luz" }, g);
+    }
+    // Cota: línea paralela a un borde, separada hacia afuera, con remates y el largo en metros
+    function cota(g, a, b, n, sep, u, txt) {
+      var o = [n[0] * sep, n[1] * sep], A = [a[0] + o[0], a[1] + o[1]], Bp = [b[0] + o[0], b[1] + o[1]];
+      var t = 0.7, pa = P(A[0], A[1]), pb = P(Bp[0], Bp[1]);
+      mk("line", { x1: num(pa[0]), y1: num(pa[1]), x2: num(pb[0]), y2: num(pb[1]), class: "casa-cota" }, g);
+      [A, Bp].forEach(function (q) {
+        var q1 = P(q[0] - n[0] * t, q[1] - n[1] * t), q2 = P(q[0] + n[0] * t, q[1] + n[1] * t);
+        mk("line", { x1: num(q1[0]), y1: num(q1[1]), x2: num(q2[0]), y2: num(q2[1]), class: "casa-cota" }, g);
+      });
+      var m = P((A[0] + Bp[0]) / 2 + n[0] * 1.6 * u, (A[1] + Bp[1]) / 2 + n[1] * 1.6 * u);
+      var tx = mk("text", { x: num(m[0]), y: num(m[1]), "font-size": num(1.9 * u), class: "casa-cota-t" }, g);
+      tx.textContent = txt;
+    }
+
     function draw() {
       $$(":scope > :not(title)", svg).forEach(function (n) { n.remove(); });
-      var vb = S.vb, u = Math.max(vb[2], vb[3]) / 100;   // unidad visual (1 % del lado mayor)
+      var vb = viewBox(), u = Math.max(S.base[2], S.base[3]) / 100 / S.zoom, iso = S.vista === "iso";
+      svg.setAttribute("viewBox", vb.map(num).join(" "));
       svg.style.setProperty("--cu", u);
-      var defs = mk("defs", {}, svg);
-      var cp = mk("clipPath", { id: "casa-clip" }, defs);
-      var pd = "M" + S.poly.map(function (q) { return num(q[0]) + " " + num(q[1]); }).join("L") + "Z";
-      mk("path", { d: pd }, cp);
-      mk("path", { d: pd, class: "casa-lote" }, svg);
-      // Cuadrícula de 10 m dentro del lote
-      var gr = mk("g", { class: "casa-grid", "clip-path": "url(#casa-clip)" }, svg), d = "";
-      for (var x = Math.ceil(vb[0] / 10) * 10; x < vb[0] + vb[2]; x += 10) d += "M" + x + " " + vb[1] + "V" + (vb[1] + vb[3]);
-      for (var y = Math.ceil(vb[1] / 10) * 10; y < vb[1] + vb[3]; y += 10) d += "M" + vb[0] + " " + y + "H" + (vb[0] + vb[2]);
-      mk("path", { d: d }, gr);
-      mk("path", { d: pd, class: "casa-borde" }, svg);
-      // Escala de 10 m
-      var sx = vb[0] + vb[2] * 0.04, sy = vb[1] + vb[3] - 2.2 * u;
-      var sc = mk("g", { class: "casa-escala" }, svg);
-      mk("path", { d: "M" + sx + " " + (sy - u) + "V" + sy + "H" + (sx + 10) + "V" + (sy - u) }, sc);
-      var tx = mk("text", { x: sx + 11.2, y: sy, "font-size": 2 * u }, sc); tx.textContent = "10 m";
-      var tl = mk("text", { x: vb[0] + vb[2] * 0.96, y: sy, "font-size": 2 * u, "text-anchor": "end", class: "casa-lote-t" }, svg);
-      tl.textContent = "Lote " + S.lote.n + " · " + m2(S.lote.m2);
-      S.items.forEach(function (it, i) {
-        var bad = fuera(it), on = i === S.sel;
-        var g = mk("g", { class: "casa-it casa-" + it.tipo + (on ? " is-sel" : "") + (bad ? " is-bad" : ""), transform: "translate(" + num(it.x) + " " + num(it.y) + ") rotate(" + it.rot + ")",
-          tabindex: "0", role: "button", "data-i": i, "aria-label": it.nombre + ", " + fmt(it.w) + " por " + fmt(it.h) + " metros" + (bad ? ", fuera del lote" : "") }, svg);
-        mk("rect", { x: -it.w / 2, y: -it.h / 2, width: it.w, height: it.h, rx: 0.3, "data-act": "move" }, g);
-        if (on) {
-          var hr = 1.6 * u;
-          mk("line", { x1: 0, y1: -it.h / 2, x2: 0, y2: -it.h / 2 - 4 * u, class: "casa-h-line" }, g);
-          mk("circle", { cx: 0, cy: -it.h / 2 - 4 * u, r: hr, class: "casa-h casa-h-rot", "data-act": "rot" }, g);
-          mk("rect", { x: it.w / 2 - hr, y: it.h / 2 - hr, width: 2 * hr, height: 2 * hr, class: "casa-h casa-h-size", "data-act": "size" }, g);
-        }
-        // Rótulo dentro si cabe (achicándolo un poco); si no, debajo de la construcción, siempre legible
-        var cs = corners(it), car = Math.max(it.nombre.length, fmt(area(it)).length + 3) * 0.56;
-        var recto = it.rot % 180 === 0, ew = recto ? it.w : it.h, eh = recto ? it.h : it.w;
-        if (it.rot % 90 !== 0) ew = eh = Math.min(it.w, it.h) * 0.9;
-        var fs = Math.min(2.2 * u, ew * 0.94 / car, eh / 2.4), dentro = fs >= 1.5 * u;
-        if (!dentro) fs = 2 * u;
-        var ly = dentro ? it.y : Math.max.apply(null, cs.map(function (q) { return q[1]; })) + fs * 1.1;
-        var t1 = mk("text", { x: num(it.x), y: num(ly - fs * 0.15), "font-size": fs, class: "casa-it-t" + (dentro ? "" : " is-out") }, svg); t1.textContent = it.nombre;
-        var t2 = mk("text", { x: num(it.x), y: num(ly + fs * 1.05), "font-size": fs * 0.85, class: "casa-it-m" + (dentro ? "" : " is-out") }, svg); t2.textContent = fmt(area(it)) + " m²";
+      svg.classList.toggle("is-iso", iso);
+      svg.classList.toggle("is-zoom", S.zoom > 1.01);
+      var defs = mk("defs", {}, svg), cp = mk("clipPath", { id: "casa-clip" }, defs);
+      mk("polygon", { points: pts(S.poly) }, cp);
+      // Fondo: campo alrededor (atrapa los toques fuera del lote)
+      mk("rect", { x: num(vb[0] - vb[2]), y: num(vb[1] - vb[3]), width: num(vb[2] * 3), height: num(vb[3] * 3), class: "casa-fondo", "data-act": "fondo" }, svg);
+      mk("polygon", { points: pts(S.poly), class: "casa-lote", "data-act": "fondo" }, svg);
+      // Cuadrícula de 5 m (más marcada cada 10 m) sobre el suelo
+      var xs = S.poly.map(function (q) { return q[0]; }), ys = S.poly.map(function (q) { return q[1]; });
+      var x0 = Math.floor(Math.min.apply(null, xs) / 5) * 5, x1 = Math.max.apply(null, xs), y0 = Math.floor(Math.min.apply(null, ys) / 5) * 5, y1 = Math.max.apply(null, ys);
+      var gr = mk("g", { class: "casa-grid", "clip-path": "url(#casa-clip)" }, svg), d5 = "", d10 = "";
+      var seg = function (a, b) { var p1 = P(a[0], a[1]), p2 = P(b[0], b[1]); return "M" + num(p1[0]) + " " + num(p1[1]) + "L" + num(p2[0]) + " " + num(p2[1]); };
+      for (var x = x0; x <= x1; x += 5) { var s1 = seg([x, y0], [x, y1]); if (x % 10) d5 += s1; else d10 += s1; }
+      for (var y = y0; y <= y1; y += 5) { var s2 = seg([x0, y], [x1, y]); if (y % 10) d5 += s2; else d10 += s2; }
+      mk("path", { d: d5, class: "g5" }, gr); mk("path", { d: d10, class: "g10" }, gr);
+      mk("polygon", { points: pts(S.poly), class: "casa-borde" }, svg);
+      // Largo de cada deslinde (los de más de 12 m)
+      var gl = mk("g", { class: "casa-deslindes" }, svg);
+      S.poly.forEach(function (a, i) {
+        var b = S.poly[(i + 1) % S.poly.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        if (L < 12) return;
+        var n = [(b[1] - a[1]) / L, -(b[0] - a[0]) / L], m = P((a[0] + b[0]) / 2 + n[0] * 3.2 * u, (a[1] + b[1]) / 2 + n[1] * 3.2 * u);
+        var tx = mk("text", { x: num(m[0]), y: num(m[1]), "font-size": num(2.1 * u) }, gl); tx.textContent = Math.round(L) + " m";
       });
+      // Sombras en el suelo
+      var gs = mk("g", { class: "casa-sombras" }, svg);
+      if (iso) S.items.forEach(function (it) {
+        var t = tipo(it.tipo), cs = corners(it), H = t.alto;
+        var sh = hull(cs.concat(cs.map(function (q) { return [q[0] + SOL[0] * H, q[1] + SOL[1] * H]; })));
+        mk("polygon", { points: pts(sh), class: "casa-sombra" }, gs);
+      });
+      // Construcciones y árboles, de atrás hacia adelante
+      var huellas = S.items.map(function (it) { return corners(it, 1.5); });
+      var cosas = S.arboles.filter(function (t) { return !huellas.some(function (h) { return inside(t, h); }); })
+        .map(function (t) { return { z: prof(t[0], t[1]), t: t }; })
+        .concat(S.items.map(function (it, i) { return { z: prof(it.x, it.y), it: it, i: i }; }))
+        .sort(function (a, b) { return a.z - b.z; });
+      cosas.forEach(function (c) {
+        if (c.t) { arbol(mk("g", { class: "casa-arbol" }, svg), c.t); return; }
+        var it = c.it, i = c.i, bad = fuera(it), on = i === S.sel;
+        var g = mk("g", { class: "casa-it casa-" + it.tipo + (on ? " is-sel" : "") + (bad ? " is-bad" : ""), tabindex: "0", role: "button", "data-i": i,
+          "aria-label": it.nombre + ", " + fmt(it.w) + " por " + fmt(it.h) + " metros" + (bad ? ", fuera del lote" : "") }, svg);
+        volumen(g, it, tipo(it.tipo), bad);
+      });
+      // Seleccionada: contorno, cotas y manillas (tamaño en la esquina más cercana, giro más allá de una cota)
+      var it = S.items[S.sel];
+      if (it) {
+        var t = tipo(it.tipo), cs = corners(it), H = iso ? t.alto : 0, gsel = mk("g", { class: "casa-selg" }, svg);
+        mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], H]; })), class: "casa-sel-borde" }, gsel);
+        var k = 0; cs.forEach(function (q, j) { if (prof(q[0], q[1]) > prof(cs[k][0], cs[k][1])) k = j; });
+        var prev = cs[(k + 3) % 4], next = cs[(k + 1) % 4], q0 = cs[k];
+        var nrm = function (a, b) { var L = Math.hypot(b[0] - a[0], b[1] - a[1]); return [(b[1] - a[1]) / L, -(b[0] - a[0]) / L]; };
+        var n1 = nrm(prev, q0), n2 = nrm(q0, next);
+        var L1 = Math.hypot(q0[0] - prev[0], q0[1] - prev[1]), L2 = Math.hypot(next[0] - q0[0], next[1] - q0[1]);
+        cota(gsel, prev, q0, n1, 1.8, u, fmt(L1) + " m");
+        cota(gsel, q0, next, n2, 1.8, u, fmt(L2) + " m");
+        var hr = 1.5 * u, pc = P(q0[0], q0[1]);
+        var rq = [(q0[0] + next[0]) / 2 + n2[0] * (1.8 + 5.2 * u), (q0[1] + next[1]) / 2 + n2[1] * (1.8 + 5.2 * u)], pr = P(rq[0], rq[1]);
+        var hs = mk("g", { class: "casa-it-h", "data-i": S.sel }, gsel);
+        mk("circle", { cx: num(pr[0]), cy: num(pr[1]), r: num(hr * 1.15), class: "casa-h casa-h-rot", "data-act": "rot" }, hs);
+        var ic = mk("use", { href: "#i-rotate", x: num(pr[0] - hr * 0.8), y: num(pr[1] - hr * 0.8), width: num(hr * 1.6), height: num(hr * 1.6), class: "casa-h-ico" }, hs);
+        ic.setAttribute("pointer-events", "none");
+        mk("rect", { x: num(pc[0] - hr), y: num(pc[1] - hr), width: num(2 * hr), height: num(2 * hr), rx: num(hr * 0.3), class: "casa-h casa-h-size", "data-act": "size" }, hs);
+        // Rótulo sobre el techo
+        var arriba = Math.min.apply(null, cs.map(function (q) { return P(q[0], q[1], H)[1]; }));
+        var pl = P(it.x, it.y, H);
+        var lb = mk("text", { x: num(pl[0]), y: num(arriba - 2 * u), "font-size": num(2.2 * u), class: "casa-it-t" }, gsel);
+        lb.textContent = it.nombre + " · " + fmt(area(it)) + " m²";
+      }
       panel();
     }
     function panel() {
@@ -2860,13 +3015,14 @@
         : malo ? (malo === 1 ? "Una construcción queda fuera del lote." : malo + " construcciones quedan fuera del lote.")
         : "Te quedan " + fmt(lim - tot) + " m² para construir (" + Math.round(tot / lim * 100) + " % usado).";
       el.msg.classList.toggle("is-warn", over || !!malo);
+      if (el.lbl) el.lbl.textContent = "Lote " + S.lote.n + " · " + m2(S.lote.m2) + " · " + S.p.nombre;
       var it = S.items[S.sel];
       el.box.hidden = !it;
       if (it) {
         el.name.textContent = it.nombre;
         el.selm2.textContent = fmt(area(it)) + " m²";
-        if (document.activeElement !== el.w) el.w.value = num(it.w);
-        if (document.activeElement !== el.h) el.h.value = num(it.h);
+        if (document.activeElement !== el.w) el.w.value = Math.round(it.w * 10) / 10;
+        if (document.activeElement !== el.h) el.h.value = Math.round(it.h * 10) / 10;
       }
       var lista = S.items.map(function (x) { return x.nombre.toLowerCase() + " de " + fmt(area(x)) + " m²"; });
       el.wa.href = waHref("Hola Fundos, dibujé mi casa en el lote " + S.lote.n + " de " + S.p.nombre + ": " + (lista.join(", ") || "sin construcciones") +
@@ -2892,8 +3048,8 @@
     }
     el.w.addEventListener("input", function () { medida(el.w, "w"); });
     el.h.addEventListener("input", function () { medida(el.h, "h"); });
-    el.w.addEventListener("change", function () { el.w.value = num(S.items[S.sel] ? S.items[S.sel].w : el.w.value); });
-    el.h.addEventListener("change", function () { el.h.value = num(S.items[S.sel] ? S.items[S.sel].h : el.h.value); });
+    el.w.addEventListener("change", function () { if (S.items[S.sel]) el.w.value = S.items[S.sel].w; });
+    el.h.addEventListener("change", function () { if (S.items[S.sel]) el.h.value = S.items[S.sel].h; });
     el.rot.addEventListener("click", function () { var it = S.items[S.sel]; if (it) { it.rot = (it.rot + 15) % 360; draw(); } });
     el.del.addEventListener("click", function () {
       if (S.sel < 0) return;
@@ -2902,8 +3058,31 @@
       draw();
       var b = $("[data-tipo]", el.add); if (b && S.sel < 0) b.focus();
     });
+    // Vista (3D / planta), zoom, encuadre y pantalla completa
+    $$("[data-c-vista]", root).forEach(function (b) {
+      b.addEventListener("click", function () {
+        S.vista = b.getAttribute("data-c-vista");
+        $$("[data-c-vista]", root).forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+        encuadre(); acercar(); draw();
+      });
+    });
+    function zoomA(z) { S.zoom = clamp(z, 1, 5); if (S.zoom === 1) S.pan = [0, 0]; draw(); }
+    $$("[data-c-zoom]", root).forEach(function (b) {
+      b.addEventListener("click", function () {
+        var a = b.getAttribute("data-c-zoom");
+        if (a === "fit") { S.pan = [0, 0]; zoomA(1); }
+        else zoomA(S.zoom * (a === "in" ? 1.4 : 1 / 1.4));
+      });
+    });
+    if (el.full) {
+      if (!stage.requestFullscreen) el.full.hidden = true;
+      el.full.addEventListener("click", function () {
+        if (document.fullscreenElement) document.exitFullscreen(); else stage.requestFullscreen().catch(function () {});
+      });
+      document.addEventListener("fullscreenchange", function () { el.full.setAttribute("aria-pressed", document.fullscreenElement === stage ? "true" : "false"); draw(); });
+    }
 
-    // Arrastre: mover (cuerpo), cambiar tamaño (esquina, con el centro fijo) y girar (círculo)
+    // Arrastre: mover (volumen), tamaño (esquina, centro fijo), girar (círculo) y desplazar la vista acercada (fondo)
     function pt(e) {
       var m = svg.getScreenCTM();
       if (!m) return [0, 0];
@@ -2912,29 +3091,40 @@
     }
     var drag = null;
     svg.addEventListener("pointerdown", function (e) {
-      var g = e.target.closest(".casa-it");
-      if (!g) { if (S.sel >= 0 && e.target === svg) { S.sel = -1; draw(); } return; }
-      var i = +g.getAttribute("data-i"), it = S.items[i], act = e.target.getAttribute("data-act") || "move", p0 = pt(e);
+      var act = e.target.getAttribute && e.target.getAttribute("data-act"), g = e.target.closest("[data-i]");
+      if (!g || !act || act === "fondo") {
+        if (S.sel >= 0 && !(e.target.closest && e.target.closest(".casa-selg"))) { S.sel = -1; window.requestAnimationFrame(draw); }
+        if (S.zoom > 1.01) { var s0 = pt(e); drag = { act: "pan", s0: [e.clientX, e.clientY], pan0: S.pan.slice(), k: viewBox()[2] / svg.getBoundingClientRect().width, id: e.pointerId }; try { svg.setPointerCapture(e.pointerId); } catch (er) { /* sin captura */ } }
+        return;
+      }
+      var i = +g.getAttribute("data-i"), it = S.items[i], s = pt(e), p0 = suelo(s[0], s[1]);
       e.preventDefault();
       S.sel = i;
-      drag = { it: it, act: act, dx: p0[0] - it.x, dy: p0[1] - it.y, id: e.pointerId };
+      drag = { it: it, act: act, dx: p0[0] - it.x, dy: p0[1] - it.y, a0: Math.atan2(p0[1] - it.y, p0[0] - it.x), rot0: it.rot, id: e.pointerId };
       try { svg.setPointerCapture(e.pointerId); } catch (er) { /* sin captura */ }
       // Se redibuja en el cuadro siguiente: el toque debe llegar antes al elemento original (para no desplazar la página)
       window.requestAnimationFrame(draw);
     });
     svg.addEventListener("pointermove", function (e) {
       if (!drag || e.pointerId !== drag.id) return;
-      var p = pt(e), it = drag.it;
+      if (drag.act === "pan") {
+        S.pan = [drag.pan0[0] - (e.clientX - drag.s0[0]) * drag.k, drag.pan0[1] - (e.clientY - drag.s0[1]) * drag.k];
+        draw(); return;
+      }
+      var s = pt(e), p = suelo(s[0], s[1]), it = drag.it;
       if (drag.act === "move") { it.x = snap(p[0] - drag.dx); it.y = snap(p[1] - drag.dy); }
       else if (drag.act === "size") { var q = local(it, p[0], p[1]); it.w = clamp(snap(Math.abs(q[0]) * 2), 2, 40); it.h = clamp(snap(Math.abs(q[1]) * 2), 2, 40); }
-      else { var a = Math.atan2(p[0] - it.x, -(p[1] - it.y)) * 180 / Math.PI; it.rot = (Math.round(a / 5) * 5 + 360) % 360; }
+      else { var a = Math.atan2(p[1] - it.y, p[0] - it.x); it.rot = ((Math.round((drag.rot0 + (a - drag.a0) * 180 / Math.PI) / 5) * 5) % 360 + 360) % 360; }
       draw();
     });
     function end(e) { if (drag && e.pointerId === drag.id) { drag = null; draw(); } }
     svg.addEventListener("pointerup", end);
     svg.addEventListener("pointercancel", end);
-    // En pantallas táctiles, tocar una construcción no desplaza la página; tocar el resto sí
-    svg.addEventListener("touchstart", function (e) { if (e.target.closest && e.target.closest(".casa-it")) e.preventDefault(); }, { passive: false });
+    // En pantallas táctiles, tocar una construcción (o el fondo acercado) no desplaza la página
+    svg.addEventListener("touchstart", function (e) {
+      var t = e.target;
+      if (t.closest && (t.closest(".casa-it") || t.closest(".casa-it-h") || (S.zoom > 1.01 && t.getAttribute("data-act") === "fondo"))) e.preventDefault();
+    }, { passive: false });
     svg.addEventListener("focusin", function (e) {
       var g = e.target.closest && e.target.closest(".casa-it");
       if (g && +g.getAttribute("data-i") !== S.sel) { S.sel = +g.getAttribute("data-i"); draw(); focusSel(); }
@@ -2943,8 +3133,11 @@
     svg.addEventListener("keydown", function (e) {
       var it = S.items[S.sel];
       if (!it) return;
-      var st = e.shiftKey ? 5 : 0.5, mv = { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, -st], ArrowDown: [0, st] }[e.key];
-      if (mv) { it.x += mv[0]; it.y += mv[1]; }
+      var st = e.shiftKey ? 5 : 0.5, iso = S.vista === "iso";
+      // En 3D las flechas siguen la pantalla (derecha = hacia la derecha en diagonal)
+      var mv = iso ? { ArrowLeft: [-st, st], ArrowRight: [st, -st], ArrowUp: [-st, -st], ArrowDown: [st, st] }[e.key]
+        : { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, -st], ArrowDown: [0, st] }[e.key];
+      if (mv) { it.x = snap(it.x + mv[0]); it.y = snap(it.y + mv[1]); }
       else if (e.key === "r" || e.key === "R") it.rot = (it.rot + 15) % 360;
       else if (e.key === "Delete" || e.key === "Backspace") { el.del.click(); e.preventDefault(); return; }
       else return;
@@ -2952,13 +3145,6 @@
       draw(); focusSel();
     });
 
-    var rz = 0;
-    window.addEventListener("resize", function () {
-      window.clearTimeout(rz);
-      rz = window.setTimeout(function () { if (S.lote && quiereGiro()) { encuadre(); draw(); } }, 150);
-    });
-    // La pestaña se abre oculta: al mostrarse se mide el recuadro de nuevo
-    document.addEventListener("fundos:tab", function (e) { if (e.detail === "tu-casa" && S.lote && quiereGiro()) { encuadre(); draw(); } });
     Casa.set = function (id, n) { setProyecto(id, n); };
     setProyecto(con[0].id);
   }

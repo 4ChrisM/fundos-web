@@ -1,4 +1,4 @@
-// "Tu casa": lote a escala, agregar, mover, agrandar, girar con teclado, medidor del 10 %, enlace desde el plano
+// "Tu casa": lote a escala en 3D y planta, agregar, mover, zoom, girar con teclado, medidor del 10 %, enlace desde el plano
 const { chromium } = require("playwright");
 const B = "http://127.0.0.1:8765/";
 (async () => {
@@ -14,8 +14,8 @@ const B = "http://127.0.0.1:8765/";
     r.inicial = await p.evaluate(() => [document.querySelector("[data-c-total]").textContent, document.querySelectorAll(".casa-it").length, !document.querySelector("#tu-casa").hidden]);
     const st = await p.$(".casa-stage"); await st.scrollIntoViewIfNeeded(); await p.waitForTimeout(300);
     // Mover la casa (mouse en computador, toque en celular) y verificar que la página no se desplaza al tocarla
-    const b0 = await (await p.$(".casa-it rect")).boundingBox(), y0 = await p.evaluate(() => scrollY);
-    const tr0 = await p.getAttribute(".casa-it", "transform");
+    const b0 = await (await p.$('.casa-it[data-i="0"] .casa-techo')).boundingBox(), y0 = await p.evaluate(() => scrollY);
+    const tr0 = await p.getAttribute('.casa-it[data-i="0"] .casa-techo', "points");
     if (touch) {
       const cx = b0.x + b0.width / 2, cy = b0.y + b0.height / 2;
       const cdp = await ctx.newCDPSession(p);
@@ -27,7 +27,7 @@ const B = "http://127.0.0.1:8765/";
       await p.mouse.move(b0.x + b0.width / 2 + 40, b0.y + b0.height / 2 + 30, { steps: 5 }); await p.mouse.up();
     }
     await p.waitForTimeout(200);
-    r.movida = tr0 !== await p.getAttribute(".casa-it", "transform");
+    r.movida = tr0 !== await p.getAttribute('.casa-it[data-i="0"] .casa-techo', "points");
     r.paginaQuieta = Math.abs(await p.evaluate(() => scrollY) - y0) < 2;
     // Agregar, cambiar medidas y pasarse del límite
     await p.click('[data-tipo="quincho"]'); await p.click('[data-tipo="bodega"]');
@@ -38,9 +38,15 @@ const B = "http://127.0.0.1:8765/";
     await p.click("[data-c-del]");
     r.quitada = await p.evaluate(() => [document.querySelectorAll(".casa-it").length, document.querySelector("[data-c-meter]").classList.contains("is-over")]);
     // Teclado: flechas mueven, R gira
-    await p.focus(".casa-it.is-sel"); const t1 = await p.getAttribute(".casa-it.is-sel", "transform");
+    await p.focus(".casa-it.is-sel"); const t1 = await p.getAttribute(".casa-it.is-sel .casa-techo", "points");
     await p.keyboard.press("ArrowRight"); await p.keyboard.press("r");
-    r.teclado = [t1, await p.getAttribute(".casa-it.is-sel", "transform"), await p.evaluate(() => document.activeElement.classList.contains("casa-it"))];
+    r.teclado = [t1 !== await p.getAttribute(".casa-it.is-sel .casa-techo", "points"), await p.evaluate(() => document.activeElement.classList.contains("casa-it"))];
+    // Zoom y vista en planta
+    const vb0 = await p.getAttribute("[data-c-svg]", "viewBox");
+    await p.click('[data-c-zoom="out"]'); r.zoom = vb0 !== await p.getAttribute("[data-c-svg]", "viewBox");
+    await p.click('[data-c-vista="planta"]');
+    r.planta = await p.evaluate(() => [document.querySelectorAll(".casa-planta").length, document.querySelectorAll(".casa-vidrio").length]);
+    await p.click('[data-c-vista="iso"]');
     r.wa = (await p.getAttribute("[data-c-wa]", "href")).includes("permitidos");
     r.ancho = await p.evaluate(() => document.documentElement.scrollWidth);
     await p.screenshot({ path: "ux/casa-" + w + ".png" });
