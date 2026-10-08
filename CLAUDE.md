@@ -129,13 +129,21 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   pasto con cuadrícula de 5/10 m, largo de cada deslinde, árboles de ambientación (siempre los mismos por lote; se
   apartan donde se construye) y construcciones genéricas en volumen con sombra (`TIPOS`: casa, **casa de dos pisos**
   (ventanas por piso y faja; cuenta la huella × 2 pisos), casa de visitas, quincho y estacionamiento como pérgola, bodega y
-  **piscina** (borde, muros interiores y agua; `cuenta: false`: se muestra pero no suma a lo construido). La elegida muestra cotas en metros, la esquina
+  **piscina** (borde, muros interiores y agua; `cuenta: false`: se muestra pero no suma a lo construido). Las viviendas y la bodega
+  tienen **techo plano o a dos aguas** (`it.dos`, selector "Techo"; cumbrera por el lado mayor, 25°, alero 35 cm,
+  frontones en los lados cortos). **Camino de acceso** (botón que lo enciende/apaga, `camino()`): ripio de 3,6 m con
+  postes de portón desde el deslinde de acceso hasta la primera vivienda; el deslinde de acceso es el del lote más
+  cercano a una calle o servidumbre de `lib/planos.js` (`acceso()`, `tramos()` lee M/L/H/V/Z) y su largo dice "· acceso". La elegida muestra cotas en metros, la esquina
   dorada (tamaño, centro fijo, 2 a 40 m, pasos de 0,5 m) y el círculo (giro, 5°); se arrastra con mouse o dedo (sin
   desplazar la página). Zoom, "ver el lote completo", pantalla completa; parte acercada a la casa (`acercar()`).
   Teclado: flechas (siguen la pantalla en 3D; Mayús = 5 m), R gira, Supr quita. Medidor contra el **10 % de la
   superficie** (regla que dio el cliente; `PCT`), aviso si se pasa o si algo queda fuera, y "Enviar mi diseño a un
   asesor" por WhatsApp. Desde el detalle del lote: "Dibuja tu casa en este lote" (`[data-d-casa]`, `Casa.set`). Solo
   lotes no vendidos. Texto legal: referencial, la DOM fija superficie, distanciamientos y permiso. Prueba: `tools/pruebas/casa.js`.
+  **Guiado a elegir parcela** (pedido del cliente): "Diseña tu casa" de la barra y el menú, el aviso y "Elegir mi lote en
+  el plano" (`[data-casa-guia]`) llevan a `#plano` con la guía (`Plan.guia`, `[data-plan-guia]`): paso 1 "toca un lote
+  disponible" (los disponibles destellan), paso 2 con "Diseñar mi casa aquí" (`[data-d-guia]`, primero en el detalle del
+  lote) que abre la herramienta en ese lote. El aviso ofrece además "o pruébalo con un lote de ejemplo" (`#tu-casa`).
   **Acceso visible** (el cliente lo encontraba escondido): "Diseña tu casa" con etiqueta "Nuevo" en la barra (`.nl-casa`;
   en la franja de celular, "Tu casa" con un punto) y en el menú (`.menu-casa`), y un aviso con imagen (`.casa-promo`,
   `#disena-inicio` en Inicio tras "Por qué" y `#disena-proyectos` en Proyectos tras las tarjetas). La imagen

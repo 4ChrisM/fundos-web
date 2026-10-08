@@ -170,7 +170,7 @@ const ARGS = ["--proxy-server=" + (process.env.HTTPS_PROXY || "http://127.0.0.1:
   await m.locator("[data-menu-open]").tap();
   await m.waitForTimeout(800);
   await m.screenshot({ path: "i-m-menu.png" });
-  await m.locator('#menu [data-menu-link][href="#plano"]').tap();
+  await m.locator('#menu [data-menu-link][href="#plano"]:not([data-casa-guia])').tap();
   await m.waitForTimeout(1500);
   results.menuClosed = !(await m.locator("#menu").evaluate(d => d.open));
   await m.evaluate(() => document.getElementById("plano").scrollIntoView({ behavior: "instant" }));
