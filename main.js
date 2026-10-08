@@ -1058,6 +1058,7 @@
       d.fav.hidden = sold;
       d.sim.hidden = sold;
       if (d.casa) d.casa.hidden = sold;
+      if (typeof updGuia === "function") updGuia();
       if (d.toast) d.toast.hidden = true;
       syncFavButton();
     }
@@ -1506,6 +1507,34 @@
     /* ---- API para otros módulos ---- */
     Plan.land = landPlan;
     Plan.show = function (id) { if (id !== S.id || !built) setProject(id); };
+
+    /* ---- Guía "Diseña tu casa": paso 1, elegir un lote en el plano; paso 2, "Diseñar mi casa aquí" ---- */
+    var guia = $("[data-plan-guia]"), gBtn = $("[data-d-guia]"), gPaso = $("[data-plan-guia-paso]"), gTxt = $("[data-plan-guia-txt]");
+    function updGuia() {
+      if (!guia || !gBtn) return;
+      var l = S.sel != null ? lotOf(P(), S.sel) : null, ok = S.guia && l && l.estado !== "vendida";
+      guia.hidden = !S.guia;
+      root.classList.toggle("is-guia", !!S.guia);
+      gBtn.hidden = !ok;
+      if (d.casa) d.casa.classList.toggle("is-guia", !!ok);
+      if (!S.guia) return;
+      gPaso.textContent = ok ? "Paso 2 de 2" : "Paso 1 de 2";
+      gTxt.textContent = ok ? "Lote " + l.n + " elegido. Toca «Diseñar mi casa aquí» para ubicar tu casa en 3D."
+        : l && l.estado === "vendida" ? "Ese lote está vendido: elige uno disponible para diseñar tu casa."
+        : "Elige tu parcela: toca un lote disponible en el plano.";
+    }
+    Plan.guia = function (on) { S.guia = !!on; updGuia(); };
+    if (gBtn) gBtn.addEventListener("click", function () {
+      var l = lotOf(P(), S.sel);
+      if (l) Casa.set(S.id, l.n);
+      Plan.guia(false);
+      closeSheet(true);
+    });
+    var gx = $("[data-plan-guia-x]");
+    if (gx) gx.addEventListener("click", function () { Plan.guia(false); });
+    document.addEventListener("click", function (e) {
+      if (e.target.closest && e.target.closest("[data-casa-guia]")) Plan.guia(true);
+    }, true);
     Plan.current = function () { return S.id; };
     Plan.apply = function (o) {
       S.est = o.soloDisponibles ? { disponible: true, reservada: false, vendida: false } : { disponible: true, reservada: true, vendida: true };
@@ -2678,20 +2707,20 @@
     var NS = "http://www.w3.org/2000/svg", PCT = 0.10, CI = Math.cos(Math.PI / 6), SI = 0.5;
     // Construcciones genéricas: medidas por defecto, alto y estilo de volumen
     var TIPOS = [
-      { id: "casa", nombre: "Casa", w: 12, h: 10, alto: 3.2, forma: "caja", muro: "#3A3833", techo: "#5B5751", ventanas: true, puerta: true },
-      { id: "casa2", nombre: "Casa de dos pisos", w: 10, h: 8, alto: 6, pisos: 2, forma: "caja", muro: "#E9E3D6", techo: "#4F4B45", ventanas: true, puerta: true, faja: "#8C6A44" },
+      { id: "casa", nombre: "Casa", w: 12, h: 10, alto: 3.2, forma: "caja", techoOp: true, vivienda: true, muro: "#3A3833", techo: "#5B5751", ventanas: true, puerta: true },
+      { id: "casa2", nombre: "Casa de dos pisos", w: 10, h: 8, alto: 6, pisos: 2, forma: "caja", techoOp: true, vivienda: true, muro: "#E9E3D6", techo: "#4F4B45", ventanas: true, puerta: true, faja: "#8C6A44" },
       { id: "piscina", nombre: "Piscina", w: 8, h: 4, alto: 0, forma: "piscina", cuenta: false },
-      { id: "visitas", nombre: "Casa de visitas", w: 8, h: 6, alto: 2.9, forma: "caja", muro: "#CDBFA4", techo: "#5B5751", ventanas: true, puerta: true },
+      { id: "visitas", nombre: "Casa de visitas", w: 8, h: 6, alto: 2.9, forma: "caja", techoOp: true, dosAguas: true, vivienda: true, muro: "#CDBFA4", techo: "#5B5751", ventanas: true, puerta: true },
       { id: "quincho", nombre: "Quincho", w: 6, h: 5, alto: 2.7, forma: "pergola", muro: "#8A6A45", techo: "#6E5A43", piso: "#D6C29C" },
       { id: "garaje", nombre: "Estacionamiento", w: 6, h: 5, alto: 2.5, forma: "pergola", muro: "#6F6C66", techo: "#8F8B83", piso: "#D9D3C6" },
-      { id: "bodega", nombre: "Bodega", w: 4, h: 3, alto: 2.4, forma: "caja", muro: "#A07D50", techo: "#5B5751", puerta: true }
+      { id: "bodega", nombre: "Bodega", w: 4, h: 3, alto: 2.4, forma: "caja", techoOp: true, dosAguas: true, muro: "#A07D50", techo: "#5B5751", puerta: true }
     ];
-    var S = { p: null, lote: null, poly: [], arboles: [], items: [], sel: -1, seq: 0, vista: "iso", zoom: 1, pan: [0, 0], base: [0, 0, 100, 100] };
+    var S = { p: null, lote: null, poly: [], arboles: [], acceso: null, camino: true, items: [], sel: -1, seq: 0, vista: "iso", zoom: 1, pan: [0, 0], base: [0, 0, 100, 100] };
     var el = {
       total: $("[data-c-total]", root), max: $("[data-c-max]", root), bar: $("[data-c-bar]", root), msg: $("[data-c-msg]", root),
       meter: $("[data-c-meter]", root), add: $("[data-c-add]", root), box: $("[data-c-sel]", root), name: $("[data-c-sel-name]", root),
       selm2: $("[data-c-sel-m2]", root), w: $("[data-c-w]", root), h: $("[data-c-h]", root), rot: $("[data-c-rot]", root),
-      del: $("[data-c-del]", root), wa: $("[data-c-wa]", root), lbl: $("[data-c-lbl]", root), full: $("[data-c-full]", root)
+      del: $("[data-c-del]", root), wa: $("[data-c-wa]", root), techo: $("[data-c-techo-wrap]", root), camino: $("[data-c-camino]", root), lbl: $("[data-c-lbl]", root), full: $("[data-c-full]", root)
     };
     var con = proyectos.filter(function (p) { return planos[p.id] && p.lotes && p.lotes.length; })
       .sort(function (a, b) { return (b.id === DESTACADO) - (a.id === DESTACADO); });
@@ -2762,10 +2791,12 @@
       if (!g || !S.lote) return;
       var raw = parse(g.d), k = Math.sqrt(S.lote.m2 / Math.abs(polyArea(raw))), l0 = g.l;
       var poly = raw.map(function (q) { return [(q[0] - l0[0]) * k, (q[1] - l0[1]) * k]; });
+      var acc = acceso(raw, planos[S.p.id]);
       var best = 0, ang = 0;
       poly.forEach(function (a, i) { var b = poly[(i + 1) % poly.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L > best) { best = L; ang = Math.atan2(b[1] - a[1], b[0] - a[0]); } });
       var c = Math.cos(-ang), s = Math.sin(-ang);
       S.poly = poly.map(function (q) { return [q[0] * c - q[1] * s, q[0] * s + q[1] * c]; });
+      S.acceso = acc ? acc.map(function (q) { var x = (q[0] - l0[0]) * k, y = (q[1] - l0[1]) * k; return [x * c - y * s, x * s + y * c]; }) : null;
       if (polyArea(S.poly) > 0) S.poly.reverse();   // mismo sentido que las construcciones: la normal (dy, −dx) apunta hacia afuera
       selL.value = String(n);
       arboles(n);
@@ -2783,6 +2814,39 @@
       var c = P(it.x, it.y, 0), b = S.base, z = S.vista === "iso" ? 2.1 : 1.6;
       S.zoom = z;
       S.pan = [c[0] - (b[0] + b[2] / 2), c[1] - (b[1] + b[3] / 2)];
+    }
+    // Segmentos de las calles del plano (servidumbres como polígonos; en Puerto Varas, líneas con H y V)
+    function tramos(d) {
+      var out = [], cur = null, ini = null, re = /([MLHVZ])([^MLHVZ]*)/gi, m;
+      while ((m = re.exec(d))) {
+        var c = m[1].toUpperCase(), v = m[2].trim() ? m[2].trim().split(/[ ,]+/).map(Number) : [];
+        if (c === "M") { cur = [v[0], v[1]]; ini = cur; for (var i = 2; i + 1 < v.length; i += 2) { var q = [v[i], v[i + 1]]; out.push([cur, q]); cur = q; } }
+        else if (c === "L") for (var j = 0; j + 1 < v.length; j += 2) { var q2 = [v[j], v[j + 1]]; out.push([cur, q2]); cur = q2; }
+        else if (c === "H") v.forEach(function (x) { var q3 = [x, cur[1]]; out.push([cur, q3]); cur = q3; });
+        else if (c === "V") v.forEach(function (y) { var q4 = [cur[0], y]; out.push([cur, q4]); cur = q4; });
+        else if (c === "Z" && cur && ini) { out.push([cur, ini]); cur = ini; }
+      }
+      return out;
+    }
+    // El acceso es el deslinde del lote más cercano a una calle o servidumbre (lo que mejor lo toca en todo su largo)
+    function acceso(raw, pl) {
+      var segs = [];
+      (pl.calles || []).forEach(function (c) { segs = segs.concat(tramos(c.d)); });
+      if (pl.caminoPrincipal) segs = segs.concat(tramos(pl.caminoPrincipal));
+      if (!segs.length) return null;
+      var best = null, bd = Infinity;
+      raw.forEach(function (a, i) {
+        var b = raw[(i + 1) % raw.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        if (L < 4) return;
+        var d = 0;
+        [0.25, 0.5, 0.75].forEach(function (f) {
+          var q = [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f], m2v = Infinity;
+          segs.forEach(function (sg) { m2v = Math.min(m2v, distSeg(q, sg[0], sg[1])); });
+          d += m2v;
+        });
+        if (d < bd) { bd = d; best = [a, b]; }
+      });
+      return best;
     }
     function setProyecto(id, n) {
       S.p = proyecto(id) || con[0];
@@ -2825,7 +2889,7 @@
     function add(id) {
       var t = tipo(id);
       if (!t) return;
-      var it = { key: ++S.seq, tipo: t.id, nombre: t.nombre, w: t.w, h: t.h, x: 0, y: 0, rot: 0 };
+      var it = { key: ++S.seq, tipo: t.id, nombre: t.nombre, w: t.w, h: t.h, x: 0, y: 0, rot: 0, dos: !!t.dosAguas };
       // Lugar libre cerca del centro, con 4 m de holgura entre construcciones
       for (var i = 0; i < 90; i++) {
         var a = i * 2.4, r = i * 1.6;
@@ -2863,6 +2927,7 @@
       var cs = corners(it), H = t.alto, iso = S.vista === "iso";
       var techo = bad ? "#E9A08C" : t.techo;
       if (t.forma === "piscina") { piscina(g, it, cs, bad); return; }
+      if (!iso && dosAguas(it, t)) { mk("polygon", { points: pts(cs), class: "casa-planta", fill: techo, "data-act": "move" }, g); techoDos(g, it, dosAguas(it, t), 0, techo); return; }
       if (!iso) {
         mk("polygon", { points: pts(cs), fill: t.forma === "pergola" ? tono(t.techo, 0.25) : techo, class: "casa-planta", "data-act": "move" }, g);
         if (t.forma === "pergola") for (var k = 1; k < 4; k++) {
@@ -2876,7 +2941,7 @@
       for (var i = 0; i < 4; i++) {
         var a2 = cs[i], b2 = cs[(i + 1) % 4], nx = b2[1] - a2[1], ny = -(b2[0] - a2[0]);   // normal hacia afuera (esquinas en sentido horario en pantalla)
         var L = Math.hypot(nx, ny);
-        caras.push({ a: a2, b: b2, n: [nx / L, ny / L], L: L });
+        caras.push({ a: a2, b: b2, n: [nx / L, ny / L], L: L, i: i });
       }
       var vis = caras.filter(function (c) { return c.n[0] + c.n[1] > 0.01; });
       if (t.forma === "pergola") {
@@ -2891,10 +2956,14 @@
         mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], H]; })), fill: techo, class: "casa-techo", "data-act": "move" }, g);
         return;
       }
+      var dos = dosAguas(it, t), frontones = dos ? (dos.alongX ? [1, 3] : [0, 2]) : [];
       var puerta = t.puerta ? vis.slice().sort(function (c1, c2) { return (c2.n[0] + c2.n[1]) - (c1.n[0] + c1.n[1]); })[0] : null;
       vis.forEach(function (c) {
         var luz = c.n[0] < c.n[1] ? 0.1 : -0.22;   // la cara izquierda recibe más luz
-        mk("polygon", { points: pts([[c.a[0], c.a[1], 0], [c.b[0], c.b[1], 0], [c.b[0], c.b[1], H], [c.a[0], c.a[1], H]]), fill: bad ? "#C9705A" : tono(t.muro, luz), "data-act": "move" }, g);
+        var muro = [[c.a[0], c.a[1], 0], [c.b[0], c.b[1], 0], [c.b[0], c.b[1], H]];
+        if (frontones.indexOf(c.i) >= 0) muro.push([(c.a[0] + c.b[0]) / 2, (c.a[1] + c.b[1]) / 2, H + dos.R]);   // frontón
+        muro.push([c.a[0], c.a[1], H]);
+        mk("polygon", { points: pts(muro), fill: bad ? "#C9705A" : tono(t.muro, luz), "data-act": "move" }, g);
         var at = function (d, z) { return [c.a[0] + (c.b[0] - c.a[0]) * d / c.L, c.a[1] + (c.b[1] - c.a[1]) * d / c.L, z]; };
         var desde = 0.8;
         if (c === puerta && c.L > 2.6) {
@@ -2916,7 +2985,42 @@
           }
         }
       });
-      mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], H]; })), fill: techo, class: "casa-techo", "data-act": "move" }, g);
+      if (dos) techoDos(g, it, dos, H, techo);
+      else mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], H]; })), fill: techo, class: "casa-techo", "data-act": "move" }, g);
+    }
+    // Techo a dos aguas: cumbrera a lo largo del lado mayor, 25° de pendiente (máx. 2,4 m de alto) y 35 cm de alero
+    function dosAguas(it, t) {
+      if (!t.techoOp || !it.dos) return null;
+      var alongX = it.w >= it.h, span = Math.min(it.w, it.h), R = Math.min(span / 2 * 0.47, 2.4);
+      return { alongX: alongX, R: R, ov: 0.35, s: R / (span / 2) };
+    }
+    function aMundo(it, lx, ly, z) {
+      var r = it.rot * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
+      return [it.x + lx * c - ly * s, it.y + lx * s + ly * c, z];
+    }
+    function aguas(it, dos, H) {
+      var ov = dos.ov, ze = H - ov * dos.s, zr = H + dos.R, hw = it.w / 2, hh = it.h / 2, A, B2;
+      if (dos.alongX) {
+        A = [[-hw - ov, -hh - ov, ze], [hw + ov, -hh - ov, ze], [hw + ov, 0, zr], [-hw - ov, 0, zr]];
+        B2 = [[-hw - ov, hh + ov, ze], [hw + ov, hh + ov, ze], [hw + ov, 0, zr], [-hw - ov, 0, zr]];
+        return [{ q: A, n: [0, -1] }, { q: B2, n: [0, 1] }];
+      }
+      A = [[-hw - ov, -hh - ov, ze], [-hw - ov, hh + ov, ze], [0, hh + ov, zr], [0, -hh - ov, zr]];
+      B2 = [[hw + ov, -hh - ov, ze], [hw + ov, hh + ov, ze], [0, hh + ov, zr], [0, -hh - ov, zr]];
+      return [{ q: A, n: [-1, 0] }, { q: B2, n: [1, 0] }];
+    }
+    function techoDos(g, it, dos, H, color) {
+      var r = it.rot * Math.PI / 180, c = Math.cos(r), s = Math.sin(r), iso = S.vista === "iso";
+      var planos2 = aguas(it, dos, H).map(function (pl) {
+        var n = [pl.n[0] * c - pl.n[1] * s, pl.n[0] * s + pl.n[1] * c];
+        return { q: pl.q.map(function (v) { return aMundo(it, v[0], v[1], iso ? v[2] : 0); }), n: n };
+      }).sort(function (a, b) { return (a.n[0] + a.n[1]) - (b.n[0] + b.n[1]); });
+      planos2.forEach(function (pl) {
+        var luz = pl.n[0] < pl.n[1] ? 0.14 : -0.12;
+        mk("polygon", { points: pts(pl.q), fill: tono(color.charAt(0) === "#" ? color : "#E9A08C", luz), class: "casa-techo", "data-act": "move" }, g);
+      });
+      var q = planos2[1].q, k1 = P.apply(null, q[2]), k2 = P.apply(null, q[3]);
+      mk("line", { x1: num(k1[0]), y1: num(k1[1]), x2: num(k2[0]), y2: num(k2[1]), class: "casa-cumbrera" }, g);
     }
     // Piscina: borde de piedra, muros interiores del fondo y agua (en planta, borde y agua)
     function piscina(g, it, cs, bad) {
@@ -2991,18 +3095,32 @@
         var b = S.poly[(i + 1) % S.poly.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
         if (L < 12) return;
         var n = [(b[1] - a[1]) / L, -(b[0] - a[0]) / L], m = P((a[0] + b[0]) / 2 + n[0] * 3.2 * u, (a[1] + b[1]) / 2 + n[1] * 3.2 * u);
-        var tx = mk("text", { x: num(m[0]), y: num(m[1]), "font-size": num(2.1 * u) }, gl); tx.textContent = Math.round(L) + " m";
+        var esAcc = S.acceso && S.camino && Math.hypot((a[0] + b[0]) / 2 - (S.acceso[0][0] + S.acceso[1][0]) / 2, (a[1] + b[1]) / 2 - (S.acceso[0][1] + S.acceso[1][1]) / 2) < 0.5;
+        var tx = mk("text", { x: num(m[0]), y: num(m[1]), "font-size": num(2.1 * u), class: esAcc ? "is-acceso" : "" }, gl); tx.textContent = Math.round(L) + " m" + (esAcc ? " · acceso" : "");
       });
+      // Camino de acceso: desde el deslinde que da a la calle hasta la casa principal (se recalcula al moverla)
+      var cam = camino();
+      if (cam) {
+        var gc = mk("g", { class: "casa-camino" }, svg);
+        mk("polygon", { points: pts(cam.poly), class: "casa-camino-ripio" }, gc);
+        [[cam.l0, cam.l1], [cam.r0, cam.r1]].forEach(function (b) { var a1 = P(b[0][0], b[0][1]), a2 = P(b[1][0], b[1][1]); mk("line", { x1: num(a1[0]), y1: num(a1[1]), x2: num(a2[0]), y2: num(a2[1]), class: "casa-camino-borde" }, gc); });
+        cam.postes.forEach(function (q) {
+          var b0 = P(q[0], q[1], 0), b1 = P(q[0], q[1], iso ? 1.5 : 0);
+          if (iso) mk("line", { x1: num(b0[0]), y1: num(b0[1]), x2: num(b1[0]), y2: num(b1[1]), class: "casa-poste" }, gc);
+          else mk("circle", { cx: num(b0[0]), cy: num(b0[1]), r: 0.45, class: "casa-poste-p" }, gc);
+        });
+      }
       // Sombras en el suelo
       var gs = mk("g", { class: "casa-sombras" }, svg);
       if (iso) S.items.forEach(function (it) {
-        var t = tipo(it.tipo), cs = corners(it), H = t.alto;
-        if (!H) return;
+        var t = tipo(it.tipo), cs = corners(it), dz = dosAguas(it, t), H = t.alto + (dz ? dz.R * 0.5 : 0);
+        if (!t.alto) return;
         var sh = hull(cs.concat(cs.map(function (q) { return [q[0] + SOL[0] * H, q[1] + SOL[1] * H]; })));
         mk("polygon", { points: pts(sh), class: "casa-sombra" }, gs);
       });
       // Construcciones y árboles, de atrás hacia adelante
       var huellas = S.items.map(function (it) { return corners(it, 1.5); });
+      if (cam) huellas.push(cam.zona);
       var cosas = S.arboles.filter(function (t) { return !huellas.some(function (h) { return inside(t, h); }); })
         .map(function (t) { return { z: prof(t[0], t[1]), t: t }; })
         .concat(S.items.map(function (it, i) { return { z: tipo(it.tipo).forma === "piscina" ? -1e9 : prof(it.x, it.y), it: it, i: i }; }))
@@ -3034,12 +3152,30 @@
         ic.setAttribute("pointer-events", "none");
         mk("rect", { x: num(pc[0] - hr), y: num(pc[1] - hr), width: num(2 * hr), height: num(2 * hr), rx: num(hr * 0.3), class: "casa-h casa-h-size", "data-act": "size" }, hs);
         // Rótulo sobre el techo
-        var arriba = Math.min.apply(null, cs.map(function (q) { return P(q[0], q[1], H)[1]; }));
+        var dz2 = dosAguas(it, t), arriba = Math.min.apply(null, cs.map(function (q) { return P(q[0], q[1], H + (iso && dz2 ? dz2.R : 0))[1]; }));
         var pl = P(it.x, it.y, H);
         var lb = mk("text", { x: num(pl[0]), y: num(arriba - 2 * u), "font-size": num(2.2 * u), class: "casa-it-t" }, gsel);
         lb.textContent = it.nombre + " · " + fmt(area(it)) + " m²";
       }
       panel();
+    }
+    function camino() {
+      if (!S.camino || !S.acceso) return null;
+      var it = S.items.filter(function (x) { return tipo(x.tipo).vivienda; })[0];
+      if (!it) return null;
+      var A = S.acceso[0], Bq = S.acceso[1], dx = Bq[0] - A[0], dy = Bq[1] - A[1], L2 = dx * dx + dy * dy;
+      var t = clamp(((it.x - A[0]) * dx + (it.y - A[1]) * dy) / (L2 || 1), 0.12, 0.88), p0 = [A[0] + dx * t, A[1] + dy * t];
+      var vx = it.x - p0[0], vy = it.y - p0[1], L = Math.hypot(vx, vy);
+      if (L < 2) return null;
+      var d = [vx / L, vy / L], n = [-d[1], d[0]], a = 1.8, ini = [p0[0] - d[0] * 0.6, p0[1] - d[1] * 0.6];
+      var off = function (q, k) { return [q[0] + n[0] * k, q[1] + n[1] * k]; };
+      return {
+        poly: [off(ini, a), off([it.x, it.y], a), off([it.x, it.y], -a), off(ini, -a)],
+        l0: off(ini, a), l1: off([it.x, it.y], a), r0: off(ini, -a), r1: off([it.x, it.y], -a),
+        zona: [off(ini, a + 1.5), off([it.x, it.y], a + 1.5), off([it.x, it.y], -a - 1.5), off(ini, -a - 1.5)],
+        postes: [off(p0, a + 0.6), off(p0, -a - 0.6)],
+        afuera: [p0[0] - d[0] * 4.5, p0[1] - d[1] * 4.5]
+      };
     }
     function panel() {
       var tot = total(), lim = limite(), over = tot > lim + 1e-6, malo = S.items.filter(fuera).length;
@@ -3054,13 +3190,18 @@
       if (el.lbl) el.lbl.textContent = "Lote " + S.lote.n + " · " + m2(S.lote.m2) + " · " + S.p.nombre;
       var it = S.items[S.sel];
       el.box.hidden = !it;
+      if (el.techo) {
+        el.techo.hidden = !(it && tipo(it.tipo).techoOp);
+        if (it) $$("[data-c-techo]", el.techo).forEach(function (b) { b.setAttribute("aria-pressed", (b.getAttribute("data-c-techo") === "dos") === !!it.dos ? "true" : "false"); });
+      }
+      if (el.camino) el.camino.setAttribute("aria-pressed", S.camino ? "true" : "false");
       if (it) {
         el.name.textContent = it.nombre;
         el.selm2.textContent = m2Txt(it);
         if (document.activeElement !== el.w) el.w.value = Math.round(it.w * 10) / 10;
         if (document.activeElement !== el.h) el.h.value = Math.round(it.h * 10) / 10;
       }
-      var lista = S.items.map(function (x) { return x.nombre.toLowerCase() + " de " + fmt(area(x)) + " m²" + (pisos(x) > 1 ? " (" + pisos(x) + " pisos)" : ""); });
+      var lista = S.items.map(function (x) { return x.nombre.toLowerCase() + " de " + fmt(area(x)) + " m²" + (pisos(x) > 1 ? " (" + pisos(x) + " pisos)" : "") + (x.dos && tipo(x.tipo).techoOp ? " con techo a dos aguas" : ""); });
       el.wa.href = waHref("Hola Fundos, dibujé mi casa en el lote " + S.lote.n + " de " + S.p.nombre + ": " + (lista.join(", ") || "sin construcciones") +
         ". En total " + fmt(tot) + " m² de " + m2(lim) + " permitidos. ¿Me ayudan a evaluarlo?");
     }
@@ -3086,6 +3227,10 @@
     el.h.addEventListener("input", function () { medida(el.h, "h"); });
     el.w.addEventListener("change", function () { if (S.items[S.sel]) el.w.value = S.items[S.sel].w; });
     el.h.addEventListener("change", function () { if (S.items[S.sel]) el.h.value = S.items[S.sel].h; });
+    if (el.techo) $$("[data-c-techo]", el.techo).forEach(function (b) {
+      b.addEventListener("click", function () { var it = S.items[S.sel]; if (it) { it.dos = b.getAttribute("data-c-techo") === "dos"; draw(); } });
+    });
+    if (el.camino) el.camino.addEventListener("click", function () { S.camino = !S.camino; draw(); });
     el.rot.addEventListener("click", function () { var it = S.items[S.sel]; if (it) { it.rot = (it.rot + 15) % 360; draw(); } });
     el.del.addEventListener("click", function () {
       if (S.sel < 0) return;

@@ -58,6 +58,19 @@ const B = "http://127.0.0.1:8765/";
       await p.goto(B + "#lote-malalcahuello-20", { waitUntil: "networkidle" }); await p.waitForTimeout(1500);
       await p.click("[data-d-casa]"); await p.waitForTimeout(1200);
       r.desdePlano = await p.evaluate(() => [location.hash, document.querySelector("#c-proyecto").value, document.querySelector("#c-lote").value, !document.querySelector("#tu-casa").hidden]);
+      // Guía: el aviso de Inicio lleva al plano (paso 1), al elegir un lote aparece "Diseñar mi casa aquí" (paso 2)
+      await p.goto(B, { waitUntil: "networkidle" }); await p.waitForTimeout(1000);
+      await p.click("#disena-inicio .btn-gold"); await p.waitForTimeout(1200);
+      const g1 = await p.evaluate(() => [!document.querySelector("[data-plan-guia]").hidden, document.querySelector("[data-plan-guia-paso]").textContent]);
+      await p.click('#plano .lot[data-n="12"]', { force: true }); await p.waitForTimeout(800);
+      const g2 = await p.evaluate(() => [document.querySelector("[data-plan-guia-paso]").textContent, !document.querySelector("[data-d-guia]").hidden]);
+      await p.click("[data-d-guia]"); await p.waitForTimeout(1200);
+      r.guia = [g1, g2, await p.evaluate(() => [location.hash, document.querySelector("#c-lote").value, document.querySelector("[data-plan-guia]").hidden])];
+      // Techo a dos aguas y camino de acceso
+      await p.click('[data-c-techo="dos"]');
+      r.techoCamino = await p.evaluate(() => [document.querySelectorAll(".casa-cumbrera").length, document.querySelectorAll(".casa-camino-ripio").length, document.querySelectorAll(".casa-deslindes .is-acceso").length]);
+      await p.click("[data-c-camino]");
+      r.sinCamino = await p.evaluate(() => document.querySelectorAll(".casa-camino-ripio").length);
     }
     out[w] = r;
     await ctx.close();
