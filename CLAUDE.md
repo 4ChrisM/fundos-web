@@ -24,14 +24,20 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
    imprime el mapa de archivos; publicar ese HTML con esos archivos en la URL del artefacto de arriba.
 
 ## Estructura y datos
-- **Pestañas** (`initVistas` en `main.js`): Puerto Varas (inicio) · Proyectos · Tu compra · Equipo. Cada sección dice
+- **Pestañas** (`initVistas` en `main.js`): Inicio (`#puerto-varas`, portada con Puerto Varas destacado) · Proyectos · Tu compra · Equipo. Cada sección dice
   en `data-vista` en qué pestañas aparece (`#plano` en "inicio proyectos"; `#recorrido` solo en Proyectos: en la
-  pestaña Puerto Varas los botones 360° abren `entorno.html#tour-360`; `#visita` en todas) y el
+  pestaña Inicio los botones 360° abren `entorno.html#tour-360`; `#visita` en todas) y el
   CSS esconde el resto (`html.js[data-vista=…]`). Sin JavaScript se ve todo seguido. Un script en el `<head>` fija la
   pestaña según el `#` para que no parpadee. Los enlaces internos (`#simulador`, `#plano`, `#equipo-4`…) cambian de
   pestaña solos; las pestañas llevan al comienzo (`#puerto-varas`, `#proyectos-inicio`, `#tu-compra`, `#nosotros`).
   En celular y tablet (< 1024 px) las pestañas van en una franja bajo la barra (`--tabs-h`; usar `navBottomPx()` para
   medir la barra). Al cambiar de pestaña se dispara `resize` (plano y recorrido se reacomodan) y `fundos:vista`.
+- **Inicio** (feedback del equipo de ventas, octubre 2026): la pestaña se llamaba "Puerto Varas" y la gente creía que
+  solo vendían ahí. Ahora se llama **Inicio**; la portada tiene un título general ("Tu lugar en el campo, a tu nombre"),
+  nombra los tres proyectos y presenta Puerto Varas como "Nuevo"; al pie, la franja **Nuestros proyectos** (`.pv-proys`,
+  `[data-pv-proy]`, desde/disponibles del manifiesto) lleva a cada uno, y el formulario de la portada tiene selector de
+  proyecto (el destacado primero). El formulario va arriba a propósito: el equipo pidió que el contacto esté al
+  principio y no solo al final.
 - **Destacado** (`destacado` en `lib/manifest.js`, hoy Puerto Varas): abre la página con su portada en video
   (`videoDestacado`, bucle sin texto armado con los videos del cliente: lago, Frutillar, Petrohué, Osorno y Puerto
   Varas; versión vertical para celular), datos (desde, disponibles), la vitrina del entorno (mapa en miniatura con
@@ -117,10 +123,10 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
     no deja incrustarlo (CSP) o no carga en 15 s, ofrece abrirlo aparte. El proxy de la nube bloquea netlify: probar
     con `page.route` que responda una página simulada.
     Revisión: `tools/pruebas/entorno.js` (los 17 lugares en 1920, 1440, 1280, 1100, 390, 320 y 844×390; `MIN=1` con paneles minimizados).
-- **Formulario de la portada de Puerto Varas** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
-  a la derecha del título desde 1100 px y bajo los botones en pantallas menores (ahí la pausa del video pasa a la
-  izquierda). Nombre, teléfono, correo opcional y autorización; arma el mensaje ("plano y precios de lanzamiento" del
-  destacado), lo muestra y lo envía con un enlace de WhatsApp, igual que `#visita`.
+- **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
+  a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
+  menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el
+  mensaje ("plano y precios", "de lanzamiento" si es el destacado), lo muestra y lo envía con un enlace de WhatsApp, igual que `#visita`.
 - **Fotos de las parcelas** (`assets/img/tour-ID-*`, 800/1600 px y miniatura): vistas aéreas reales sacadas de la
   panorámica de cada tour 3DVista (material del cliente, sin crédito). Se usan en el fondo del recorrido 360° y su
   selector (`tourFoto`; sin él, la ilustración de la tarjeta), en las tarjetas de "otros proyectos" y en el apartado
@@ -179,13 +185,13 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
 ## Decisiones tomadas con el cliente
 - Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la foto del equipo, que queda de respaldo.
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
-  Saludos en video (octubre 2026): Mari, Jeanette, Stefy y Elvys (grabados por el cliente en la misma oficina). Todas las
+  Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Stefy, Diego, Geonela y Elvys; grabados por el cliente en la misma oficina). Todas las
   fotos (`assets/img/equipo-ID.webp`, **cuerpo completo**, 3:4 como las tarjetas) son de una sesión del cliente en la misma
   oficina; foto y saludo de la tarjeta (`video.tarjeta`) se recortan con la misma ventana (90 % del cuadro) y la cara en
   el mismo lugar para que el cambio foto→video no salte; esa foto
   completa es también la portada del video en la ficha: al pasar el cursor (computador) la foto se vuelve video con sonido; si el navegador aún no deja sonar,
-  parte en silencio con "Haz clic para verlo con sonido" y el clic abre la ficha con el saludo completo. Quienes no
-  tienen video quedan como estaban. Videos originales en el historial (`0475102`, `2eafd5d`, `d0152bd`, `679a800`);
+  parte en silencio con "Haz clic para verlo con sonido" y el clic abre la ficha con el saludo completo. Videos
+  originales en el historial (`0475102`, `2eafd5d`, `d0152bd`, `679a800`; Valentina, Diego y Geonela en `bfd319b`);
   fotos originales en `f87e740`. El equipo es una **galería en filas** (el cliente no quería deslizar ni paneles chicos):
   tarjetas grandes, 4 por fila en computador ("Conversemos" en el último lugar), 3 en tablet y 2 en celular; el
   saludo se reproduce en la misma tarjeta. **Marjorie Castellón salió del equipo** (pedido del cliente). Elvys aún sin
