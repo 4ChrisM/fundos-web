@@ -2424,9 +2424,17 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .casa-promo-txt h2 { margin-top: .6rem; }
 .casa-promo-txt .lead { margin-top: .9rem; max-width: 46ch; }
 .casa-promo-txt .btn { margin-top: 1.4rem; }
-.casa-promo-img { display: block; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-card); border: 1px solid #CFC7B6; background: #EDE6DA; }
-.casa-promo-img img { display: block; width: 100%; height: auto; transition: transform .8s var(--ease-out); }
-.casa-promo-img:hover img { transform: scale(1.03); }
+.casa-promo-img { position: relative; margin: 0; }
+.casa-promo-img > a { position: relative; display: block; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-card); background: #EDE6DA; }
+.casa-promo-img > a > img { display: block; width: 100%; height: auto; transition: transform .8s var(--ease-out); }
+.casa-promo-img > a:hover > img { transform: scale(1.03); }
+/* Miniatura del diseño en 3D sobre la foto real */
+.casa-promo-mini { position: absolute; left: 4%; top: 6%; width: 36%; border: 3px solid var(--n050); border-radius: 12px; overflow: hidden; background: #EDE6DA; box-shadow: 0 14px 30px -12px rgba(0, 0, 0, .5); }
+.casa-promo-mini img { display: block; width: 100%; height: auto; }
+.casa-promo-mini b { display: flex; align-items: center; gap: .35rem; padding: .4rem .55rem; background: var(--g900); color: var(--n050); font: 800 .72rem/1.1 var(--sans); }
+.casa-promo-mini .i { width: 14px; height: 14px; color: var(--gold); }
+.casa-promo-cred { margin-top: .5rem; font-size: .7rem; line-height: 1.4; color: var(--n600); }
+.casa-promo-cred a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .nl-casa .nl-c { display: none; }
 @media (max-width: 1023px) {
   .nl-casa .nl-l, .nl-casa .nl-new { display: none; }
@@ -2476,3 +2484,33 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .casa-promo-pasos b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--g900); color: var(--gold); font-size: .74rem; }
 .casa-al-plano { grid-column: 1 / -1; display: inline-flex; align-items: center; gap: .4rem; font-size: .84rem; font-weight: 700; color: var(--gold-ink); text-decoration: underline; text-underline-offset: 3px; }
 .casa-al-plano .i { width: 16px; height: 16px; }
+/* Sol según la hora: barra bajo el lote y brújula */
+.casa-sol { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; padding: .65rem .9rem; border-top: 1px solid rgba(10, 20, 14, .1); background: #F6F1E7; }
+.casa-sol-k { display: inline-flex; align-items: center; gap: .35rem; font-size: .82rem; font-weight: 800; color: var(--g900); }
+.casa-sol-k .i { width: 18px; height: 18px; color: #C98A2B; }
+.casa-sol-h { min-width: 3.2em; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--g900); }
+.casa-sol input[type="range"] { flex: 1 1 140px; min-width: 120px; accent-color: #C98A2B; }
+.casa-sol-play { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #B9B1A2; border-radius: 50%; background: var(--white); color: var(--g900); cursor: pointer; }
+.casa-sol-play .i { width: 14px; height: 14px; }
+.casa-sol-play.is-on { background: var(--g900); color: var(--gold); }
+.casa-sol-play:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+.casa-sol .casa-seg button { padding-inline: .65rem; }
+.casa-brujula { position: absolute; top: .8rem; right: .8rem; width: 56px; height: 56px; border: 1px solid #CFC7B6; border-radius: 50%; background: rgba(250, 248, 243, .92); pointer-events: none; }
+.casa-brujula > span { position: absolute; left: 50%; top: 50%; margin: -9px 0 0 -9px; width: 18px; height: 18px; }
+.casa-n { display: grid; place-items: center; font: 800 .7rem/1 var(--sans); color: var(--g900); }
+.casa-solp { border-radius: 50%; background: radial-gradient(circle, #FFD45E 0 45%, rgba(255, 196, 70, .35) 46% 100%); }
+.casa-solp[hidden] { display: none; }
+.casa-brujula.is-noche { background: rgba(30, 40, 70, .85); border-color: #3C4A70; }
+.casa-brujula.is-noche .casa-n { color: #E8ECF5; }
+.casa-stage[data-luz="noche"] .casa-grid path { opacity: .3; }
+.casa-stage[data-luz="noche"] .casa-deslindes text, .casa-stage[data-luz="noche"] .casa-cota-t { fill: #E8ECF5; stroke: #20283E; }
+.casa-stage[data-luz="noche"] .casa-cota { stroke: #C9D0E0; }
+.casa-stage[data-luz="noche"] .casa-it-t { fill: #F7F5F0; stroke: rgba(20, 28, 50, .85); }
+.casa-stage[data-luz="noche"] .casa-lbl { color: #E8ECF5; }
+.casa-vidrio.is-luz { stroke: #6B4E1F; }
+@media (max-width: 599px) {
+  .casa-brujula { top: .5rem; right: .5rem; width: 48px; height: 48px; }
+  .casa-sol { gap: .5rem; padding: .6rem .7rem; }
+  .casa-sol .casa-seg { width: 100%; justify-content: space-between; }
+  .casa-sol .casa-seg button { flex: 1; }
+}

@@ -27,11 +27,11 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261008l">
-<script defer src="lib/manifest.js?v=20261008l"></script>
-<script defer src="lib/analitica.js?v=20261008l"></script>
-<script defer src="lib/planos.js?v=20261008l"></script>
-<script defer src="main.js?v=20261008l"></script>
+<link rel="stylesheet" href="styles.css?v=20261008n">
+<script defer src="lib/manifest.js?v=20261008n"></script>
+<script defer src="lib/analitica.js?v=20261008n"></script>
+<script defer src="lib/planos.js?v=20261008n"></script>
+<script defer src="main.js?v=20261008n"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -344,7 +344,13 @@
       </div>
       <ol class="casa-promo-pasos"><li><b>1</b>Elige un lote en el plano</li><li><b>2</b>Ubica tu casa en 3D</li><li><b>3</b>Envía tu diseño a un asesor</li></ol>
     </div>
-    <a class="casa-promo-img reveal" href="#plano" data-casa-guia tabindex="-1" aria-hidden="true"><img src="assets/img/tu-casa-800.webp" srcset="assets/img/tu-casa-800.webp 800w, assets/img/tu-casa-1400.webp 1400w" sizes="(min-width: 960px) 600px, 92vw" width="1400" height="900" alt="" loading="lazy" decoding="async"></a>
+    <figure class="casa-promo-img reveal">
+      <a href="#plano" data-casa-guia tabindex="-1" aria-hidden="true">
+        <img src="assets/img/casa-parcela-800.webp" srcset="assets/img/casa-parcela-800.webp 800w, assets/img/casa-parcela-1400.webp 1400w" sizes="(min-width: 960px) 600px, 92vw" width="1400" height="900" alt="" loading="lazy" decoding="async">
+        <span class="casa-promo-mini"><img src="assets/img/tu-casa-800.webp" width="800" height="514" alt="" loading="lazy" decoding="async"><b><svg class="i"><use href="#i-house"/></svg>Diséñala en 3D</b></span>
+      </a>
+      <figcaption class="casa-promo-cred">Casa de campo en Puyuhuapi, Aysén (referencial). Foto: <a href="https://commons.wikimedia.org/wiki/File:Puyuhuapi_2.jpg" target="_blank" rel="noopener">LBM1948</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>, recortada.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -670,7 +676,13 @@
       </div>
       <ol class="casa-promo-pasos"><li><b>1</b>Elige un lote en el plano</li><li><b>2</b>Ubica tu casa en 3D</li><li><b>3</b>Envía tu diseño a un asesor</li></ol>
     </div>
-    <a class="casa-promo-img reveal" href="#plano" data-casa-guia tabindex="-1" aria-hidden="true"><img src="assets/img/tu-casa-800.webp" srcset="assets/img/tu-casa-800.webp 800w, assets/img/tu-casa-1400.webp 1400w" sizes="(min-width: 960px) 600px, 92vw" width="1400" height="900" alt="" loading="lazy" decoding="async"></a>
+    <figure class="casa-promo-img reveal">
+      <a href="#plano" data-casa-guia tabindex="-1" aria-hidden="true">
+        <img src="assets/img/casa-parcela-800.webp" srcset="assets/img/casa-parcela-800.webp 800w, assets/img/casa-parcela-1400.webp 1400w" sizes="(min-width: 960px) 600px, 92vw" width="1400" height="900" alt="" loading="lazy" decoding="async">
+        <span class="casa-promo-mini"><img src="assets/img/tu-casa-800.webp" width="800" height="514" alt="" loading="lazy" decoding="async"><b><svg class="i"><use href="#i-house"/></svg>Diséñala en 3D</b></span>
+      </a>
+      <figcaption class="casa-promo-cred">Casa de campo en Puyuhuapi, Aysén (referencial). Foto: <a href="https://commons.wikimedia.org/wiki/File:Puyuhuapi_2.jpg" target="_blank" rel="noopener">LBM1948</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>, recortada.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -1156,11 +1168,23 @@
           <button type="button" data-c-full aria-label="Pantalla completa" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-expand"/></svg></button>
         </div>
         <p class="casa-lbl" data-c-lbl>Lote</p>
+        <div class="casa-brujula" data-c-brujula aria-hidden="true"><span class="casa-n" data-c-n>N</span><span class="casa-solp" data-c-solp></span></div>
+        </div>
+        <div class="casa-sol" role="group" aria-labelledby="c-sol-k">
+          <span class="casa-sol-k" id="c-sol-k"><svg class="i" aria-hidden="true"><use href="#i-sun"/></svg>Sol</span>
+          <output class="casa-sol-h" for="c-hora" data-c-hora-o>17:00</output>
+          <input id="c-hora" type="range" min="6" max="22" step="0.25" value="17" aria-label="Hora del día" data-c-hora>
+          <button class="casa-sol-play" type="button" data-c-dia aria-label="Ver cómo pasa el sol durante el día"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button>
+          <div class="casa-seg" role="group" aria-label="Época del año">
+            <button type="button" data-c-est="verano" aria-pressed="true">Verano</button>
+            <button type="button" data-c-est="otono" aria-pressed="false">Otoño</button>
+            <button type="button" data-c-est="invierno" aria-pressed="false">Invierno</button>
+          </div>
         </div>
         <figcaption class="casa-help" data-c-help>Arrastra la casa para moverla. La esquina dorada cambia el tamaño y el círculo la gira. Con teclado: flechas para mover y R para girar.</figcaption>
       </figure>
     </div>
-    <p class="casa-legal">Referencial. La forma del lote sale del plano del proyecto y se lleva a su superficie; la superficie construible, los distanciamientos a los deslindes y el permiso de edificación los fija la Dirección de Obras de la comuna.</p>
+    <p class="casa-legal">Referencial. La forma del lote sale del plano del proyecto y se lleva a su superficie; el sol se calcula para la latitud del proyecto suponiendo el norte hacia arriba del plano; la superficie construible, los distanciamientos a los deslindes y el permiso de edificación los fija la Dirección de Obras de la comuna.</p>
   </div>
 </section>
 

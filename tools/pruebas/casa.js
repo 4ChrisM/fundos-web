@@ -51,6 +51,12 @@ const B = "http://127.0.0.1:8765/";
     const t0 = await p.evaluate(() => parseFloat(document.querySelector("[data-c-total]").textContent.replace(".", "").replace(",", ".")));
     await p.click('[data-tipo="casa2"]'); await p.click('[data-tipo="piscina"]');
     r.dosPisosYPiscina = [t0, await p.evaluate(() => document.querySelector("[data-c-total]").textContent), await p.evaluate(() => document.querySelectorAll(".casa-agua").length)];
+    // Sol: de día hay sombras; a las 21:45 en invierno es de noche y las ventanas se encienden
+    const hora = async v => { await p.evaluate(v => { const r = document.querySelector("[data-c-hora]"); r.value = v; r.dispatchEvent(new Event("input", { bubbles: true })); }, v); await p.waitForTimeout(100); };
+    await hora(13); const dia = await p.evaluate(() => [document.querySelector(".casa-stage").dataset.luz, document.querySelectorAll(".casa-sombras polygon").length]);
+    await p.click('[data-c-est="invierno"]'); await hora(21.75);
+    r.sol = [dia, await p.evaluate(() => [document.querySelector(".casa-stage").dataset.luz, document.querySelectorAll(".casa-vidrio.is-luz").length > 0, document.querySelector("[data-c-hora-o]").textContent])];
+    await p.click('[data-c-est="verano"]'); await hora(17);
     r.wa = (await p.getAttribute("[data-c-wa]", "href")).includes("permitidos");
     r.ancho = await p.evaluate(() => document.documentElement.scrollWidth);
     await p.screenshot({ path: "ux/casa-" + w + ".png" });
