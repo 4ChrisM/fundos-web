@@ -183,7 +183,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   (HLG): convertir a SDR con `zscale` + `tonemap` antes de codificar.
 
 ## Decisiones tomadas con el cliente
-- Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la foto del equipo, que queda de respaldo.
+- Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la portada de Proyectos; de respaldo, un cuadro del mismo video (`portada.webp`, `portada-movil.webp`). La foto grupal del equipo se quitó (incluía a Marjorie, que salió): en Nosotros va un mosaico con las fotos actuales (`.team-mosaic`, actualizarlo si cambia el equipo). Las tarjetas de proyectos (`.project-art.has-foto`) usan la vista aérea de cada parcela; la ilustración SVG queda oculta (la clonan otros módulos como respaldo).
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
   Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Stefy, Diego, Geonela y Elvys; grabados por el cliente en la misma oficina). Todas las
   fotos (`assets/img/equipo-ID.webp`, **cuerpo completo**, 3:4 como las tarjetas) son de una sesión del cliente en la misma

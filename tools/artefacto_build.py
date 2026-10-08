@@ -10,7 +10,7 @@ body = re.sub(r'\s*<script\b(?![^>]*application/ld\+json)[^>]*>\s*</script>', ""
 head = """<title>Propuesta Fundos Inmobiliaria</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot)document.documentElement.classList.remove("js")},8000)</script>
-<link rel="preload" as="image" href="assets/img/equipo-portada-900.webp" imagesrcset="assets/img/equipo-portada-900.webp 900w, assets/img/equipo-portada-1600.webp 1600w" imagesizes="(min-width: 960px) 58vw, 100vw" fetchpriority="high">
+<link rel="preload" as="image" href="assets/video/portada-900.webp" imagesrcset="assets/video/portada-900.webp 900w, assets/video/portada.webp 1600w" imagesizes="(min-width: 960px) 58vw, 100vw" fetchpriority="high">
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
