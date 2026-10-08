@@ -133,7 +133,10 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   tienen **techo plano o a dos aguas** (`it.dos`, selector "Techo"; cumbrera por el lado mayor, 25°, alero 35 cm,
   frontones en los lados cortos). **Camino de acceso** (botón que lo enciende/apaga, `camino()`): ripio de 3,6 m con
   postes de portón desde el deslinde de acceso hasta la primera vivienda; el deslinde de acceso es el del lote más
-  cercano a una calle o servidumbre de `lib/planos.js` (`acceso()`, `tramos()` lee M/L/H/V/Z) y su largo dice "· acceso". La elegida muestra cotas en metros, la esquina
+  cercano a una calle o servidumbre de `lib/planos.js` (`acceso()`, `tramos()` lee M/L/H/V/Z) y su largo dice "· acceso". **Autos y personas**
+  (botón "Autos y personas", `escena()`, `auto()`, `persona()`; ambientación que no cuenta ni se elige): un auto
+  estacionado frente a la casa y otro entrando por el portón (si el camino es largo), una pareja junto al auto, gente al
+  borde de la piscina y en el quincho; se reubican al mover las construcciones y tienen sombra según el sol. La elegida muestra cotas en metros, la esquina
   dorada (tamaño, centro fijo, 2 a 40 m, pasos de 0,5 m) y el círculo (giro, 5°); se arrastra con mouse o dedo (sin
   desplazar la página). Zoom, "ver el lote completo", pantalla completa; parte acercada a la casa (`acercar()`).
   Teclado: flechas (siguen la pantalla en 3D; Mayús = 5 m), R gira, Supr quita. Medidor contra el **10 % de la

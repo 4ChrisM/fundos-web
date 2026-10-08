@@ -2514,3 +2514,4 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
   .casa-sol .casa-seg { width: 100%; justify-content: space-between; }
   .casa-sol .casa-seg button { flex: 1; }
 }
+.casa-deco { pointer-events: none; }
