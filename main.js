@@ -2715,7 +2715,7 @@
       { id: "garaje", nombre: "Estacionamiento", w: 6, h: 5, alto: 2.5, forma: "pergola", muro: "#6F6C66", techo: "#8F8B83", piso: "#D9D3C6" },
       { id: "bodega", nombre: "Bodega", w: 4, h: 3, alto: 2.4, forma: "caja", techoOp: true, dosAguas: true, muro: "#A07D50", techo: "#5B5751", puerta: true }
     ];
-    var S = { p: null, lote: null, poly: [], arboles: [], acceso: null, camino: true, items: [], sel: -1, seq: 0, vista: "iso", zoom: 1, pan: [0, 0], base: [0, 0, 100, 100] };
+    var S = { p: null, lote: null, poly: [], arboles: [], acceso: null, camino: true, ang: 0, hora: 17, estacion: "verano", items: [], sel: -1, seq: 0, vista: "iso", zoom: 1, pan: [0, 0], base: [0, 0, 100, 100] };
     var el = {
       total: $("[data-c-total]", root), max: $("[data-c-max]", root), bar: $("[data-c-bar]", root), msg: $("[data-c-msg]", root),
       meter: $("[data-c-meter]", root), add: $("[data-c-add]", root), box: $("[data-c-sel]", root), name: $("[data-c-sel-name]", root),
@@ -2795,6 +2795,7 @@
       var best = 0, ang = 0;
       poly.forEach(function (a, i) { var b = poly[(i + 1) % poly.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L > best) { best = L; ang = Math.atan2(b[1] - a[1], b[0] - a[0]); } });
       var c = Math.cos(-ang), s = Math.sin(-ang);
+      S.ang = ang;
       S.poly = poly.map(function (q) { return [q[0] * c - q[1] * s, q[0] * s + q[1] * c]; });
       S.acceso = acc ? acc.map(function (q) { var x = (q[0] - l0[0]) * k, y = (q[1] - l0[1]) * k; return [x * c - y * s, x * s + y * c]; }) : null;
       if (polyArea(S.poly) > 0) S.poly.reverse();   // mismo sentido que las construcciones: la normal (dy, −dx) apunta hacia afuera
@@ -2903,14 +2904,46 @@
 
     function mk(tag, at, parent) {
       var n = document.createElementNS(NS, tag);
+      if (at.fill) { n.style.fill = at.raw ? at.fill : amb(at.fill); delete at.fill; delete at.raw; }
       for (var k in at) n.setAttribute(k, at[k]);
       if (parent) parent.appendChild(n);
       return n;
     }
+    function rgb(c) {
+      if (c.charAt(0) === "#") { var n = parseInt(c.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; }
+      return c.replace(/[^\d,]/g, "").split(",").slice(0, 3).map(Number);
+    }
     function tono(hex, f) {   // aclara (f > 0) u oscurece (f < 0) un color
-      var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
       var m = function (v) { return Math.round(f > 0 ? v + (255 - v) * f : v * (1 + f)); };
-      return "rgb(" + m(r) + "," + m(g) + "," + m(b) + ")";
+      return "rgb(" + rgb(hex).map(m).join(",") + ")";
+    }
+    // Luz ambiente según la altura del sol: día, hora dorada, crepúsculo y noche
+    function amb(c) {
+      var L = S.luz || { k: 0, dark: 0 }, v = rgb(c);
+      if (!L.k && !L.dark) return c;
+      return "rgb(" + v.map(function (x, i) { return Math.round((x + (L.tint[i] - x) * L.k) * (1 - L.dark)); }).join(",") + ")";
+    }
+
+    /* ---- Sol: posición según latitud del proyecto, estación y hora (el norte del plano se supone hacia arriba) ---- */
+    var LAT = { "puerto-varas": -41.4, "malalcahuello": -38.4, "marchigue": -34.4 };
+    var DECL = { verano: -23.44, otono: 0, invierno: 23.44 };   // hemisferio sur: verano en diciembre
+    function sol() {
+      var rad = Math.PI / 180, phi = (LAT[S.p && S.p.id] || -38) * rad, dec = DECL[S.estacion] * rad;
+      // Hora solar ≈ hora de reloj − 0,85 h (UTC−4, 72,8° O); en verano hay una hora más de adelanto
+      var hs = S.hora - (S.estacion === "verano" ? 1.85 : 0.85), H = (hs - 12) * 15 * rad;
+      var alt = Math.asin(Math.sin(phi) * Math.sin(dec) + Math.cos(phi) * Math.cos(dec) * Math.cos(H));
+      var az = Math.atan2(-Math.sin(H), Math.tan(dec) * Math.cos(phi) - Math.sin(phi) * Math.cos(H));   // desde el norte, hacia el este
+      var c = Math.cos(-S.ang), s = Math.sin(-S.ang), N = [s, -c], E = [c, s];   // norte y este del plano en el marco del lote
+      var dir = [Math.sin(az) * E[0] + Math.cos(az) * N[0], Math.sin(az) * E[1] + Math.cos(az) * N[1]];
+      var altG = alt / rad, largo = altG > 0 ? Math.min(5, 1 / Math.tan(Math.max(alt, 0.17))) : 0;
+      S.sd = altG > 0 ? dir : [0, 0];
+      S.N = N;
+      SOL = [-dir[0] * largo, -dir[1] * largo];
+      S.alt = altG;
+      S.luz = altG <= -4 ? { fase: "noche", k: 0.3, dark: 0.55, tint: [40, 60, 120] }
+        : altG <= 0 ? { fase: "crepusculo", k: 0.28, dark: 0.3, tint: [190, 110, 100] }
+        : altG <= 12 ? { fase: "dorada", k: 0.2, dark: 0.04, tint: [255, 168, 92] }
+        : { fase: "dia", k: 0, dark: 0, tint: [0, 0, 0] };
     }
     function hull(p) {
       p = p.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
@@ -2920,7 +2953,11 @@
       p.slice().reverse().forEach(function (q) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); });
       return lo.slice(0, -1).concat(up.slice(0, -1));
     }
-    var SOL = [-0.2, 0.85];   // sombra por metro de alto (cae hacia la izquierda, como con sol de la tarde)
+    var SOL = [-0.2, 0.85];   // sombra por metro de alto (la calcula sol())
+    function cara(n) {   // luz de una cara según hacia dónde mira respecto del sol
+      if (S.alt <= 0) return -0.12;
+      return (n[0] * S.sd[0] + n[1] * S.sd[1]) > 0 ? 0.12 : -0.22;
+    }
 
     // Volumen genérico: muros visibles con sombreado, ventanas, puerta y techo
     function volumen(g, it, t, bad) {
@@ -2959,7 +2996,7 @@
       var dos = dosAguas(it, t), frontones = dos ? (dos.alongX ? [1, 3] : [0, 2]) : [];
       var puerta = t.puerta ? vis.slice().sort(function (c1, c2) { return (c2.n[0] + c2.n[1]) - (c1.n[0] + c1.n[1]); })[0] : null;
       vis.forEach(function (c) {
-        var luz = c.n[0] < c.n[1] ? 0.1 : -0.22;   // la cara izquierda recibe más luz
+        var luz = cara(c.n);   // la cara que mira al sol recibe más luz
         var muro = [[c.a[0], c.a[1], 0], [c.b[0], c.b[1], 0], [c.b[0], c.b[1], H]];
         if (frontones.indexOf(c.i) >= 0) muro.push([(c.a[0] + c.b[0]) / 2, (c.a[1] + c.b[1]) / 2, H + dos.R]);   // frontón
         muro.push([c.a[0], c.a[1], H]);
@@ -2981,7 +3018,8 @@
           var vw = Math.min(2.4, (libre - (nV - 1) * 0.9) / nV), paso = (libre - nV * vw) / Math.max(1, nV - 1);
           for (var v = 0; v < nV; v++) {
             var d0 = ini + (nV === 1 ? (libre - vw) / 2 : v * (vw + paso)), z0 = pf * hp + hp * 0.3, z1 = pf * hp + hp * 0.78;
-            mk("polygon", { points: pts([at(d0, z0), at(d0 + vw, z0), at(d0 + vw, z1), at(d0, z1)]), class: "casa-vidrio" }, g);
+            mk("polygon", S.alt <= 0 ? { points: pts([at(d0, z0), at(d0 + vw, z0), at(d0 + vw, z1), at(d0, z1)]), class: "casa-vidrio is-luz", fill: "#FFD27A", raw: 1 }
+              : { points: pts([at(d0, z0), at(d0 + vw, z0), at(d0 + vw, z1), at(d0, z1)]), class: "casa-vidrio", fill: "#D7E7EE" }, g);
           }
         }
       });
@@ -3016,7 +3054,7 @@
         return { q: pl.q.map(function (v) { return aMundo(it, v[0], v[1], iso ? v[2] : 0); }), n: n };
       }).sort(function (a, b) { return (a.n[0] + a.n[1]) - (b.n[0] + b.n[1]); });
       planos2.forEach(function (pl) {
-        var luz = pl.n[0] < pl.n[1] ? 0.14 : -0.12;
+        var luz = S.alt <= 0 ? -0.05 : (pl.n[0] * S.sd[0] + pl.n[1] * S.sd[1]) > 0 ? 0.16 : -0.1;
         mk("polygon", { points: pts(pl.q), fill: tono(color.charAt(0) === "#" ? color : "#E9A08C", luz), class: "casa-techo", "data-act": "move" }, g);
       });
       var q = planos2[1].q, k1 = P.apply(null, q[2]), k2 = P.apply(null, q[3]);
@@ -3026,16 +3064,16 @@
     function piscina(g, it, cs, bad) {
       var iso = S.vista === "iso", b = 0.5;
       var inn = corners({ x: it.x, y: it.y, w: Math.max(0.5, it.w - 2 * b), h: Math.max(0.5, it.h - 2 * b), rot: it.rot });
-      mk("polygon", { points: pts(cs), class: "casa-pisc-borde" + (bad ? " is-bad" : ""), "data-act": "move" }, g);
+      mk("polygon", { points: pts(cs), class: "casa-pisc-borde" + (bad ? " is-bad" : ""), fill: bad ? "#F4C4B6" : "#ECE6DA", "data-act": "move" }, g);
       if (iso) {
         var hd = 0.9;
         for (var i = 0; i < 4; i++) {
           var a = inn[i], c2 = inn[(i + 1) % 4], nx = c2[1] - a[1], ny = -(c2[0] - a[0]);
-          if (nx + ny < -0.01) mk("polygon", { points: pts([[a[0], a[1], 0], [c2[0], c2[1], 0], [c2[0], c2[1], -hd], [a[0], a[1], -hd]]), class: "casa-pisc-muro", "data-act": "move" }, g);
+          if (nx + ny < -0.01) mk("polygon", { points: pts([[a[0], a[1], 0], [c2[0], c2[1], 0], [c2[0], c2[1], -hd], [a[0], a[1], -hd]]), class: "casa-pisc-muro", fill: "#4F9FB8", "data-act": "move" }, g);
         }
-        mk("polygon", { points: pts(inn.map(function (q) { return [q[0], q[1], -0.25]; })), class: "casa-agua", "data-act": "move" }, g);
+        mk("polygon", { points: pts(inn.map(function (q) { return [q[0], q[1], -0.25]; })), class: "casa-agua", fill: "#79C3D8", "data-act": "move" }, g);
       } else {
-        mk("polygon", { points: pts(inn), class: "casa-agua", "data-act": "move" }, g);
+        mk("polygon", { points: pts(inn), class: "casa-agua", fill: "#79C3D8", "data-act": "move" }, g);
       }
       // Brillos en el agua
       var z = iso ? -0.25 : 0, at = function (u2, v2) { return [inn[0][0] + (inn[1][0] - inn[0][0]) * u2 + (inn[3][0] - inn[0][0]) * v2, inn[0][1] + (inn[1][1] - inn[0][1]) * u2 + (inn[3][1] - inn[0][1]) * v2, z]; };
@@ -3046,12 +3084,12 @@
     }
     function arbol(g, t) {
       var x = t[0], y = t[1], h = t[2], r = h * 0.42, iso = S.vista === "iso";
-      if (!iso) { mk("circle", { cx: num(x), cy: num(y), r: num(r), class: "casa-copa" }, g); return; }
+      var sh = P(x + SOL[0] * h * 0.6, y + SOL[1] * h * 0.6, 0), sl = Math.hypot(SOL[0], SOL[1]);
+      if (S.alt > 0) mk("ellipse", { cx: num(sh[0]), cy: num(sh[1]), rx: num(r * (1 + sl * 0.12)), ry: num(r * (iso ? 0.55 : 1)), class: "casa-sombra" }, g);
+      if (!iso) { mk("circle", { cx: num(x), cy: num(y), r: num(r), class: "casa-copa", fill: "#7E9A67" }, g); return; }
       var s0 = P(x, y, 0), s1 = P(x, y, h * 0.55), sc = P(x, y, h * 0.62);
-      var sh = P(x + SOL[0] * h * 0.6, y + SOL[1] * h * 0.6, 0);
-      mk("ellipse", { cx: num(sh[0]), cy: num(sh[1]), rx: num(r * 1.05), ry: num(r * 0.55), class: "casa-sombra" }, g);
       mk("line", { x1: num(s0[0]), y1: num(s0[1]), x2: num(s1[0]), y2: num(s1[1]), class: "casa-tronco" }, g);
-      mk("circle", { cx: num(sc[0]), cy: num(sc[1]), r: num(r), class: "casa-copa" }, g);
+      mk("circle", { cx: num(sc[0]), cy: num(sc[1]), r: num(r), class: "casa-copa", fill: "#7E9A67" }, g);
       mk("circle", { cx: num(sc[0] - r * 0.28), cy: num(sc[1] - r * 0.3), r: num(r * 0.5), class: "casa-copa-luz" }, g);
     }
     // Cota: línea paralela a un borde, separada hacia afuera, con remates y el largo en metros
@@ -3069,6 +3107,7 @@
     }
 
     function draw() {
+      sol();
       $$(":scope > :not(title)", svg).forEach(function (n) { n.remove(); });
       var vb = viewBox(), u = Math.max(S.base[2], S.base[3]) / 100 / S.zoom, iso = S.vista === "iso";
       svg.setAttribute("viewBox", vb.map(num).join(" "));
@@ -3078,8 +3117,8 @@
       var defs = mk("defs", {}, svg), cp = mk("clipPath", { id: "casa-clip" }, defs);
       mk("polygon", { points: pts(S.poly) }, cp);
       // Fondo: campo alrededor (atrapa los toques fuera del lote)
-      mk("rect", { x: num(vb[0] - vb[2]), y: num(vb[1] - vb[3]), width: num(vb[2] * 3), height: num(vb[3] * 3), class: "casa-fondo", "data-act": "fondo" }, svg);
-      mk("polygon", { points: pts(S.poly), class: "casa-lote", "data-act": "fondo" }, svg);
+      mk("rect", { x: num(vb[0] - vb[2]), y: num(vb[1] - vb[3]), width: num(vb[2] * 3), height: num(vb[3] * 3), class: "casa-fondo", fill: "#EDE6DA", "data-act": "fondo" }, svg);
+      mk("polygon", { points: pts(S.poly), class: "casa-lote", fill: "#D3DDBE", "data-act": "fondo" }, svg);
       // Cuadrícula de 5 m (más marcada cada 10 m) sobre el suelo
       var xs = S.poly.map(function (q) { return q[0]; }), ys = S.poly.map(function (q) { return q[1]; });
       var x0 = Math.floor(Math.min.apply(null, xs) / 5) * 5, x1 = Math.max.apply(null, xs), y0 = Math.floor(Math.min.apply(null, ys) / 5) * 5, y1 = Math.max.apply(null, ys);
@@ -3102,7 +3141,7 @@
       var cam = camino();
       if (cam) {
         var gc = mk("g", { class: "casa-camino" }, svg);
-        mk("polygon", { points: pts(cam.poly), class: "casa-camino-ripio" }, gc);
+        mk("polygon", { points: pts(cam.poly), class: "casa-camino-ripio", fill: "#DCCFB4" }, gc);
         [[cam.l0, cam.l1], [cam.r0, cam.r1]].forEach(function (b) { var a1 = P(b[0][0], b[0][1]), a2 = P(b[1][0], b[1][1]); mk("line", { x1: num(a1[0]), y1: num(a1[1]), x2: num(a2[0]), y2: num(a2[1]), class: "casa-camino-borde" }, gc); });
         cam.postes.forEach(function (q) {
           var b0 = P(q[0], q[1], 0), b1 = P(q[0], q[1], iso ? 1.5 : 0);
@@ -3112,7 +3151,7 @@
       }
       // Sombras en el suelo
       var gs = mk("g", { class: "casa-sombras" }, svg);
-      if (iso) S.items.forEach(function (it) {
+      if (S.alt > 0) S.items.forEach(function (it) {
         var t = tipo(it.tipo), cs = corners(it), dz = dosAguas(it, t), H = t.alto + (dz ? dz.R * 0.5 : 0);
         if (!t.alto) return;
         var sh = hull(cs.concat(cs.map(function (q) { return [q[0] + SOL[0] * H, q[1] + SOL[1] * H]; })));
@@ -3157,7 +3196,22 @@
         var lb = mk("text", { x: num(pl[0]), y: num(arriba - 2 * u), "font-size": num(2.2 * u), class: "casa-it-t" }, gsel);
         lb.textContent = it.nombre + " · " + fmt(area(it)) + " m²";
       }
+      brujula();
       panel();
+    }
+    // Brújula: el norte y el sol en la pantalla (en 3D, proyectados)
+    function brujula() {
+      var b = $("[data-c-brujula]", root);
+      if (!b) return;
+      var dirP = function (v) { var q = S.vista === "iso" ? [(v[0] - v[1]) * CI, (v[0] + v[1]) * SI] : v, L = Math.hypot(q[0], q[1]) || 1; return [q[0] / L, q[1] / L]; };
+      var n = dirP(S.N), r = 19, nn = $("[data-c-n]", b), sp = $("[data-c-solp]", b);
+      nn.style.transform = "translate(" + (n[0] * r).toFixed(1) + "px," + (n[1] * r).toFixed(1) + "px)";
+      sp.hidden = S.alt <= 0;
+      if (S.alt > 0) { var d = dirP(S.sd); sp.style.transform = "translate(" + (d[0] * r).toFixed(1) + "px," + (d[1] * r).toFixed(1) + "px)"; }
+      b.classList.toggle("is-noche", S.alt <= 0);
+      var o = $("[data-c-hora-o]", root), hh = Math.floor(S.hora), mm = Math.round((S.hora - hh) * 60);
+      if (o) o.textContent = (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm;
+      stage.setAttribute("data-luz", S.luz.fase);
     }
     function camino() {
       if (!S.camino || !S.acceso) return null;
@@ -3231,6 +3285,30 @@
       b.addEventListener("click", function () { var it = S.items[S.sel]; if (it) { it.dos = b.getAttribute("data-c-techo") === "dos"; draw(); } });
     });
     if (el.camino) el.camino.addEventListener("click", function () { S.camino = !S.camino; draw(); });
+    // Sol: hora, época del año y "ver el día" (animación de la mañana a la noche)
+    var hr = $("[data-c-hora]", root), play = $("[data-c-dia]", root), anim = 0;
+    function parar() { if (anim) { window.cancelAnimationFrame(anim); anim = 0; play.classList.remove("is-on"); } }
+    if (hr) hr.addEventListener("input", function () { parar(); S.hora = +hr.value; draw(); });
+    $$("[data-c-est]", root).forEach(function (b) {
+      b.addEventListener("click", function () {
+        S.estacion = b.getAttribute("data-c-est");
+        $$("[data-c-est]", root).forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+        draw();
+      });
+    });
+    if (play) play.addEventListener("click", function () {
+      if (anim) { parar(); return; }
+      if (reduced) { S.hora = 12; hr.value = 12; draw(); return; }
+      var t0 = 0, h0 = 6.5, h1 = 21.5, dur = 9000;
+      play.classList.add("is-on");
+      (function paso(t) {
+        if (!t0) t0 = t;
+        var f = Math.min(1, (t - t0) / dur);
+        S.hora = Math.round((h0 + (h1 - h0) * f) * 4) / 4; hr.value = S.hora; draw();
+        anim = f < 1 ? window.requestAnimationFrame(paso) : 0;
+        if (!anim) play.classList.remove("is-on");
+      })(performance.now());
+    });
     el.rot.addEventListener("click", function () { var it = S.items[S.sel]; if (it) { it.rot = (it.rot + 15) % 360; draw(); } });
     el.del.addEventListener("click", function () {
       if (S.sel < 0) return;

@@ -140,14 +140,22 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   superficie** (regla que dio el cliente; `PCT`), aviso si se pasa o si algo queda fuera, y "Enviar mi diseño a un
   asesor" por WhatsApp. Desde el detalle del lote: "Dibuja tu casa en este lote" (`[data-d-casa]`, `Casa.set`). Solo
   lotes no vendidos. Texto legal: referencial, la DOM fija superficie, distanciamientos y permiso. Prueba: `tools/pruebas/casa.js`.
+  **Sol según la hora** (`sol()`): latitud del proyecto (`LAT`), época del año (verano/otoño/invierno, `DECL`) y hora
+  de reloj (hora solar ≈ reloj − 0,85 h; en verano − 1,85 h), suponiendo el **norte hacia arriba del plano** (dicho en el
+  texto legal). Da la dirección y el largo de las sombras (también en planta), la luz de cada muro y agua del techo
+  (`cara()`), y el tono del ambiente (`amb()`, que `mk()` aplica a todo `fill`: día, hora dorada, crepúsculo, noche con
+  ventanas encendidas). Barra bajo el lote (`.casa-sol`: hora, ▶ "ver el día" de 6:30 a 21:30, época) y brújula con el
+  norte y el sol (`.casa-brujula`). Parte en verano a las 17:00.
   **Guiado a elegir parcela** (pedido del cliente): "Diseña tu casa" de la barra y el menú, el aviso y "Elegir mi lote en
   el plano" (`[data-casa-guia]`) llevan a `#plano` con la guía (`Plan.guia`, `[data-plan-guia]`): paso 1 "toca un lote
   disponible" (los disponibles destellan), paso 2 con "Diseñar mi casa aquí" (`[data-d-guia]`, primero en el detalle del
   lote) que abre la herramienta en ese lote. El aviso ofrece además "o pruébalo con un lote de ejemplo" (`#tu-casa`).
   **Acceso visible** (el cliente lo encontraba escondido): "Diseña tu casa" con etiqueta "Nuevo" en la barra (`.nl-casa`;
   en la franja de celular, "Tu casa" con un punto) y en el menú (`.menu-casa`), y un aviso con imagen (`.casa-promo`,
-  `#disena-inicio` en Inicio tras "Por qué" y `#disena-proyectos` en Proyectos tras las tarjetas). La imagen
-  (`assets/img/tu-casa-800/1400.webp`) es una captura de la propia herramienta (casa de dos pisos, piscina y quincho).
+  `#disena-inicio` en Inicio tras "Por qué" y `#disena-proyectos` en Proyectos tras las tarjetas). La imagen del aviso
+  es una **foto real** de una casa de campo en Puyuhuapi, Aysén (Wikimedia Commons, LBM1948, CC BY-SA 4.0, recortada;
+  `assets/img/casa-parcela-800/1400.webp`, crédito obligatorio en el pie) con una miniatura del diseño en 3D encima
+  (`assets/img/tu-casa-800.webp`, captura de la herramienta). Se bajó con un flujo temporal de GitHub Actions, ya borrado.
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el
