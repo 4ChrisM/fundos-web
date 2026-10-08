@@ -2301,3 +2301,79 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
   .team-mosaic-brand strong { font-size: .86rem; }
   .team-photo .team-mosaic-brand img { width: 36px; }
 }
+
+/* ---------------- Tu casa: dibuja tu casa a escala sobre el lote ---------------- */
+.casa { display: grid; gap: 1.2rem; margin-top: 1.8rem; }
+@media (min-width: 960px) { .casa { grid-template-columns: minmax(300px, 340px) minmax(0, 1fr); gap: 1.6rem; align-items: start; } }
+.casa-side { display: grid; gap: 1rem; align-content: start; }
+.casa-pick { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .7rem; }
+.casa-meter { padding: 1rem 1.1rem; border-radius: var(--r-lg); background: var(--g900); color: var(--n050); }
+.casa-meter-k { font: 700 .66rem/1.2 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+.casa-meter-v { margin-top: .35rem; font-size: .9rem; color: rgba(247, 245, 240, .78); }
+.casa-meter-v strong { font: 500 2rem/1 var(--serif); color: var(--n050); font-variant-numeric: lining-nums; margin-right: .2rem; }
+.casa-meter-v b { color: var(--n050); }
+.casa-bar { height: 8px; margin-top: .75rem; border-radius: 999px; background: rgba(247, 245, 240, .14); overflow: hidden; }
+.casa-bar span { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--gold); transition: width .25s var(--ease-out), background-color .2s; }
+.casa-meter.is-over .casa-bar span { background: #E07A5F; }
+.casa-meter-msg { margin-top: .6rem; font-size: .82rem; line-height: 1.4; color: rgba(247, 245, 240, .82); }
+.casa-meter-msg.is-warn { color: #F4B4A4; font-weight: 700; }
+.casa-add-k { margin-bottom: .5rem; font-size: .86rem; font-weight: 700; color: var(--g900); }
+.casa-add-b { display: flex; flex-wrap: wrap; gap: .4rem; }
+.casa-chip {
+  display: inline-flex; align-items: center; gap: .35rem; min-height: 40px; padding: .4rem .75rem .4rem .55rem;
+  border: 1px solid var(--n200); border-radius: 999px; background: var(--white, #fff); color: var(--g900);
+  font: 700 .8rem/1.1 var(--sans); cursor: pointer; transition: border-color .2s, background-color .2s;
+}
+.casa-chip .i { width: 16px; height: 16px; color: var(--gold-ink); }
+.casa-chip small { font-weight: 500; color: var(--n600); }
+.casa-chip:hover { border-color: var(--gold); background: #FBF8F2; }
+.casa-chip:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+.casa-sel { display: grid; gap: .7rem; padding: .9rem 1rem; border: 1px solid var(--n200); border-radius: var(--r-lg); background: var(--white, #fff); }
+.casa-sel-t { font: 500 1.25rem/1.2 var(--serif); color: var(--g900); }
+.casa-sel-t small { font: 700 .78rem/1 var(--sans); color: var(--gold-ink); margin-left: .3rem; }
+.casa-sel-f { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.casa-sel-f input { width: 100%; min-height: 44px; padding: .55rem .7rem; border: 1px solid #8C8474; border-radius: var(--r-sm); background: var(--white, #fff); font: inherit; font-variant-numeric: tabular-nums; }
+.casa-sel-f input:focus { outline: 2px solid var(--gold-ink); outline-offset: 1px; }
+.casa-sel-b { display: flex; flex-wrap: wrap; gap: .5rem; }
+.casa-sel-b .btn { color: var(--g900); border-color: var(--n200); }
+.casa-wa { justify-content: center; }
+.casa-stage { position: relative; margin: 0; border-radius: var(--r-lg); background: #E9E4D6; overflow: hidden; box-shadow: var(--shadow-card); }
+.casa-svg { display: block; width: 100%; height: clamp(340px, 62vh, 620px); user-select: none; -webkit-user-select: none; }
+@media (max-width: 959px) { .casa-svg { height: clamp(320px, 92vw, 520px); } }
+.casa-lote { fill: #B9C9A0; }
+.casa-grid path { fill: none; stroke: rgba(10, 20, 14, .14); stroke-width: calc(var(--cu) * .12); }
+.casa-borde { fill: none; stroke: var(--g900); stroke-width: calc(var(--cu) * .45); stroke-linejoin: round; stroke-dasharray: calc(var(--cu) * 1.6) calc(var(--cu) * .8); }
+.casa-escala path { fill: none; stroke: var(--g900); stroke-width: calc(var(--cu) * .35); }
+.casa-escala text, .casa-lote-t { fill: var(--g900); font-family: var(--sans); font-weight: 700; dominant-baseline: middle; }
+.casa-it { cursor: grab; touch-action: none; outline: none; }
+.casa-it rect:first-child { fill: #F7F5F0; stroke: var(--g900); stroke-width: calc(var(--cu) * .35); transition: fill .15s; }
+.casa-quincho rect:first-child { fill: #EBD9B4; }
+.casa-garaje rect:first-child { fill: #D9D6CE; }
+.casa-bodega rect:first-child { fill: #D8C3A0; }
+.casa-visitas rect:first-child { fill: #F2E9D8; }
+.casa-it.is-sel rect:first-child { stroke: var(--gold-ink); stroke-width: calc(var(--cu) * .55); }
+.casa-it:focus-visible rect:first-child { stroke: var(--gold-ink); stroke-width: calc(var(--cu) * .7); }
+.casa-it.is-bad rect:first-child { fill: #F4C4B6; stroke: #B23A1E; }
+.casa-h { fill: var(--gold); stroke: var(--g900); stroke-width: calc(var(--cu) * .25); }
+.casa-h-rot { cursor: grab; }
+.casa-h-size { cursor: nwse-resize; }
+.casa-h-line { stroke: var(--g900); stroke-width: calc(var(--cu) * .2); }
+.casa-it-t, .casa-it-m { fill: var(--g900); font-family: var(--sans); text-anchor: middle; pointer-events: none; }
+.casa-it-t { font-weight: 800; }
+.casa-it-m { font-weight: 600; fill: #3B4A3F; }
+.casa-help { padding: .6rem .9rem; border-top: 1px solid rgba(10, 20, 14, .1); background: rgba(247, 245, 240, .7); font-size: .78rem; color: var(--n600); }
+.casa-legal { margin-top: 1rem; font-size: .76rem; color: var(--n600); max-width: 80ch; }
+.casa-noscript { padding: 1rem; border-radius: var(--r-lg); background: var(--n050); }
+.casa-it-t.is-out, .casa-it-m.is-out { paint-order: stroke; stroke: rgba(247, 245, 240, .85); stroke-width: calc(var(--cu) * .5); stroke-linejoin: round; }
+/* Celular y tablet: el lote va justo bajo el medidor; los controles para agregar y editar, después */
+@media (max-width: 959px) {
+  .casa-side { display: contents; }
+  .casa-pick { order: 1; }
+  .casa-meter { order: 2; }
+  .casa-stage { order: 3; }
+  .casa-add { order: 4; }
+  .casa-sel { order: 5; }
+  .casa-wa { order: 6; }
+  .casa-meter { padding: .8rem 1rem; }
+  .casa-meter-v strong { font-size: 1.6rem; }
+}

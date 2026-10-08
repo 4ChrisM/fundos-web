@@ -25,6 +25,7 @@ Se corren desde una carpeta temporal porque guardan capturas (`ux/*.png`). Cada 
 | `plano-en-pantalla.js` | Alto del plano + chips en distintas pantallas (debe terminar dentro del alto visible) |
 | `cotizador.js` | Alto del cotizador en contado y financiamiento |
 | `pestanas.js` | "Todo sobre tu compra": pestañas, teclado, enlaces `#simulador`/`#portal`/`#preguntas`, indicador de sección, carruseles |
+| `casa.js` | "Tu casa": lote a escala, mover (mouse y toque, sin desplazar la página), agregar, medidas, aviso al pasar el 10 %, teclado y "Dibuja tu casa en este lote" desde el plano |
 | `largo.js` | Largo de la página en pantallas, total y por sección (computador y celular) |
 | `entorno.js` | Mapa del entorno: todos los lugares de un proyecto en 7 tamaños (píldora, rótulos y botones sin quedar bajo panel, ficha, controles ni pie). Uso: `node entorno.js [malalcahuello\|marchigue]` (sin argumento, Puerto Varas); `MIN=1` con paneles minimizados. Tarda ~5 min por proyecto; debe dar "0 problem views" |
 | `_vista.js` | Ayuda para las demás: elegir pestaña (`vista`), proyecto del plano (`proyecto`) o dejar la página como antes de las pestañas (`clasica`) |

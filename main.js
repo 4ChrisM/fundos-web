@@ -77,6 +77,7 @@
   var Visit = { prefill: function () {} };
   var Plan = { apply: function () {}, show: function () {}, current: function () { return (proyectos[0] || {}).id; } };
   var Sim = { set: function () {} };
+  var Casa = { set: function () {} };
   var Tour = { open: function () {} };
   var Video = { open: function () {} };
   var Vista = { set: function () { return false; }, current: function () { return ""; } };
@@ -550,7 +551,7 @@
       project: $("[data-d-project]"), title: $("[data-d-title]"), status: $("[data-d-status]"), sector: $("[data-d-sector]"),
       price: $("[data-d-price]"), m2: $("[data-d-m2]"), reserva: $("[data-d-reserva]"), saldo: $("[data-d-saldo]"),
       m2price: $("[data-d-m2price]"), reserve: $("[data-d-reserve]"), wa: $("[data-d-wa]"), fav: $("[data-d-fav]"),
-      sim: $("[data-d-sim]"), close: $("[data-panel-close]"), facts: $(".lot-facts", pDetail), alts: $("[data-d-alts]"), toast: $("[data-d-toast]")
+      sim: $("[data-d-sim]"), casa: $("[data-d-casa]"), close: $("[data-panel-close]"), facts: $(".lot-facts", pDetail), alts: $("[data-d-alts]"), toast: $("[data-d-toast]")
     };
     var favBox = $("[data-favs]"), favCount = $("[data-favs-count]"), favLabel = $("[data-favs-label]");
     var favList = $("[data-favs-list]"), favSend = $("[data-favs-send]"), favClear = $("[data-favs-clear]");
@@ -1056,6 +1057,7 @@
         : "Hola Fundos, me interesa el lote " + l.n + " de " + p.nombre + " (" + m2(l.m2) + ", " + clp(l.precio) + "). ¿Me pueden dar más información?" + lotLink(p, l));
       d.fav.hidden = sold;
       d.sim.hidden = sold;
+      if (d.casa) d.casa.hidden = sold;
       if (d.toast) d.toast.hidden = true;
       syncFavButton();
     }
@@ -1448,6 +1450,11 @@
     d.sim.addEventListener("click", function () {
       var l = lotOf(P(), S.sel);
       if (l) Sim.set(S.id, l.precio, l.n);
+      closeSheet(true);
+    });
+    if (d.casa) d.casa.addEventListener("click", function () {
+      var l = lotOf(P(), S.sel);
+      if (l) Casa.set(S.id, l.n);
       closeSheet(true);
     });
     if (d.close) d.close.addEventListener("click", function () { closeSheet(); });
@@ -2660,6 +2667,303 @@
   }
 
   /* =============================================================
+     Tu casa: el lote real (forma de lib/planos.js llevada a su superficie en m²) con construcciones a escala
+     que se mueven, giran y cambian de tamaño; mide lo construido contra el 10 % de la superficie
+     ============================================================= */
+  function initCasa() {
+    var root = $("[data-casa]"), planos = B.planos || {};
+    if (!root) return;
+    var svg = $("[data-c-svg]", root), selP = $("[data-c-proyecto]", root), selL = $("[data-c-lote]", root);
+    var NS = "http://www.w3.org/2000/svg", PCT = 0.10;
+    var TIPOS = [
+      { id: "casa", nombre: "Casa", w: 12, h: 10 },
+      { id: "visitas", nombre: "Casa de visitas", w: 8, h: 6 },
+      { id: "quincho", nombre: "Quincho", w: 6, h: 5 },
+      { id: "garaje", nombre: "Estacionamiento", w: 6, h: 5 },
+      { id: "bodega", nombre: "Bodega", w: 4, h: 3 }
+    ];
+    var S = { p: null, lote: null, poly: [], items: [], sel: -1, seq: 0, vb: [0, 0, 100, 100] };
+    var el = {
+      total: $("[data-c-total]", root), max: $("[data-c-max]", root), bar: $("[data-c-bar]", root), msg: $("[data-c-msg]", root),
+      meter: $("[data-c-meter]", root), add: $("[data-c-add]", root), box: $("[data-c-sel]", root), name: $("[data-c-sel-name]", root),
+      selm2: $("[data-c-sel-m2]", root), w: $("[data-c-w]", root), h: $("[data-c-h]", root), rot: $("[data-c-rot]", root),
+      del: $("[data-c-del]", root), wa: $("[data-c-wa]", root)
+    };
+    var con = proyectos.filter(function (p) { return planos[p.id] && p.lotes && p.lotes.length; })
+      .sort(function (a, b) { return (b.id === DESTACADO) - (a.id === DESTACADO); });
+    if (!con.length) return;
+    selP.innerHTML = con.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.nombre) + "</option>"; }).join("");
+
+    function num(v) { return Math.round(v * 10) / 10; }
+    function snap(v) { return Math.round(v * 2) / 2; }
+    function fmt(n) { return String(num(n)).replace(".", ","); }
+    function area(it) { return it.w * it.h; }
+    function total() { return S.items.reduce(function (a, it) { return a + area(it); }, 0); }
+    function limite() { return (S.lote ? S.lote.m2 : 5000) * PCT; }
+    function lotes(p) { return p.lotes.filter(function (l) { return l.estado !== "vendida" && planos[p.id].lotes[l.n]; }); }
+    function parse(d) {
+      var pts = [], re = /([ML])\s*(-?[\d.]+)[ ,]+(-?[\d.]+)/g, m;
+      while ((m = re.exec(d))) pts.push([+m[2], +m[3]]);
+      return pts;
+    }
+    function polyArea(pts) {
+      var a = 0;
+      for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) a += (pts[j][0] + pts[i][0]) * (pts[j][1] - pts[i][1]);
+      return Math.abs(a / 2);
+    }
+    function inside(pt, pts) {
+      var c = false;
+      for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+        var a = pts[i], b = pts[j];
+        if ((a[1] > pt[1]) !== (b[1] > pt[1]) && pt[0] < (b[0] - a[0]) * (pt[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c;
+      }
+      return c;
+    }
+    function corners(it) {
+      var r = it.rot * Math.PI / 180, c = Math.cos(r), s = Math.sin(r), hw = it.w / 2, hh = it.h / 2;
+      return [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]].map(function (q) { return [it.x + q[0] * c - q[1] * s, it.y + q[0] * s + q[1] * c]; });
+    }
+    function local(it, x, y) {
+      var r = -it.rot * Math.PI / 180, dx = x - it.x, dy = y - it.y;
+      return [dx * Math.cos(r) - dy * Math.sin(r), dx * Math.sin(r) + dy * Math.cos(r)];
+    }
+    function fuera(it) {
+      var cs = corners(it);
+      if (!cs.every(function (q) { return inside(q, S.poly); })) return true;
+      return S.poly.some(function (v) { return inside(v, cs); });   // una esquina del lote que entra en la construcción
+    }
+
+    // Lote en metros: se escala el polígono del plano a la superficie del lote, centrado en su punto de etiqueta
+    function setLote(n) {
+      var g = planos[S.p.id].lotes[n];
+      S.lote = S.p.lotes.filter(function (l) { return l.n === n; })[0];
+      if (!g || !S.lote) return;
+      var raw = parse(g.d), k = Math.sqrt(S.lote.m2 / polyArea(raw)), l0 = g.l;
+      S.poly = raw.map(function (q) { return [(q[0] - l0[0]) * k, (q[1] - l0[1]) * k]; });
+      S.giro = false;
+      encuadre();
+      selL.value = String(n);
+      // Las construcciones se conservan al cambiar de lote: vuelven al centro si quedan fuera
+      S.items.forEach(function (it, i) { if (fuera(it)) { it.x = 0; it.y = i * 3; it.rot = 0; } });
+      if (!S.items.length) add("casa");
+      draw();
+    }
+    // Un lote largo se gira 90° si así llena mejor el recuadro (el plano no indica el norte; la forma no cambia)
+    function quiereGiro() {
+      var xs = S.poly.map(function (q) { return q[0]; }), ys = S.poly.map(function (q) { return q[1]; });
+      var la = (Math.max.apply(null, ys) - Math.min.apply(null, ys)) / (Math.max.apply(null, xs) - Math.min.apply(null, xs) || 1);
+      var r = svg.getBoundingClientRect(), sa = r.height ? r.width / r.height : 1;
+      return (la > 1.3 && sa > 1.1) || (la < 1 / 1.3 && sa < 1 / 1.1);
+    }
+    function girar() {
+      S.poly = S.poly.map(function (q) { return [-q[1], q[0]]; });
+      S.items.forEach(function (it) { var x = it.x; it.x = -it.y; it.y = x; it.rot = (it.rot + 90) % 360; });
+      S.giro = !S.giro;
+    }
+    function encuadre() {
+      if (quiereGiro()) girar();
+      var xs = S.poly.map(function (q) { return q[0]; }), ys = S.poly.map(function (q) { return q[1]; });
+      var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+      var pad = Math.max(x1 - x0, y1 - y0) * 0.08 + 4;
+      S.vb = [x0 - pad, y0 - pad, x1 - x0 + 2 * pad, y1 - y0 + 2 * pad + 6];
+      svg.setAttribute("viewBox", S.vb.join(" "));
+    }
+    function setProyecto(id, n) {
+      S.p = proyecto(id) || con[0];
+      selP.value = S.p.id;
+      var ls = lotes(S.p);
+      selL.innerHTML = ls.map(function (l) {
+        return '<option value="' + l.n + '">Lote ' + l.n + (l.m2 !== 5000 ? " · " + m2(l.m2) : "") + (l.estado === "reservada" ? " (reservado)" : "") + "</option>";
+      }).join("");
+      var lo = ls.filter(function (l) { return l.n === n; })[0] || ls.filter(function (l) { return l.estado === "disponible"; })[0] || ls[0];
+      if (lo) setLote(lo.n);
+    }
+
+    function add(tipo) {
+      var t = TIPOS.filter(function (x) { return x.id === tipo; })[0];
+      if (!t) return;
+      var it = { key: ++S.seq, tipo: t.id, nombre: t.nombre, w: t.w, h: t.h, x: 0, y: 0, rot: 0 };
+      // Lugar libre cerca del centro: se prueba en espiral hasta que quepa sin salirse
+      // (con 4 m de holgura entre construcciones para que se lean sus rótulos)
+      for (var i = 0; i < 80; i++) {
+        var a = i * 2.4, r = i * 1.8;
+        it.x = snap(Math.cos(a) * r); it.y = snap(Math.sin(a) * r);
+        var holgado = { x: it.x, y: it.y, w: it.w + 8, h: it.h + 8, rot: it.rot };
+        if (!fuera(it) && !S.items.some(function (o) { return choca(o, holgado); })) break;
+      }
+      S.items.push(it);
+      S.sel = S.items.length - 1;
+    }
+    function choca(a, b) {
+      var ca = corners(a), cb = corners(b);
+      return ca.some(function (q) { return inside(q, cb); }) || cb.some(function (q) { return inside(q, ca); });
+    }
+
+    function mk(tag, at, parent) {
+      var n = document.createElementNS(NS, tag);
+      for (var k in at) n.setAttribute(k, at[k]);
+      if (parent) parent.appendChild(n);
+      return n;
+    }
+    function draw() {
+      $$(":scope > :not(title)", svg).forEach(function (n) { n.remove(); });
+      var vb = S.vb, u = Math.max(vb[2], vb[3]) / 100;   // unidad visual (1 % del lado mayor)
+      svg.style.setProperty("--cu", u);
+      var defs = mk("defs", {}, svg);
+      var cp = mk("clipPath", { id: "casa-clip" }, defs);
+      var pd = "M" + S.poly.map(function (q) { return num(q[0]) + " " + num(q[1]); }).join("L") + "Z";
+      mk("path", { d: pd }, cp);
+      mk("path", { d: pd, class: "casa-lote" }, svg);
+      // Cuadrícula de 10 m dentro del lote
+      var gr = mk("g", { class: "casa-grid", "clip-path": "url(#casa-clip)" }, svg), d = "";
+      for (var x = Math.ceil(vb[0] / 10) * 10; x < vb[0] + vb[2]; x += 10) d += "M" + x + " " + vb[1] + "V" + (vb[1] + vb[3]);
+      for (var y = Math.ceil(vb[1] / 10) * 10; y < vb[1] + vb[3]; y += 10) d += "M" + vb[0] + " " + y + "H" + (vb[0] + vb[2]);
+      mk("path", { d: d }, gr);
+      mk("path", { d: pd, class: "casa-borde" }, svg);
+      // Escala de 10 m
+      var sx = vb[0] + vb[2] * 0.04, sy = vb[1] + vb[3] - 2.2 * u;
+      var sc = mk("g", { class: "casa-escala" }, svg);
+      mk("path", { d: "M" + sx + " " + (sy - u) + "V" + sy + "H" + (sx + 10) + "V" + (sy - u) }, sc);
+      var tx = mk("text", { x: sx + 11.2, y: sy, "font-size": 2 * u }, sc); tx.textContent = "10 m";
+      var tl = mk("text", { x: vb[0] + vb[2] * 0.96, y: sy, "font-size": 2 * u, "text-anchor": "end", class: "casa-lote-t" }, svg);
+      tl.textContent = "Lote " + S.lote.n + " · " + m2(S.lote.m2);
+      S.items.forEach(function (it, i) {
+        var bad = fuera(it), on = i === S.sel;
+        var g = mk("g", { class: "casa-it casa-" + it.tipo + (on ? " is-sel" : "") + (bad ? " is-bad" : ""), transform: "translate(" + num(it.x) + " " + num(it.y) + ") rotate(" + it.rot + ")",
+          tabindex: "0", role: "button", "data-i": i, "aria-label": it.nombre + ", " + fmt(it.w) + " por " + fmt(it.h) + " metros" + (bad ? ", fuera del lote" : "") }, svg);
+        mk("rect", { x: -it.w / 2, y: -it.h / 2, width: it.w, height: it.h, rx: 0.3, "data-act": "move" }, g);
+        if (on) {
+          var hr = 1.6 * u;
+          mk("line", { x1: 0, y1: -it.h / 2, x2: 0, y2: -it.h / 2 - 4 * u, class: "casa-h-line" }, g);
+          mk("circle", { cx: 0, cy: -it.h / 2 - 4 * u, r: hr, class: "casa-h casa-h-rot", "data-act": "rot" }, g);
+          mk("rect", { x: it.w / 2 - hr, y: it.h / 2 - hr, width: 2 * hr, height: 2 * hr, class: "casa-h casa-h-size", "data-act": "size" }, g);
+        }
+        // Rótulo dentro si cabe (achicándolo un poco); si no, debajo de la construcción, siempre legible
+        var cs = corners(it), car = Math.max(it.nombre.length, fmt(area(it)).length + 3) * 0.56;
+        var recto = it.rot % 180 === 0, ew = recto ? it.w : it.h, eh = recto ? it.h : it.w;
+        if (it.rot % 90 !== 0) ew = eh = Math.min(it.w, it.h) * 0.9;
+        var fs = Math.min(2.2 * u, ew * 0.94 / car, eh / 2.4), dentro = fs >= 1.5 * u;
+        if (!dentro) fs = 2 * u;
+        var ly = dentro ? it.y : Math.max.apply(null, cs.map(function (q) { return q[1]; })) + fs * 1.1;
+        var t1 = mk("text", { x: num(it.x), y: num(ly - fs * 0.15), "font-size": fs, class: "casa-it-t" + (dentro ? "" : " is-out") }, svg); t1.textContent = it.nombre;
+        var t2 = mk("text", { x: num(it.x), y: num(ly + fs * 1.05), "font-size": fs * 0.85, class: "casa-it-m" + (dentro ? "" : " is-out") }, svg); t2.textContent = fmt(area(it)) + " m²";
+      });
+      panel();
+    }
+    function panel() {
+      var tot = total(), lim = limite(), over = tot > lim + 1e-6, malo = S.items.filter(fuera).length;
+      el.total.textContent = fmt(tot) + " m²";
+      el.max.textContent = m2(lim);
+      el.bar.style.width = Math.min(100, tot / lim * 100) + "%";
+      el.meter.classList.toggle("is-over", over);
+      el.msg.textContent = over ? "Te pasaste por " + fmt(tot - lim) + " m²: achica o quita algo."
+        : malo ? (malo === 1 ? "Una construcción queda fuera del lote." : malo + " construcciones quedan fuera del lote.")
+        : "Te quedan " + fmt(lim - tot) + " m² para construir (" + Math.round(tot / lim * 100) + " % usado).";
+      el.msg.classList.toggle("is-warn", over || !!malo);
+      var it = S.items[S.sel];
+      el.box.hidden = !it;
+      if (it) {
+        el.name.textContent = it.nombre;
+        el.selm2.textContent = fmt(area(it)) + " m²";
+        if (document.activeElement !== el.w) el.w.value = num(it.w);
+        if (document.activeElement !== el.h) el.h.value = num(it.h);
+      }
+      var lista = S.items.map(function (x) { return x.nombre.toLowerCase() + " de " + fmt(area(x)) + " m²"; });
+      el.wa.href = waHref("Hola Fundos, dibujé mi casa en el lote " + S.lote.n + " de " + S.p.nombre + ": " + (lista.join(", ") || "sin construcciones") +
+        ". En total " + fmt(tot) + " m² de " + m2(lim) + " permitidos. ¿Me ayudan a evaluarlo?");
+    }
+
+    el.add.innerHTML = TIPOS.map(function (t) {
+      return '<button class="casa-chip" type="button" data-tipo="' + t.id + '"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>' + esc(t.nombre) + "<small>" + t.w + "×" + t.h + " m</small></button>";
+    }).join("");
+    el.add.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-tipo]");
+      if (!b) return;
+      add(b.getAttribute("data-tipo"));
+      draw();
+    });
+    selP.addEventListener("change", function () { setProyecto(selP.value); });
+    selL.addEventListener("change", function () { setLote(+selL.value); });
+    function medida(inp, k) {
+      var it = S.items[S.sel], v = parseFloat(String(inp.value).replace(",", "."));
+      if (!it || !isFinite(v)) return;
+      it[k] = clamp(snap(v), 2, 40);
+      draw();
+    }
+    el.w.addEventListener("input", function () { medida(el.w, "w"); });
+    el.h.addEventListener("input", function () { medida(el.h, "h"); });
+    el.w.addEventListener("change", function () { el.w.value = num(S.items[S.sel] ? S.items[S.sel].w : el.w.value); });
+    el.h.addEventListener("change", function () { el.h.value = num(S.items[S.sel] ? S.items[S.sel].h : el.h.value); });
+    el.rot.addEventListener("click", function () { var it = S.items[S.sel]; if (it) { it.rot = (it.rot + 15) % 360; draw(); } });
+    el.del.addEventListener("click", function () {
+      if (S.sel < 0) return;
+      S.items.splice(S.sel, 1);
+      S.sel = S.items.length ? S.items.length - 1 : -1;
+      draw();
+      var b = $("[data-tipo]", el.add); if (b && S.sel < 0) b.focus();
+    });
+
+    // Arrastre: mover (cuerpo), cambiar tamaño (esquina, con el centro fijo) y girar (círculo)
+    function pt(e) {
+      var m = svg.getScreenCTM();
+      if (!m) return [0, 0];
+      var q = svg.createSVGPoint(); q.x = e.clientX; q.y = e.clientY; q = q.matrixTransform(m.inverse());
+      return [q.x, q.y];
+    }
+    var drag = null;
+    svg.addEventListener("pointerdown", function (e) {
+      var g = e.target.closest(".casa-it");
+      if (!g) { if (S.sel >= 0 && e.target === svg) { S.sel = -1; draw(); } return; }
+      var i = +g.getAttribute("data-i"), it = S.items[i], act = e.target.getAttribute("data-act") || "move", p0 = pt(e);
+      e.preventDefault();
+      S.sel = i;
+      drag = { it: it, act: act, dx: p0[0] - it.x, dy: p0[1] - it.y, id: e.pointerId };
+      try { svg.setPointerCapture(e.pointerId); } catch (er) { /* sin captura */ }
+      // Se redibuja en el cuadro siguiente: el toque debe llegar antes al elemento original (para no desplazar la página)
+      window.requestAnimationFrame(draw);
+    });
+    svg.addEventListener("pointermove", function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var p = pt(e), it = drag.it;
+      if (drag.act === "move") { it.x = snap(p[0] - drag.dx); it.y = snap(p[1] - drag.dy); }
+      else if (drag.act === "size") { var q = local(it, p[0], p[1]); it.w = clamp(snap(Math.abs(q[0]) * 2), 2, 40); it.h = clamp(snap(Math.abs(q[1]) * 2), 2, 40); }
+      else { var a = Math.atan2(p[0] - it.x, -(p[1] - it.y)) * 180 / Math.PI; it.rot = (Math.round(a / 5) * 5 + 360) % 360; }
+      draw();
+    });
+    function end(e) { if (drag && e.pointerId === drag.id) { drag = null; draw(); } }
+    svg.addEventListener("pointerup", end);
+    svg.addEventListener("pointercancel", end);
+    // En pantallas táctiles, tocar una construcción no desplaza la página; tocar el resto sí
+    svg.addEventListener("touchstart", function (e) { if (e.target.closest && e.target.closest(".casa-it")) e.preventDefault(); }, { passive: false });
+    svg.addEventListener("focusin", function (e) {
+      var g = e.target.closest && e.target.closest(".casa-it");
+      if (g && +g.getAttribute("data-i") !== S.sel) { S.sel = +g.getAttribute("data-i"); draw(); focusSel(); }
+    });
+    function focusSel() { var g = $('.casa-it[data-i="' + S.sel + '"]', svg); if (g) g.focus({ preventScroll: true }); }
+    svg.addEventListener("keydown", function (e) {
+      var it = S.items[S.sel];
+      if (!it) return;
+      var st = e.shiftKey ? 5 : 0.5, mv = { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, -st], ArrowDown: [0, st] }[e.key];
+      if (mv) { it.x += mv[0]; it.y += mv[1]; }
+      else if (e.key === "r" || e.key === "R") it.rot = (it.rot + 15) % 360;
+      else if (e.key === "Delete" || e.key === "Backspace") { el.del.click(); e.preventDefault(); return; }
+      else return;
+      e.preventDefault();
+      draw(); focusSel();
+    });
+
+    var rz = 0;
+    window.addEventListener("resize", function () {
+      window.clearTimeout(rz);
+      rz = window.setTimeout(function () { if (S.lote && quiereGiro()) { encuadre(); draw(); } }, 150);
+    });
+    // La pestaña se abre oculta: al mostrarse se mide el recuadro de nuevo
+    document.addEventListener("fundos:tab", function (e) { if (e.detail === "tu-casa" && S.lote && quiereGiro()) { encuadre(); draw(); } });
+    Casa.set = function (id, n) { setProyecto(id, n); };
+    setProyecto(con[0].id);
+  }
+
+  /* =============================================================
      Puerto Varas: datos de la portada y mapa del entorno en miniatura
      (las rutas salen de lib/entorno-datos.js, que se carga al acercarse)
      ============================================================= */
@@ -2785,6 +3089,7 @@
     safe(initMobileBar, "initMobileBar");
     safe(initFaq, "initFaq");
     safe(initCompra, "initCompra");
+    safe(initCasa, "initCasa");
     safe(initSellers, "initSellers");
     safe(initPV, "initPV");
     safe(initPvLead, "initPvLead");
