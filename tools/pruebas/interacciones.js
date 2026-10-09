@@ -103,16 +103,16 @@ const ARGS = ["--proxy-server=" + (process.env.HTTPS_PROXY || "http://127.0.0.1:
   }));
   await page.locator(".py").screenshot({ path: "i-ficha.png" });
 
-  // Simulador en modo financiamiento (pestaña de "Tu compra")
-  await page.evaluate(() => document.querySelector('[data-tc-tab="simulador"]').click());
-  await page.waitForTimeout(300);
-  await page.evaluate(() => document.getElementById("simulador").scrollIntoView({ behavior: "instant" }));
-  await page.waitForTimeout(900);
-  await page.locator('.seg label:has(input[value="credito"])').click();
-  await page.waitForTimeout(700);
-  results.cuota = await page.locator("[data-s-cuota]").textContent();
-  results.simNote = await page.locator("[data-s-note]").textContent();
-  await page.locator("[data-sim]").screenshot({ path: "i-sim.png" });
+  // Cómo pagarlo (cotizador dentro del lote) en cuotas, en una pestaña aparte para no cambiar el estado de esta
+  {
+    const pg = await page.context().newPage();
+    await pg.goto(URL + "#lote-malalcahuello-18", { waitUntil: "networkidle" }); await pg.waitForTimeout(1500);
+    await pg.click('[data-pago="cuotas"]'); await pg.waitForTimeout(300);
+    results.cuota = await pg.evaluate(() => document.querySelector(".lot-pago-dl .is-cuota").innerText.replace(/\n/g, " "));
+    results.simNote = await pg.evaluate(() => document.querySelector("[data-pago-nota]").textContent);
+    await pg.locator("[data-d-pago]").screenshot({ path: "i-sim.png" });
+    await pg.close();
+  }
 
   // Formulario: validación
   await page.evaluate(() => document.getElementById("visita").scrollIntoView({ behavior: "instant" }));

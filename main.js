@@ -76,7 +76,6 @@
   // API compartida entre módulos (se completa en cada init)
   var Visit = { prefill: function () {} };
   var Plan = { apply: function () {}, show: function () {}, current: function () { return (proyectos[0] || {}).id; } };
-  var Sim = { set: function () {} };
   var Casa = { set: function () {} };
   var Tour = { open: function () {} };
   var Video = { open: function () {} };
@@ -110,7 +109,7 @@
 
   /* =============================================================
      Pestañas: Puerto Varas · Proyectos · Tu compra · Equipo
-     Cada sección dice en data-vista en qué pestañas aparece. Los enlaces internos (#plano, #simulador…)
+     Cada sección dice en data-vista en qué pestañas aparece. Los enlaces internos (#plano, #tu-casa…)
      cambian de pestaña si hace falta; las pestañas llevan al comienzo de su vista.
      ============================================================= */
   function initVistas() {
@@ -122,6 +121,7 @@
       if (!id) return null;
       var el = document.getElementById(id);
       if (!el && /^lote-/.test(id)) el = $("#plano");
+      if (!el && id === "simulador") el = $("#plano");   // el simulador ahora vive dentro del lote
       if (!el && /^recorrido-/.test(id)) el = $("#recorrido");
       if (!el && /^equipo-\d+$/.test(id)) el = $("#nosotros");
       if (!el && /^proyecto-/.test(id)) el = $("#conoce");
@@ -549,9 +549,9 @@
     var backdrop = $("[data-sheet-backdrop]"), grab = $("[data-sheet-grab]");
     var d = {
       project: $("[data-d-project]"), title: $("[data-d-title]"), status: $("[data-d-status]"), sector: $("[data-d-sector]"),
-      price: $("[data-d-price]"), m2: $("[data-d-m2]"), reserva: $("[data-d-reserva]"), saldo: $("[data-d-saldo]"),
+      price: $("[data-d-price]"), m2: $("[data-d-m2]"), reserva: $("[data-d-reserva]"), pago: $("[data-d-pago]"),
       m2price: $("[data-d-m2price]"), reserve: $("[data-d-reserve]"), wa: $("[data-d-wa]"), fav: $("[data-d-fav]"),
-      sim: $("[data-d-sim]"), casa: $("[data-d-casa]"), close: $("[data-panel-close]"), facts: $(".lot-facts", pDetail), alts: $("[data-d-alts]"), toast: $("[data-d-toast]")
+      casa: $("[data-d-casa]"), close: $("[data-panel-close]"), facts: $(".lot-facts", pDetail), alts: $("[data-d-alts]"), toast: $("[data-d-toast]")
     };
     var favBox = $("[data-favs]"), favCount = $("[data-favs-count]"), favLabel = $("[data-favs-label]");
     var favList = $("[data-favs-list]"), favSend = $("[data-favs-send]"), favClear = $("[data-favs-clear]");
@@ -1035,8 +1035,8 @@
       d.price.textContent = sold ? "" : clp(l.precio);
       if (d.facts) d.facts.hidden = sold;
       d.m2.textContent = m2(l.m2);
-      d.reserva.textContent = clp(RESERVA);
-      d.saldo.textContent = l.precio ? clp(l.precio - RESERVA) : "—";
+      if (d.reserva) d.reserva.textContent = clp(RESERVA);
+      if (d.pago) { d.pago.hidden = sold; if (!sold) pagar(p, l); }
       d.m2price.textContent = l.precio ? clp(l.precio / l.m2) : "—";
       pDetail.classList.toggle("is-closed", l.estado !== "disponible");
       pDetail.classList.toggle("is-sold", sold);
@@ -1056,7 +1056,6 @@
         ? "Hola Fundos, vi que el lote " + l.n + " de " + p.nombre + " está vendido. ¿Me recomiendan uno similar?"
         : "Hola Fundos, me interesa el lote " + l.n + " de " + p.nombre + " (" + m2(l.m2) + ", " + clp(l.precio) + "). ¿Me pueden dar más información?" + lotLink(p, l));
       d.fav.hidden = sold;
-      d.sim.hidden = sold;
       if (d.casa) d.casa.hidden = sold;
       if (typeof updGuia === "function") updGuia();
       if (d.toast) d.toast.hidden = true;
@@ -1448,11 +1447,49 @@
       closeSheet(true);
     });
     d.fav.addEventListener("click", function () { if (S.sel != null) toggleFav(S.id, S.sel); });
-    d.sim.addEventListener("click", function () {
-      var l = lotOf(P(), S.sel);
-      if (l) Sim.set(S.id, l.precio, l.n);
-      closeSheet(true);
-    });
+    /* ---- Cómo pagarlo (cotizador dentro del lote): la reserva de $1.000.000 cubre los gastos de escritura
+       y NO se descuenta del precio; al contado se paga la parcela al escriturar, en cuotas un pie y el resto en cuotas ---- */
+    var fin = B.financiamiento || {}, PG = { modo: "contado", pie: Math.round((fin.pieMinimo || 0.3) * 100), n: 0 };
+    var pg = d.pago && {
+      seg: $$("[data-pago]", d.pago), cfg: $("[data-pago-cfg]", d.pago), pie: $("[data-pago-pie]", d.pago), pieO: $("[data-pago-pie-o]", d.pago),
+      plazos: $("[data-pago-plazos]", d.pago), dl: $("[data-pago-dl]", d.pago), nota: $("[data-pago-nota]", d.pago), wa: $("[data-pago-wa]", d.pago)
+    };
+    if (pg) {
+      var plz = fin.plazos && fin.plazos.length ? fin.plazos : [12, 24, 36, 48];
+      PG.n = plz[Math.min(2, plz.length - 1)];
+      pg.pie.min = PG.pie; pg.pie.value = PG.pie;
+      pg.plazos.innerHTML = plz.map(function (n) { return '<button type="button" data-plazo="' + n + '" aria-pressed="' + (n === PG.n) + '" aria-label="' + n + ' meses">' + n + " m</button>"; }).join("");
+      if (fin.habilitado === false) pg.seg.forEach(function (b) { b.hidden = true; });
+      pg.seg.forEach(function (b) { b.addEventListener("click", function () { PG.modo = b.getAttribute("data-pago"); pagarSel(); }); });
+      pg.pie.addEventListener("input", function () { PG.pie = +pg.pie.value; pagarSel(); });
+      pg.plazos.addEventListener("click", function (e) { var b = e.target.closest("[data-plazo]"); if (b) { PG.n = +b.getAttribute("data-plazo"); pagarSel(); } });
+    }
+    function pagarSel() { var l = lotOf(P(), S.sel); if (l) pagar(P(), l); }
+    function pagar(p, l) {
+      if (!pg || !l.precio) return;
+      var cuotas = PG.modo === "cuotas", v = l.precio, rows, msg;
+      pg.seg.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-pago") === PG.modo ? "true" : "false"); });
+      pg.cfg.hidden = !cuotas;
+      $$("[data-plazo]", pg.plazos).forEach(function (b) { b.setAttribute("aria-pressed", +b.getAttribute("data-plazo") === PG.n ? "true" : "false"); });
+      pg.pieO.textContent = pct(PG.pie);
+      pg.pie.setAttribute("aria-valuetext", pct(PG.pie));
+      paintRange(pg.pie);
+      var fila = function (t, sub, val, cls) { return '<div' + (cls ? ' class="' + cls + '"' : "") + "><dt>" + t + (sub ? "<small>" + sub + "</small>" : "") + "</dt><dd>" + val + "</dd></div>"; };
+      if (!cuotas) {
+        rows = fila("Reserva", "incluye notaría y Conservador", clp(RESERVA)) + fila("Al escriturar", "valor de la parcela", clp(v)) + fila("Total", "", clp(v + RESERVA), "is-total");
+        pg.nota.textContent = "Sin gastos adicionales de escritura.";
+        msg = "Hola Fundos, simulé el lote " + l.n + " de " + p.nombre + " (" + clp(v) + ") al contado: reserva de " + clp(RESERVA) + " con gastos de escritura incluidos. ¿Me pueden asesorar?";
+      } else {
+        var i = +fin.tasaMensual || 0, pie = v * PG.pie / 100, f = v - pie;
+        var cuota = i ? f * i / (1 - Math.pow(1 + i, -PG.n)) : f / PG.n;
+        rows = fila("Reserva", "incluye notaría y Conservador", clp(RESERVA)) + fila("Pie al escriturar", pct(PG.pie) + " del valor", clp(pie)) +
+          fila(PG.n + " cuotas de", "aprox., tasa " + pct((i * 100).toFixed(1)) + " mensual", clp(cuota), "is-cuota") + fila("Total aprox.", "", clp(RESERVA + pie + cuota * PG.n), "is-total");
+        pg.nota.textContent = "Cuota referencial; las condiciones se evalúan caso a caso.";
+        msg = "Hola Fundos, simulé el lote " + l.n + " de " + p.nombre + " (" + clp(v) + ") con pie de " + pct(PG.pie) + " y " + PG.n + " cuotas de aprox. " + clp(cuota) + ". ¿Me pueden asesorar?";
+      }
+      pg.dl.innerHTML = rows;
+      pg.wa.href = waHref(msg);
+    }
     if (d.casa) d.casa.addEventListener("click", function () {
       var l = lotOf(P(), S.sel);
       if (l) Casa.set(S.id, l.n);
@@ -1577,132 +1614,6 @@
     }
   }
 
-
-  /* =============================================================
-     Simulador
-     ============================================================= */
-  function initSim() {
-    var form = $("[data-sim]");
-    if (!form) return;
-    var fin = B.financiamiento || {};
-    var simLive = $("[data-sim-live]"), simLiveT = 0;
-    var peekL = $("[data-sim-peek-l]"), peekV = $("[data-sim-peek-v]");
-    var selP = $("[data-s-project]", form), price = $("[data-s-price]", form), priceOut = $("[data-s-price-out]", form);
-    var pie = $("[data-s-pie]", form), pieOut = $("[data-s-pie-out]", form), plazosBox = $("[data-s-plazos]", form);
-    var modeWrap = $("[data-s-mode-wrap]", form), creditEls = $$("[data-s-credit]", form);
-    var out = {
-      reserva: $("[data-s-reserva]", form), rowPie: $("[data-s-row-pie]", form), pie: $("[data-s-pie-val]", form),
-      saldoLabel: $("[data-s-saldo-label]", form), saldo: $("[data-s-saldo]", form), rowCuota: $("[data-s-row-cuota]", form),
-      cuota: $("[data-s-cuota]", form), note: $("[data-s-note]", form), send: $("[data-s-send]", form),
-      bRes: $('[data-s-b="res"]', form), bPie: $('[data-s-b="pie"]', form), bRest: $('[data-s-b="rest"]', form),
-      lPie: $("[data-s-b-pie-l]", form), lRest: $("[data-s-b-rest-l]", form)
-    };
-    function bar(res, pieNeto, rest) {
-      if (!out.bRes) return;
-      out.bRes.style.flexBasis = (res * 100).toFixed(2) + "%";
-      out.bPie.style.flexBasis = (pieNeto * 100).toFixed(2) + "%";
-      out.bRest.style.flexBasis = (rest * 100).toFixed(2) + "%";
-    }
-    var conLotes = proyectos.filter(function (p) { return p.lotes && p.lotes.length; });
-    selP.innerHTML = conLotes.map(function (p) { return '<option value="' + p.id + '">' + esc(p.nombre) + "</option>"; }).join("");
-
-    if (!fin.habilitado) { modeWrap.hidden = true; }
-    if (fin.plazos && fin.plazos.length) {
-      var def = fin.plazos[Math.min(2, fin.plazos.length - 1)];
-      plazosBox.innerHTML = fin.plazos.map(function (n) {
-        return '<label><input type="radio" name="plazo" value="' + n + '"' + (n === def ? " checked" : "") + "><span>" + n + " m</span></label>";
-      }).join("");
-    }
-    pie.min = Math.round((fin.pieMinimo || 0.2) * 100);
-    if (+pie.value < +pie.min) pie.value = pie.min;
-
-    // El valor solo puede ser un precio real del proyecto (los de sus lotes disponibles)
-    var vals = [], lotSel = null, lotBox = $("[data-s-lot]", form);
-    function range(p, value) {
-      var disp = disponibles(p);
-      vals = (disp.length ? disp : p.lotes).map(function (l) { return l.precio; }).filter(Boolean)
-        .filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
-      price.min = 0;
-      price.max = Math.max(0, vals.length - 1);
-      price.step = 1;
-      var i = Math.floor((vals.length - 1) / 2);
-      if (value != null) {
-        i = 0;
-        vals.forEach(function (v, k) { if (Math.abs(v - value) < Math.abs(vals[i] - value)) i = k; });
-      }
-      price.value = i;
-      price.setAttribute("aria-valuetext", clp(vals[i] || 0));
-    }
-    function calc() {
-      var p = proyecto(selP.value);
-      var modo = $('input[name="modo"]:checked', form);
-      var v = vals[+price.value] || 0, credito = !modeWrap.hidden && !!modo && modo.value === "credito";
-      priceOut.textContent = clp(v);
-      price.setAttribute("aria-valuetext", clp(v));
-      var nAt = disponibles(p).filter(function (l) { return l.precio === v; }).length;
-      if (lotBox) lotBox.textContent = lotSel ? "Lote " + lotSel + " de " + p.nombre : nAt + (nAt === 1 ? " lote disponible a este precio" : " lotes disponibles a este precio");
-      var que = "una parcela en " + p.nombre + (lotSel ? " (lote " + lotSel + ")" : "") + " de " + clp(v);
-      pieOut.textContent = pct(+pie.value);
-      pie.setAttribute("aria-valuetext", pct(+pie.value));
-      creditEls.forEach(function (el) { el.hidden = !credito; });
-      $$('input[type="range"]', form).forEach(paintRange);
-      out.reserva.textContent = clp(RESERVA);
-      out.rowPie.hidden = !credito;
-      out.rowCuota.hidden = !credito;
-      var msg;
-      if (!credito) {
-        out.saldoLabel.textContent = "Saldo a la escritura";
-        out.saldo.textContent = clp(v - RESERVA);
-        out.note.textContent = "Más gastos de escrituración (notaría y Conservador), que te informamos antes de firmar.";
-        msg = "Hola Fundos, simulé " + que + " pagando al contado. ¿Me pueden asesorar?";
-        bar(RESERVA / v, 0, (v - RESERVA) / v);
-        if (out.lPie) out.lPie.hidden = true;
-        if (out.lRest) out.lRest.textContent = "Saldo a la escritura";
-      } else {
-        var plazo = $('input[name="plazo"]:checked', form);
-        var n = +(plazo && plazo.value) || 36;
-        var i = +fin.tasaMensual || 0;
-        var pieTotal = v * (+pie.value / 100);
-        var fin$ = v - pieTotal;
-        var cuota = i ? fin$ * i / (1 - Math.pow(1 + i, -n)) : fin$ / n;
-        out.pie.textContent = clp(Math.max(0, pieTotal - RESERVA));
-        out.saldoLabel.textContent = "Monto a financiar";
-        out.saldo.textContent = clp(fin$);
-        out.cuota.textContent = clp(cuota) + " × " + n;
-        out.note.textContent = "Cuota referencial en " + n + " meses con tasa de " + pct((i * 100).toFixed(1)) + " mensual. Más gastos de escrituración.";
-        msg = "Hola Fundos, simulé " + que + " con pie de " + pct(+pie.value) + " y " + n + " cuotas de aprox. " + clp(cuota) + ". ¿Me pueden asesorar?";
-        bar(RESERVA / v, Math.max(0, pieTotal - RESERVA) / v, fin$ / v);
-        if (out.lPie) out.lPie.hidden = false;
-        if (out.lRest) out.lRest.textContent = "Financiado en cuotas";
-      }
-      out.send.href = waHref(msg);
-      // Franja fija del celular: la cifra clave siempre a la vista mientras se mueven los controles
-      if (peekL) {
-        peekL.textContent = credito ? "Cuota mensual" : "Saldo a la escritura";
-        peekV.textContent = credito ? out.cuota.textContent : out.saldo.textContent;
-      }
-      if (simLive) {
-        window.clearTimeout(simLiveT);
-        var txt = credito ? "Cuota estimada " + out.cuota.textContent.replace(" × ", " en ") + " meses" : "Saldo a la escritura " + out.saldo.textContent;
-        simLiveT = window.setTimeout(function () { simLive.textContent = txt; }, 400);
-      }
-    }
-    selP.addEventListener("change", function () { lotSel = null; range(proyecto(selP.value)); calc(); });
-    price.addEventListener("input", function () { lotSel = null; });
-    form.addEventListener("input", calc);
-    form.addEventListener("change", calc);
-    range(proyecto(selP.value));
-    calc();
-
-    Sim.set = function (id, precio, n) {
-      var p = proyecto(id);
-      if (!p || !p.lotes.length) return;
-      selP.value = id;
-      range(p, precio);
-      lotSel = n || null;
-      calc();
-    };
-  }
 
   /* =============================================================
      Formulario de visita → WhatsApp
@@ -1884,7 +1795,7 @@
         (d0 ? "<div><dt>Desde</dt><dd>" + clp(d0) + "</dd></div>" : "") +
         "<div><dt>Disponibles</dt><dd>" + disp + " <small>de " + p.lotes.length + "</small></dd></div>" +
         "<div><dt>Parcelas</dt><dd>" + m2(p.lotes.length ? p.lotes[0].m2 : 5000) + "</dd></div>" +
-        "<div><dt>Reserva</dt><dd>" + clp(RESERVA) + "</dd></div></dl>";
+        "<div><dt>Reserva</dt><dd>" + clp(RESERVA) + ' <small class="fact-nota">incluye escritura</small></dd></div></dl>';
       var cars = p.caracteristicas || (p.destacados || []).map(function (t) { return { icono: "check", titulo: t }; });
       var why = '<ul class="py-why">' + cars.map(function (c) {
         return "<li>" + ico(c.icono || "check") + "<div><h4>" + esc(c.titulo) + "</h4>" + (c.texto ? "<p>" + esc(c.texto) + "</p>" : "") + "</div></li>";
@@ -2641,7 +2552,7 @@
 
   /* =============================================================
      Tu compra: Cómo comprar · Simulador · Preguntas · Mi compra en pestañas
-     Los enlaces #como-comprar, #simulador, #preguntas y #portal abren su pestaña.
+     Los enlaces #como-comprar, #tu-casa, #preguntas y #portal abren su pestaña (#simulador lleva al plano).
      ============================================================= */
   function initCompra() {
     var root = $("[data-tc]");
@@ -3617,7 +3528,6 @@
     safe(initHero, "initHero");
     safe(initProjects, "initProjects");
     safe(initVisit, "initVisit");
-    safe(initSim, "initSim");
     safe(initPlan, "initPlan");
     safe(initTour, "initTour");
     safe(initVideo, "initVideo");

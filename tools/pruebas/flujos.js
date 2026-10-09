@@ -45,12 +45,12 @@ const B = "http://127.0.0.1:8765/";
   await d.evaluate(() => document.querySelector("#proyectos").scrollIntoView({ behavior: "instant" }));
   await d.click('.art-360[data-tour-open="marchigue"]'); await d.waitForTimeout(1600);
   out.tourStage = await d.evaluate(() => { const r = document.querySelector("[data-tour-stage]").getBoundingClientRect(); return [Math.round(r.top), Math.round(r.bottom), innerHeight]; });
-  // simulador desde un lote
+  // cómo pagar un lote (cotizador dentro del detalle)
   await d.evaluate(() => document.querySelector("#plano").scrollIntoView({ behavior: "instant" }));
   await d.click('#plano [data-tab="malalcahuello"]'); await d.waitForTimeout(300);
   await d.click('#plano .lot[data-n="18"]', { force: true }); await d.waitForTimeout(300);
-  await d.click("[data-d-sim]"); await d.waitForTimeout(600);
-  out.sim = await d.evaluate(() => ({ out: document.querySelector("[data-s-price-out]").textContent, lot: document.querySelector("[data-s-lot]").textContent, wa: decodeURIComponent(document.querySelector("[data-s-send]").href).slice(0, 160) }));
+  // contado: reserva (incluye escritura) + valor de la parcela; el mensaje nombra el lote
+  out.sim = await d.evaluate(() => ({ dl: document.querySelector("[data-pago-dl]").innerText.replace(/\n/g, " | "), wa: decodeURIComponent(document.querySelector("[data-pago-wa]").href).slice(0, 160) }));
   // subrayado del menú
   await d.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" })); await d.waitForTimeout(600);
   out.navAtTop = await d.evaluate(() => [...document.querySelectorAll(".nav-links a.is-current, .nav-portal.is-current")].map(a => a.textContent.trim()));
