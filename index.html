@@ -21,17 +21,17 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Fundos Inmobiliaria","url":"https://www.fundosinmobiliaria.com/","slogan":"La tierra como punto de partida.","areaServed":["Malalcahuello","Marchigüe","Puerto Varas"],"address":{"@type":"PostalAddress","addressCountry":"CL"}}
 </script>
-<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"compra","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
+<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"inicio","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
 <link rel="preload" as="image" href="assets/video/puerto-varas.webp" media="(min-width: 960px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/video/puerto-varas-movil.webp" media="(max-width: 959px)" fetchpriority="high">
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261009c">
-<script defer src="lib/manifest.js?v=20261009c"></script>
-<script defer src="lib/analitica.js?v=20261009c"></script>
-<script defer src="lib/planos.js?v=20261009c"></script>
-<script defer src="main.js?v=20261009c"></script>
+<link rel="stylesheet" href="styles.css?v=20261009e">
+<script defer src="lib/manifest.js?v=20261009e"></script>
+<script defer src="lib/analitica.js?v=20261009e"></script>
+<script defer src="lib/planos.js?v=20261009e"></script>
+<script defer src="main.js?v=20261009e"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -228,7 +228,6 @@
         <a href="#recorrido" data-menu-link>Recorrido 360°</a>
         <a href="entorno.html">Mapa del entorno</a>
         <a href="#como-comprar" data-menu-link>Cómo comprar</a>
-        <a href="#simulador" data-menu-link>Simulador</a>
         <a href="#preguntas" data-menu-link>Preguntas</a>
         <a href="#portal" data-menu-link>Mi compra</a>
       </span>
@@ -480,7 +479,7 @@
   </form>
   <ul class="trust">
     <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>5.000 m² por parcela</li>
-    <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Reserva con $1.000.000</li>
+    <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Reserva con $1.000.000, que incluye los gastos de escritura</li>
     <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Acompañamiento hasta el CBR</li>
     <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Tu compra en línea con Fundos 360°</li>
   </ul>
@@ -548,7 +547,7 @@
           <dl class="facts">
             <div><dt>Desde</dt><dd>$9.990.000</dd></div>
             <div><dt>Superficie</dt><dd>5.000 m²</dd></div>
-            <div><dt>Reserva</dt><dd>$1.000.000</dd></div>
+            <div><dt>Reserva</dt><dd>$1.000.000 <small class="fact-nota">incluye escritura</small></dd></div>
           </dl>
           <div class="project-actions">
             <a class="btn btn-dark" href="#plano" data-goto-plan="malalcahuello">Ver lotes<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -600,7 +599,7 @@
           <dl class="facts">
             <div><dt>Desde</dt><dd>$7.990.000</dd></div>
             <div><dt>Superficie</dt><dd>5.000 m²</dd></div>
-            <div><dt>Reserva</dt><dd>$1.000.000</dd></div>
+            <div><dt>Reserva</dt><dd>$1.000.000 <small class="fact-nota">incluye escritura</small></dd></div>
           </dl>
           <div class="project-actions">
             <a class="btn btn-dark" href="#plano" data-goto-plan="marchigue">Ver lotes<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -648,7 +647,7 @@
           <dl class="facts">
             <div><dt>Desde</dt><dd>$27.990.000</dd></div>
             <div><dt>Superficie</dt><dd>5.000 m²</dd></div>
-            <div><dt>Reserva</dt><dd>$1.000.000</dd></div>
+            <div><dt>Reserva</dt><dd>$1.000.000 <small class="fact-nota">incluye escritura</small></dd></div>
           </dl>
           <div class="project-actions">
             <a class="btn btn-dark" href="#plano" data-goto-plan="puerto-varas">Ver lotes<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -890,11 +889,26 @@
             <p class="lot-toast" role="status" data-d-toast hidden></p>
             <dl class="lot-facts">
               <div><dt>Superficie</dt><dd data-d-m2>5.000 m²</dd></div>
-              <div><dt>Reserva</dt><dd data-d-reserva>$1.000.000</dd></div>
-              <div><dt>Saldo a la escritura</dt><dd data-d-saldo></dd></div>
               <div><dt>Valor por m²</dt><dd data-d-m2price></dd></div>
             </dl>
-            <a class="lot-sim" href="#simulador" data-d-sim>Simular el pago de este lote<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <!-- Cotizador dentro del lote (reemplazó al simulador aparte): contado o en cuotas -->
+            <div class="lot-pago" data-d-pago>
+              <div class="lot-pago-h">
+                <p class="lot-pago-t" id="lot-pago-t">Cómo pagarlo</p>
+                <div class="lot-pago-seg" role="group" aria-labelledby="lot-pago-t">
+                  <button type="button" data-pago="contado" aria-pressed="true">Contado</button>
+                  <button type="button" data-pago="cuotas" aria-pressed="false">En cuotas</button>
+                </div>
+              </div>
+              <div class="lot-pago-cfg" data-pago-cfg hidden>
+                <div class="lot-pago-pie"><label for="d-pie">Pie</label><output for="d-pie" data-pago-pie-o>30&nbsp;%</output>
+                  <input id="d-pie" type="range" min="30" max="90" step="5" value="30" data-pago-pie></div>
+                <div class="lot-pago-plazos" role="group" aria-label="Plazo" data-pago-plazos></div>
+              </div>
+              <dl class="lot-pago-dl" data-pago-dl></dl>
+              <p class="lot-pago-nota" data-pago-nota></p>
+              <a class="lot-sim" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-pago-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviarme esta simulación</a>
+            </div>
             <a class="lot-sim" href="#tu-casa" data-d-casa>Dibuja tu casa en este lote<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
           </div>
         </div>
@@ -972,7 +986,6 @@
       <h2 class="tc-title" id="tc-title">Todo sobre <em>tu compra</em></h2>
       <div class="tc-tabs" role="tablist" aria-labelledby="tc-title">
         <a class="tc-tab" href="#como-comprar" role="tab" id="tc-tab-como-comprar" data-tc-tab="como-comprar"><svg class="i" aria-hidden="true"><use href="#i-doc"/></svg>Cómo comprar</a>
-        <a class="tc-tab" href="#simulador" role="tab" id="tc-tab-simulador" data-tc-tab="simulador"><svg class="i" aria-hidden="true"><use href="#i-receipt"/></svg>Simulador</a>
         <a class="tc-tab" href="#tu-casa" role="tab" id="tc-tab-tu-casa" data-tc-tab="tu-casa"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Tu casa</a>
         <a class="tc-tab" href="#preguntas" role="tab" id="tc-tab-preguntas" data-tc-tab="preguntas"><svg class="i" aria-hidden="true"><use href="#i-people"/></svg>Preguntas</a>
         <a class="tc-tab" href="#portal" role="tab" id="tc-tab-portal" data-tc-tab="portal"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Mi compra</a>
@@ -998,7 +1011,7 @@
         <span class="step-n">02</span>
         <span class="step-icon"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg></span>
         <h3>Reserva</h3>
-        <p>Asegura tu lote con $1.000.000 y recibe el comprobante y los antecedentes del lote.</p>
+        <p>Asegura tu lote con $1.000.000, que cubre todos los gastos de escritura, y recibe el comprobante y los antecedentes del lote.</p>
       </li>
       <li class="step reveal">
         <span class="step-n">03</span>
@@ -1009,14 +1022,14 @@
       <li class="step reveal">
         <span class="step-n">04</span>
         <span class="step-icon"><svg class="i" aria-hidden="true"><use href="#i-receipt"/></svg></span>
-        <h3>Gastos de escrituración</h3>
-        <p>Te informamos el detalle de notaría y Conservador antes de pagar. Sin sorpresas.</p>
+        <h3>Gastos de escrituración incluidos</h3>
+        <p>Notaría e inscripción en el Conservador ya están pagadas con tu reserva. No hay costos adicionales. Sin sorpresas.</p>
       </li>
       <li class="step reveal">
         <span class="step-n">05</span>
         <span class="step-icon"><svg class="i" aria-hidden="true"><use href="#i-pen"/></svg></span>
         <h3>Escritura</h3>
-        <p>Firmas la escritura en notaría y pagas el saldo de tu parcela.</p>
+        <p>Firmas la escritura en notaría y pagas el valor de tu parcela (o el pie, si la financias).</p>
       </li>
       <li class="step reveal">
         <span class="step-n">06</span>
@@ -1028,78 +1041,7 @@
     <div class="steps-cta reveal">
       <a class="btn btn-dark" href="#plano" data-plan-disp>Elegir mi lote<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       <a class="btn btn-line" href="#visita">Agendar una visita</a>
-      <a class="steps-sim" href="#simulador">Simular el pago<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-    </div>
-  </div>
-</section>
-<section class="section cream tc-panel" id="simulador" data-tc-panel aria-labelledby="sim-title">
-  <div class="container sim-grid">
-    <header class="section-head sim-head reveal">
-      <p class="kicker">Simulador</p>
-      <h2 id="sim-title">Haz los números <em>con calma.</em></h2>
-      <p class="lead">Elige un proyecto y un valor de referencia para ver cómo se distribuye tu compra. Sin registrarte y sin compromiso.</p>
-    </header>
-
-    <div class="sim reveal" role="group" aria-labelledby="sim-title" data-sim>
-      <noscript><p class="sim-noscript">Activa JavaScript para simular tu compra, o <a href="https://wa.me/56900000000?text=Hola%20Fundos%2C%20quiero%20una%20simulaci%C3%B3n%20de%20compra." target="_blank" rel="noopener">escríbenos por WhatsApp</a> y te enviamos una simulación a tu medida.</p></noscript>
-      <div class="sim-controls">
-        <div class="field">
-          <label for="s-proyecto">Proyecto</label>
-          <select id="s-proyecto" data-s-project>
-            <option value="malalcahuello">Malalcahuello</option>
-            <option value="marchigue">Marchigüe</option>
-          </select>
-        </div>
-        <div class="field">
-          <div class="field-head"><label for="s-precio">Valor de la parcela</label> <output for="s-precio" data-s-price-out>$20.990.000</output></div>
-          <input type="range" id="s-precio" min="0" max="4" step="1" value="2" data-s-price aria-describedby="s-precio-lot">
-          <p class="sim-lot" id="s-precio-lot" data-s-lot></p>
-        </div>
-        <div class="field" data-s-mode-wrap>
-          <span class="label" id="s-modo-label">Forma de pago</span>
-          <div class="seg" role="radiogroup" aria-labelledby="s-modo-label">
-            <label><input type="radio" name="modo" value="contado" checked><span>Contado</span></label>
-            <label><input type="radio" name="modo" value="credito"><span>Financiamiento</span></label>
-          </div>
-        </div>
-        <div class="field" data-s-credit hidden>
-          <div class="field-head"><label for="s-pie">Pie</label> <output for="s-pie" data-s-pie-out>30 %</output></div>
-          <input type="range" id="s-pie" min="30" max="70" step="5" value="30" data-s-pie>
-        </div>
-        <div class="field" data-s-credit hidden>
-          <span class="label" id="s-plazo-label">Plazo</span>
-          <div class="seg seg-4" role="radiogroup" aria-labelledby="s-plazo-label" data-s-plazos>
-            <label><input type="radio" name="plazo" value="12"><span>12 m</span></label>
-            <label><input type="radio" name="plazo" value="24"><span>24 m</span></label>
-            <label><input type="radio" name="plazo" value="36" checked><span>36 m</span></label>
-            <label><input type="radio" name="plazo" value="48"><span>48 m</span></label>
-          </div>
-        </div>
-        <a class="sim-peek" href="#sim-result" data-sim-peek aria-hidden="true" tabindex="-1"><span data-sim-peek-l>Saldo a la escritura</span><b data-sim-peek-v>$19.990.000</b><svg class="i" aria-hidden="true"><use href="#i-down"/></svg></a>
-        <div class="sim-bar">
-          <span class="label">Cómo se reparte tu compra</span>
-          <div class="bar" aria-hidden="true"><span class="b-res" data-s-b="res"></span><span class="b-pie" data-s-b="pie"></span><span class="b-rest" data-s-b="rest"></span></div>
-          <ul class="bar-legend">
-            <li><i class="b-res"></i>Reserva</li>
-            <li data-s-b-pie-l hidden><i class="b-pie"></i>Pie</li>
-            <li><i class="b-rest"></i><span data-s-b-rest-l>Saldo a la escritura</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="sim-result" id="sim-result">
-        <p class="sr-only" aria-live="polite" data-sim-live></p>
-        <p class="kicker">Tu plan referencial</p>
-        <dl>
-          <div><dt>Reserva</dt><dd data-s-reserva>$1.000.000</dd></div>
-          <div data-s-row-pie hidden><dt>Pie (descontada la reserva)</dt><dd data-s-pie-val>$0</dd></div>
-          <div><dt data-s-saldo-label>Saldo a la escritura</dt><dd data-s-saldo>$19.990.000</dd></div>
-          <div class="sim-big" data-s-row-cuota hidden><dt>Cuota mensual estimada</dt><dd data-s-cuota>$0</dd></div>
-        </dl>
-        <p class="sim-note" data-s-note>Más gastos de escrituración (notaría y Conservador), que te informamos antes de firmar.</p>
-        <a class="btn btn-gold" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-s-send><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviarme esta simulación</a>
-        <p class="sim-legal">Simulación referencial, no constituye oferta. Las condiciones de financiamiento se evalúan caso a caso.</p>
-      </div>
+      <a class="steps-sim" href="#plano">Simula el pago en tu lote<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
   </div>
 </section>
@@ -1210,11 +1152,11 @@
       </details>
       <details>
         <summary>¿Cuánto cuesta reservar y qué pasa si me arrepiento?</summary>
-        <p>La reserva es de $1.000.000 y deja el lote y su precio apartados para ti. Las condiciones de devolución quedan por escrito en el comprobante, antes de que pagues.</p>
+        <p>La reserva es de $1.000.000, deja el lote y su precio apartados para ti y cubre todos los gastos de escritura (notaría y Conservador). Las condiciones de devolución quedan por escrito en el comprobante, antes de que pagues.</p>
       </details>
       <details>
         <summary>¿Qué gastos adicionales tiene la compra?</summary>
-        <p>Los gastos de escrituración: notaría e inscripción en el Conservador de Bienes Raíces. Te entregamos el detalle exacto antes de firmar.</p>
+        <p>Ninguno de escrituración: la reserva de $1.000.000 cubre la notaría y la inscripción en el Conservador de Bienes Raíces. El valor de la parcela se paga aparte, al escriturar.</p>
       </details>
       <details>
         <summary>¿Cuánto demora el proceso completo?</summary>
@@ -1222,7 +1164,7 @@
       </details>
       <details>
         <summary>¿Tienen alternativas de financiamiento?</summary>
-        <p>Sí. Como referencia, puedes pagar con un pie desde el 30 % y el saldo en hasta 48 cuotas; las condiciones finales se revisan contigo según tu caso. Usa el simulador para ver una cuota aproximada.</p>
+        <p>Sí. Como referencia, puedes pagar con un pie desde el 30 % y el saldo en hasta 48 cuotas; las condiciones finales se revisan contigo según tu caso. Elige un lote en el plano y en «Cómo pagarlo» verás una cuota aproximada.</p>
       </details>
       <details>
         <summary>¿Puedo visitar las parcelas antes de reservar?</summary>
@@ -1261,7 +1203,7 @@
           <p class="ph-stage">Etapa 5 de 6 · Escritura</p>
           <div class="ph-bar"><span style="width:83%"></span></div>
           <ol class="ph-steps">
-            <li class="done">Conoce</li><li class="done">Reserva</li><li class="done">Validación</li><li class="done">Gastos de escrituración</li><li class="now">Escritura</li><li>Inscripción en el CBR</li>
+            <li class="done">Conoce</li><li class="done">Reserva</li><li class="done">Validación</li><li class="done">Gastos de escrituración (incluidos)</li><li class="now">Escritura</li><li>Inscripción en el CBR</li>
           </ol>
         </div>
         <div class="ph-next">
@@ -1441,7 +1383,6 @@
       <a href="#recorrido">Recorrido 360°</a>
       <a href="#plano">Elige tu parcela</a>
       <a href="#como-comprar">Cómo comprar</a>
-      <a href="#simulador">Simulador</a>
       <a href="#portal">Mi compra</a>
       <a href="#preguntas">Preguntas frecuentes</a>
       <a href="#visita">Agendar visita</a>

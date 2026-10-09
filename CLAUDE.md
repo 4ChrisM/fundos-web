@@ -247,7 +247,13 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   chips de precio van en una sola fila (precio arriba, precio lista y disponibles abajo); el
   detalle del lote toma el mismo alto (`--stage-h`) y los enlaces a `#plano` llevan directo a la herramienta.
   En celular el plano parte acercado (lotes tocables) con botón para ver completo.
-- Cotizador compacto: la cotización completa visible en computador; en celular, franja con la cuota bajo los controles.
+- **Cotizador dentro del lote** (oct-2026, pedido del cliente: "no vale la pena tenerlo aparte"): ya no hay pestaña
+  Simulador; el detalle de cada lote trae **"Cómo pagarlo"** (`[data-d-pago]`, `pagar()` en `initPlan`): Contado o En cuotas
+  (pie desde `financiamiento.pieMinimo`, plazos de `financiamiento.plazos`, tasa referencial), filas y "Enviarme esta
+  simulación" por WhatsApp. `#simulador` (enlaces viejos) lleva al plano.
+- **La reserva de $1.000.000 cubre todos los gastos de escritura** (notaría y Conservador) y **no se descuenta del precio**
+  (confirmado por el cliente): al contado se paga reserva + valor de la parcela; en cuotas, reserva + pie + cuotas. Así lo
+  dicen los pasos de "Cómo comprar", las preguntas frecuentes, las fichas de proyecto ("incluye escritura") y el cotizador.
 - Puerto Varas (textos del cliente, octubre 2026): parcelas **planas**, con rol propio (SAG) y vista a los volcanes
   Osorno (a la derecha) y Calbuco (a la izquierda, al fondo), en el Pasaje El Encanto (Ruta La Colonia); acceso
   controlado, caminos estabilizados, factibilidad eléctrica en la entrada y agua por noria o pozo. **No decir "bosque
@@ -256,7 +262,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   en el mapa del entorno). El usuario lo dejó de lado; no retomarlo salvo que lo pida.
 - Página en pestañas (pedido del cliente): Puerto Varas, el proyecto que están empujando (con su folleto), es lo más
   atractivo del inicio; el resto (proyectos, compra, equipo) va en otras pestañas.
-- Página corta por secciones (el cliente sintió que tanto scroll cansa): Cómo comprar, Simulador, Tu casa, Preguntas y Mi compra
+- Página corta por secciones (el cliente sintió que tanto scroll cansa): Cómo comprar, Tu casa, Preguntas y Mi compra
   van como pestañas en `#tu-compra` (`initCompra`; los enlaces a esos `#id` abren su pestaña). Desde oct-2026 esas
   pestañas son una **fila liviana** de texto con subrayado dorado, clara y **no fija** (`.tc-bar`; el título "Todo sobre tu
   compra" queda solo para lectores de pantalla): el cliente sentía que la barra oscura fija con píldoras congestionaba; Nosotros compacto con

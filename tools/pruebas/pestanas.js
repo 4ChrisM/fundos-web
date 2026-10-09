@@ -15,13 +15,13 @@ const { vista, proyecto, clasica } = require("./_vista");
     await p.waitForTimeout(600);
     r.where1 = await p.textContent("[data-nav-where]");
     await p.screenshot({ path: `ux/tc-${tag}-1.png` });
-    await p.click('[data-tc-tab="simulador"]'); await p.waitForTimeout(700);
+    await p.click('[data-tc-tab="tu-casa"]'); await p.waitForTimeout(700);
     r.afterClick = await p.$$eval("[data-tc-panel]", ps => ps.filter(x => !x.hidden).map(x => x.id));
     r.hash = await p.evaluate(() => location.hash);
     r.where2 = await p.textContent("[data-nav-where]");
     r.barTop = await p.$eval(".tc-bar", e => Math.round(e.getBoundingClientRect().top));
     await p.screenshot({ path: `ux/tc-${tag}-2.png` });
-    await p.focus('[data-tc-tab="simulador"]'); await p.keyboard.press("ArrowRight"); await p.waitForTimeout(400);
+    await p.focus('[data-tc-tab="tu-casa"]'); await p.keyboard.press("ArrowRight"); await p.waitForTimeout(400);
     r.afterKey = await p.$$eval("[data-tc-panel]", ps => ps.filter(x => !x.hidden).map(x => x.id));
     r.focused = await p.evaluate(() => document.activeElement.getAttribute("data-tc-tab"));
     // enlace externo a #portal

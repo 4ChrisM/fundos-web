@@ -225,8 +225,6 @@ select {
 .seg input:checked + span { background: var(--g900); color: var(--n050); }
 .seg input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
 .field .seg label { display: block; }
-.sim .seg { width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
-.sim .seg span { text-align: center; }
 .seg-4 { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
 .seg-4 span { text-align: center; padding-inline: .4rem; }
 .visit-form .seg { flex-wrap: nowrap; width: 100%; }
@@ -710,7 +708,7 @@ html:not(.js) .plan-zoom { display: none; }
 }
 .lot-panel.is-open { transform: none; visibility: visible; transition: transform .45s var(--ease-out), max-height .35s var(--ease-out); }
 .lot-panel.is-expanded { max-height: 86vh; }
-.lot-panel:not(.is-expanded) .lot-facts, .lot-panel:not(.is-expanded) .lot-sim { display: none; }
+.lot-panel:not(.is-expanded) .lot-facts, .lot-panel:not(.is-expanded) .lot-sim, .lot-panel:not(.is-expanded) .lot-pago { display: none; }
 .lot-panel:focus { outline: none; }
 .sheet-grab { position: absolute; top: -1.35rem; left: 50%; width: 88px; height: 26px; transform: translateX(-50%); touch-action: none; cursor: grab; }
 .sheet-grab::before { content: ""; position: absolute; left: 50%; top: 9px; width: 40px; height: 5px; border-radius: 3px; background: rgba(247, 245, 240, .35); transform: translateX(-50%); }
@@ -809,6 +807,7 @@ html:not(.js) .plan-zoom { display: none; }
   .lot-panel:not(.is-expanded) .lot-facts, .lot-panel:not(.is-expanded) .lot-sim { display: revert; }
   .lot-panel:not(.is-expanded) .lot-facts { display: grid; }
   .lot-panel:not(.is-expanded) .lot-sim { display: inline-flex; }
+  .lot-panel:not(.is-expanded) .lot-pago { display: block; }
   .plan-body { grid-template-columns: minmax(0, 1fr) 330px; align-items: start; }
   .lot-panel {
     position: sticky; inset: auto; top: calc(var(--nav-h) + 1rem); z-index: auto; max-height: calc(100vh - var(--nav-h) - 2rem);
@@ -878,13 +877,7 @@ html:not(.js) .plan-zoom { display: none; }
 .ph-btn { margin-top: auto; text-align: center; padding: .8rem; border-radius: var(--r-md); background: var(--g900); color: var(--n050); font-weight: 700; }
 
 /* ---------------- SIMULADOR ---------------- */
-.sim-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
 .sim-grid > *, .visit-grid > *, .contact-list li > div { min-width: 0; }
-.sim-head { margin-bottom: 0; }
-.sim { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; background: var(--white); border: 1px solid var(--n200); border-radius: var(--r-lg); padding: clamp(1rem, 2vw, 1.4rem); box-shadow: var(--shadow-card); }
-.sim-controls { display: flex; flex-direction: column; gap: 1.3rem; padding: .6rem .4rem; }
-.sim-bar { margin-top: auto; padding-top: 1.1rem; border-top: 1px solid var(--n200); display: grid; gap: .7rem; }
-.sim-bar .label { font-size: .86rem; font-weight: 700; }
 .bar { display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: var(--n100); }
 .bar span { flex: 0 0 0%; height: 100%; transition: flex-basis .6s var(--ease-out); }
 .bar span + span { box-shadow: -2px 0 0 var(--white); }
@@ -894,16 +887,6 @@ html:not(.js) .plan-zoom { display: none; }
 .bar-legend { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; font-size: .8rem; font-weight: 700; color: var(--n600); }
 .bar-legend li { display: flex; align-items: center; gap: .4rem; }
 .bar-legend i { width: 10px; height: 10px; border-radius: 3px; }
-.sim-result { background: var(--g900); color: var(--n050); border-radius: var(--r-md); padding: clamp(1.2rem, 2.5vw, 1.8rem); display: flex; flex-direction: column; gap: 1rem; }
-.sim-result .kicker { margin-bottom: 0; }
-.sim-result dl div { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-block: .7rem; border-bottom: 1px solid var(--line-dark); }
-.sim-result dt { color: var(--cream-70); font-size: .92rem; }
-.sim-result dd { font-weight: 700; font-size: 1.05rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.sim-result .sim-big { flex-wrap: wrap; border-bottom: 0; }
-.sim-result .sim-big dd { font-family: var(--sans); font-size: clamp(1.8rem, 2.4vw, 2.1rem); font-weight: 700; color: var(--gold); letter-spacing: -.01em; }
-.sim-note { font-size: .86rem; color: var(--cream-70); }
-.sim-result .btn { margin-top: auto; white-space: normal; text-align: center; }
-.sim-legal { font-size: .74rem; color: var(--cream-55); }
 
 /* ---------------- NOSOTROS ---------------- */
 .about { overflow: clip; }
@@ -1340,7 +1323,6 @@ body.tour-lock { overflow: hidden; }
   .steps { grid-template-columns: 1fr 1fr; }
   .values { grid-template-columns: 1fr 1fr; }
   .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1.2fr; }
-  .sim { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .hero-scroll { display: grid; }
 }
 
@@ -1390,7 +1372,6 @@ body.tour-lock { overflow: hidden; }
 .portal-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.8rem; }
 .portal .portal-note { margin-top: .9rem; }
 @media (hover: none) { .on-mouse { display: none; } }
-.sim-lot { font-size: .8rem; font-weight: 700; color: var(--gold-ink); margin-top: .35rem; }
 
 /* ---------------- Pulido visual (auditoría) ---------------- */
 .facts dd { font-size: clamp(.86rem, 2.6cqi, .98rem); }
@@ -1473,7 +1454,6 @@ html:not(.js) .lot-panel, html:not(.js) .plan-legend, html:not(.js) .skip-plan, 
 html:not(.js) .sim-controls, html:not(.js) .sim-bar, html:not(.js) .sim-result dl, html:not(.js) .sim-note, html:not(.js) [data-s-send] { display: none; }
 html:not(.js) .plan-body { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 1279px) { html:not(.js) .hero-inner { padding-top: 3rem; } html:not(.js) { scroll-padding-top: calc(var(--nav-h) + 3.2rem); } }
-.sim-noscript { padding: 1.4rem 1.2rem; border-radius: var(--r-md); background: var(--n100); color: var(--g900); font-weight: 600; }
 
 /* ---------------- QA final ---------------- */
 main > section[id], #buscador { scroll-margin-top: -8px; }
@@ -1538,8 +1518,6 @@ h2 em { text-wrap: balance; }
   .wa-float.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(12px); transition: opacity .3s, transform .35s, visibility 0s .3s; }
 }
 @media (min-width: 1200px) {
-  .sim-grid { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); align-items: center; }
-  .sim-head h2 { font-size: clamp(2.35rem, 4.4vw, 3.6rem); }
   .team { grid-template-columns: .8fr 2fr; align-items: end; gap: 3rem; }
 }
 @media (min-width: 960px) and (max-width: 1199px) {
@@ -1825,22 +1803,9 @@ h2 em { text-wrap: balance; }
 }
 
 /* ---------------- Cotizador compacto: la cotización completa a la vista ---------------- */
-.sim-controls { gap: .95rem; padding: .3rem .2rem; }
-.sim-controls .field { gap: .4rem; }
-.sim-bar { padding-top: .8rem; gap: .5rem; }
-.sim-lot { margin-top: .1rem; }
-.sim-result { gap: .7rem; padding: clamp(1.1rem, 2vw, 1.5rem); }
-.sim-result dl div { padding-block: .5rem; }
-.sim-result .sim-big { padding-top: .6rem; }
-.sim-result .sim-big dd { font-size: clamp(1.7rem, 2.2vw, 1.95rem); }
-.sim-note { font-size: .8rem; line-height: 1.45; }
-.sim-legal { font-size: .7rem; }
 @media (hover: hover) and (pointer: fine) {
-  .sim .seg span { padding-block: .5rem; }
-  .sim select { min-height: 44px; padding-block: .55rem; }
 }
 /* Franja con la cifra clave (solo celular) */
-.sim-peek { display: none; }
 @media (max-width: 719px) {
   .sim-peek {
     position: sticky; z-index: 5; bottom: calc(80px + env(safe-area-inset-bottom));
@@ -1848,9 +1813,6 @@ h2 em { text-wrap: balance; }
     border-radius: var(--r-md); background: var(--g900); color: var(--cream-80); font-size: .82rem; font-weight: 700;
     box-shadow: 0 12px 30px -12px rgba(0, 0, 0, .55);
   }
-  .sim-peek b { margin-left: auto; font-size: 1.05rem; color: var(--gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .sim-peek .i { width: 16px; height: 16px; color: var(--gold); flex: none; }
-  .sim { gap: .8rem; }
 }
 
 /* =============================================================
@@ -2579,3 +2541,33 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .sd-contacto a { display: inline-flex; align-items: center; gap: .4rem; min-height: 32px; color: inherit; font-weight: 700; text-decoration: none; overflow-wrap: anywhere; }
 .sd-contacto a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .sd-contacto .i { flex: none; width: 16px; height: 16px; color: var(--gold-ink); }
+.fact-nota { display: block; margin-top: .15rem; font-size: .68rem; font-weight: 600; letter-spacing: 0; text-transform: none; opacity: .75; }
+
+/* Cómo pagarlo: cotizador dentro del detalle del lote (fondo oscuro) */
+.lot-pago { margin-top: 1rem; padding: .85rem .9rem .5rem; border: 1px solid var(--line-dark); border-radius: var(--r-lg, 16px); background: rgba(247, 245, 240, .04); }
+.lot-pago[hidden] { display: none !important; }
+.lot-pago-h { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+.lot-pago-t { font: 700 .66rem/1.2 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+.lot-pago-seg { display: flex; padding: 3px; border: 1px solid rgba(247, 245, 240, .22); border-radius: 999px; }
+.lot-pago-seg button { min-height: 30px; padding: .2rem .7rem; border: 0; border-radius: 999px; background: none; color: var(--cream-80); font: 700 .74rem/1 var(--sans); cursor: pointer; }
+.lot-pago-seg button[aria-pressed="true"] { background: var(--gold); color: var(--g900); }
+.lot-pago-seg button:focus-visible, .lot-pago-plazos button:focus-visible { outline: 2px solid var(--n050); outline-offset: 2px; }
+.lot-pago-cfg { display: grid; gap: .55rem; margin-top: .75rem; }
+.lot-pago-cfg[hidden] { display: none; }
+.lot-pago-pie { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .3rem .6rem; font-size: .8rem; font-weight: 700; color: var(--cream-80); }
+.lot-pago-pie output { justify-self: end; color: var(--n050); font-variant-numeric: tabular-nums; }
+.lot-pago-pie input { grid-column: 1 / -1; width: 100%; accent-color: var(--gold); }
+.lot-pago-plazos { display: flex; flex-wrap: wrap; gap: .3rem; }
+.lot-pago-plazos button { min-height: 30px; padding: .2rem .6rem; border: 1px solid rgba(247, 245, 240, .22); border-radius: 999px; background: none; color: var(--cream-80); font: 700 .72rem/1 var(--sans); cursor: pointer; }
+.lot-pago-plazos button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+.lot-pago-dl { display: grid; gap: 0; margin-top: .7rem; }
+.lot-pago-dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: .8rem; padding-block: .45rem; border-top: 1px solid var(--line-dark); }
+.lot-pago-dl > div:first-child { border-top: 0; }
+.lot-pago-dl dt { font-size: .82rem; font-weight: 700; color: var(--cream-80); }
+.lot-pago-dl dt small { display: block; margin-top: .1rem; font-size: .7rem; font-weight: 500; color: var(--cream-55); }
+.lot-pago-dl dd { font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lot-pago-dl .is-cuota dd { color: var(--gold); font-size: 1.05rem; }
+.lot-pago-dl .is-total dt, .lot-pago-dl .is-total dd { color: var(--n050); }
+.lot-pago-dl .is-total dd { font-size: 1.05rem; }
+.lot-pago-nota { margin-top: .2rem; font-size: .72rem; color: var(--cream-55); }
+.lot-pago .lot-sim { margin-top: .3rem; }

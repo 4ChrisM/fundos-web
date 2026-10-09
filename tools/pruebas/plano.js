@@ -28,7 +28,9 @@ const B = "http://127.0.0.1:8765/";
   out.expanded = await m.evaluate(() => document.querySelector("[data-panel]").classList.contains("is-expanded"));
   await m.screenshot({ path: "ux/p3-m-sheet-exp.png" });
   // cerrar tocando el fondo
-  await m.touchscreen.tap(195, 120); await m.waitForTimeout(600);
+  // (la hoja expandida llega alto: se toca el fondo justo sobre ella)
+  const topHoja = await m.evaluate(() => document.querySelector("[data-panel]").getBoundingClientRect().top);
+  await m.touchscreen.tap(195, Math.max(4, topHoja - 8)); await m.waitForTimeout(600);
   out.closedByBackdrop = !(await m.evaluate(() => document.querySelector("[data-panel]").classList.contains("is-open")));
   // lote vendido -> alternativas
   const pin33 = m.locator('#plano .pin[data-n="33"]'); const b33 = await pin33.boundingBox();

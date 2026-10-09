@@ -13,9 +13,9 @@ Se corren desde una carpeta temporal porque guardan capturas (`ux/*.png`). Cada 
 
 | Archivo | Qué verifica |
 |---|---|
-| `interacciones.js` | Recorrido general: panel del lote, favoritos, filtros, lista, buscador, apartado "Conoce cada proyecto", simulador, formulario, enlaces `#lote-…`, teclado y hoja inferior en celular |
+| `interacciones.js` | Recorrido general: panel del lote, favoritos, filtros, lista, buscador, apartado "Conoce cada proyecto", «Cómo pagarlo» del lote, formulario, enlaces `#lote-…`, teclado y hoja inferior en celular |
 | `plano.js` | Plano en celular y escritorio: hoja inferior, chips de precio, teclado, tooltip, favoritos, lista |
-| `flujos.js` | Buscador → plano, sin resultados, mensajes de WhatsApp, simulador con lote |
+| `flujos.js` | Buscador → plano, sin resultados, mensajes de WhatsApp, «Cómo pagarlo» de un lote |
 | `qa.js` | Correcciones de la QA final: foco sin saltos, panel fijo, tooltip, zoom con teclado, reserva, encuadre de chips, hoja sin desplazar la página, teléfono horizontal |
 | `accesibilidad.js` | Foco, `aria-*`, pestañas, movimiento reducido, modo inmersivo del recorrido, formulario |
 | `rendimiento.js` | Fuentes propias, plano diferido, animaciones en pausa, sin JavaScript |
@@ -23,8 +23,7 @@ Se corren desde una carpeta temporal porque guardan capturas (`ux/*.png`). Cada 
 | `anchos.js` | Sin desborde horizontal de 320 a 1920 px |
 | `equipo.js` | Tarjetas y ficha de cada persona, video del saludo, "Agendar con…", enlace `#equipo-6` |
 | `plano-en-pantalla.js` | Alto del plano + chips en distintas pantallas (debe terminar dentro del alto visible) |
-| `cotizador.js` | Alto del cotizador en contado y financiamiento |
-| `pestanas.js` | "Todo sobre tu compra": pestañas, teclado, enlaces `#simulador`/`#portal`/`#preguntas`, indicador de sección, carruseles |
+| `pestanas.js` | "Todo sobre tu compra": pestañas, teclado, enlaces `#tu-casa`/`#portal`/`#preguntas`, indicador de sección, carruseles |
 | `casa.js` | "Tu casa": lote a escala, mover (mouse y toque, sin desplazar la página), agregar, medidas, aviso al pasar el 10 %, teclado y "Dibuja tu casa en este lote" desde el plano |
 | `largo.js` | Largo de la página en pantallas, total y por sección (computador y celular) |
 | `entorno.js` | Mapa del entorno: todos los lugares de un proyecto en 7 tamaños (píldora, rótulos y botones sin quedar bajo panel, ficha, controles ni pie). Uso: `node entorno.js [malalcahuello\|marchigue]` (sin argumento, Puerto Varas); `MIN=1` con paneles minimizados. Tarda ~5 min por proyecto; debe dar "0 problem views" |
