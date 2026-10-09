@@ -249,7 +249,9 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   en el mapa del entorno). El usuario lo dejó de lado; no retomarlo salvo que lo pida.
 - Página en pestañas (pedido del cliente): Puerto Varas, el proyecto que están empujando (con su folleto), es lo más
   atractivo del inicio; el resto (proyectos, compra, equipo) va en otras pestañas.
-- Página corta por secciones (el cliente sintió que tanto scroll cansa): Cómo comprar, Simulador, Preguntas y Mi compra
-  van como pestañas en `#tu-compra` (`initCompra`; los enlaces a esos `#id` abren su pestaña); Nosotros compacto con
+- Página corta por secciones (el cliente sintió que tanto scroll cansa): Cómo comprar, Simulador, Tu casa, Preguntas y Mi compra
+  van como pestañas en `#tu-compra` (`initCompra`; los enlaces a esos `#id` abren su pestaña). Desde oct-2026 esas
+  pestañas son una **fila liviana** de texto con subrayado dorado, clara y **no fija** (`.tc-bar`; el título "Todo sobre tu
+  compra" queda solo para lectores de pantalla): el cliente sentía que la barra oscura fija con píldoras congestionaba; Nosotros compacto con
   valores cortos y el equipo en galería (antes carrusel); proyectos en carrusel en celular; indicador de sección (`[data-nav-where]`)
   y barra de avance (`--avance` en `.nav`). Medir el largo con `tools/pruebas/largo.js` si se agregan secciones.

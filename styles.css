@@ -1857,28 +1857,27 @@ h2 em { text-wrap: balance; }
    Página más corta: pestañas "Tu compra", equipo compacto y carruseles
    ============================================================= */
 /* Tu compra: una sección con pestañas (Cómo comprar · Simulador · Preguntas · Mi compra) */
-.tc-bar { position: sticky; top: 66px; z-index: 40; background: var(--g900); color: var(--n050); border-bottom: 1px solid var(--line-dark); box-shadow: 0 10px 24px -18px rgba(0, 0, 0, .6); }
-.tc-bar-in { display: flex; align-items: center; justify-content: space-between; gap: .6rem 1.5rem; flex-wrap: wrap; padding-block: .7rem; }
-.tc-title { font-size: clamp(1.35rem, 2.4vw, 1.9rem); font-weight: 500; line-height: 1.1; }
-.tc-title em { color: var(--gold); }
-.tc-tabs { display: flex; gap: .35rem; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+/* Pestañas livianas (pedido del cliente: la barra fija oscura congestionaba): fila de texto con subrayado dorado, no fija */
+.tc-bar { position: relative; z-index: 2; background: var(--n050); color: var(--g900); border-bottom: 1px solid var(--n200); }
+.tc-bar-in { display: flex; align-items: center; padding-block: 0; }
+.tc-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.tc-tabs { display: flex; gap: clamp(.4rem, 2vw, 1.6rem); overflow-x: auto; scrollbar-width: none; max-width: 100%; }
 .tc-tabs::-webkit-scrollbar { display: none; }
-.tc-tab { flex: none; display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: .5rem 1rem; border-radius: 999px; border: 1px solid rgba(247, 245, 240, .18); color: var(--cream-80); font-size: .9rem; font-weight: 700; transition: background-color .25s, color .25s, border-color .25s; }
-.tc-tab .i { width: 1.05em; height: 1.05em; color: var(--gold); }
-.tc-tab:hover { border-color: rgba(200, 161, 101, .6); color: var(--n050); }
-.tc-tab[aria-selected="true"] { background: var(--gold); border-color: var(--gold); color: var(--g900); }
-.tc-tab[aria-selected="true"] .i { color: var(--g900); }
-.tc-tab:focus-visible { outline: 2px solid var(--n050); outline-offset: 2px; }
-.tc-panel { scroll-margin-top: 140px; }
+.tc-tab { position: relative; flex: none; display: inline-flex; align-items: center; gap: .4rem; min-height: 48px; padding: .4rem .2rem; color: var(--n600); font-size: .88rem; font-weight: 700; transition: color .2s; }
+.tc-tab .i { width: 1em; height: 1em; color: var(--gold-ink); opacity: .8; }
+.tc-tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold); transform: scaleX(0); transition: transform .25s var(--ease-out); }
+.tc-tab:hover { color: var(--g900); }
+.tc-tab[aria-selected="true"] { color: var(--g900); }
+.tc-tab[aria-selected="true"]::after { transform: scaleX(1); }
+.tc-tab:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: -2px; }
+.tc-panel { scroll-margin-top: 80px; }
 .js .tu-compra .tc-panel[hidden] { display: none; }
 html:not(.js) .tc-tabs { display: none; }
 .tu-compra { scroll-margin-top: 66px; }
 @media (max-width: 719px) {
-  .tc-bar-in { padding-block: .55rem; }
-  .tc-title { display: none; }
-  .tc-tab { padding: .45rem .8rem; font-size: .84rem; }
+  .tc-tab { font-size: .82rem; gap: .3rem; }
+  .tc-tabs { gap: .9rem; }
 }
-@media (max-height: 500px) { .tc-bar { top: 0; } }
 
 /* Nosotros compacto: historia + valores junto a la foto del equipo */
 .about-copy h2 { margin-bottom: 1rem; }
@@ -2093,7 +2092,6 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
   .pv-proys { animation: none; }
 }
 @media (max-width: 1023px) {
-  html.js .tc-bar { top: calc(66px + var(--tabs-h)); }
   html.js .tu-compra { scroll-margin-top: calc(66px + var(--tabs-h)); }
 }
 @media (max-width: 1023px) {
