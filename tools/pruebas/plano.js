@@ -13,12 +13,12 @@ const B = "http://127.0.0.1:8765/";
   await m.goto(B, { waitUntil: "networkidle" }); await m.waitForTimeout(1000); await clasica(m);
   await m.evaluate(() => document.querySelector("#plano .plan").scrollIntoView({ behavior: "instant" }));
   await m.waitForTimeout(300);
-  const pin45 = m.locator('#plano .pin[data-n="45"]');
+  const pin45 = m.locator('#plano .pin[data-n="46"]');
   const b45 = await pin45.boundingBox();
   await m.touchscreen.tap(b45.x + b45.width / 2, b45.y + b45.height / 2);
   await m.waitForTimeout(900);
   out.sheet = await m.evaluate(() => {
-    const p = document.querySelector("[data-panel]"), pr = p.getBoundingClientRect(), pin = document.querySelector('#plano .pin[data-n="45"]').getBoundingClientRect();
+    const p = document.querySelector("[data-panel]"), pr = p.getBoundingClientRect(), pin = document.querySelector('#plano .pin[data-n="46"]').getBoundingClientRect();
     return { open: p.classList.contains("is-open"), role: p.getAttribute("role"), sheetTop: Math.round(pr.top), pinMid: Math.round(pin.top + pin.height / 2), navB: Math.round(document.querySelector(".nav").getBoundingClientRect().bottom),
       title: document.querySelector("[data-d-title]").textContent, backdrop: !document.querySelector("[data-sheet-backdrop]").hidden, bodyLock: getComputedStyle(document.body).overflow };
   });
@@ -80,9 +80,9 @@ const B = "http://127.0.0.1:8765/";
   await d.hover('#plano .lot[data-n="5"]', { force: true }); await d.waitForTimeout(200);
   out.tip = await d.evaluate(() => { const t = document.querySelector("[data-tip]"), s = document.querySelector("[data-stage]").getBoundingClientRect(), r = t.getBoundingClientRect(); return { inside: r.left >= s.left - 1 && r.right <= s.right + 1 && r.top >= s.top - 1, below: t.classList.contains("is-below"), text: t.textContent }; });
   // favoritos + deshacer
-  await d.click('#plano .lot[data-n="54"]', { force: true }); await d.waitForTimeout(200);
+  await d.click('#plano .lot[data-n="41"]', { force: true }); await d.waitForTimeout(200);
   await d.click("[data-d-fav]"); await d.waitForTimeout(200);
-  out.fav = await d.evaluate(() => ({ toast: document.querySelector("[data-d-toast]").textContent, chips: [...document.querySelectorAll(".fav-chip")].map(b => b.textContent), pinFav: document.querySelector('#plano .pin[data-n="54"]').classList.contains("is-fav") }));
+  out.fav = await d.evaluate(() => ({ toast: document.querySelector("[data-d-toast]").textContent, chips: [...document.querySelectorAll(".fav-chip")].map(b => b.textContent), pinFav: document.querySelector('#plano .pin[data-n="41"]').classList.contains("is-fav") }));
   await d.click("[data-favs-clear]"); await d.waitForTimeout(200);
   out.undoShown = await d.evaluate(() => !document.querySelector("[data-favs-undo]").hidden);
   await d.click("[data-favs-restore]"); await d.waitForTimeout(200);
@@ -99,8 +99,8 @@ const B = "http://127.0.0.1:8765/";
   const dctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
   const dl = await dctx.newPage();
   dl.on("pageerror", e => logs.push("DL pageerror: " + e.message));
-  await dl.goto(B + "#lote-marchigue-47", { waitUntil: "networkidle" }); await dl.waitForTimeout(1500);
-  out.deep = await dl.evaluate(() => { const pin = document.querySelector('#plano .pin[data-n="47"]').getBoundingClientRect(), p = document.querySelector("[data-panel]"); return { title: document.querySelector("[data-d-title]").textContent, open: p.classList.contains("is-open"), pinMid: Math.round(pin.top + pin.height / 2), sheetTop: Math.round(p.getBoundingClientRect().top), navB: Math.round(document.querySelector(".nav").getBoundingClientRect().bottom) }; });
+  await dl.goto(B + "#lote-marchigue-44", { waitUntil: "networkidle" }); await dl.waitForTimeout(1500);
+  out.deep = await dl.evaluate(() => { const pin = document.querySelector('#plano .pin[data-n="44"]').getBoundingClientRect(), p = document.querySelector("[data-panel]"); return { title: document.querySelector("[data-d-title]").textContent, open: p.classList.contains("is-open"), pinMid: Math.round(pin.top + pin.height / 2), sheetTop: Math.round(p.getBoundingClientRect().top), navB: Math.round(document.querySelector(".nav").getBoundingClientRect().bottom) }; });
   await dl.screenshot({ path: "ux/p3-m-deep.png" });
   await dctx.close();
   console.log(JSON.stringify(out, null, 1));

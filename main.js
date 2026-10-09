@@ -455,10 +455,12 @@
     s.push('<defs>' +
       '<pattern id="lot-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#E9E3D7" fill-opacity=".85"/><rect width="2.6" height="7" fill="#8C8474"/></pattern>' +
       (contorno ? '<clipPath id="pl-predio"><path d="' + contorno + '"/></clipPath>' : "") + "</defs>");
+    // Foto satelital del plano comercial (PDF), ubicada con su misma matriz: calza exacta con los lotes
+    if (P.fondo) s.push('<image class="pl-sat" href="' + esc(P.fondo.src) + '" width="1" height="1" preserveAspectRatio="none" transform="matrix(' + P.fondo.matriz.join(" ") + ')"/>');
     var full = 'x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] + '"';
     // Predio: base uniforme con un halo oscuro (trazo de grosor fijo en pantalla) y borde, igual en todos los planos
     if (contorno) s.push('<path class="pl-halo pl-halo-a" d="' + contorno + '"/><path class="pl-halo pl-halo-b" d="' + contorno + '"/><path class="pl-predio" d="' + contorno + '"/>');
-    s.push('<g' + (contorno ? ' clip-path="url(#pl-predio)"' : "") + '><rect ' + full + ' fill="' + PLANO.predio + '"/></g>');
+    s.push('<g class="pl-base"' + (contorno ? ' clip-path="url(#pl-predio)"' : "") + '><rect ' + full + ' fill="' + PLANO.predio + '"/></g>');
     s.push('<g class="lots">');
     lots.forEach(function (o) {
       var l = o.l, c = cats[l.cat];
@@ -471,13 +473,18 @@
     lots.forEach(function (o) { if (o.l.estado === "reservada") s.push('<path d="' + o.d + '" fill="url(#lot-hatch)" opacity=".75"/>'); });
     s.push("</g>");
     s.push('<g aria-hidden="true">');
-    agua.forEach(function (a) { s.push('<path class="pl-agua" d="' + a.d + '" fill-rule="evenodd" fill="' + PLANO.agua + '"/>'); });
+    agua.forEach(function (a) {
+      // Esteros dibujados como línea en el PDF (trazo) o cuerpos de agua rellenos
+      if (a.trazo) s.push('<path class="pl-agua-l" d="' + a.d + '" stroke="' + PLANO.agua + '" stroke-width="' + a.trazo + '"/>');
+      else s.push('<path class="pl-agua" d="' + a.d + '" fill-rule="evenodd" fill="' + PLANO.agua + '"/>');
+    });
     // Todas las vías con el mismo lenguaje: servidumbres en arena con borde punteado
     calles.forEach(function (k) {
       if (k.tipo === "servidumbre") s.push('<path class="pl-servidumbre" d="' + k.d + '" fill-rule="evenodd"/>');
       else s.push('<path class="pl-via-borde" d="' + k.d + '"/><path class="pl-via" d="' + k.d + '"/>');
     });
-    if (camino) s.push('<path class="pl-principal-borde" d="' + camino + '"/><path class="pl-principal" d="' + camino + '"/>');
+    if (camino && P.caminoPrincipalRelleno) s.push('<path class="pl-principal-r" d="' + camino + '"/>');
+    else if (camino) s.push('<path class="pl-principal-borde" d="' + camino + '"/><path class="pl-principal" d="' + camino + '"/>');
     if (contorno) s.push('<path class="pl-limite" d="' + contorno + '"/>');
     s.push("</g>");
     s.push('<path class="lot-ring" d="M0 0" style="display:none"/>');
@@ -527,7 +534,9 @@
     if (nRes) h.push('<li><i class="sw sw-reservada" aria-hidden="true"></i>Reservada</li>');
     if ((P.calles || []).length) h.push('<li><i class="sw sw-servidumbre" aria-hidden="true"></i>Servidumbre de tránsito</li>');
     if (P.caminoPrincipal) h.push('<li><i class="sw sw-principal" aria-hidden="true"></i>Camino principal</li>');
-    (P.agua || []).forEach(function (a) { h.push('<li><i class="sw sw-agua" aria-hidden="true"></i>' + esc(a.nombre) + "</li>"); });
+    var aguas = [];
+    (P.agua || []).forEach(function (a) { if (aguas.indexOf(a.nombre) < 0) aguas.push(a.nombre); });
+    aguas.forEach(function (n) { h.push('<li><i class="sw sw-agua" aria-hidden="true"></i>' + esc(n) + "</li>"); });
     h.push('<li><i class="sym sym-fav" aria-hidden="true"><svg viewBox="-7 -7 14 14"><path d="' + HEART + '"/></svg></i>Tu favorito</li></ul>');
     return h.join("");
   }
@@ -613,8 +622,26 @@
       $$(".pin", svg).forEach(function (el) { var s = shapes[el.getAttribute("data-n")]; if (s) s.pin = el; });
       ring = $(".lot-ring", svg);
       root.classList.toggle("is-wide", isWide());
+      fondo();
       layoutPlan(true);
     }
+    // Fondo del plano: la foto satelital del plano comercial (por defecto, como los PDF) o el plano liso
+    var fondoUi = $("[data-fondo-ui]", root), conSat = true;
+    try { conSat = sessionStorage.getItem("plano-fondo") !== "plano"; } catch (e) {}
+    function fondo() {
+      var hay = !!(PL() && PL().fondo);
+      canvas.classList.toggle("is-sat", hay && conSat);
+      if (!fondoUi) return;
+      fondoUi.hidden = !hay;
+      $$("[data-fondo]", fondoUi).forEach(function (b) { b.setAttribute("aria-pressed", String((b.getAttribute("data-fondo") === "sat") === conSat)); });
+    }
+    if (fondoUi) fondoUi.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-fondo]");
+      if (!b) return;
+      conSat = b.getAttribute("data-fondo") === "sat";
+      try { sessionStorage.setItem("plano-fondo", conSat ? "sat" : "plano"); } catch (er) {}
+      fondo();
+    });
     function isWide() { var b = (PL() && PL().viewBox) || [0, 0, 1000, 640]; return b[2] / b[3] > 2; }
     // Los planos anchos (Puerto Varas) llevan el detalle al lado: el plano baja a su alto natural (un poco más)
 

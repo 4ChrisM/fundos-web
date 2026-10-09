@@ -22,7 +22,7 @@ async function page(browser, w, h, mob) {
   await d.mouse.click(tb.x + tb.width / 2, tb.y + tb.height / 2); await W(900);
   out.tabDy = await d.evaluate(y0 => Math.round(scrollY - y0), y0);
   y0 = await d.evaluate(() => scrollY);
-  const pin = d.locator('#plano .pin[data-n="29"]'); const bb = await pin.boundingBox();
+  const pin = d.locator('#plano .pin[data-n="37"]'); const bb = await pin.boundingBox();
   await d.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); await W(900);
   out.d1440 = await d.evaluate(y0 => ({ dy: Math.round(scrollY - y0), title: document.querySelector("[data-d-title]").textContent }), y0);
   // sticky panel a 1440
