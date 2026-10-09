@@ -38,6 +38,11 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `[data-pv-proy]`, desde/disponibles del manifiesto) lleva a cada uno, y el formulario de la portada tiene selector de
   proyecto (el destacado primero). El formulario va arriba a propósito: el equipo pidió que el contacto esté al
   principio y no solo al final.
+- **El entorno en Inicio** (`#entorno`): para que la gente pinche (pedido del cliente), el mapa en miniatura lleva la
+  etiqueta "Mapa interactivo" con punto que late, el botón centrado "Explora el mapa interactivo · Rutas, tiempos y videos"
+  con pulso dorado, "Tu parcela" con anillo que late, acercamiento y borde dorado al pasar el mouse, y el botón principal
+  "Explorar el entorno" grande con un brillo que lo recorre (sin animaciones con movimiento reducido). Regenerar
+  `vitrina.html` si cambia.
 - **Destacado** (`destacado` en `lib/manifest.js`, hoy Puerto Varas): abre la página con su portada en video
   (`videoDestacado`, bucle sin texto armado con los videos del cliente: lago, Frutillar, Petrohué, Osorno y Puerto
   Varas; versión vertical para celular), datos (desde, disponibles), la vitrina del entorno (mapa en miniatura con
@@ -143,10 +148,11 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   superficie** (regla que dio el cliente; `PCT`), aviso si se pasa o si algo queda fuera, y "Enviar mi diseño a un
   asesor" por WhatsApp. Desde el detalle del lote: "Dibuja tu casa en este lote" (`[data-d-casa]`, `Casa.set`). Solo
   lotes no vendidos. Texto legal: referencial, la DOM fija superficie, distanciamientos y permiso. Prueba: `tools/pruebas/casa.js`.
-  **Compacta en computador** (pedido del cliente: "que se vean todas las variables"): desde 960 px el encabezado va en una
-  franja, la herramienta toma el alto de la pantalla (`--casa-h` = 100vh − 262 px, mín. 470), los botones para agregar
-  van en 2 columnas sin medidas, "Girar" y "Quitar" son íconos junto al nombre; en notebooks bajos (≥ 1200 px de ancho y
-  ≤ 860 px de alto) los controles pasan a dos columnas. Medido: todo visible en 1920×1080, 1440×900, 1366×768 y 1280×720.
+  **Diseño en computador** (pedidos del cliente: "que se vean todas las variables" y luego "más armónico"): desde 960 px
+  el encabezado va en una franja; columna izquierda de 320 px con lote, medidor, construcción elegida y envío; **"Agrega a
+  tu parcela" es una franja de herramientas sobre el dibujo** (`.casa-add`, con medidas y los botones de camino y autos a la
+  derecha); el dibujo toma el resto del alto (`--casa-h` = 100vh − 262 px; svg = `--casa-h` − 196 px, mín. 300). Medido:
+  todo a la vista en 1920×1080, 1440×900 y 1366×768.
   **Sol según la hora** (`sol()`): latitud del proyecto (`LAT`), época del año (verano/otoño/invierno, `DECL`) y hora
   de reloj (hora solar ≈ reloj − 0,85 h; en verano − 1,85 h), suponiendo el **norte hacia arriba del plano** (dicho en el
   texto legal). Da la dirección y el largo de las sombras (también en planta), la luz de cada muro y agua del techo
