@@ -143,6 +143,10 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   superficie** (regla que dio el cliente; `PCT`), aviso si se pasa o si algo queda fuera, y "Enviar mi diseño a un
   asesor" por WhatsApp. Desde el detalle del lote: "Dibuja tu casa en este lote" (`[data-d-casa]`, `Casa.set`). Solo
   lotes no vendidos. Texto legal: referencial, la DOM fija superficie, distanciamientos y permiso. Prueba: `tools/pruebas/casa.js`.
+  **Compacta en computador** (pedido del cliente: "que se vean todas las variables"): desde 960 px el encabezado va en una
+  franja, la herramienta toma el alto de la pantalla (`--casa-h` = 100vh − 262 px, mín. 470), los botones para agregar
+  van en 2 columnas sin medidas, "Girar" y "Quitar" son íconos junto al nombre; en notebooks bajos (≥ 1200 px de ancho y
+  ≤ 860 px de alto) los controles pasan a dos columnas. Medido: todo visible en 1920×1080, 1440×900, 1366×768 y 1280×720.
   **Sol según la hora** (`sol()`): latitud del proyecto (`LAT`), época del año (verano/otoño/invierno, `DECL`) y hora
   de reloj (hora solar ≈ reloj − 0,85 h; en verano − 1,85 h), suponiendo el **norte hacia arriba del plano** (dicho en el
   texto legal). Da la dirección y el largo de las sombras (también en planta), la luz de cada muro y agua del techo
