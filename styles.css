@@ -2620,3 +2620,21 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
   .casa-seg button { min-height: 32px; padding: .25rem .8rem; font-size: .78rem; }
   .casa-wa { min-height: 48px; font-size: .92rem; }
 }
+
+/* Plano comercial (Fundos 360°): foto satelital del PDF bajo los lotes, con botón Satélite / Plano */
+.pl-sat { display: none; pointer-events: none; }
+.plan-canvas.is-sat { background: #1A2317; }
+.plan-canvas.is-sat .pl-sat { display: inline; }
+.plan-canvas.is-sat .pl-base, .plan-canvas.is-sat .pl-predio, .plan-canvas.is-sat .pl-halo { display: none; }
+.plan-canvas.is-sat .lot { fill-opacity: .72; }
+.plan-canvas.is-sat .lot.st-vendida { fill-opacity: .5; }
+.plan-canvas.is-sat .lot:hover, .plan-canvas.is-sat .lot.is-active, .plan-canvas.is-sat .lot:focus-visible { fill-opacity: 1; }
+.pl-agua-l { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.pl-principal-r { fill: #EFE6D2; stroke: #5E4E3C; stroke-width: 1; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
+.pz-fondo { display: flex; padding: 4px; gap: 2px; border-right: 1px solid rgba(10, 20, 14, .1); }
+.pz-fondo[hidden] { display: none; }
+.plan-zoom .pz-fondo button { width: auto; height: 32px; padding: 0 .6rem; border-radius: 7px; border: 0; font: 700 .74rem/1 var(--sans); letter-spacing: .02em; color: var(--g900); }
+.plan-zoom .pz-fondo button + button { border-left: 0; }
+.plan-zoom .pz-fondo button[aria-pressed="true"] { background: var(--g900); color: #FFFFFF; }
+.plan-zoom .pz-fondo + button { border-left: 0; }
+@media (pointer: coarse) { .plan-zoom .pz-fondo button { width: auto; height: 36px; } }

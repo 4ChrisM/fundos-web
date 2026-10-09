@@ -26,7 +26,7 @@ const ARGS = ["--proxy-server=" + (process.env.HTTPS_PROXY || "http://127.0.0.1:
   results.panelPrice = await page.locator("[data-d-price]").textContent();
   results.hash = await page.evaluate(() => location.hash);
   await page.locator("[data-d-fav]").click();
-  await page.locator('.lot[data-n="8"]').click({ force: true });
+  await page.locator('.lot[data-n="19"]').click({ force: true });
   await page.locator("[data-d-fav]").click();
   await page.waitForTimeout(300);
   results.favsVisible = await page.locator("[data-favs]").isVisible();

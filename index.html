@@ -27,11 +27,11 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261009h">
-<script defer src="lib/manifest.js?v=20261009h"></script>
-<script defer src="lib/analitica.js?v=20261009h"></script>
-<script defer src="lib/planos.js?v=20261009h"></script>
-<script defer src="main.js?v=20261009h"></script>
+<link rel="stylesheet" href="styles.css?v=20261009i">
+<script defer src="lib/manifest.js?v=20261009i"></script>
+<script defer src="lib/analitica.js?v=20261009i"></script>
+<script defer src="lib/planos.js?v=20261009i"></script>
+<script defer src="main.js?v=20261009i"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -837,6 +837,9 @@
               <noscript><p class="noscript">Activa JavaScript para recorrer el plano interactivo, o <a href="https://wa.me/56900000000?text=Hola%20Fundos%2C%20quiero%20el%20plano%20comercial%20con%20los%20lotes%20disponibles." target="_blank" rel="noopener">escríbenos por WhatsApp</a> y te enviamos el plano comercial.</p></noscript>
             </div>
             <div class="plan-zoom" data-zoom-ui>
+              <div class="pz-fondo" role="group" aria-label="Fondo del plano" data-fondo-ui hidden>
+                <button type="button" data-fondo="sat" aria-pressed="true">Satélite</button><button type="button" data-fondo="plano" aria-pressed="false">Plano</button>
+              </div>
               <button type="button" data-zoom="out" aria-label="Alejar el plano" title="Alejar"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button>
               <button type="button" data-zoom="in" aria-label="Acercar el plano" title="Acercar"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button>
               <button type="button" data-zoom="fit" aria-label="Ver el plano completo" title="Ver completo"><svg class="i" aria-hidden="true"><use href="#i-fit"/></svg></button>

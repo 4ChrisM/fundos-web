@@ -196,15 +196,22 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
 - `assets/img` fotos y logos (WebP) · `assets/video` saludo del equipo (MP4 H.264 + WebM de respaldo + portada) ·
   `assets/fonts` Cormorant Garamond y Mulish autoalojadas.
 
-## Planos: cómo se hicieron y cómo reemplazarlos
-- Hoy salen de segmentar las imágenes de los masterplan (OpenCV + shapely) y enderezarlos con
-  `tools/enderezar_planos.py` (cobertura simplificada: tolerancia 16 en Malalcahuello, 12 en Marchigüe). Puerto Varas
-  son rectángulos. Marchigüe lotes 1-4 y 49-51 se retrazaron a mano con las líneas del masterplan.
-- **Pendiente:** el cliente enviará los planos en **SVG** (Malalcahuello y Puerto Varas primero, Marchigüe después) para
-  calcarlos exactos. Al llegar: verificar que cada lote sea su propia forma vectorial (no una imagen incrustada),
-  asociar cada forma a su número de lote (por posición de la etiqueta o comparando con la geometría actual),
-  llevar las coordenadas al `viewBox` del proyecto y regenerar `lotes`, `calles`, `agua` y `contorno` manteniendo el
-  formato `{d, l, r}` (`l` con `shapely.ops.polylabel`, `r` = distancia de `l` al borde). No cambiar el render.
+## Planos: de dónde salen
+- **Desde oct-2026 son los planos comerciales de Fundos 360°** (pedido del cliente: "replicarlos tal cual"). Fundos 360°
+  (`4ChrisM/fundos-os`) los extrae de los PDF comerciales de Illustrator (`scripts/planos/extraer_planos_pdf.py` →
+  `lib/planos/datos.ts`): forma exacta de cada lote por su número, servidumbres, agua, camino principal, contorno, la foto
+  satelital del PDF con su matriz, la leyenda de precios y qué lotes aparecían disponibles. Para traerlos:
+  `python3 tools/planos_fundos360.py <ruta a fundos-os>` (clonarlo al lado), que escribe `lib/planos.js` (coordenadas del
+  PDF en puntos; las curvas pasan a tramos rectos para "Tu casa"), copia las fotos a `assets/planos/` y **reescribe en
+  `lib/manifest.js` las `categorias` (colores y precios de la leyenda) y los `lotes` (disponible/vendida)** de cada
+  proyecto. Volver a correrlo cuando Fundos 360° extraiga PDF nuevos; no editar esos bloques a mano.
+- **Fondo satelital** (`P.fondo`, `<image class="pl-sat">` con `transform="matrix(…)"`): parte encendido, como los PDF;
+  botón "Satélite / Plano" junto al zoom (`[data-fondo-ui]`, `sessionStorage` "plano-fondo"). Con satélite se esconde
+  la base gris del predio y los lotes quedan translúcidos. Esteros como línea (`agua[].trazo`) y camino principal
+  relleno (`caminoPrincipalRelleno`, Puerto Varas).
+- Antes (hasta oct-2026) salían de segmentar las imágenes de los masterplan (`tools/enderezar_planos.py`, ya en desuso).
+- Las pruebas usan lotes disponibles según los PDF (Malalcahuello: 5, 18-20, 25, 30-32, 41, 45, 46; Marchigüe: 31, 32,
+  37, 40, 42, 44, 45, 59, 60, 67): si cambia la disponibilidad, revisar los números en `tools/pruebas/`.
 - El render (formato estándar Fundos) vive en `main.js`: `PLANO`, `svgPlan`, `catsHtml`, `legendHtml`; pins a tamaño
   constante en pantalla vía `--u`; zoom y encuadre en `layoutPlan`, `applyView`, `reveal`, `frameLots`.
 
