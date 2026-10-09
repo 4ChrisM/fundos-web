@@ -1793,7 +1793,9 @@
         " Mi teléfono: " + el.telefono.value.trim() + "." +
         (el.correo && el.correo.value.trim() ? " Mi correo: " + el.correo.value.trim() + "." : "");
       // Se muestra el mensaje y se envía con un enlace real (sin ventanas emergentes)
-      fb.href = waHref(msg);
+      // Si se llegó desde la ficha de un asesor, el mensaje va a su WhatsApp
+      fb.href = asesor && asesor.whatsapp && el.mensaje.value.indexOf(asesor.nombre) >= 0
+        ? "https://wa.me/" + asesor.whatsapp.replace(/\D/g, "") + "?text=" + encodeURIComponent(msg) : waHref(msg);
       if (okMsg) okMsg.textContent = msg;
       ok.hidden = false;
       inertForm(true);
@@ -1802,9 +1804,10 @@
     function inertForm(on) { [].forEach.call(form.children, function (ch) { if (ch !== ok) ch.inert = on; }); }
     if (again) again.addEventListener("click", function () { ok.hidden = true; inertForm(false); el.nombre.focus(); });
 
-    var lastAuto = "";
+    var lastAuto = "", asesor = null;
     Visit.prefill = function (o) {
       setReserva(o.reserva || null);
+      asesor = o.asesor || null;
       if (o.scroll && !desktop.matches) {
         // En el celular se llega al formulario, no al título de la sección
         window.setTimeout(function () {
@@ -2524,7 +2527,7 @@
     if (!dlg || typeof dlg.showModal !== "function") return;
     var media = $("[data-sd-media]", dlg), faces = $("[data-sd-faces]", dlg), cur = 0;
     var bio = $("[data-sd-bio]", dlg), bioBase = bio.innerHTML, ticks = $("[data-sd-list]", dlg);
-    var el = { title: $("[data-sd-title]", dlg), role: $("[data-sd-role]", dlg), count: $("[data-sd-count]", dlg), wa: $("[data-sd-wa]", dlg), visit: $("[data-sd-visit]", dlg) };
+    var el = { title: $("[data-sd-title]", dlg), role: $("[data-sd-role]", dlg), contacto: $("[data-sd-contacto]", dlg), count: $("[data-sd-count]", dlg), wa: $("[data-sd-wa]", dlg), visit: $("[data-sd-visit]", dlg) };
     faces.innerHTML = gente.map(function (g, i) {
       return '<button type="button" class="sd-face" data-sd-go="' + i + '" aria-label="Ver la ficha de ' + esc(g.nombre || "la persona " + (i + 1) + " del equipo") + '"><img src="' + esc(g.foto) + '" alt="" width="40" height="40" loading="lazy" decoding="async"></button>';
     }).join("");
@@ -2558,6 +2561,12 @@
       photo(g);
       el.title.textContent = titulo(g);
       el.role.textContent = sub(g);
+      // Teléfono y correo de cada asesor (se tocan para llamar o escribir)
+      if (el.contacto) {
+        el.contacto.innerHTML = (g.telefono ? '<a href="tel:+' + esc((g.whatsapp || g.telefono).replace(/\D/g, "")) + '"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>' + esc(g.telefono) + "</a>" : "") +
+          (g.correo ? '<a href="mailto:' + esc(g.correo) + '"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg>' + esc(g.correo) + "</a>" : "");
+        el.contacto.hidden = !g.telefono && !g.correo;
+      }
       // Su presentación, con sus palabras; sin ella, el texto general del equipo
       bio.innerHTML = g.bio && g.bio.length ? g.bio.map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") : bioBase;
       bio.classList.toggle("is-own", !!(g.bio && g.bio.length));
@@ -2608,7 +2617,7 @@
     el.visit.addEventListener("click", function () {
       var g = gente[cur];
       dlg.close();
-      Visit.prefill({ mensaje: g.nombre ? "Me gustaría que me atienda " + g.nombre + "." : "", scroll: true });
+      Visit.prefill({ mensaje: g.nombre ? "Me gustaría que me atienda " + g.nombre + "." : "", scroll: true, asesor: g.whatsapp ? { nombre: g.nombre, whatsapp: g.whatsapp } : null });
     });
     // Enlace directo a la ficha: #equipo-3
     function fromHash() {

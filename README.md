@@ -41,7 +41,7 @@ Todo lo editable está en `lib/manifest.js`.
 - [ ] **Destacados y cercanías:** las distancias se miden desde cada pueblo, no desde el proyecto. Reemplazar por los tiempos reales.
 - [ ] **Mi compra:** es un módulo nuevo que se propone sobre Fundos 360°. Hoy la sección lo muestra como vista previa.
 - [ ] **Fotos:** las ilustraciones son intencionales, pero se pueden sumar fotos de dron reales: hoy las fotos de cada proyecto son vistas aéreas sacadas de sus recorridos 360° (`foto` y `tourFoto` en el manifiesto).
-- [ ] **Equipo:** fotos, nombres y presentaciones del equipo real (uso autorizado), en `lib/manifest.js` (`equipo`). Falta, si se quiere: el cargo de cada persona (hoy "Equipo comercial"), y su WhatsApp propio. El video no tiene subtítulos: conviene agregarlos (o enviarnos el texto) para quienes lo vean sin sonido.
+- [ ] **Equipo:** fotos, nombres y presentaciones del equipo real (uso autorizado), en `lib/manifest.js` (`equipo`). Teléfono, correo y WhatsApp propio de cada persona ya cargados. Falta, si se quiere: el cargo de cada persona (hoy "Equipo comercial"). El video no tiene subtítulos: conviene agregarlos (o enviarnos el texto) para quienes lo vean sin sonido.
 - [ ] **Videos:** la propuesta no incluye videos. El sitio ya está preparado: basta con subir el archivo o pegar el enlace (ver "Videos" más abajo).
 - [ ] **Concurso:** el sitio actual tiene una página de concurso; se puede sumar como banner o sección cuando esté definido.
 - [ ] **Al publicarlo en el dominio de Fundos:** quitar la etiqueta "Propuesta" del menú, quitar `noindex` y cambiar la URL de `og:image`.
@@ -58,7 +58,7 @@ Publicada en https://fundos.biplot.cl/ (cada cambio entra por un pull request a 
 - [ ] **WhatsApp y precios:** el número de contacto y los precios de `lib/manifest.js` son de ejemplo (`+56 9 0000 0000`).
 - [ ] **Planos en SVG:** el cliente enviará los planos vectoriales de Malalcahuello y Puerto Varas (y después Marchigüe) para calcarlos exactos. Hoy la geometría sale de las imágenes de los masterplan, enderezada con `tools/enderezar_planos.py`. Al llegar: revisar que cada lote sea su propia forma (no una imagen incrustada), asociar cada forma a su número de lote y reemplazar la geometría de ese proyecto en `lib/planos.js`, manteniendo el formato `{d, l, r}`.
 - [ ] **Tu casa:** confirmar con el cliente la regla del 10 % (si se mide sobre la huella o sobre lo construido en todos los pisos, y si la piscina suma) (y si quieren mostrar distanciamientos a los deslindes); la forma de cada lote sale del plano actual (se afinará con los SVG).
-- [ ] **Cargos del equipo:** hoy todos dicen "Equipo comercial" en `lib/manifest.js` (`equipo`); falta el cargo y WhatsApp propio de cada persona, si los hay.
+- [ ] **Cargos del equipo:** hoy todos dicen "Equipo comercial" en `lib/manifest.js` (`equipo`); falta el cargo de cada persona (teléfono, correo y WhatsApp ya están).
 
 ## Estructura
 

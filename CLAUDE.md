@@ -225,7 +225,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
 ## Decisiones tomadas con el cliente
 - Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la portada de Proyectos; de respaldo, un cuadro del mismo video (`portada.webp`, `portada-movil.webp`). La foto grupal del equipo se quitó (incluía a Marjorie, que salió): en Nosotros va un mosaico con las fotos actuales (`.team-mosaic`, actualizarlo si cambia el equipo). Las tarjetas de proyectos (`.project-art.has-foto`) usan la vista aérea de cada parcela; la ilustración SVG queda oculta (la clonan otros módulos como respaldo).
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
-  Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Stefy, Diego, Geonela y Elvys; grabados por el cliente en la misma oficina). Todas las
+  Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Stefy, Diego, Geonela y Elvis; grabados por el cliente en la misma oficina). Todas las
   fotos (`assets/img/equipo-ID.webp`, **cuerpo completo**, 3:4 como las tarjetas) son de una sesión del cliente en la misma
   oficina; foto y saludo de la tarjeta (`video.tarjeta`) se recortan con la misma ventana (90 % del cuadro) y la cara en
   el mismo lugar para que el cambio foto→video no salte; esa foto
@@ -234,8 +234,11 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   originales en el historial (`0475102`, `2eafd5d`, `d0152bd`, `679a800`; Valentina, Diego y Geonela en `bfd319b`);
   fotos originales en `f87e740`. El equipo es una **galería en filas** (el cliente no quería deslizar ni paneles chicos):
   tarjetas grandes, 4 por fila en computador ("Conversemos" en el último lugar), 3 en tablet y 2 en celular; el
-  saludo se reproduce en la misma tarjeta. **Marjorie Castellón salió del equipo** (pedido del cliente). Elvys aún sin
-  apellido ni presentación escrita. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
+  saludo se reproduce en la misma tarjeta. **Marjorie Castellón salió del equipo** (pedido del cliente). Elvis Jiménez aún sin
+  presentación escrita. **Contacto de cada asesor** (dado por el cliente, oct-2026): `whatsapp`, `telefono` y `correo` en
+  `equipo` del manifiesto; la ficha muestra teléfono (tel:) y correo (mailto:), "Escribir por WhatsApp" va a su número y
+  "Agendar con…" envía el formulario de visita a su WhatsApp (mientras el mensaje lo nombre). Los archivos de Elvis siguen
+  llamándose `equipo-elvys.*`. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
   originales no van a `main`; se convierten con ffmpeg a MP4 + WebM con `loudnorm`).
   No suponer género ni cargos: hoy todos dicen "Equipo comercial" hasta tener los cargos reales.
 - Santo Domingo fuera de la propuesta. No bajar videos de internet: solo material propio del cliente.
