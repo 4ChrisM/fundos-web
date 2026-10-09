@@ -2571,3 +2571,10 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .lot-pago-dl .is-total dd { font-size: 1.05rem; }
 .lot-pago-nota { margin-top: .2rem; font-size: .72rem; color: var(--cream-55); }
 .lot-pago .lot-sim { margin-top: .3rem; }
+/* Barras de desplazamiento internas: delgadas y del color del panel (la blanca del navegador desentonaba) */
+.lot-panel, .sdialog .sd-body, .sd-text { scrollbar-width: thin; scrollbar-color: rgba(200, 161, 101, .45) transparent; }
+.casa-side, .py-tabs { scrollbar-width: thin; scrollbar-color: rgba(10, 20, 14, .22) transparent; }
+.lot-panel::-webkit-scrollbar, .casa-side::-webkit-scrollbar, .py-tabs::-webkit-scrollbar, .sd-text::-webkit-scrollbar { width: 6px; height: 6px; }
+.lot-panel::-webkit-scrollbar-track, .casa-side::-webkit-scrollbar-track, .py-tabs::-webkit-scrollbar-track, .sd-text::-webkit-scrollbar-track { background: transparent; }
+.lot-panel::-webkit-scrollbar-thumb, .sd-text::-webkit-scrollbar-thumb { background: rgba(200, 161, 101, .45); border-radius: 6px; }
+.casa-side::-webkit-scrollbar-thumb, .py-tabs::-webkit-scrollbar-thumb { background: rgba(10, 20, 14, .22); border-radius: 6px; }
