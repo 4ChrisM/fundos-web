@@ -2291,18 +2291,11 @@
 
     // Carrusel de norte a sur
     function tile(p) {
-      var art, sub;
-      if (p.main) {
-        var d = datosP(p);   // portada dibujada como los demás (pedido del cliente); las fotos van en la ficha
-        art = '<span class="mch-art">' + EMB(p.id) +
-          '<span class="mch-sello"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Plano y recorrido 360°</span><span class="emb-pre">Fundos de</span><span class="emb-n">' + esc(p.corto) + "</span></span>";
-        sub = (d.desde ? "Desde " + clp(d.desde) + " · " : "") + d.n + (d.n === 1 ? " disponible" : " disponibles");
-      } else {
-        art = '<span class="mch-art">' + EMB(p.id) + '<span class="emb-pre">Fundos de</span><span class="emb-n">' + esc(p.corto) + "</span></span>";
-        sub = p.h.lema || "";
-      }
+      // portada dibujada para todos (pedido del cliente); las fotos van en la ficha
+      var art = '<span class="mch-art">' + EMB(p.id) + (p.main ? '<span class="mch-sello"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Plano y recorrido 360°</span>' : "") +
+        '<span class="emb-pre">Fundos de</span><span class="emb-n">' + esc(p.corto) + "</span></span>";
       return '<li class="mch-tile' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '"><button type="button" class="mch-tile-b" aria-controls="fundos-ficha" aria-label="' + esc(p.nombre + ": ver ficha y fotos") + '">' + art +
-        '<span class="mch-info"><span class="mch-info-k">' + esc(p.reg.nombre) + " · " + lat(p) + "</span><span>" + esc(sub) + '</span><span class="mch-info-cta">Ver ficha y fotos →</span></span></button>' +
+        '<span class="mch-info" aria-hidden="true">Ver ficha →</span></button>' +
         '<p class="mch-tile-sub"><b>' + esc(p.corto) + "</b>" + esc(p.reg.nombre) + "</p></li>";
     }
     row.innerHTML = pts.map(tile).join("");
@@ -2369,8 +2362,10 @@
           if (a.getAttribute("data-mf") === "tour") { e.preventDefault(); Tour.open(p.id, true); }
         });
       });
+      // La página no se mueve si la ficha ya asoma; solo si queda fuera de la vista, baja lo justo para mostrar su comienzo
       var r = ficha.getBoundingClientRect(), tope = navBottomPx() + 12;
-      if (r.top < tope || r.top > window.innerHeight * 0.55) window.scrollTo({ top: window.scrollY + r.top - tope, behavior: reduced ? "auto" : "smooth" });
+      if (r.top > window.innerHeight - 140) window.scrollTo({ top: window.scrollY + r.top - (window.innerHeight - 280), behavior: reduced ? "auto" : "smooth" });
+      else if (r.bottom < tope) window.scrollTo({ top: window.scrollY + r.top - tope, behavior: reduced ? "auto" : "smooth" });
       try { ficha.focus({ preventScroll: true }); } catch (err) { ficha.focus(); }
     }
     function cerrarFicha() {
@@ -2425,6 +2420,28 @@
     $$("[data-mch-mover]", box).forEach(function (b) {
       b.addEventListener("click", function () { row.scrollBy({ left: (+b.getAttribute("data-mch-mover")) * row.clientWidth * 0.85, behavior: reduced ? "auto" : "smooth" }); });
     });
+    // El carrusel avanza solo (un fundo cada 4,5 s y vuelve al comienzo); se detiene con el mouse encima, con el foco
+    // adentro, con la ficha abierta, fuera de la vista o con el botón Pausar. Con movimiento reducido parte en pausa.
+    var auto = $("[data-mch-auto]", box), pausado = reduced, encima = false, enVista = false, tocado = 0;
+    function corre() { return !pausado && !encima && !abierta && enVista && !document.hidden && Date.now() > tocado && !box.contains(document.activeElement); }
+    window.setInterval(function () {
+      if (!corre()) return;
+      var i = pts.indexOf(actual), n = pts[(i + 1) % pts.length];
+      llevar(n.id);
+    }, 4500);
+    function botonAuto() {
+      if (!auto) return;
+      auto.setAttribute("aria-pressed", String(!pausado));
+      $("span", auto).textContent = pausado ? "Reproducir" : "Pausar";
+      $("svg", auto).innerHTML = pausado ? '<path d="M2 1l9 5-9 5z"/>' : '<path d="M2 1h3v10H2zM7 1h3v10H7z"/>';
+    }
+    if (auto) auto.addEventListener("click", function () { pausado = !pausado; botonAuto(); auto.blur(); });
+    botonAuto();
+    box.addEventListener("mouseenter", function () { encima = true; });
+    box.addEventListener("mouseleave", function () { encima = false; });
+    row.addEventListener("touchstart", function () { tocado = Date.now() + 12000; }, { passive: true });
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { enVista = es[0].isIntersecting; }, { threshold: 0.35 }).observe(box);
+    else enVista = true;
     function rehacer() { medir(); if (actual) { viajar(actual, true); rotulos(); } flechas(); }
     window.addEventListener("resize", rehacer);
     window.addEventListener("fundos:vista", function () { window.setTimeout(rehacer, 50); });
