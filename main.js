@@ -2365,10 +2365,15 @@
           (x.tour ? '<a class="btn btn-ghost" href="#recorrido" data-py-act="tour" data-mf="tour">' + ico("360") + "Recorrido 360°</a>" : "")
         : '<a class="btn btn-gold" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "Quiero información</a>" +
           '<a class="btn btn-ghost" href="#visita" data-mf="cotizar">' + ico("calendar") + "Agendar una conversación</a>") + "</div>";
+      var i = pts.indexOf(p), ant = pts[(i - 1 + pts.length) % pts.length], sig = pts[(i + 1) % pts.length];
       ficha.innerHTML = '<button class="mf-x" type="button" data-mf-cerrar aria-label="Cerrar la ficha">' + ico("close") + "</button>" +
-        '<article class="py">' + hero + mini + stats + (why || near ? '<div class="py-body">' + why + near + "</div>" : "") + acts + "</article>";
+        '<button class="mf-flecha is-prev" type="button" data-mf-ir="' + esc(ant.id) + '" aria-label="Fundo anterior: ' + esc(ant.nombre) + '">' + ico("arrow") + "</button>" +
+        '<button class="mf-flecha" type="button" data-mf-ir="' + esc(sig.id) + '" aria-label="Fundo siguiente: ' + esc(sig.nombre) + '">' + ico("arrow") + "</button>" +
+        '<div class="mf-scroll"><article class="py">' + hero + mini + stats + (why || near ? '<div class="py-body">' + why + near + "</div>" : "") + acts +
+        '<nav class="mf-nav" aria-label="Otros fundos"><button type="button" data-mf-ir="' + esc(ant.id) + '">' + ico("arrow") + "<span><small>Anterior</small>" + esc(ant.nombre) + "</span></button>" +
+        '<span class="mf-cuenta">' + (i + 1) + " de " + pts.length + '</span><button type="button" data-mf-ir="' + esc(sig.id) + '"><span><small>Siguiente</small>' + esc(sig.nombre) + "</span>" + ico("arrow") + "</button></nav></article></div>";
       ficha.setAttribute("aria-label", "Ficha de " + p.nombre);
-      ficha.hidden = false;
+      if (!ficha.open) { if (typeof ficha.showModal === "function") ficha.showModal(); else ficha.setAttribute("open", ""); }
       abierta = id;
       $$(".mch-tile-b", row).forEach(function (b) { b.setAttribute("aria-expanded", String(b.parentNode.getAttribute("data-p") === id)); });
       var mi = $(".mf-mini", ficha);
@@ -2382,29 +2387,45 @@
       });
       $$("[data-mf]", ficha).forEach(function (a) {
         a.addEventListener("click", function (e) {
+          cerrarFicha();   // las acciones llevan a otra parte de la página: primero se cierra la ventana
           if (a.getAttribute("data-mf") === "plano") Plan.apply({ id: p.id, soloDisponibles: true });
           if (a.getAttribute("data-mf") === "tour") { e.preventDefault(); Tour.open(p.id, true); }
           if (a.getAttribute("data-mf") === "cotizar") Visit.prefill({ proyecto: p.main ? p.corto : p.nombre, mensaje: (p.main ? "Quiero cotizar una parcela en " : "Quiero información de ") + p.nombre + ".", scroll: true });
         });
       });
-      // "Ver ficha y fotos" lleva a la ficha; si solo se cambia de fundo con la ficha abierta, la página no se mueve
-      if (ir) {
-        var r = ficha.getBoundingClientRect();
-        window.scrollTo({ top: window.scrollY + r.top - navBottomPx() - 12, behavior: reduced ? "auto" : "smooth" });
-        try { ficha.focus({ preventScroll: true }); } catch (err) { ficha.focus(); }
-      }
+      $(".mf-scroll", ficha).scrollTop = 0;
+      if (ir) { var f0 = $(ir === "sig" ? ".mf-flecha:not(.is-prev)" : ir === "ant" ? ".mf-flecha.is-prev" : ".mf-x", ficha); if (f0) f0.focus(); }
+      // el carrusel acompaña al fundo que se ve en la ventana
+      var c = $('.mch-tile[data-p="' + id + '"]', row);
+      if (c) row.scrollTo({ left: c.offsetLeft - row.offsetLeft - 4, behavior: "auto" });
     }
-    function cerrarFicha() {
-      if (!abierta) return;
-      var b = $('.mch-tile[data-p="' + abierta + '"] .mch-tile-b', row);
-      ficha.hidden = true; ficha.innerHTML = ""; abierta = null;
+    function cerrarFicha() { if (ficha.open) { if (typeof ficha.close === "function") ficha.close(); else { ficha.removeAttribute("open"); alCerrar(); } } }
+    function alCerrar() {
+      ficha.innerHTML = ""; abierta = null;
       $$(".mch-tile-b", row).forEach(function (o) { o.setAttribute("aria-expanded", "false"); });
-      if (b) b.focus({ preventScroll: true });
     }
-    ficha.addEventListener("click", function (e) { if (e.target.closest("[data-mf-cerrar]")) cerrarFicha(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && abierta && (ficha.contains(document.activeElement) || box.contains(document.activeElement))) cerrarFicha(); });
+    ficha.addEventListener("close", alCerrar);
+    ficha.addEventListener("click", function (e) {
+      if (e.target === ficha || e.target.closest("[data-mf-cerrar]")) { cerrarFicha(); return; }   // fuera del panel o ×
+      var ir = e.target.closest("[data-mf-ir]");
+      if (ir) abrirFicha(ir.getAttribute("data-mf-ir"), ir.classList.contains("is-prev") ? "ant" : ir.classList.contains("mf-flecha") ? "sig" : "");
+    });
+    ficha.addEventListener("keydown", function (e) {   // flechas del teclado: fundo anterior o siguiente
+      if (!abierta || (e.key !== "ArrowLeft" && e.key !== "ArrowRight") || e.target.closest(".mf-mini")) return;
+      e.preventDefault();
+      var b = $(e.key === "ArrowLeft" ? ".mf-flecha.is-prev" : ".mf-flecha:not(.is-prev)", ficha);
+      if (b) abrirFicha(b.getAttribute("data-mf-ir"), e.key === "ArrowLeft" ? "ant" : "sig");
+    });
+    // En el celular, deslizar la foto pasa al fundo anterior o siguiente
+    var sx = null, sy = 0;
+    ficha.addEventListener("touchstart", function (e) { if (e.target.closest(".py-hero")) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } }, { passive: true });
+    ficha.addEventListener("touchend", function (e) {
+      if (sx == null) return;
+      var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; sx = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { var b = $(dx < 0 ? ".mf-flecha:not(.is-prev)" : ".mf-flecha.is-prev", ficha); if (b) abrirFicha(b.getAttribute("data-mf-ir")); }
+    });
     act.addEventListener("click", function (e) {
-      if (e.target.closest("[data-mch-ver]") && actual) abrirFicha(actual.id, true);
+      if (e.target.closest("[data-mch-ver]") && actual) abrirFicha(actual.id, "x");
       if (e.target.closest("[data-mr='plano']") && actual) Plan.apply({ id: actual.id, soloDisponibles: true });
     });
 

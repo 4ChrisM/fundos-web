@@ -225,10 +225,13 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   con el sello "Plano y recorrido 360°". Bajo el carrusel, el **resumen del fundo activo** (`[data-mch-act]`, `.mch-res`:
   primera foto de `galeria` o el emblema, región y latitud, texto, datos y "Ver ficha y fotos" + "Ver lotes" o "Quiero
   información"), que cambia con el carrusel (los dos botones lado a lado cuando caben). Tocar una tarjeta solo elige el fundo
-  (resumen y mapa; detiene el avance 12 s); "Ver ficha y fotos" despliega la **ficha** y la página baja hasta ella (con la
-  ficha abierta, tocar otra tarjeta la cambia ahí mismo, sin mover la página). La ficha tiene el mismo estilo oscuro de
+  (resumen y mapa; detiene el avance 12 s); "Ver ficha y fotos" abre la **ficha en una ventana sobre la página** (`<dialog>` con
+  `showModal`, pedido del cliente: "que muestre todo el proyecto"), con **flechas a los costados** (`.mf-flecha`, en los
+  márgenes en computador y abajo en celular), flechas del teclado, deslizar la foto en celular y "Anterior/Siguiente" al
+  final para pasar por los 13 fundos (el carrusel acompaña); se cierra con ×, Escape o tocando fuera, y las acciones
+  (ver lotes, cotizar, 360°) la cierran antes de ir. La ficha tiene el mismo estilo oscuro de
   "Conoce cada proyecto" (reusa las clases `.py-*`: foto grande con el nombre, miniaturas, franja de datos, características
-  con íconos, "Cerca de tu parcela" y acciones; sin fotos, el emblema en un recuadro crema) (`[data-mch-ficha]`, Escape o × la cierran y el foco vuelve a la tarjeta): fotos con miniaturas (`galeria` del
+  con íconos, "Cerca de tu parcela" y acciones; sin fotos, el emblema en un recuadro crema) (`[data-mch-ficha]`): fotos con miniaturas (`galeria` del
   proyecto en el manifiesto, armadas por `tools/galeria_build.py` en `assets/img/galeria/`; el satelital del entorno
   lleva crédito Sentinel-2/EOX). **Los 13 fundos tienen fotos** (oct-2026): los 10 de `masProyectos` con fotos del
   cliente, subidas a `subidas/` como "NN. Nombre.webp" (el número da el orden, la primera va en el resumen; `ALIAS` del
