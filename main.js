@@ -2297,14 +2297,14 @@
       zo.addEventListener("pointerover", function (e) { var g = e.target.closest("[data-p]"); if (g && e.pointerType === "mouse") poner(g.getAttribute("data-p")); });
     }
 
-    // Propuesta vertical (?mapa=vertical): la misma línea que la horizontal pero de pie (pedido del cliente): Chile
-    // completo en chico con el recuadro del tramo y, al lado, el tramo de 31°S a 44°S en grande con punto y nombre por
-    // fundo a los costados (línea corta) y latitudes cada 2°. El mapa queda fijo en pantalla junto a la galería
-    // (armarV lo ajusta al espacio que le da el CSS y se rehace si cambia)
+    // Propuesta vertical (?mapa=vertical): como la horizontal pero de pie (pedido del cliente). El tramo de Chile queda
+    // fijo, con punto y nombre por fundo a los costados con una línea corta, latitudes cada 2° y Chile completo en chico
+    // en la esquina; el tramo se estira hasta el alto de la galería para que no queden vacíos (armarV mide y rehace)
     var vlargo = document.documentElement.classList.contains("pm-v"), estatico = horiz || vlargo;
     function armarV() {
-      var SV = 4, Wc = zo.clientWidth || 400, Hc = window.innerWidth < 980 ? 560 : zo.clientHeight || 600;   // el espacio que le da el CSS (en celular, el alto sigue al mapa)
-      var la0 = 31.2, la1 = 44.2;
+      var SV = 4, Wc = zo.clientWidth || 400, rr = row.getBoundingClientRect(), Hc = Math.max(rr.bottom - zo.getBoundingClientRect().top, 700);   // hasta el final de la galería
+      var la0 = 31.2, la1 = 44.2, cen = (la0 + la1) / 2;
+      if (window.innerWidth < 980) Hc = Wc * 2;   // en celular, un largo fijo
       var arma = function (a, b, u) {   // {svg, ancho, alto} para el tramo a..b; u = unidades por píxel (textos y puntos a tamaño fijo en pantalla)
         var y0 = (a - pr.lat0) * pr.k, y1 = (b - pr.lat0) * pr.k, xA = Infinity, xB = -Infinity;
         M.regiones.forEach(function (r) { r.anillos.forEach(function (ring) { ring.forEach(function (q) { if (q[1] >= y0 && q[1] <= y1) { xA = Math.min(xA, q[0]); xB = Math.max(xB, q[0]); } }); }); });
@@ -2324,15 +2324,22 @@
         });
         var vx = xA - (24 * u) - mw.i, vwid = (xB + 24 * u + Math.max(mw.d, 30 * u)) - vx, vy = y0 * SV, vh = (y1 - y0) * SV, lats = "";
         for (var l = Math.ceil(a / 2) * 2; l <= b; l += 2) { var ly = (l - pr.lat0) * pr.k * SV; lats += '<line class="mch-zlat" x1="' + vx + '" x2="' + (vx + vwid) + '" y1="' + ly + '" y2="' + ly + '"/><text class="mch-hlat ta-fin" x="' + (vx + vwid - 4 * u) + '" y="' + (ly - 5 * u) + '">' + l + "°S</text>"; }
-        return { ancho: vwid, alto: vh, svg: '<svg class="mch-band is-v" preserveAspectRatio="xMidYMin meet" style="--fs:' + u.toFixed(3) + '" viewBox="' + vx.toFixed(0) + " " + vy.toFixed(0) + " " + vwid.toFixed(0) + " " + vh.toFixed(0) + '" role="img" aria-label="Chile de norte a sur con los fundos">' +
-          '<defs><clipPath id="mch-vclip"><rect x="' + vx.toFixed(0) + '" y="' + vy.toFixed(0) + '" width="' + vwid.toFixed(0) + '" height="' + vh.toFixed(0) + '"/></clipPath></defs>' +
-          '<g clip-path="url(#mch-vclip)">' + lats + '<g transform="scale(' + SV + ')">' + regs + "</g></g>" + rots.join("") + pins.join("") + "</svg>" };   // solo el tramo
+        return { ancho: vwid, alto: vh, svg: '<svg class="mch-band is-v" style="--fs:' + u.toFixed(3) + '" viewBox="' + vx.toFixed(0) + " " + vy.toFixed(0) + " " + vwid.toFixed(0) + " " + vh.toFixed(0) + '" role="img" aria-label="Chile de norte a sur con los fundos">' +
+          lats + '<g transform="scale(' + SV + ')">' + regs + "</g>" + rots.join("") + pins.join("") + "</svg>" };
       };
-      // el mismo tramo que la horizontal (31°S a 44°S); textos y puntos a tamaño fijo según cuánto se achica el mapa
-      // F: tamaño de textos y puntos (en celular, algo más chicos para que el tramo quepa a lo ancho sin deslizar)
-      var F = window.innerWidth < 980 ? 0.74 : 1, a = la0, b = la1, vhU = (b - a) * pr.k * SV, r = arma(a, b, F * vhU / Hc);
-      r = arma(a, b, F * Math.max(vhU / Hc, r.ancho / Wc));
-      r = arma(a, b, F * Math.max(vhU / Hc, r.ancho / Wc));
+      // cuántos grados de Chile hacen que el mapa mida lo mismo que la galería (búsqueda binaria: los rótulos y el ancho
+      // de Chile cambian con el tramo); si ni Chile entero alcanza, se muestra entero
+      var a, b, r, lo = 13, hi = 37.9;
+      var prueba = function (span) {
+        a = Math.max(17.6, cen - span / 2); b = Math.min(55.5, a + span); a = Math.max(17.6, b - span);
+        r = arma(a, b, (b - a) * pr.k * SV / Hc);
+        return Wc * r.alto / r.ancho;   // alto con que se dibuja
+      };
+      if (prueba(hi) < Hc) prueba(hi);
+      else {
+        for (var it = 0; it < 12; it++) { var mid = (lo + hi) / 2; if (prueba(mid) < Hc) lo = mid; else hi = mid; }
+        prueba(lo);
+      }
       zo.innerHTML = r.svg;
       var w0 = $(".mch-win", ch); if (w0) { w0.setAttribute("y", ((a - pr.lat0) * pr.k).toFixed(1)); w0.setAttribute("height", ((b - a) * pr.k).toFixed(1)); w0.setAttribute("x", 0); w0.setAttribute("width", W); }
       if (actual) poner(actual.id, true);
@@ -2341,9 +2348,9 @@
       box.classList.add("is-largo");
       armarV();
       zo.addEventListener("pointerover", function (e) { var g = e.target.closest("[data-p]"); if (g && e.pointerType === "mouse") poner(g.getAttribute("data-p")); });
-      var tRe = 0, ultimo = "";
-      var reArmar = function () { window.clearTimeout(tRe); tRe = window.setTimeout(function () { var k = zo.clientWidth + "x" + zo.clientHeight; if (zo.clientHeight && k !== ultimo) { ultimo = k; armarV(); } }, 120); };
-      if ("ResizeObserver" in window) new ResizeObserver(reArmar).observe(zo);
+      var tRe = 0, ultimoAlto = 0;
+      var reArmar = function () { window.clearTimeout(tRe); tRe = window.setTimeout(function () { var h = Math.round(row.getBoundingClientRect().height); if (h && Math.abs(h - ultimoAlto) > 8) { ultimoAlto = h; armarV(); } }, 120); };
+      if ("ResizeObserver" in window) new ResizeObserver(reArmar).observe(row);
       window.addEventListener("resize", reArmar);
       window.addEventListener("fundos:vista", reArmar);
     }
