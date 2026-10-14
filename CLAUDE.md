@@ -207,18 +207,28 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   Montt (textos resumidos de su sitio; los nombres antiguos dentro de esos textos, como "Fundo Río Mar" o "La Gran
   Reserva", no se usan).
 - **Mapa "Fundos en todo Chile"** (`[data-mch]` en `#mas-proyectos`, `initMapaChile`; pedido del cliente: "jugar con la
-  latitud"): regiones de Chile centro-sur (31,4°S a 44°S) desde `lib/mapa-chile.js`, **generado** por
-  `tools/mapa_chile_build.py` (límites de la BCN vía github.com/fcortes/Chile-GeoJSON, simplificados con shapely,
-  proyección equirectangular `proy`; incluye la silueta de Chile para el recuadro). Un punto por proyecto (dorado los 3
-  con plano: lat/lon del enlace `mapa` del manifiesto; verde los de `masProyectos`: `lat`/`lon` aproximados); la región
-  sale de dónde cae el punto. **Franja de Chile** (propuesta 1 del artefacto de 5 propuestas, elegida por el cliente):
-  Chile acostado de norte a sur a todo el ancho (mapa girado −90°: mar abajo, cordillera arriba; alto máx. 470 px en
-  computador, en celular la franja se desliza), un punto y un rótulo por fundo en pistas arriba y abajo sin choques, y
-  latitudes cada 2°. Debajo, la fila de tarjetas de los 13 fundos de norte a sur (`.mch-row`, flechas en computador):
-  los de plano con `mpCardMain` (foto aérea, sello "Plano y recorrido 360°", desde/disponibles, "Ver lotes y precios") y
-  los demás con su emblema (`mpCard`). Tocar un punto o rótulo lleva a su tarjeta (destella; si la fila no se ve, la
-  página baja lo justo); al deslizar la fila se marcan el punto, el rótulo y la región de la primera tarjeta. Sin
-  `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`). Crédito "Límites regionales: BCN".
+  latitud"): **Sala de cine con paleta Arena** (elegida por el cliente tras dos artefactos de propuestas; antes fue una
+  franja con Chile acostado, que el cliente descartó: "Chile acostado no es representativo", y el fondo negro "opacaba
+  la figura del país"). **Chile completo de pie** (Arica a Magallanes, continental, aunque no haya proyectos en todo el
+  país) desde `lib/mapa-chile.js`, **generado** por `tools/mapa_chile_build.py` (límites de la BCN vía
+  github.com/fcortes/Chile-GeoJSON, simplificados con shapely, proyección equirectangular `proy`), con latitudes cada 5° y
+  un recuadro dorado (`.mch-win`) que viaja al fundo elegido; al lado, la **lupa** (`[data-mch-lupa]`): el mismo mapa con
+  un `viewBox` de 6,5° de latitud que se anima hasta el fundo, con regiones, ciudades de referencia (`CIU`, ceden su
+  nombre si chocan), latitud de cada grado, línea dorada en la latitud del fundo y los nombres sin choques ni cortes en
+  el borde (`rotulos()`; textos a tamaño fijo en pantalla con `--fs`). A la derecha el fundo activo (`[data-mch-act]`) y
+  el carrusel tipo Netflix de norte a sur (`.mch-row`, flechas en computador, la tarjeta crece y muestra más al pasar el
+  mouse; en celular el activo es el primero de la fila). **Todas las tarjetas llevan emblema dibujado** (pedido del
+  cliente, también Puerto Varas, Marchigüe y Malalcahuello: escenas en `EMB` a partir de sus logos), los tres con plano
+  con el sello "Plano y recorrido 360°". Tocar una tarjeta (o "Ver ficha y fotos") despliega la **ficha**
+  (`[data-mch-ficha]`, Escape o × la cierran y el foco vuelve a la tarjeta): fotos con miniaturas (`galeria` del
+  proyecto en el manifiesto, armadas por `tools/galeria_build.py` en `assets/img/galeria/`; el satelital del entorno
+  lleva crédito Sentinel-2/EOX), descripción, datos (desde, disponibles, 5.000 m², reserva), destacados, cercanías y
+  "Ver lotes y precios" / "Recorrido 360°" / "Conocer el proyecto"; los de `masProyectos` muestran emblema, lema,
+  etiquetas, "Fotos del proyecto: próximamente" y "Quiero información" por WhatsApp. Tocar el Chile completo viaja al
+  fundo más cercano en latitud; tocar un punto de la lupa mueve el carrusel. Un punto por proyecto (dorado los 3 con
+  plano: lat/lon del enlace `mapa` del manifiesto; claros los de `masProyectos`: `lat`/`lon` aproximados); la región sale
+  de dónde cae el punto. Sin `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`, `mpCard`).
+  Crédito "Chile continental · límites regionales: BCN". Prueba: `tools/pruebas/fundos-chile.js`.
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el

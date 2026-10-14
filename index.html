@@ -27,12 +27,12 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261015a">
-<script defer src="lib/manifest.js?v=20261015a"></script>
-<script defer src="lib/analitica.js?v=20261015a"></script>
-<script defer src="lib/mapa-chile.js?v=20261015a"></script>
-<script defer src="lib/planos.js?v=20261015a"></script>
-<script defer src="main.js?v=20261015a"></script>
+<link rel="stylesheet" href="styles.css?v=20261015b">
+<script defer src="lib/manifest.js?v=20261015b"></script>
+<script defer src="lib/analitica.js?v=20261015b"></script>
+<script defer src="lib/mapa-chile.js?v=20261015b"></script>
+<script defer src="lib/planos.js?v=20261015b"></script>
+<script defer src="main.js?v=20261015b"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -675,18 +675,27 @@
     <header class="section-head reveal">
       <p class="kicker">Más proyectos</p>
       <h2 id="mas-proyectos-title">Fundos en <em>todo Chile</em></h2>
-      <p class="lead">Parcelas de 5.000&nbsp;m² en la costa, los lagos, los valles y la cordillera, de Valparaíso a Los Lagos. Pide información y un asesor te cuenta los detalles.</p>
+      <p class="lead">Parcelas de 5.000&nbsp;m² en la costa, los lagos, los valles y la cordillera, de Valparaíso a Los Lagos. Toca un fundo para ver su ficha y fotos, o pide información y un asesor te cuenta los detalles.</p>
     </header>
+    <!-- Sala de cine (elegida por el cliente, paleta Arena): Chile completo de pie con un recuadro que viaja al fundo,
+         la "lupa" con ese tramo en grande y el carrusel de los fundos de norte a sur; al tocar uno se despliega su ficha -->
     <div class="mch" data-mch hidden>
-      <div class="mch-band" data-mch-map></div>
-      <div class="mch-ns" aria-hidden="true"><span><svg class="i"><use href="#i-arrow"/></svg>Norte · Valparaíso</span><span>Sur · Chiloé<svg class="i"><use href="#i-arrow"/></svg></span></div>
-      <div class="mch-fila">
-        <button class="mch-flecha is-prev" type="button" data-mch-mover="-1" aria-label="Fundos más al norte"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-        <ul class="mch-row" data-mch-list aria-label="Fundos de norte a sur"></ul>
-        <button class="mch-flecha" type="button" data-mch-mover="1" aria-label="Fundos más al sur"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <div class="mch-mapas">
+        <div class="mch-chile" data-mch-chile></div>
+        <div class="mch-lupa" data-mch-lupa></div>
       </div>
-      <p class="mch-ley"><span class="mch-ley-p"><i class="mch-pt is-main"></i>Con plano y recorrido 360°</span><span class="mch-ley-p"><i class="mch-pt"></i>Más proyectos</span><span class="mch-fuente">Límites regionales: BCN · ubicación referencial</span></p>
+      <div class="mch-der">
+        <div class="mch-act" data-mch-act aria-live="polite"></div>
+        <p class="mch-fila-t">Todos los fundos, de norte a sur</p>
+        <div class="mch-fila">
+          <button class="mch-flecha is-prev" type="button" data-mch-mover="-1" aria-label="Fundos más al norte"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <ul class="mch-row" data-mch-list aria-label="Fundos de norte a sur"></ul>
+          <button class="mch-flecha" type="button" data-mch-mover="1" aria-label="Fundos más al sur"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+      </div>
     </div>
+    <div class="mch-ficha" id="fundos-ficha" data-mch-ficha tabindex="-1" hidden></div>
+    <p class="mch-ley" data-mch-ley hidden><span class="mch-ley-p"><i class="mch-pt is-main"></i>Con plano y recorrido 360°</span><span class="mch-ley-p"><i class="mch-pt"></i>Más proyectos</span><span class="mch-fuente">Chile continental · límites regionales: BCN · ubicación de fundos y ciudades referencial</span></p>
     <ul class="mp-grid" data-mp-list></ul>
   </div>
 </section>
