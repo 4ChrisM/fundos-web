@@ -99,6 +99,7 @@
     if (contacto.whatsappVisible) $$("[data-wa-visible]").forEach(function (a) { a.textContent = contacto.whatsappVisible; });
     if (contacto.email) $$("[data-email]").forEach(function (a) { a.href = "mailto:" + contacto.email; a.textContent = contacto.email; });
     if (contacto.horario) $$("[data-horario]").forEach(function (p) { p.textContent = contacto.horario; });
+    if (contacto.visitas) $$("[data-visitas]").forEach(function (p) { p.textContent = contacto.visitas; });
     // Aviso para lectores de pantalla: estos enlaces abren otra pestaña o la app
     $$('a[target="_blank"]').forEach(function (a) {
       var ids = (a.getAttribute("aria-describedby") || "").split(" ").filter(Boolean);
@@ -1663,6 +1664,18 @@
     var today = new Date();
     var pad = function (n) { return (n < 10 ? "0" : "") + n; };
     if (el.fecha) el.fecha.min = today.getFullYear() + "-" + pad(today.getMonth() + 1) + "-" + pad(today.getDate());
+    // Las visitas a terreno son los fines de semana: si elige un día de semana sin videollamada, se avisa (no bloquea)
+    var fNota = $("[data-fecha-nota]", form), fNotaBase = fNota ? fNota.textContent : "";
+    function notaFecha() {
+      if (!fNota || !el.fecha) return;
+      var v = el.fecha.value, video = (form.querySelector('input[name="horario"]:checked') || {}).value === "videollamada";
+      var dow = v ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)).getDay() : -1;
+      var semana = dow >= 1 && dow <= 5, aviso = semana && !video;
+      fNota.textContent = aviso ? "Ese día es de semana: las visitas a terreno son sábado o domingo. Elige un fin de semana o una videollamada." : fNotaBase;
+      fNota.classList.toggle("is-aviso", aviso);
+    }
+    if (el.fecha) el.fecha.addEventListener("change", notaFecha);
+    $$('input[name="horario"]', form).forEach(function (r) { r.addEventListener("change", notaFecha); });
 
     // Mensajes de error asociados a cada campo
     $$("[data-error-for]", form).forEach(function (e, i) {

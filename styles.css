@@ -2708,3 +2708,5 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .hac-body p { font-size: .9rem; line-height: 1.5; color: var(--n600); }
 .hac-sup { font-weight: 700; color: var(--g900) !important; }
 @media (min-width: 700px) { .hac-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } }
+.field-nota { margin-top: -.3rem; font-size: .8rem; line-height: 1.4; color: var(--n600); }
+.field-nota.is-aviso { color: #9A5B12; font-weight: 700; }

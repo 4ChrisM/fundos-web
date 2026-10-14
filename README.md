@@ -33,7 +33,7 @@ Además: barra de acción fija en móvil (WhatsApp + Agendar visita), botón flo
 
 Todo lo editable está en `lib/manifest.js`.
 
-- [x] **Contacto:** WhatsApp general +56 9 9292 2429 y ventas@fundosinmobiliaria.com (dados por el cliente, oct-2026). Falta confirmar el horario.
+- [x] **Contacto:** WhatsApp general +56 9 9292 2429 y ventas@fundosinmobiliaria.com (dados por el cliente, oct-2026). Horario: martes a viernes de 10:00 a 19:00; visitas a terreno los fines de semana.
 - [ ] **Lotes, precios y estados:** son referenciales, basados en ejemplos del manual. Lo ideal es leerlos desde Fundos 360° (módulo Parcelas) para mostrar la disponibilidad real.
 - [ ] **Superficie por lote:** se asume 5.000 m² en todos los proyectos (confirmar, sobre todo Puerto Varas).
 - [ ] **Financiamiento:** tasa (0,9 % mensual), pie mínimo (30 %) y plazos son supuestos. Si no hay crédito directo, usar `financiamiento.habilitado = false`.
