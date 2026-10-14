@@ -67,8 +67,10 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
 - `lib/manifest.js` **único lugar de datos**: contacto, proyectos, lotes (`[n, categoría, estado]`), categorías de
   precio (color, precio, precio lista), financiamiento, `equipo` (nombre, apodo, cargo, foto, bio, whatsapp, video)
   y `videoPortada` (mp4/webm y versión `Movil`). Contacto general real (oct-2026): WhatsApp +56 9 9292 2429 y
-  ventas@fundosinmobiliaria.com (también escritos en los `href` de `index.html` para la página sin JavaScript); el horario
-  falta confirmarlo. `haciendas`: proyectos Hacienda genéricos (ver "Trabaja con nosotros y Hacienda").
+  ventas@fundosinmobiliaria.com (también escritos en los `href` de `index.html` para la página sin JavaScript); horario
+  martes a viernes de 10:00 a 19:00 y visitas a terreno los fines de semana (`contacto.horario` y `contacto.visitas`,
+  `[data-horario]`/`[data-visitas]`); en `#visita`, si eligen un día de semana sin videollamada, `[data-fecha-nota]` avisa
+  (no bloquea). `haciendas`: proyectos Hacienda genéricos (ver "Trabaja con nosotros y Hacienda").
 - `lib/planos.js` **generado, no editar a mano**: por proyecto `viewBox`, `contorno`, `calles` (servidumbres),
   `agua`, opcional `caminoPrincipal`, y `lotes[n] = {d, l, r}` (path SVG, punto de etiqueta, radio libre). Lotes y
   servidumbres forman una cobertura continua (bordes compartidos, sin huecos ni traslapes).

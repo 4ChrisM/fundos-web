@@ -10,7 +10,7 @@ mantiene); agrega `canonical`, `robots.txt` y `sitemap.xml`; quita la etiqueta "
 dominio nuevo.
 
 ## Orden (para que el sitio no quede sin dirección)
-1. **Antes:** confirmar el horario (el WhatsApp +56 9 9292 2429 y ventas@fundosinmobiliaria.com ya están en el sitio).
+1. **Antes:** nada pendiente de contacto (WhatsApp, correo y horario ya están en el sitio).
 2. **El cliente cambia los DNS** (paso a paso abajo).
 3. **Recién ahí** fusionar el cambio en `main`. Al fusionar, `fundos.biplot.cl` deja de funcionar (GitHub Pages
    acepta un solo dominio por sitio).

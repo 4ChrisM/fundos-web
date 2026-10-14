@@ -27,11 +27,11 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261014a">
-<script defer src="lib/manifest.js?v=20261014a"></script>
-<script defer src="lib/analitica.js?v=20261014a"></script>
-<script defer src="lib/planos.js?v=20261014a"></script>
-<script defer src="main.js?v=20261014a"></script>
+<link rel="stylesheet" href="styles.css?v=20261014b">
+<script defer src="lib/manifest.js?v=20261014b"></script>
+<script defer src="lib/analitica.js?v=20261014b"></script>
+<script defer src="lib/planos.js?v=20261014b"></script>
+<script defer src="main.js?v=20261014b"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -1395,7 +1395,7 @@
       <ul class="contact-list">
         <li><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg><div><span>WhatsApp</span><a href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-visible>+56 9 9292 2429</a></div></li>
         <li><svg class="i" aria-hidden="true"><use href="#i-send"/></svg><div><span>Correo</span><a href="mailto:ventas@fundosinmobiliaria.com" data-email>ventas@fundosinmobiliaria.com</a></div></li>
-        <li><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg><div><span>Horario</span><p data-horario>Lunes a sábado, 9:00 a 19:00</p></div></li>
+        <li><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg><div><span>Horario</span><p data-horario>Martes a viernes, 10:00 a 19:00</p><p data-visitas>Visitas a terreno los fines de semana, con hora agendada</p></div></li>
       </ul>
     </div>
 
@@ -1430,10 +1430,11 @@
         </div>
         <div class="field">
           <label for="v-fecha">Fecha preferida <small>(opcional)</small></label>
-          <input id="v-fecha" name="fecha" type="date">
+          <input id="v-fecha" name="fecha" type="date" aria-describedby="v-fecha-nota">
           <p class="error" data-error-for="v-fecha">Elige una fecha desde hoy.</p>
         </div>
       </div>
+      <p class="field-nota" id="v-fecha-nota" data-fecha-nota>Visitas a terreno: sábado y domingo. De martes a viernes, por videollamada.</p>
       <div class="field">
         <span class="label" id="v-horario-label">Horario <small>(opcional)</small></span>
         <div class="seg" role="radiogroup" aria-labelledby="v-horario-label">
@@ -1499,7 +1500,8 @@
       <h2>Contacto</h2>
       <a href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-visible>+56 9 9292 2429</a>
       <a href="mailto:ventas@fundosinmobiliaria.com" data-email>ventas@fundosinmobiliaria.com</a>
-      <p data-horario>Lunes a sábado, 9:00 a 19:00</p>
+      <p data-horario>Martes a viernes, 10:00 a 19:00</p>
+      <p data-visitas>Visitas a terreno los fines de semana, con hora agendada</p>
     </div>
   </div>
   <div class="container footer-bottom">
