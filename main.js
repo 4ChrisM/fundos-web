@@ -2097,6 +2097,38 @@
         s += L("M157 87l14-18q14 4 20 22", 0.8);   // caña y sedal
         return s + juncos(76, 104) + juncos(84, 104);
       },
+      // Los tres con plano, dibujados a partir de los logos del cliente (araucaria y volcán; casa de campo con ciprés y viñas)
+      "malalcahuello": function () {
+        var s = sol(120, 92, 46);
+        s += L("M118 96l26-38 5 3 5-4 5 3 22 36", 1.2);   // volcán
+        s += F("M139 66l5-8 5 3 5-4 5 3 4 6-5-2-4 3-5-3-5 3z");
+        s += L("M86 98V44", 1.6);   // araucaria: tronco alto y copa en paraguas
+        s += F("M64 48q22-14 44 0q-22-5-44 0z") + F("M70 56q16-10 32 0q-16-4-32 0z") + F("M76 63q10-7 20 0q-10-3-20 0z");
+        s += L("M86 48l-16 8M86 48l16 8M86 56l-12 7M86 56l12 7", 0.9);
+        s += pino(150, 98, 18) + pino(160, 98, 22) + pino(170, 98, 16);
+        s += L("M40 98h160", 1.2) + L("M104 104c14-3 26 2 40 0s20-4 34-2", 1) + L("M120 109c10-2 18 1 28 0", 0.9);   // río
+        return s + ave(56, 40) + ave(66, 35, 0.8);
+      },
+      "marchigue": function () {
+        var s = sol(120, 84, 42);
+        s += L("M30 92c30-10 60-12 90-8s60 6 90 0", 1.2);   // loma
+        s += L("M44 100c24-6 52-7 76-4M60 106c22-4 44-4 64-2M128 98c22 1 44-1 66-6M140 104c18 0 34-2 50-6", 0.9);   // hileras de viña
+        s += L("M100 84V70h30v14", 1.2) + L("M96 71l19-12 19 12", 1.3) + L("M112 84v-8h6v8M104 74h5v4h-5zM121 74h5v4h-5z", 0.9);   // casa de campo
+        s += cipres(84, 86, 40);
+        s += copa(150, 86, 26);
+        return s + ave(160, 48) + ave(170, 43, 0.8);
+      },
+      "puerto-varas": function () {
+        var s = sol(120, 90, 46);
+        s += L("M54 88l22-22 4 2 4-3 18 23", 1.1);   // Calbuco (al fondo, a la izquierda)
+        s += L("M100 88l30-40 4 2 4-2 4 2 30 38", 1.3);   // Osorno, cono perfecto
+        s += F("M124 56l6-8 4 2 4-2 4 2 6 8-5-2-4 3-5-3-5 3-5-3z");
+        s += L("M36 92h168", 1.2) + L("M60 97h36M140 97h44M96 101h50", 0.9);   // lago
+        s += L("M36 106h168", 1.1);   // campo plano con cerco
+        for (var x = 44; x <= 196; x += 19) s += L("M" + x + " 106v-6", 1);
+        s += L("M44 102h152", 0.7);
+        return s + ave(160, 44) + ave(170, 39, 0.8);
+      },
       "puerto-montt": function () {
         var s = L("M74 84a46 46 0 0 1 92 0", 1.3, T);
         s += L("M46 96h60M140 96h56", 1.1);
@@ -2120,18 +2152,6 @@
       (h.datos && h.datos.length ? '<ul class="mp-datos">' + h.datos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" : "") +
       '<a class="mp-cta" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';
   }
-  // Tarjeta de los proyectos con plano y recorrido 360° (Marchigüe, Malalcahuello, Puerto Varas): foto aérea y "Ver lotes"
-  function mpCardMain(p, href) {
-    var f = p.foto || p.tourFoto || {}, disp = disponibles(p), desde = disp.length ? Math.min.apply(null, disp.map(function (l) { return l.precio || Infinity; })) : 0;
-    return '<li class="mp-card mp-main" id="mp-' + esc(p.id) + '">' +
-      '<div class="mp-foto">' + (f.src ? '<img src="' + esc(f.src) + '" alt="" loading="lazy" decoding="async">' : "") +
-      '<span class="mp-sello"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Plano y recorrido 360°</span>' +
-      '<div class="mp-foto-t"><p class="emb-pre">Fundos de</p><h3 class="emb-n">' + esc(p.nombre) + "</h3></div></div>" +
-      '<div class="mp-body"><p class="mp-k"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>' + esc([p.zona, p.region].filter(Boolean).join(", ")) + "</p>" +
-      (p.resumen ? "<p>" + esc(p.resumen) + "</p>" : "") +
-      '<ul class="mp-datos">' + (isFinite(desde) && desde ? "<li>Desde " + clp(desde) + "</li>" : "") + "<li>" + disp.length + (disp.length === 1 ? " disponible" : " disponibles") + "</li></ul>" +
-      '<a class="mp-cta" href="' + esc(href) + '"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg>Ver lotes y precios<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';
-  }
   function initMasProyectos() {
     var sec = $("[data-mas-proyectos]"), list = sec && $("[data-mp-list]", sec), hs = B.masProyectos || [];
     if (!sec || !list || !hs.length) return;
@@ -2142,13 +2162,15 @@
     if (!conMapa) list.innerHTML = hs.map(mpCard).join("");
     list.hidden = conMapa;
   }
-  /* Franja de Chile (propuesta 1, elegida por el cliente): Chile acostado de norte a sur a todo el ancho (mar abajo,
-     cordillera arriba) con un punto y un rótulo por fundo, y debajo una fila de tarjetas en el mismo orden. Tocar un punto
-     lleva a su tarjeta; al deslizar la fila se marcan el punto y la región de la tarjeta que va primero. */
+  /* Sala de cine (elegida por el cliente, paleta Arena): Chile completo de pie con un recuadro dorado que viaja al fundo
+     que se mira; al lado, la "lupa" con ese tramo en grande (regiones, ciudades de referencia, latitud y fundos), y a la
+     derecha el fundo activo y el carrusel de norte a sur. Tocar un fundo despliega su ficha con fotos debajo. */
   function initMapaChile(sec, hs) {
     var M = B.mapaChile, box = $("[data-mch]", sec);
     if (!M || !box) return false;
-    var band = $("[data-mch-map]", box), row = $("[data-mch-list]", box), pr = M.proy, vb = M.viewBox;
+    var ch = $("[data-mch-chile]", box), zo = $("[data-mch-lupa]", box), act = $("[data-mch-act]", box), row = $("[data-mch-list]", box),
+      ficha = $("[data-mch-ficha]", sec), pr = M.proy, W = M.viewBox[2], H = M.viewBox[3], ZH = 6.5 * pr.k;   // la lupa muestra 6,5° de latitud
+    var NS = "http://www.w3.org/2000/svg";
     function xy(lat, lon) { return [(lon - pr.lon0) * pr.c * pr.k, (-lat - pr.lat0) * pr.k]; }
     function dentro(p, ring) {
       var c = false;
@@ -2177,71 +2199,223 @@
     hs.forEach(function (h) { if (h.lat && h.lon) pts.push({ id: h.id, corto: h.nombre.replace(/^Fundos de /, ""), nombre: h.nombre, lat: h.lat, lon: h.lon, h: h }); });
     pts.forEach(function (p) { p.xy = xy(p.lat, p.lon); p.reg = region(p.xy); });
     pts = pts.filter(function (p) { return p.reg; }).sort(function (a, b) { return b.lat - a.lat; });
+    if (!pts.length) return false;
     var cods = pts.map(function (p) { return p.reg.cod; });
+    function porId(id) { return pts.filter(function (q) { return q.id === id; })[0]; }
     function ringD(ring) { return "M" + ring.map(function (q) { return q[0] + " " + q[1]; }).join("L") + "Z"; }
+    function lat(p) { return Math.abs(p.lat).toFixed(1).replace(".", ",") + "°S"; }
+    function rn(p) { return { 7: "Región del Maule", 8: "Región del Biobío", 13: "Región Metropolitana" }[p.reg.cod] || "Región de " + p.reg.nombre; }
+    function datosP(p) { var d = disponibles(p.p), desde = d.length ? Math.min.apply(null, d.map(function (l) { return l.precio || Infinity; })) : 0; return { n: d.length, desde: isFinite(desde) ? desde : 0 }; }
+    var regs = M.regiones.map(function (r) { return '<path class="mch-reg' + (cods.indexOf(r.cod) >= 0 ? " is-con" : "") + '" data-cod="' + r.cod + '" d="' + r.anillos.map(ringD).join("") + '"><title>' + esc(r.nombre) + "</title></path>"; }).join("");
 
-    // Chile girado: (x, y) → (y, ancho − x): el norte a la izquierda y el mar abajo
-    var g = ['<g transform="translate(0 ' + vb[2] + ') rotate(-90)">'];
-    M.regiones.forEach(function (r) {
-      g.push('<path class="mch-reg' + (cods.indexOf(r.cod) >= 0 ? " is-con" : "") + '" data-cod="' + r.cod + '" d="' + r.anillos.map(ringD).join("") + '"><title>' + esc(r.nombre) + "</title></path>");
-    });
-    g.push("</g>");
-    var ys = [];
-    M.regiones.forEach(function (r) { r.anillos.forEach(function (ring) { ring.forEach(function (q) { ys.push(vb[2] - q[0]); }); }); });
-    var y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys), pistas = { a: [], b: [] }, rot = [], pins = [];
-    // Rótulos en pistas arriba y abajo, sin choques (de norte a sur)
-    pts.slice().sort(function (a, b) { return a.xy[1] - b.xy[1]; }).forEach(function (p) {
-      var X = p.xy[1], Y = vb[2] - p.xy[0], w = p.corto.length * 6.8 + 12, ok = null;
-      for (var n = 0; n < 4 && !ok; n++) ["a", "b"].forEach(function (k) { if (ok) return; if ((pistas[k][n] || -Infinity) < X - w / 2) { ok = [k, n]; pistas[k][n] = X + w / 2; } });
-      if (!ok) ok = ["a", 3];
-      var ty = ok[0] === "a" ? y0 - 12 - ok[1] * 18 : y1 + 22 + ok[1] * 18;
-      rot.push('<g class="mch-rot" data-p="' + esc(p.id) + '" data-cod="' + p.reg.cod + '"><line x1="' + X.toFixed(1) + '" y1="' + Y.toFixed(1) + '" x2="' + X.toFixed(1) + '" y2="' + (ok[0] === "a" ? ty + 4 : ty - 12).toFixed(1) + '"/><text x="' + X.toFixed(1) + '" y="' + ty.toFixed(1) + '">' + esc(p.corto) + "</text></g>");
-      pins.push('<a href="#mp-' + esc(p.id) + '" class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '" data-cod="' + p.reg.cod + '" transform="translate(' + X.toFixed(1) + " " + Y.toFixed(1) + ')"><title>' + esc(p.nombre) + '</title><circle r="' + (p.main ? 7.5 : 5.5) + '"/></a>');
-    });
-    var top = y0 - 12 - 3 * 18 - 14, bot = y1 + 22 + 3 * 18 + 22, lat = [];
-    for (var la = 32; la <= 44; la += 2) { var x = (la - pr.lat0) * pr.k; lat.push('<line class="mch-lat" x1="' + x + '" x2="' + x + '" y1="' + (top + 10) + '" y2="' + (bot - 18) + '"/><text class="mch-lat-t" x="' + x + '" y="' + (bot - 4) + '">' + la + "°S</text>"); }
-    band.innerHTML = '<svg class="mch-svg" viewBox="-10 ' + top.toFixed(0) + " " + (vb[3] + 20) + " " + (bot - top).toFixed(0) + '" role="img" aria-label="Chile de norte a sur con los fundos de cada región">' + lat.join("") + g.join("") + rot.join("") + pins.join("") + "</svg>";
+    // Chile completo, con latitudes cada 5° y el recuadro de la lupa
+    var tk = "";
+    for (var la = 20; la <= 55; la += 5) { var ty = (la - pr.lat0) * pr.k; tk += '<line class="mch-tickl" x1="-34" x2="0" y1="' + ty + '" y2="' + ty + '"/><text class="mch-tick" x="-34" y="' + (ty - 3) + '">' + la + "°</text>"; }
+    ch.innerHTML = '<svg viewBox="-36 -4 ' + (W + 40) + " " + (H + 8) + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Chile completo, de Arica a Magallanes, con la ubicación de los fundos">' + tk + regs +
+      '<rect class="mch-win" rx="3" x="0" y="0" width="' + W + '" height="' + ZH + '"/>' +
+      pts.map(function (p) { return '<circle class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '" cx="' + p.xy[0].toFixed(1) + '" cy="' + p.xy[1].toFixed(1) + '" r="' + (p.main ? 4.2 : 3.2) + '"/>'; }).join("") + "</svg>";
+    var win = $(".mch-win", ch);
 
-    row.innerHTML = pts.map(function (p) { return p.main ? mpCardMain(p.p, p.href) : mpCard(p.h); }).join("");
-    $$(".mp-card", row).forEach(function (c, i) { c.setAttribute("data-p", pts[i].id); c.setAttribute("data-cod", pts[i].reg.cod); });
-    box.hidden = false;
-
-    var activo = null;
-    function on(id) {
-      if (id === activo) return;
-      activo = id;
-      var p = pts.filter(function (q) { return q.id === id; })[0], cod = p ? String(p.reg.cod) : null;
-      $$(".mch-reg", band).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-cod") === cod); });
-      $$("[data-p]", box).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-p") === id); });
+    // Lupa: el mismo mapa con un viewBox que sigue al fundo elegido
+    var CIU = [["Arica", -18.48, -70.31], ["Iquique", -20.21, -70.15], ["Antofagasta", -23.65, -70.4], ["Copiapó", -27.37, -70.33], ["La Serena", -29.9, -71.25], ["Valparaíso", -33.05, -71.62], ["Santiago", -33.45, -70.67], ["Rancagua", -34.17, -70.74], ["Pichilemu", -34.39, -72.0], ["Talca", -35.43, -71.66], ["Chillán", -36.61, -72.1], ["Concepción", -36.83, -73.05], ["Los Ángeles", -37.47, -72.35], ["Temuco", -38.74, -72.6], ["Valdivia", -39.81, -73.25], ["Osorno", -40.57, -73.14], ["Puerto Montt", -41.47, -72.94], ["Castro", -42.48, -73.76], ["Coyhaique", -45.57, -72.07], ["Punta Arenas", -53.16, -70.91]];
+    var lats = "";
+    for (la = 18; la <= 56; la++) { var y = (la - pr.lat0) * pr.k; lats += '<line class="mch-zlat" x1="-200" x2="' + (W + 200) + '" y1="' + y + '" y2="' + y + '"/><text class="mch-zlatt" x="0" y="' + (y - 3) + '">' + la + "°S</text>"; }
+    var regl = M.regiones.map(function (r) {
+      var big = r.anillos.reduce(function (a, b) { return b.length > a.length ? b : a; }), x = 0, yy = 0;
+      big.forEach(function (q) { x += q[0]; yy += q[1]; }); x /= big.length; yy /= big.length;
+      var pp = pts.filter(function (p) { return p.reg.cod === r.cod; });
+      if (pp.length) yy = pp.reduce(function (a, p) { return a + p.xy[1]; }, 0) / pp.length + 0.55 * pr.k;
+      return '<text class="mch-zreg" text-anchor="middle" x="' + x.toFixed(1) + '" y="' + yy.toFixed(1) + '">' + esc(r.nombre) + "</text>";
+    }).join("");
+    var ciu = CIU.map(function (c) { var q = xy(c[1], c[2]); return '<g class="mch-city" aria-hidden="true"><circle data-r="2.6" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="1"/><text x="' + q[0].toFixed(1) + '" y="' + q[1].toFixed(1) + '" dy=".35em">' + esc(c[0]) + "</text></g>"; }).join("");
+    var pins = pts.map(function (p) { return '<g class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '"><title>' + esc(p.nombre) + '</title><circle data-r="' + (p.main ? 6.5 : 5) + '" cx="' + p.xy[0].toFixed(1) + '" cy="' + p.xy[1].toFixed(1) + '" r="1"/><text x="' + p.xy[0].toFixed(1) + '" y="' + p.xy[1].toFixed(1) + '" dy=".35em">' + esc(p.corto) + "</text></g>"; }).join("");
+    zo.innerHTML = '<svg role="img" aria-label="Tramo de Chile alrededor del fundo elegido">' + lats + regs + regl + ciu + '<line class="mch-zline" x1="-200" x2="' + (W + 200) + '" y1="0" y2="0"/><text class="mch-zlinet" x="0" y="0"></text>' + pins + "</svg>";
+    var zs = $("svg", zo), zl = $(".mch-zline", zs), zt = $(".mch-zlinet", zs);
+    var cx = 0, cy = 0, vw = 0, s = 1, anim = 0, actual = null, fx0 = 0;   // fx0: borde izquierdo de la vista final
+    function medir() {
+      var r = zo.getBoundingClientRect();
+      if (!r.height || !r.width) return;
+      vw = ZH * r.width / r.height; s = ZH / r.height;
+      zs.style.setProperty("--fs", s.toFixed(4));
+      $$("circle[data-r]", zs).forEach(function (c) { c.setAttribute("r", (+c.getAttribute("data-r") * s).toFixed(2)); });
+      $$(".mch-city text", zs).forEach(function (t) { t.setAttribute("dx", (5 * s).toFixed(2)); });
     }
+    function rotulos() {   // nombres de los fundos sin choques: a la derecha, si no a la izquierda; el elegido siempre
+      var cajas = [], fs = 11.5 * s, orden = pts.slice().sort(function (a, b) { return (b === actual) - (a === actual); });
+      orden.forEach(function (p) {
+        var t = $('.mch-pin[data-p="' + p.id + '"] text', zs), w = p.corto.length * fs * (p === actual ? 0.68 : 0.6), h = fs * 1.3, r0 = ((p.main ? 6.5 : 5) + 4) * s;
+        var ops = [[p.xy[0] + r0, "start", p.xy[0] + r0], [p.xy[0] - r0, "end", p.xy[0] - r0 - w]], ok = null;
+        ops.forEach(function (o) {
+          if (ok) return;
+          var b = [o[2], p.xy[1] - h / 2, o[2] + w, p.xy[1] + h / 2];
+          if (b[0] < fx0 + 2 * s || b[2] > fx0 + vw - 2 * s) return;   // que no se corte en el borde de la lupa
+          if (!cajas.some(function (c) { return b[0] < c[2] && b[2] > c[0] && b[1] < c[3] && b[3] > c[1]; })) ok = [o, b];
+        });
+        if (!ok && p === actual) { var o2 = ops[0][2] + w > fx0 + vw ? ops[1] : ops[0]; ok = [o2, [o2[2], p.xy[1] - h / 2, o2[2] + w, p.xy[1] + h / 2]]; }
+        if (!ok) { t.setAttribute("visibility", "hidden"); return; }
+        t.removeAttribute("visibility"); t.setAttribute("x", ok[0][0].toFixed(1)); t.setAttribute("text-anchor", ok[0][1]); cajas.push(ok[1]);
+        pts.forEach(function (q) { if (q !== p) { var rr = (q.main ? 6.5 : 5) * s; cajas.push([q.xy[0] - rr, q.xy[1] - rr, q.xy[0] + rr, q.xy[1] + rr]); } });
+      });
+      // Las ciudades ceden su nombre a los fundos
+      var cf = 10.5 * s, rf = 9.5 * s;
+      $$(".mch-zreg", zs).forEach(function (t) { var x = +t.getAttribute("x"), y = +t.getAttribute("y"), w = t.textContent.length * rf * 0.82; cajas.push([x - w / 2, y - rf, x + w / 2, y + rf * 0.3]); });
+      $$(".mch-city", zs).forEach(function (g) {
+        var c = $("circle", g), t = $("text", g), x = +c.getAttribute("cx") + 5 * s, y = +c.getAttribute("cy"), bx = [x, y - cf * 0.65, x + t.textContent.length * cf * 0.58, y + cf * 0.65];
+        t.setAttribute("visibility", cajas.some(function (k) { return bx[0] < k[2] && bx[2] > k[0] && bx[1] < k[3] && bx[3] > k[1]; }) ? "hidden" : "visible");
+      });
+    }
+    function bordeX(x) { return Math.max(-vw * 0.15, Math.min(W + vw * 0.15 - vw, x - vw / 2)); }
+    function vista(x, y) {
+      if (!vw) return;
+      var x0 = bordeX(x), y0 = Math.max(-ZH * 0.1, Math.min(H - ZH * 0.9, y - ZH / 2));
+      zs.setAttribute("viewBox", x0.toFixed(2) + " " + y0.toFixed(2) + " " + vw.toFixed(2) + " " + ZH.toFixed(2));
+      $$(".mch-zlatt", zs).forEach(function (t) { t.setAttribute("x", (x0 + 6 * s).toFixed(2)); });
+      zt.setAttribute("x", (x0 + 6 * s).toFixed(2));
+      win.setAttribute("x", Math.max(0, x0).toFixed(1)); win.setAttribute("width", (Math.min(W, x0 + vw) - Math.max(0, x0)).toFixed(1)); win.setAttribute("y", y0.toFixed(1));
+    }
+    function viajar(p, ya) {
+      var tx = p.xy[0] - 0.4 * pr.k, ty = p.xy[1];
+      fx0 = bordeX(tx);
+      zl.setAttribute("transform", "translate(0 " + ty.toFixed(1) + ")"); zt.setAttribute("y", (ty - 7 * s).toFixed(1));
+      zt.textContent = lat(p);
+      $$(".mch-zlatt", zs).forEach(function (t) { t.setAttribute("visibility", Math.abs(parseFloat(t.textContent) - Math.abs(p.lat)) < 0.4 ? "hidden" : "visible"); });
+      window.cancelAnimationFrame(anim);
+      if (ya || reduced || !vw) { cx = tx; cy = ty; vista(cx, cy); return; }
+      var ax = cx, ay = cy, t0 = performance.now(), dur = Math.min(900, 380 + Math.abs(ty - ay) * 2.2);
+      (function paso(t) {
+        var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        cx = ax + (tx - ax) * e; cy = ay + (ty - ay) * e; vista(cx, cy);
+        if (k < 1) anim = window.requestAnimationFrame(paso);
+      })(t0);
+    }
+
+    // Carrusel de norte a sur
+    function tile(p) {
+      var art, sub;
+      if (p.main) {
+        var d = datosP(p);   // portada dibujada como los demás (pedido del cliente); las fotos van en la ficha
+        art = '<span class="mch-art">' + EMB(p.id) +
+          '<span class="mch-sello"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Plano y recorrido 360°</span><span class="emb-pre">Fundos de</span><span class="emb-n">' + esc(p.corto) + "</span></span>";
+        sub = (d.desde ? "Desde " + clp(d.desde) + " · " : "") + d.n + (d.n === 1 ? " disponible" : " disponibles");
+      } else {
+        art = '<span class="mch-art">' + EMB(p.id) + '<span class="emb-pre">Fundos de</span><span class="emb-n">' + esc(p.corto) + "</span></span>";
+        sub = p.h.lema || "";
+      }
+      return '<li class="mch-tile' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '"><button type="button" class="mch-tile-b" aria-controls="fundos-ficha" aria-label="' + esc(p.nombre + ": ver ficha y fotos") + '">' + art +
+        '<span class="mch-info"><span class="mch-info-k">' + esc(p.reg.nombre) + " · " + lat(p) + "</span><span>" + esc(sub) + '</span><span class="mch-info-cta">Ver ficha y fotos →</span></span></button>' +
+        '<p class="mch-tile-sub"><b>' + esc(p.corto) + "</b>" + esc(p.reg.nombre) + "</p></li>";
+    }
+    row.innerHTML = pts.map(tile).join("");
+
+    function poner(id, ya) {
+      var p = porId(id);
+      if (!p) return;
+      var nuevo = p !== actual;
+      actual = p;
+      var cod = String(p.reg.cod);
+      $$(".mch-reg", box).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-cod") === cod); });
+      $$("[data-p]", box).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-p") === id); });
+      if (!nuevo && !ya) return;
+      viajar(p, ya); rotulos();
+      var txt = p.main ? (function () { var d = datosP(p); return "Plano y recorrido 360°" + (d.desde ? " · desde " + clp(d.desde) : "") + " · " + d.n + (d.n === 1 ? " disponible" : " disponibles"); })() : (p.h.lema || "");
+      act.innerHTML = '<p class="mch-act-k">' + esc(rn(p)) + " · " + lat(p) + '</p><h3 class="mch-act-t">Fundos de ' + esc(p.corto) + '</h3><p class="mch-act-p">' + esc(txt) + "</p>" +
+        '<button class="btn btn-gold mch-act-b" type="button" data-mch-ver aria-controls="fundos-ficha">Ver ficha y fotos<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></button>';
+    }
+
+    // Ficha que se despliega bajo el carrusel: fotos, descripción, datos y acciones
+    var abierta = null;
+    function abrirFicha(id) {
+      var p = porId(id);
+      if (!p) return;
+      poner(id);
+      var x = p.main ? p.p : p.h, gal = x.galeria || [], d = p.main ? datosP(p) : null, html;
+      var fotos = gal.length ? '<figure class="mf-foto"><img src="' + esc(gal[0].src) + '" alt="' + esc(gal[0].alt) + '" decoding="async"><figcaption>' + esc(gal[0].alt) + (gal[0].credito ? " · " + esc(gal[0].credito) : "") + "</figcaption></figure>" +
+          (gal.length > 1 ? '<div class="mf-mini" role="group" aria-label="Fotos de Fundos de ' + esc(p.corto) + '">' + gal.map(function (g, i) { return '<button type="button" data-i="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="' + esc(g.alt) + '"><img src="' + esc(g.mini || g.src) + '" alt="" loading="lazy" decoding="async"></button>'; }).join("") + "</div>" : "")
+        : '<div class="mf-foto is-emb">' + EMB(p.id) + '<p class="mf-pronto">Fotos del proyecto: próximamente</p></div>';
+      var datos = p.main
+        ? '<ul class="mf-datos">' + (d.desde ? "<li><b>" + clp(d.desde) + "</b>desde</li>" : "") + "<li><b>" + d.n + "</b>" + (d.n === 1 ? "disponible" : "disponibles") + "</li><li><b>5.000 m²</b>por parcela</li><li><b>" + clp(RESERVA) + "</b>reserva, incluye escritura</li></ul>"
+        : (x.datos && x.datos.length ? '<ul class="mf-datos is-tags">' + x.datos.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" : "");
+      var dest = p.main ? (x.destacados || (x.caracteristicas || []).map(function (c) { return c.titulo + ": " + c.texto; })) : [];
+      var cerca = p.main && x.cercanias ? '<p class="mf-cerca"><b>Cerca:</b> ' + x.cercanias.map(function (c) { return esc(c[0]) + " " + esc(c[1]); }).join(" · ") + "</p>" : "";
+      var msg = "Hola Fundos, quiero información del proyecto " + p.nombre + (x.zona ? " (" + x.zona + ")" : "") + ".";
+      var acts = p.main
+        ? '<a class="btn btn-gold" href="#plano" data-py-act="plano" data-mf="plano">Ver lotes y precios<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>' +
+          (x.tour ? '<a class="btn btn-ghost" href="#recorrido" data-py-act="tour" data-mf="tour"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrido 360°</a>' : "") +
+          '<a class="btn btn-ghost" href="' + esc(p.href) + '">Conocer el proyecto</a>'
+        : '<a class="btn btn-gold" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información</a>';
+      html = '<button class="mf-x" type="button" data-mf-cerrar aria-label="Cerrar la ficha">×</button><div class="mf-gal">' + fotos + '</div><div class="mf-txt">' +
+        '<p class="mch-act-k">' + esc([x.zona, rn(p)].filter(Boolean).join(" · ")) + " · " + lat(p) + '</p><h3 class="mf-t">Fundos de ' + esc(p.corto) + "</h3>" +
+        (!p.main && x.lema ? '<p class="mf-lema">' + esc(x.lema) + "</p>" : "") +
+        "<p>" + esc((p.main ? x.descripcion || x.resumen : x.descripcion) || "").replace(/^Fundos de [^:]+: /, "") + "</p>" + datos +
+        (dest.length ? '<ul class="mf-lista">' + dest.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" : "") + cerca +
+        '<div class="mf-acts">' + acts + "</div></div>";
+      ficha.innerHTML = html;
+      ficha.setAttribute("aria-label", "Ficha de " + p.nombre);
+      ficha.hidden = false;
+      abierta = id;
+      $$(".mch-tile-b", row).forEach(function (b) { b.setAttribute("aria-expanded", String(b.parentNode.getAttribute("data-p") === id)); });
+      var mini = $(".mf-mini", ficha);
+      if (mini) mini.addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-i]");
+        if (!b) return;
+        var g = gal[+b.getAttribute("data-i")], img = $(".mf-foto img", ficha);
+        img.src = g.src; img.alt = g.alt;
+        $(".mf-foto figcaption", ficha).textContent = g.alt + (g.credito ? " · " + g.credito : "");
+        $$("button", mini).forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+      });
+      $$("[data-mf]", ficha).forEach(function (a) {
+        a.addEventListener("click", function (e) {
+          if (a.getAttribute("data-mf") === "plano") Plan.apply({ id: p.id, soloDisponibles: true });
+          if (a.getAttribute("data-mf") === "tour") { e.preventDefault(); Tour.open(p.id, true); }
+        });
+      });
+      var r = ficha.getBoundingClientRect(), tope = navBottomPx() + 12;
+      if (r.top < tope || r.top > window.innerHeight * 0.55) window.scrollTo({ top: window.scrollY + r.top - tope, behavior: reduced ? "auto" : "smooth" });
+      try { ficha.focus({ preventScroll: true }); } catch (err) { ficha.focus(); }
+    }
+    function cerrarFicha() {
+      if (!abierta) return;
+      var b = $('.mch-tile[data-p="' + abierta + '"] .mch-tile-b', row);
+      ficha.hidden = true; ficha.innerHTML = ""; abierta = null;
+      $$(".mch-tile-b", row).forEach(function (o) { o.setAttribute("aria-expanded", "false"); });
+      if (b) b.focus({ preventScroll: true });
+    }
+    ficha.addEventListener("click", function (e) { if (e.target.closest("[data-mf-cerrar]")) cerrarFicha(); });
+    ficha.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarFicha(); });
+    act.addEventListener("click", function (e) { if (e.target.closest("[data-mch-ver]") && actual) abrirFicha(actual.id); });
+
     function primera() {
       var r = row.getBoundingClientRect(), best = null, dmin = Infinity;
-      $$(".mp-card", row).forEach(function (c) { var d = Math.abs(c.getBoundingClientRect().left - r.left); if (d < dmin) { dmin = d; best = c; } });
+      $$(".mch-tile", row).forEach(function (c) { var d = Math.abs(c.getBoundingClientRect().left - r.left); if (d < dmin) { dmin = d; best = c; } });
       return best;
     }
-    function ir(card, ya) {
-      if (!card) return;
-      row.scrollTo({ left: card.offsetLeft - row.offsetLeft - 4, behavior: reduced || ya ? "auto" : "smooth" });
+    function llevar(id) {
+      poner(id);
+      var c = $('.mch-tile[data-p="' + id + '"]', row);
+      fijo = true; window.clearTimeout(finFijo); finFijo = window.setTimeout(function () { fijo = false; }, 400);
+      if (c) row.scrollTo({ left: c.offsetLeft - row.offsetLeft - 4, behavior: reduced ? "auto" : "smooth" });
     }
-    var tick = 0, fijo = 0;   // tras tocar un punto, su tarjeta queda marcada mientras la fila se desliza
-    row.addEventListener("scroll", function () { if (!tick) tick = window.requestAnimationFrame(function () { tick = 0; flechas(); if (Date.now() < fijo) return; var c = primera(); if (c) on(c.getAttribute("data-p")); }); }, { passive: true });
-    band.addEventListener("click", function (e) {
-      var a = e.target.closest("a.mch-pin, .mch-rot");
-      if (!a) return;
-      e.preventDefault();
-      var id = a.getAttribute("data-p"), card = $('.mp-card[data-p="' + id + '"]', row);
-      if (!card) return;
-      fijo = Date.now() + 1200;
-      on(id);
-      // Si la fila no se ve completa, se baja lo justo para verla (sin esconder el mapa) y la fila se mueve de inmediato
-      var r = row.getBoundingClientRect(), baja = r.bottom > window.innerHeight;
-      ir(card, baja);
-      if (baja) window.scrollTo({ top: window.scrollY + r.bottom - window.innerHeight + 16, behavior: reduced ? "auto" : "smooth" });
-      card.classList.remove("is-flash"); void card.offsetWidth; card.classList.add("is-flash");
+    var tick = 0, fijo = false, finFijo = 0, tactil = window.matchMedia && matchMedia("(hover: none)").matches;
+    row.addEventListener("click", function (e) { var b = e.target.closest(".mch-tile-b"); if (b) abrirFicha(b.parentNode.getAttribute("data-p")); });
+    row.addEventListener("pointerover", function (e) { var t = e.target.closest(".mch-tile"); if (t && e.pointerType === "mouse") poner(t.getAttribute("data-p")); });
+    row.addEventListener("focusin", function (e) { var t = e.target.closest(".mch-tile"); if (t) poner(t.getAttribute("data-p")); });
+    // En celular, el fundo activo es el primero de la fila al deslizar
+    row.addEventListener("scroll", function () {
+      if (tick) return;
+      // mientras la fila se mueve sola hacia el fundo elegido en el mapa, no cambia el fundo activo
+      if (fijo) { window.clearTimeout(finFijo); finFijo = window.setTimeout(function () { fijo = false; }, 200); }
+      tick = window.requestAnimationFrame(function () { tick = 0; flechas(); if (!tactil || fijo) return; var c = primera(); if (c) poner(c.getAttribute("data-p")); });
+    }, { passive: true });
+    zo.addEventListener("click", function (e) { var g = e.target.closest(".mch-pin"); if (g) llevar(g.getAttribute("data-p")); });
+    ch.addEventListener("click", function (e) {   // tocar el Chile completo viaja al fundo más cercano en latitud
+      var svg = $("svg", ch), pt = svg.createSVGPoint(), m = svg.getScreenCTM();
+      if (!m) return;
+      pt.x = e.clientX; pt.y = e.clientY;
+      var q = pt.matrixTransform(m.inverse()), best = pts[0];
+      pts.forEach(function (p) { if (Math.abs(p.xy[1] - q.y) < Math.abs(best.xy[1] - q.y)) best = p; });
+      llevar(best.id);
     });
-    band.addEventListener("pointerover", function (e) { var a = e.target.closest("[data-p]"); if (a) on(a.getAttribute("data-p")); });
-    band.addEventListener("pointerleave", function () { var c = primera(); if (c) on(c.getAttribute("data-p")); });
-    // Flechas: avanzan una tarjeta (desactivadas en los extremos)
+    // Flechas: avanzan una página (desaparecen en los extremos)
     var prev = $('[data-mch-mover="-1"]', box), next = $('[data-mch-mover="1"]', box);
     function flechas() {
       if (!prev) return;
@@ -2249,14 +2423,14 @@
       next.disabled = row.scrollLeft + row.clientWidth > row.scrollWidth - 4;
     }
     $$("[data-mch-mover]", box).forEach(function (b) {
-      b.addEventListener("click", function () {
-        var cs = $$(".mp-card", row), i = cs.indexOf(primera()) + (+b.getAttribute("data-mch-mover"));
-        ir(cs[Math.max(0, Math.min(cs.length - 1, i))]);
-      });
+      b.addEventListener("click", function () { row.scrollBy({ left: (+b.getAttribute("data-mch-mover")) * row.clientWidth * 0.85, behavior: reduced ? "auto" : "smooth" }); });
     });
-    flechas();
-    var c0 = primera(); if (c0) on(c0.getAttribute("data-p"));
-    window.addEventListener("fundos:vista", function () { window.setTimeout(flechas, 50); });
+    function rehacer() { medir(); if (actual) { viajar(actual, true); rotulos(); } flechas(); }
+    window.addEventListener("resize", rehacer);
+    window.addEventListener("fundos:vista", function () { window.setTimeout(rehacer, 50); });
+    box.hidden = false;
+    var ley = $("[data-mch-ley]", sec); if (ley) ley.hidden = false;
+    medir(); poner(pts[0].id, true); flechas();
     return true;
   }
   function initPvLead() {
