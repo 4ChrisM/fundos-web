@@ -210,11 +210,13 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   latitud"): regiones de Chile centro-sur (31,4°S a 44°S) desde `lib/mapa-chile.js`, **generado** por
   `tools/mapa_chile_build.py` (límites de la BCN vía github.com/fcortes/Chile-GeoJSON, simplificados con shapely,
   proyección equirectangular `proy`; incluye la silueta de Chile para el recuadro). Un punto por proyecto (dorado los 3
-  con plano: lat/lon del enlace `mapa` del manifiesto; verde los de `masProyectos`: `lat`/`lon` aproximados) y la región
-  sale de dónde cae el punto. Al lado, cada región con sus proyectos **a la altura de su latitud** (se empujan para no
-  chocar) unida al mapa con una línea (`layout()`, se recalcula al cambiar de tamaño o pestaña). Pasar o enfocar una región
-  la destaca; los proyectos llevan a su apartado (`#proyecto-ID`, `#puerto-varas`) o a su tarjeta (`#mp-ID`, que destella).
-  Crédito "Límites regionales: BCN · ubicación referencial".
+  con plano: lat/lon del enlace `mapa` del manifiesto; verde los de `masProyectos`: `lat`/`lon` aproximados); la región
+  sale de dónde cae el punto. **Mapa fijo a la izquierda (desde 1024 px) y a la derecha las tarjetas de todos los fundos
+  agrupadas por región de norte a sur** (el cliente encontraba vacía la lista de nombres y quería ver todos los fundos):
+  los de plano con `mpCardMain` (foto aérea, sello "Plano y recorrido 360°", desde/disponibles, "Ver lotes y precios") y
+  los demás con su emblema (`mpCard`). La región a la vista se ilumina en el mapa (`alScroll`); tocar un punto o región
+  lleva a su tarjeta o grupo. En celular el mapa va arriba y cada región es una franja que se desliza. Sin
+  `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`). Crédito "Límites regionales: BCN".
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el

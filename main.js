@@ -2108,33 +2108,49 @@
     return function (id) { return '<svg class="emb-dib" viewBox="0 0 240 120" aria-hidden="true" focusable="false">' + (E[id] ? E[id]() : "") + "</svg>"; };
   })();
   var EMB_ORN = '<svg class="emb-o" viewBox="0 0 80 10" aria-hidden="true" focusable="false"><path d="M0 5h30M50 5h30" stroke="#C8A165" stroke-width=".8"/><path d="M34 6c2-3 4-4 6-4M40 6c2-3 4-4 6-4M37 7c1-2 3-3 3-5" fill="none" stroke="#C8A165" stroke-width=".9" stroke-linecap="round"/></svg>';
+  function mpCard(h) {
+    var msg = "Hola Fundos, quiero información del proyecto " + h.nombre + (h.zona ? " (" + h.zona + ")" : "") + ".";
+    var m = /^(Fundos de)\s+(.+)$/.exec(h.nombre || "");
+    return '<li class="mp-card" id="mp-' + esc(h.id) + '">' +
+      '<div class="mp-emb">' + EMB(h.id) + '<p class="emb-pre" aria-hidden="true">Fundos de</p><h3 class="emb-n"><span class="sr-only">Fundos de </span>' + esc(m ? m[2] : h.nombre) + "</h3>" + EMB_ORN +
+      (h.lema ? '<p class="emb-l">' + esc(h.lema) + "</p>" : "") + "</div>" +
+      '<div class="mp-body">' + (h.estado ? '<span class="mp-estado">' + esc(h.estado) + "</span>" : "") +
+      '<p class="mp-k"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>' + esc([h.zona, h.region].filter(Boolean).join(", ")) + "</p>" +
+      (h.descripcion ? "<p>" + esc(h.descripcion) + "</p>" : "") +
+      (h.datos && h.datos.length ? '<ul class="mp-datos">' + h.datos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" : "") +
+      '<a class="mp-cta" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';
+  }
+  // Tarjeta de los proyectos con plano y recorrido 360° (Marchigüe, Malalcahuello, Puerto Varas): foto aérea y "Ver lotes"
+  function mpCardMain(p, href) {
+    var f = p.foto || p.tourFoto || {}, disp = disponibles(p), desde = disp.length ? Math.min.apply(null, disp.map(function (l) { return l.precio || Infinity; })) : 0;
+    return '<li class="mp-card mp-main" id="mp-' + esc(p.id) + '">' +
+      '<div class="mp-foto">' + (f.src ? '<img src="' + esc(f.src) + '" alt="" loading="lazy" decoding="async">' : "") +
+      '<span class="mp-sello"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Plano y recorrido 360°</span>' +
+      '<div class="mp-foto-t"><p class="emb-pre">Fundos de</p><h3 class="emb-n">' + esc(p.nombre) + "</h3></div></div>" +
+      '<div class="mp-body"><p class="mp-k"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>' + esc([p.zona, p.region].filter(Boolean).join(", ")) + "</p>" +
+      (p.resumen ? "<p>" + esc(p.resumen) + "</p>" : "") +
+      '<ul class="mp-datos">' + (isFinite(desde) && desde ? "<li>Desde " + clp(desde) + "</li>" : "") + "<li>" + disp.length + (disp.length === 1 ? " disponible" : " disponibles") + "</li></ul>" +
+      '<a class="mp-cta" href="' + esc(href) + '"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg>Ver lotes y precios<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';
+  }
   function initMasProyectos() {
     var sec = $("[data-mas-proyectos]"), list = sec && $("[data-mp-list]", sec), hs = B.masProyectos || [];
     if (!sec || !list || !hs.length) return;
-    list.innerHTML = hs.map(function (h) {
-      var msg = "Hola Fundos, quiero información del proyecto " + h.nombre + (h.zona ? " (" + h.zona + ")" : "") + ".";
-      var m = /^(Fundos de)\s+(.+)$/.exec(h.nombre || "");
-      return '<li class="mp-card" id="mp-' + esc(h.id) + '">' +
-        '<div class="mp-emb">' + EMB(h.id) + '<p class="emb-pre" aria-hidden="true">Fundos de</p><h3 class="emb-n"><span class="sr-only">Fundos de </span>' + esc(m ? m[2] : h.nombre) + "</h3>" + EMB_ORN +
-        (h.lema ? '<p class="emb-l">' + esc(h.lema) + "</p>" : "") + "</div>" +
-        '<div class="mp-body">' + (h.estado ? '<span class="mp-estado">' + esc(h.estado) + "</span>" : "") +
-        '<p class="mp-k"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>' + esc([h.zona, h.region].filter(Boolean).join(", ")) + "</p>" +
-        (h.descripcion ? "<p>" + esc(h.descripcion) + "</p>" : "") +
-        (h.datos && h.datos.length ? '<ul class="mp-datos">' + h.datos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" : "") +
-        '<a class="mp-cta" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';
-    }).join("");
     sec.hidden = false;
     $$("[data-mp-link]").forEach(function (a) { a.hidden = false; });
-    safe(function () { initMapaChile(sec, hs); }, "initMapaChile");
+    var conMapa = false;
+    safe(function () { conMapa = initMapaChile(sec, hs); }, "initMapaChile");
+    if (!conMapa) list.innerHTML = hs.map(mpCard).join("");
+    list.hidden = conMapa;
   }
-  /* Mapa de Chile por regiones ("jugar con la latitud", pedido del cliente): las regiones de lib/mapa-chile.js (BCN),
-     un punto por proyecto (dorado los que tienen plano y 360°, verde los demás) y, al lado, cada región con sus proyectos
-     a la altura de su latitud, unida al mapa con una línea. Pasar o tocar una región la destaca en el mapa. */
+  /* Mapa de Chile por regiones ("jugar con la latitud", pedido del cliente): a la izquierda, fijo al bajar, las regiones
+     de lib/mapa-chile.js (BCN) con un punto por proyecto (dorado los que tienen plano y 360°, verde los demás); a la
+     derecha, las tarjetas de todos los fundos agrupadas por región de norte a sur. La región a la vista se ilumina en el
+     mapa; tocar un punto lleva a su tarjeta. */
   function initMapaChile(sec, hs) {
     var M = B.mapaChile, box = $("[data-mch]", sec);
-    if (!M || !box) return;
-    var mapEl = $("[data-mch-map]", box), listEl = $("[data-mch-list]", box), lin = $("[data-mch-lineas]", box);
-    var pr = M.proy, NS = "http://www.w3.org/2000/svg";
+    if (!M || !box) return false;
+    var mapEl = $("[data-mch-map]", box), listEl = $("[data-mch-list]", box);
+    var pr = M.proy;
     function xy(lat, lon) { return [(lon - pr.lon0) * pr.c * pr.k, (-lat - pr.lat0) * pr.k]; }
     function dentro(p, ring) {
       var c = false;
@@ -2148,20 +2164,19 @@
       var best = null, dmin = Infinity;
       M.regiones.forEach(function (r) {
         r.anillos.forEach(function (ring) {
-          if (dentro(p, ring)) { best = r; dmin = -1; return; }
           if (dmin < 0) return;
+          if (dentro(p, ring)) { best = r; dmin = -1; return; }
           ring.forEach(function (q) { var d = Math.hypot(q[0] - p[0], q[1] - p[1]); if (d < dmin) { dmin = d; best = r; } });   // en la costa, la más cercana
         });
       });
       return best;
     }
-    // Proyectos: los principales (con plano) y los demás, con su punto y región
     var pts = [];
     proyectos.forEach(function (p) {
       var m = /query=(-?[\d.]+),(-?[\d.]+)/.exec(p.mapa || "");
-      if (m) pts.push({ id: p.id, nombre: "Fundos de " + p.nombre, lat: +m[1], lon: +m[2], main: true, href: p.id === DESTACADO ? "#puerto-varas" : "#proyecto-" + p.id });
+      if (m && p.lotes && p.lotes.length) pts.push({ id: p.id, nombre: "Fundos de " + p.nombre, lat: +m[1], lon: +m[2], main: true, p: p, href: p.id === DESTACADO ? "#puerto-varas" : "#proyecto-" + p.id });
     });
-    hs.forEach(function (h) { if (h.lat && h.lon) pts.push({ id: h.id, nombre: h.nombre, lat: h.lat, lon: h.lon, href: "#mp-" + h.id }); });
+    hs.forEach(function (h) { if (h.lat && h.lon) pts.push({ id: h.id, nombre: h.nombre, lat: h.lat, lon: h.lon, h: h }); });
     pts.forEach(function (p) { p.xy = xy(p.lat, p.lon); p.reg = region(p.xy); });
     var regs = [];
     pts.forEach(function (p) {
@@ -2170,15 +2185,10 @@
       if (!g) regs.push(g = { r: p.reg, ps: [] });
       g.ps.push(p);
     });
-    regs.forEach(function (g) {
-      g.ps.sort(function (a, b) { return b.lat - a.lat; });
-      g.y = g.ps.reduce(function (a, p) { return a + p.xy[1]; }, 0) / g.ps.length;
-      g.x = Math.max.apply(null, g.ps.map(function (p) { return p.xy[0]; }));
-    });
-    regs.sort(function (a, b) { return a.y - b.y; });
+    regs.forEach(function (g) { g.ps.sort(function (a, b) { return b.lat - a.lat; }); g.lat = g.ps.reduce(function (a, p) { return a + p.lat; }, 0) / g.ps.length; });
+    regs.sort(function (a, b) { return b.lat - a.lat; });
     var cods = regs.map(function (g) { return g.r.cod; });
 
-    // Mapa
     var vb = M.viewBox, h = [];
     h.push('<svg class="mch-svg" viewBox="' + vb.join(" ") + '" role="img" aria-label="Mapa de Chile con los proyectos de Fundos por región">');
     for (var la = Math.ceil(pr.lat0); la <= Math.floor(pr.lat0 + vb[3] / pr.k); la++) {
@@ -2188,75 +2198,63 @@
     }
     M.regiones.forEach(function (r) {
       var d = r.anillos.map(function (ring) { return "M" + ring.map(function (q) { return q[0] + " " + q[1]; }).join("L") + "Z"; }).join("");
-      h.push('<path class="mch-reg' + (cods.indexOf(r.cod) >= 0 ? " is-con" : "") + '" data-cod="' + r.cod + '" d="' + d + '"><title>' + esc(r.nombre) + "</title></path>");
+      var con = cods.indexOf(r.cod) >= 0;
+      h.push('<path class="mch-reg' + (con ? " is-con" : "") + '" data-cod="' + r.cod + '" d="' + d + '"><title>' + esc(r.nombre) + "</title></path>");
+    });
+    regs.forEach(function (g) {   // nombre de la región junto al mapa
+      var x = Math.max.apply(null, g.ps.map(function (p) { return p.xy[0]; })), y = g.ps.reduce(function (a, p) { return a + p.xy[1]; }, 0) / g.ps.length;
+      h.push('<text class="mch-reg-n" data-cod="' + g.r.cod + '" x="' + (x + 14).toFixed(1) + '" y="' + (y + 4).toFixed(1) + '">' + esc(g.r.nombre) + "</text>");
     });
     pts.forEach(function (p) {
       if (!p.reg) return;
-      h.push('<a href="' + esc(p.href) + '" class="mch-pin' + (p.main ? " is-main" : "") + '" data-cod="' + p.reg.cod + '" data-p="' + esc(p.id) + '" transform="translate(' + p.xy[0].toFixed(1) + " " + p.xy[1].toFixed(1) + ')">' +
+      h.push('<a href="#mp-' + esc(p.id) + '" class="mch-pin' + (p.main ? " is-main" : "") + '" data-cod="' + p.reg.cod + '" transform="translate(' + p.xy[0].toFixed(1) + " " + p.xy[1].toFixed(1) + ')">' +
         "<title>" + esc(p.nombre) + '</title><circle r="' + (p.main ? 7.5 : 5.5) + '"/></a>');
     });
-    // Recuadro: Chile completo con la zona del mapa
     var S = M.silueta, k0 = S.recorte;
     h.push('<g class="mch-sil" transform="translate(' + (vb[2] * 0.06) + " " + (vb[3] * 0.62) + ') scale(1.05)"><path d="' + S.anillos.map(function (ring) { return "M" + ring.map(function (q) { return q[0] + " " + q[1]; }).join("L") + "Z"; }).join("") +
       '"/><rect x="' + k0[0][0] + '" y="' + k0[0][1] + '" width="' + (k0[1][0] - k0[0][0]) + '" height="' + (k0[1][1] - k0[0][1]) + '"/></g>');
     h.push("</svg>");
     mapEl.innerHTML = h.join("");
 
-    // Lista por región (de norte a sur)
     listEl.innerHTML = regs.map(function (g) {
-      return '<li class="mch-row" data-cod="' + g.r.cod + '"><p class="mch-reg-t">' + esc(g.r.nombre) + '</p><ul class="mch-ps">' + g.ps.map(function (p) {
-        return '<li><a class="mch-p' + (p.main ? " is-main" : "") + '" href="' + esc(p.href) + '" data-p="' + esc(p.id) + '"><i aria-hidden="true"></i>' + esc(p.nombre.replace(/^Fundos de /, "")) + "</a></li>";
-      }).join("") + "</ul></li>";
+      return '<section class="mch-g" data-cod="' + g.r.cod + '" aria-label="Región de ' + esc(g.r.nombre) + '"><header class="mch-g-h"><p class="mch-g-t">' + esc(g.r.nombre) + '</p><span class="mch-g-lat">' + Math.round(Math.abs(g.lat)) + "°S</span>" +
+        '<span class="mch-g-n">' + g.ps.length + (g.ps.length === 1 ? " proyecto" : " proyectos") + "</span></header>" +
+        '<ul class="mch-cards">' + g.ps.map(function (p) { return p.main ? mpCardMain(p.p, p.href) : mpCard(p.h); }).join("") + "</ul></section>";
     }).join("");
     box.hidden = false;
 
-    // Cada región a la altura de su latitud (sin choques) y su línea al mapa
-    var rows = $$(".mch-row", listEl);
-    function layout() {
-      var svg = $("svg", mapEl);
-      if (!svg) return;
-      var bb = box.getBoundingClientRect(), mb = svg.getBoundingClientRect(), lb = listEl.getBoundingClientRect();
-      var esc2 = mb.height / vb[3], top0 = mb.top - lb.top, gap = 10, prev = -Infinity, ys = [];
-      rows.forEach(function (row, i) {
-        var hgt = row.offsetHeight, want = top0 + regs[i].y * esc2 - hgt * 0.35;
-        var y = Math.max(want, prev + gap);
-        ys.push(y); prev = y + hgt;
-      });
-      listEl.style.height = Math.max(mb.height, prev) + "px";
-      rows.forEach(function (row, i) { row.style.top = Math.max(0, ys[i]) + "px"; });
-      // líneas
-      var ox = bb.left, oy = bb.top, d = "";
-      lin.setAttribute("viewBox", "0 0 " + bb.width + " " + bb.height);
-      rows.forEach(function (row, i) {
-        var g = regs[i], px = mb.left - ox + g.x * esc2 + 8, py = mb.top - oy + g.y * esc2;
-        var rb = $(".mch-reg-t", row).getBoundingClientRect(), tx = rb.left - ox - 8, ty = rb.top - oy + rb.height / 2, mx = mb.right - ox + 6;
-        d += '<path class="mch-ln" data-cod="' + g.r.cod + '" d="M' + px.toFixed(1) + " " + py.toFixed(1) + "H" + mx.toFixed(1) + "L" + (tx - 10).toFixed(1) + " " + ty.toFixed(1) + "H" + tx.toFixed(1) + '"/>';
-      });
-      lin.innerHTML = d;
-    }
-    // Destacar región: lista, mapa y líneas
+    // La región a la vista (o bajo el mouse) se ilumina en el mapa
+    var activo = null;
     function on(cod) {
-      $$("[data-cod]", box).forEach(function (n) { n.classList.toggle("is-on", cod != null && n.getAttribute("data-cod") === String(cod)); });
+      cod = cod == null ? null : String(cod);
+      if (cod === activo) return;
+      activo = cod;
+      $$("[data-cod]", mapEl).forEach(function (n) { n.classList.toggle("is-on", cod != null && n.getAttribute("data-cod") === cod); });
+      $$(".mch-g", listEl).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-cod") === cod); });
       box.classList.toggle("has-on", cod != null);
     }
-    box.addEventListener("pointerover", function (e) { var n = e.target.closest("[data-cod]"); on(n ? n.getAttribute("data-cod") : null); });
-    box.addEventListener("pointerleave", function () { on(null); });
-    box.addEventListener("focusin", function (e) { var n = e.target.closest("[data-cod]"); on(n ? n.getAttribute("data-cod") : null); });
-    box.addEventListener("focusout", function () { on(null); });
-    // Ir a un proyecto de la lista: destaca su tarjeta
-    box.addEventListener("click", function (e) {
-      var a = e.target.closest("a[href^='#mp-']");
-      if (!a) return;
-      var card = document.getElementById(a.getAttribute("href").slice(1));
-      if (!card) return;
+    var grupos = $$(".mch-g", listEl);
+    function alScroll() {
+      var mid = window.innerHeight * 0.42, best = null, dmin = Infinity;
+      grupos.forEach(function (g) { var r = g.getBoundingClientRect(); if (r.bottom < 0 || r.top > window.innerHeight) return; var d = r.top <= mid && r.bottom >= mid ? 0 : Math.min(Math.abs(r.top - mid), Math.abs(r.bottom - mid)); if (d < dmin) { dmin = d; best = g; } });
+      on(best ? best.getAttribute("data-cod") : null);
+    }
+    var tick = 0;
+    window.addEventListener("scroll", function () { if (!tick) tick = window.requestAnimationFrame(function () { tick = 0; if (!box.offsetParent) return; alScroll(); }); }, { passive: true });
+    mapEl.addEventListener("pointerover", function (e) { var n = e.target.closest("[data-cod]"); if (n) on(n.getAttribute("data-cod")); });
+    mapEl.addEventListener("pointerleave", alScroll);
+    // Tocar un punto o una región del mapa lleva a su tarjeta (o al primer proyecto de la región)
+    mapEl.addEventListener("click", function (e) {
+      var a = e.target.closest("a.mch-pin"), reg = e.target.closest(".mch-reg.is-con");
+      var t = a ? document.getElementById(a.getAttribute("href").slice(1)) : reg ? $('.mch-g[data-cod="' + reg.getAttribute("data-cod") + '"]', listEl) : null;
+      if (!t) return;
       e.preventDefault();
-      card.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center", inline: "center" });
-      card.classList.remove("is-flash"); void card.offsetWidth; card.classList.add("is-flash");
+      var nb = $(".nav"), top = nb ? nb.getBoundingClientRect().bottom : 0;
+      window.scrollTo({ top: window.scrollY + t.getBoundingClientRect().top - top - 16, behavior: reduced ? "auto" : "smooth" });
+      if (a) { t.classList.remove("is-flash"); void t.offsetWidth; t.classList.add("is-flash"); }
     });
-    layout();
-    window.addEventListener("resize", layout);
-    window.addEventListener("fundos:vista", function () { window.setTimeout(layout, 30); });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+    alScroll();
+    return true;
   }
   function initPvLead() {
     var form = $("[data-pv-lead]");
