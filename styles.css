@@ -2839,7 +2839,21 @@ html.pm .mas-proyectos .section-head .lead { font-size: .94rem; max-width: 62ch;
   html.pm .mas-proyectos .section-head .kicker, html.pm .mas-proyectos .section-head h2 { grid-column: 1; }
   html.pm .mas-proyectos .section-head .lead { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
 }
-@media (min-width: 980px) { html.pm-v .mch-mapas { height: clamp(560px, calc(100dvh - 250px), 820px); } }
+/* Vertical: galería de norte a sur por región junto al mapa fijo (sin carrusel ni resumen) */
+.mch.is-galeria { align-items: start; }
+.mch.is-galeria .mch-act, .mch.is-galeria .mch-flecha, .mch.is-galeria .mch-auto { display: none; }
+.mch.is-galeria .mch-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin: 0; padding: 4px; overflow: visible; scroll-snap-type: none; }
+.mch.is-galeria .mch-tile { flex: none; max-width: none; }
+.mch.is-galeria .mch-tile-sub { display: block; margin: .5rem .2rem 0; }
+.mch-grupo { grid-column: 1 / -1; margin: .8rem 0 -.2rem; padding-top: .7rem; border-top: 1px solid rgba(122, 93, 51, .25); font-size: .72rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-ink); }
+.mch-grupo:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+@media (min-width: 980px) {
+  .mch.is-galeria { grid-template-columns: 400px minmax(0, 1fr); }
+  .mch.is-galeria .mch-mapas { position: sticky; top: calc(var(--nav-h) + 16px); height: calc(100dvh - var(--nav-h) - 48px); max-height: 820px; }
+}
+@media (max-width: 979px) {
+  .mch.is-galeria .mch-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+}
 /* Horizontal: Chile completo acostado en una franja chica y el tramo con los fundos a todo el ancho */
 .mch.is-horiz { grid-template-columns: minmax(0, 1fr); align-items: start; gap: 10px; }
 .mch.is-horiz .mch-mapas { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; height: auto; }
