@@ -1980,43 +1980,145 @@
       });
     });
   }
-  /* Más proyectos ("Fundos de …", sin plano ni recorrido): tarjeta verde con el paisaje en línea (estilo de los logos, sol dorado) teñido con el color del
-     tipo de paisaje y una regla de latitud de Chile que marca dónde está; sin precios, plano ni recorrido. Sin datos, no se ve */
-  var MP_COLOR = { mar: "#2D5A62", lago: "#36596A", valle: "#7E6A3E", cordillera: "#46584A", rio: "#30584A", bosque: "#2C4733" };
-  var MP_TIPO = { mar: "Costa", lago: "Lago", valle: "Valle", cordillera: "Cordillera", rio: "Río", bosque: "Bosque" };
-  function paisajeSvg(tipo) {
-    var c = "#F2EDE3", g = "#C8A165";
-    var sol = '<path d="M112 92a48 48 0 0 1 96 0" fill="none" stroke="' + g + '" stroke-width="1.6"/>';
-    var L = function (d, w) { return '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="' + (w || 1.6) + '" stroke-linecap="round" stroke-linejoin="round"/>'; };
-    var pino = function (x, y, h) { return L("M" + x + " " + y + "v-" + h + "M" + (x - h * 0.28) + " " + (y - h * 0.3) + "L" + x + " " + (y - h * 1.05) + "L" + (x + h * 0.28) + " " + (y - h * 0.3) + "Z", 1.3); };
-    var cipres = function (x, y, h) { return '<path d="M' + x + " " + y + "c-" + h * 0.14 + " -" + h * 0.35 + " -" + h * 0.12 + " -" + h * 0.75 + " 0 -" + h + "c" + h * 0.12 + " " + h * 0.25 + " " + h * 0.14 + " " + h * 0.65 + " 0 " + h + 'Z" fill="' + c + '"/>'; };
-    var d = {
-      mar: sol + L("M30 104h260") + L("M60 116c10-4 20-4 30 0s20 4 30 0", 1.2) + L("M150 124c10-4 20-4 30 0s20 4 30 0", 1.2) + L("M200 112c10-4 20-4 30 0", 1.2) + L("M30 104c18-2 30-14 40-30 8 6 14 18 26 30") + pino(54, 86, 18) + L("M246 70l6-4 6 4M262 64l5-3 5 3", 1.1),
-      lago: sol + L("M40 96l40-28 22 14 30-22 36 26 26-14 46 24") + L("M30 104h260") + L("M70 114h60M160 114h90", 1.1) + L("M212 100l10-24v24zM208 100h20l-4 5h-12z", 1.2) + pino(52, 102, 22) + pino(66, 102, 16),
-      valle: sol + L("M20 108c40-18 80-22 140-10s100 4 140-12") + L("M20 124c50-14 110-16 170-6s80 0 110-8", 1.2) + L("M60 116c40-6 80-6 120 0", 1) + cipres(96, 100, 30) + cipres(108, 100, 24) + cipres(118, 100, 28) + L("M200 96h18v-10h-18zM196 86l13-8 13 8", 1.2),
-      cordillera: sol + L("M30 104l50-46 18 16 30-36 36 40 22-18 54 44") + L("M116 48l12 12 10-8", 1.1) + L("M30 104h260") + L("M230 104v-30M218 80c4-6 20-6 24 0M214 90c6-6 26-6 32 0M222 72c3-4 13-4 16 0", 1.3) + L("M80 116c30 4 70 10 120 4", 1.1),
-      rio: sol + L("M30 96l40-20 26 12 34-24 40 30 30-14 60 16") + L("M150 132c-30-8 30-14 10-24s20-10 6-16", 1.4) + L("M164 132c-28-8 30-14 12-24s18-10 6-16", 1.1) + L("M30 104h110M196 104h94") + pino(70, 102, 20) + pino(84, 102, 14) + pino(240, 102, 18),
-      bosque: sol + L("M30 104h260") + pino(80, 104, 40) + pino(104, 104, 30) + pino(126, 104, 46) + pino(196, 104, 34) + pino(220, 104, 44) + pino(244, 104, 26) + L("M150 104c4-14 18-18 22-8 6-10 22-6 20 8", 1.3)
+  /* Más proyectos ("Fundos de …", sin plano ni recorrido): cada tarjeta parte con un emblema en el estilo de los logos de
+     los proyectos (pedido del cliente): escena en línea propia con arco de sol dorado, "FUNDOS DE", el nombre en mayúsculas
+     espaciadas, adorno y lema. Sin datos en el manifiesto (masProyectos), la sección no se ve */
+  var EMB = (function () {
+  var T = "#2E3A2C", G = "#C8A165";
+    function L(d, w, c) { return '<path d="' + d + '" fill="none" stroke="' + (c || T) + '" stroke-width="' + (w || 1.3) + '" stroke-linecap="round" stroke-linejoin="round"/>'; }
+    function F(d, c) { return '<path d="' + d + '" fill="' + (c || T) + '"/>'; }
+    function sol(cx, cy, r) { return L("M" + (cx - r) + " " + cy + "a" + r + " " + r + " 0 0 1 " + 2 * r + " 0", 1.4, G); }
+    // Conífera de capas (como en los logos)
+    function pino(x, y, h) {
+      var w = h * 0.36, s = L("M" + x + " " + y + "v-" + (h * 0.2), 1.1);
+      for (var k = 0; k < 4; k++) {
+        var yb = y - h * 0.18 - k * h * 0.2, ww = w * (1 - k * 0.2);
+        s += F("M" + (x - ww) + " " + yb + "L" + x + " " + (yb - h * 0.32) + "L" + (x + ww) + " " + yb + "Z");
+      }
+      return s;
+    }
+    function cipres(x, y, h) { var w = h * 0.12; return F("M" + x + " " + (y - h) + "C" + (x + w * 1.6) + " " + (y - h * 0.6) + " " + (x + w * 1.4) + " " + (y - h * 0.15) + " " + x + " " + y + "C" + (x - w * 1.4) + " " + (y - h * 0.15) + " " + (x - w * 1.6) + " " + (y - h * 0.6) + " " + x + " " + (y - h) + "Z"); }
+    function copa(x, y, h) {   // árbol de copa redonda (hojas en racimos)
+      var r = h * 0.22, s = L("M" + x + " " + y + "V" + (y - h * 0.55) + "M" + x + " " + (y - h * 0.4) + "l-" + r * 0.6 + " -" + r * 0.6 + "M" + x + " " + (y - h * 0.45) + "l" + r * 0.7 + " -" + r * 0.5, 1.4);
+      [[0, -0.78, 1], [-0.75, -0.62, 0.8], [0.75, -0.62, 0.85], [-0.35, -0.95, 0.75], [0.4, -0.95, 0.75]].forEach(function (c) { s += '<circle cx="' + (x + c[0] * r * 1.2) + '" cy="' + (y + c[1] * h) + '" r="' + r * c[2] * 0.62 + '" fill="' + T + '"/>'; });
+      return s;
+    }
+    function ave(x, y, s) { s = s || 1; return L("M" + x + " " + y + "q" + 2.5 * s + " -2.5 " + 5 * s + " 0q" + 2.5 * s + " -2.5 " + 5 * s + " 0", 0.9); }
+    function olas(x, y, w, n) { var d = ""; for (var k = 0; k < (n || 3); k++) d += "M" + (x + k * 6) + " " + (y + k * 5) + "q" + w / 4 + " -3 " + w / 2 + " 0t" + w / 2 + " 0"; return L(d, 1); }
+    function juncos(x, y) { return L("M" + x + " " + y + "q-1 -8 -4 -13M" + (x + 2) + " " + y + "q0 -9 2 -15M" + (x + 4) + " " + y + "q2 -7 6 -11M" + (x - 2) + " " + y + "q-3 -5 -8 -7", 1); }
+    // Fronda de helecho: tallo curvo con hojitas a ambos lados (dir: −1 izquierda, 1 derecha, magnitud = apertura)
+    function helecho(x, y, dir) {
+      var ex = x + dir * 26, ey = y - 30 + Math.abs(dir) * 6, cx = x + dir * 4, cy = y - 30, d = "M" + x + " " + y + "Q" + cx + " " + cy + " " + ex + " " + ey;
+      var hj = "";
+      for (var k = 1; k < 9; k++) {
+        var t = k / 9, px = (1 - t) * (1 - t) * x + 2 * (1 - t) * t * cx + t * t * ex, py = (1 - t) * (1 - t) * y + 2 * (1 - t) * t * cy + t * t * ey;
+        var tx = 2 * (1 - t) * (cx - x) + 2 * t * (ex - cx), ty = 2 * (1 - t) * (cy - y) + 2 * t * (ey - cy), l = Math.hypot(tx, ty), nx = -ty / l, ny = tx / l, len = 6 * (1 - t * 0.7);
+        hj += "M" + px.toFixed(1) + " " + py.toFixed(1) + "l" + (nx * len + tx / l * 2).toFixed(1) + " " + (ny * len + ty / l * 2).toFixed(1);
+        hj += "M" + px.toFixed(1) + " " + py.toFixed(1) + "l" + (-nx * len + tx / l * 2).toFixed(1) + " " + (-ny * len + ty / l * 2).toFixed(1);
+      }
+      return L(d, 1.2) + L(hj, 1.1);
+    }
+    function suelo(y) { return L("M30 " + y + "c40 -3 70 -4 90 -4s50 1 90 4", 1.2); }
+    var E = {
+      "santo-domingo": function () {
+        var s = sol(120, 92, 46);
+        s += L("M84 100V60h18v40M138 100V60h18v40", 1.3);   // pilares de piedra
+        for (var y = 66; y < 100; y += 7) s += L("M84 " + y + "h18M138 " + y + "h18", 0.7);
+        s += L("M92 60v7M146 60v7M88 73v7M150 73v7M94 87v7M144 87v7", 0.7);
+        s += F("M104 66h32v32h-32z", "#2E3A2C") ;
+        for (var x = 108; x < 136; x += 4.5) s += L("M" + x + " 68v28", 0.9, "#F6F2EA");
+        s += L("M104 82h32", 0.9, "#F6F2EA");
+        s += L("M152 98c2-14 8-26 20-36", 1.1);   // rama de olivo junto al pilar
+        [[156, 86, -60], [160, 78, 30], [162, 74, -50], [166, 68, 20], [169, 64, -40], [172, 61, 10], [154, 92, 40]].forEach(function (h) { s += '<ellipse cx="' + h[0] + '" cy="' + h[1] + '" rx="4.2" ry="1.6" transform="rotate(' + h[2] + " " + h[0] + " " + h[1] + ')" fill="' + T + '"/>'; });
+        return s + L("M60 100h120", 1.2);
+      },
+      "lago-rapel": function () {
+        var s = sol(122, 86, 40);
+        s += L("M40 88c22-4 40-14 58-10s30 8 50 2 40-4 54 2", 1.1);
+        s += L("M36 92h168", 1.2) + L("M60 98h40M120 98h60M84 104h70", 0.9);
+        s += pino(56, 92, 30) + pino(66, 92, 20);
+        s += F("M168 88l9-24v24z") + L("M164 88h20l-3 4h-14z", 1) + L("M177 62v28", 0.9);
+        return s + ave(150, 52) + ave(162, 46, 0.8);
+      },
+      "bucalemu": function () {
+        var s = sol(126, 86, 40);
+        s += L("M30 92c10-1 18-6 24-16 4 4 10 10 18 16", 1.2) + L("M30 92h180", 1.2);
+        s += olas(70, 99, 40, 3) + olas(140, 98, 36, 2);
+        s += copa(160, 92, 46) + copa(182, 92, 34);
+        return s + ave(96, 50) + ave(106, 44, 0.8);
+      },
+      "talca": function () {
+        var s = sol(120, 84, 38);
+        s += L("M40 86l30-16 18 8 26-18 30 20 20-10 36 16", 1.1);
+        s += L("M30 96h180", 1.2);
+        s += L("M112 96V66h12v30M114 66l4-10 4 10M116 56v-6M114 52h4", 1.2);   // torre de iglesia
+        s += L("M112 76h12M115 70h6v4h-6z", 0.8);
+        [[70, 96, 10], [82, 96, 14], [96, 96, 8], [134, 96, 12], [148, 96, 9], [160, 96, 13]].forEach(function (b) { s += L("M" + b[0] + " " + b[1] + "v-" + b[2] + "h9v" + b[2], 1); });
+        s += L("M60 96v-12M56 86c2-4 6-4 8 0M54 90c3-5 9-5 12 0", 1.1);   // palmera
+        return s + L("M150 104c10-3 20-3 30 0M176 104c6-4 14-4 20 0", 0.9);
+      },
+      "retiro": function () {
+        var s = sol(126, 76, 40);
+        s += L("M40 84c40-4 100-8 170-2", 1.2);
+        for (var k = 0; k < 5; k++) s += L("M" + (112 + k * 8) + " " + (86 + k * 4) + "c25 -2 55 -3 92 -1", 0.9);
+        s += L("M76 84c-14 4 6 10-8 16s-30 6-24 12", 1.1) + L("M86 84c-14 4 6 10-8 16s-30 6-24 12", 0.9);
+        s += cipres(74, 80, 30) + cipres(82, 80, 34) + cipres(90, 80, 28);
+        s += F("M160 64h10v6h-10zM164 60h5v4h-5z") + '<circle cx="161" cy="72" r="3" fill="' + T + '"/><circle cx="170" cy="72" r="2" fill="' + T + '"/>';
+        return s + juncos(52, 110);
+      },
+      "san-fabian": function () {
+        var s = sol(118, 84, 40);
+        s += L("M40 88l34-26 18 12 24-20 30 24 22-12 32 22", 1.1);
+        s += L("M100 54l8 6 6-4", 0.9);
+        s += L("M30 92c50-6 120-6 180 0", 1.2) + L("M60 100c40-4 80-4 120 0", 0.9);
+        return s + copa(160, 90, 44) + pino(64, 90, 24);
+      },
+      "cobquecura": function () {
+        var s = sol(126, 84, 40);
+        s += L("M40 86c14-2 20-10 30-18 6 8 14 14 26 18", 1.2) + pino(52, 82, 16) + pino(60, 82, 12);
+        s += L("M30 90h180", 1.2) + olas(96, 98, 44, 3);
+        s += L("M168 90c2-6 6-8 10-8s8 4 10 8", 1) + L("M184 92c1-4 4-5 6-5s5 3 6 5", 0.9);   // roquerío
+        return s + ave(150, 50) + ave(162, 44, 0.8) + ave(140, 58, 0.7);
+      },
+      "rio-liucura": function () {
+        var s = sol(118, 80, 42);
+        s += L("M40 86l30-24 16 10 24-22 34 30 20-12 36 20", 1.1);
+        s += L("M30 88c40-3 80-3 180 0", 1.2);
+        s += L("M100 112c-10-6 30-10 14-18s24-6 16-10", 1.1) + L("M112 112c-8-6 30-10 14-18s22-6 14-10", 0.9);
+        s += cipres(156, 86, 40) + cipres(166, 86, 46) + cipres(176, 86, 38);
+        return s + ave(70, 42) ;
+      },
+      "rio-negro": function () {
+        var s = sol(122, 80, 40);
+        s += L("M60 82l30-20 22 12 26-16 40 24", 1.1);
+        s += L("M30 88h180", 1.2) + L("M60 96h50M130 98h60", 0.9);
+        s += pino(48, 86, 26) + pino(58, 86, 18);
+        s += F("M140 96h28l-4 5h-20z") + '<circle cx="154" cy="82" r="2.6" fill="' + T + '"/>' + F("M151 86h6v10h-6z");
+        s += L("M157 87l14-18q14 4 20 22", 0.8);   // caña y sedal
+        return s + juncos(76, 104) + juncos(84, 104);
+      },
+      "puerto-montt": function () {
+        var s = L("M74 84a46 46 0 0 1 92 0", 1.3, T);
+        s += L("M46 96h60M140 96h56", 1.1);
+        s += pino(122, 96, 60);
+        s += helecho(108, 96, -1) + helecho(136, 96, 1) + helecho(114, 96, -0.55) + helecho(130, 96, 0.55);
+        return s;
+      }
     };
-    return '<svg class="mp-dib" viewBox="0 0 320 140" aria-hidden="true" focusable="false">' + (d[tipo] || d.valle) + "</svg>";
-  }
+    return function (id) { return '<svg class="emb-dib" viewBox="0 0 240 120" aria-hidden="true" focusable="false">' + (E[id] ? E[id]() : "") + "</svg>"; };
+  })();
+  var EMB_ORN = '<svg class="emb-o" viewBox="0 0 80 10" aria-hidden="true" focusable="false"><path d="M0 5h30M50 5h30" stroke="#C8A165" stroke-width=".8"/><path d="M34 6c2-3 4-4 6-4M40 6c2-3 4-4 6-4M37 7c1-2 3-3 3-5" fill="none" stroke="#C8A165" stroke-width=".9" stroke-linecap="round"/></svg>';
   function initMasProyectos() {
     var sec = $("[data-mas-proyectos]"), list = sec && $("[data-mp-list]", sec), hs = B.masProyectos || [];
     if (!sec || !list || !hs.length) return;
-    var lats = hs.map(function (h) { return Math.abs(h.lat || 0); }).filter(Boolean);
-    var la = Math.floor(Math.min.apply(null, lats.concat([33]))), lb = Math.ceil(Math.max.apply(null, lats.concat([42])));
-    var pos = function (l) { return ((Math.abs(l) - la) / (lb - la) * 100).toFixed(1) + "%"; };
-    var marcas = lats.map(function (l) { return '<i style="top:' + pos(l) + '"></i>'; }).join("");
     list.innerHTML = hs.map(function (h) {
       var msg = "Hola Fundos, quiero información del proyecto " + h.nombre + (h.zona ? " (" + h.zona + ")" : "") + ".";
-      var m = /^(Fundos de)\s+(.+)$/.exec(h.nombre || ""), tipo = h.paisaje || "valle";
-      var lat = h.lat ? '<span class="mp-lat" aria-label="Latitud ' + Math.round(Math.abs(h.lat)) + ' grados sur"><span class="mp-regla" aria-hidden="true">' + marcas +
-        '<b style="top:' + pos(h.lat) + '"></b></span><small>' + Math.round(Math.abs(h.lat)) + "°S</small></span>" : "";
-      return '<li class="mp-card" style="--pc:' + (MP_COLOR[tipo] || MP_COLOR.valle) + '">' +
-        '<div class="mp-art"><span class="mp-tipo">' + esc(MP_TIPO[tipo] || "") + "</span>" + paisajeSvg(tipo) + lat + "</div>" +
+      var m = /^(Fundos de)\s+(.+)$/.exec(h.nombre || "");
+      return '<li class="mp-card">' +
+        '<div class="mp-emb">' + EMB(h.id) + '<p class="emb-pre" aria-hidden="true">Fundos de</p><h3 class="emb-n"><span class="sr-only">Fundos de </span>' + esc(m ? m[2] : h.nombre) + "</h3>" + EMB_ORN +
+        (h.lema ? '<p class="emb-l">' + esc(h.lema) + "</p>" : "") + "</div>" +
         '<div class="mp-body">' + (h.estado ? '<span class="mp-estado">' + esc(h.estado) + "</span>" : "") +
-        '<p class="mp-k">' + esc([h.region, h.zona].filter(Boolean).join(" · ")) + "</p>" +
-        "<h3>" + (m ? "<small>" + esc(m[1]) + "</small>" + esc(m[2]) : esc(h.nombre)) + "</h3>" +
+        '<p class="mp-k"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>' + esc([h.zona, h.region].filter(Boolean).join(", ")) + "</p>" +
         (h.descripcion ? "<p>" + esc(h.descripcion) + "</p>" : "") +
         (h.datos && h.datos.length ? '<ul class="mp-datos">' + h.datos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" : "") +
         '<a class="mp-cta" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';

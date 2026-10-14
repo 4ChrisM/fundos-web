@@ -196,10 +196,12 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   **el cliente pidió que sea sutil: nunca nombrar la marca anterior ni presentarlos como una línea aparte**, y cada uno se
   llama "Fundos de …". Tarjetas genéricas desde `masProyectos` del manifiesto (nombre, región, zona, descripción,
   `datos` (etiquetas), `paisaje` y `lat`, estado opcional; **sin precios ni plano ni 360°**, pedido del cliente) con "Quiero
-  información" por WhatsApp; en celular, franja que se desliza. **Diseño híbrido** (el cliente eligió mezclar las propuestas):
-  tarjeta verde oscuro con el paisaje en línea (`paisajeSvg()`: mar, lago, valle, cordillera, río o bosque, con arco de sol
-  dorado como los logos) sobre el color de ese paisaje (`HAC_COLOR`, se funde en el verde) y una regla de latitud de Chile
-  a la derecha con la marca del proyecto y sus °S. Los logos recortados de capturas se descartaron ("feísimos"). Con la lista
+  información" por WhatsApp; en celular, franja que se desliza. **Diseño de emblema** (al cliente le gustaban los logos de sus proyectos, oct-2026): cada
+  tarjeta parte con un emblema crema dibujado en línea al estilo de esos logos (escena propia por proyecto en `EMB` de
+  `main.js`, por `id`: portón de piedra con olivo, lago con velero, costa con eucaliptos, torre de Talca, cipreses y
+  tractor, cordillera, roquerío, río con álamos, pescador en bote, alerce con helechos; arco de sol dorado), "FUNDOS DE",
+  el nombre en mayúsculas espaciadas, adorno dorado y `lema` (frases de los logos del cliente). Un proyecto nuevo necesita
+  su escena. Abajo: ubicación, texto, etiquetas y "Quiero información". Con la lista
   vacía la sección y su enlace del pie no se ven. Desde oct-2026 tiene los 10 proyectos del sitio actual del cliente:
   Santo Domingo, Lago Rapel, Bucalemu, Talca, Retiro, San Fabián de Alico, Cobquecura, Río Liucura, Río Negro y Puerto
   Montt (textos resumidos de su sitio; los nombres antiguos dentro de esos textos, como "Fundo Río Mar" o "La Gran
