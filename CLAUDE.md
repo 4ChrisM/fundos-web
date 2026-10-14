@@ -193,8 +193,12 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `data-label`, lo muestran y lo envían por WhatsApp (`[data-mini-wa]`, evento `generate_lead` con el formulario) o por
   correo. Enlaces en el menú y en el pie ("Trabaja con nosotros"). **Proyectos Hacienda** (`#haciendas`, pestaña
   Proyectos, `initHaciendas`): tarjetas genéricas desde `haciendas` del manifiesto (nombre, región, zona, descripción,
-  superficie, foto y estado opcionales; sin plano ni 360°, pedido del cliente) con "Quiero información" por WhatsApp. Con
-  la lista vacía la sección y su enlace del pie no se ven; el cliente enviará los datos.
+  `datos` (etiquetas), `logo` (se muestra entero sobre crema) o `foto` (se recorta), estado opcional; **sin precios ni plano
+  ni 360°**, pedido del cliente) con "Quiero información" por WhatsApp; en celular, franja que se desliza. Con la lista
+  vacía la sección y su enlace del pie no se ven. Desde oct-2026 tiene los 10 proyectos del sitio actual del cliente:
+  Santo Domingo, Lago Rapel, Bucalemu, Talca, Retiro, San Fabián de Alico, Cobquecura, Río Liucura, Río Negro y Puerto
+  Montt (textos resumidos de su sitio; los nombres antiguos dentro de esos textos, como "Fundo Río Mar" o "La Gran
+  Reserva", no se usan). Logos `assets/img/hacienda-ID.webp` recortados de capturas (~270 px): pedir los originales.
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el
@@ -280,7 +284,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   llamándose `equipo-elvys.*`. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
   originales no van a `main`; se convierten con ffmpeg a MP4 + WebM con `loudnorm`).
   No suponer género ni cargos: hoy todos dicen "Equipo comercial" hasta tener los cargos reales.
-- Santo Domingo fuera de la propuesta. No bajar videos de internet: solo material propio del cliente.
+- Santo Domingo fuera de la propuesta principal (plano, cotizador, 360°); desde oct-2026 aparece solo como tarjeta en Proyectos Hacienda (lo pidió el cliente). No bajar videos de internet: solo material propio del cliente.
 - Planos con líneas rectas como el masterplan. En computador la herramienta completa (proyectos, filtros, chips,
   plano y leyenda en franja baja) cabe en la pantalla: el plano mide entre 380 y 480 px de alto y no pasa del 47 % de la ventana (`layoutPlan`); los
   chips de precio van en una sola fila (precio arriba, precio lista y disponibles abajo); el

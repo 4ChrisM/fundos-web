@@ -1987,10 +1987,12 @@
     list.innerHTML = hs.map(function (h) {
       var msg = "Hola Fundos, quiero información del proyecto " + h.nombre + (h.zona ? " (" + h.zona + ")" : "") + ".";
       return '<li class="hac-card">' +
-        (h.foto ? '<img class="hac-foto" src="' + esc(h.foto) + '" alt="" loading="lazy" decoding="async">' : '<span class="hac-foto hac-foto-vacia" aria-hidden="true"><svg class="i"><use href="#i-volcan"/></svg></span>') +
+        (h.logo ? '<span class="hac-foto hac-logo"><img src="' + esc(h.logo) + '" alt="Logo de ' + esc(h.nombre) + '" loading="lazy" decoding="async"></span>'
+          : h.foto ? '<img class="hac-foto" src="' + esc(h.foto) + '" alt="" loading="lazy" decoding="async">' : '<span class="hac-foto hac-foto-vacia" aria-hidden="true"><svg class="i"><use href="#i-volcan"/></svg></span>') +
         '<div class="hac-body">' + (h.estado ? '<span class="hac-estado">' + esc(h.estado) + "</span>" : "") +
         "<h3>" + esc(h.nombre) + '</h3><p class="hac-lugar"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>' + esc([h.zona, h.region].filter(Boolean).join(", ")) + "</p>" +
         (h.descripcion ? "<p>" + esc(h.descripcion) + "</p>" : "") + (h.superficie ? '<p class="hac-sup">' + esc(h.superficie) + "</p>" : "") +
+        (h.datos && h.datos.length ? '<ul class="hac-datos">' + h.datos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" : "") +
         '<a class="btn btn-gold btn-sm" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información</a></div></li>';
     }).join("");
     sec.hidden = false;
