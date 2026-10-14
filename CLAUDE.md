@@ -254,12 +254,9 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   (`.mch.is-galeria`, `.mch-grupo`; pedido del cliente): tocar un fundo abre su ficha y la lupa sigue al fundo que está a
   media pantalla al bajar; sin resumen ni avance automático. **Horizontal**
   (`.mch.is-horiz`, lo pidió el equipo): Chile completo acostado en una franja chica con el recuadro del tramo y, debajo,
-  el tramo de 31°S a 44°S a todo el ancho (norte a la izquierda, mar abajo) con punto y rótulo por fundo **junto a su
-  punto con flecha corta** (primer nivel libre arriba o abajo, con borde claro para leerse sobre el verde) y latitudes
-  cada 2° (en celular se desliza y sigue al fundo activo). **Todo en una lámina** (pedido del cliente): en computador el
-  Chile chico va en la esquina inferior del mapa, carrusel y resumen lado a lado, el alto de la franja se ajusta a la
-  pantalla (`--bh`, el ancho sigue la proporción con `--ar`) y en pantallas bajas se ocultan la bajada y las etiquetas
-  del resumen; medido: cabe en 1280×720, 1366×768, 1440×900 y 1920×1080. Cuando
+  el tramo de 31°S a 44°S a todo el ancho (norte a la izquierda, mar abajo) con punto y rótulo por fundo en pistas sin
+  choques (líneas acortadas: las pistas parten un poco dentro del mapa, con borde claro en el texto; el cliente probó una
+  versión "en una lámina" con rótulos junto al punto y prefirió esta) y latitudes cada 2° (en celular se desliza y sigue al fundo activo); mismo carrusel, resumen y ventana. Cuando
   el equipo elija, se deja una como la pestaña Proyectos por defecto, se quitan el parámetro y lo que no se use, y se
   ajustan las pruebas que usan esas secciones (`interacciones`, `plano`, `recorrido`, `_vista.js`).
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),

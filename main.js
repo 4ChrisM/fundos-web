@@ -2264,29 +2264,20 @@
       var yA = Infinity, yB = -Infinity;
       M.regiones.forEach(function (r) { r.anillos.forEach(function (ring) { ring.forEach(function (q) { if (q[1] >= bx0 && q[1] <= bx1) { yA = Math.min(yA, W - q[0]); yB = Math.max(yB, W - q[0]); } }); }); });
       yA *= S; yB *= S;
-      // Rótulos junto a su punto, con una flecha corta: arriba o abajo, en el primer nivel libre (sin chocar con otros
-      // rótulos ni puntos), así la franja queda compacta y todo cabe en una pantalla
-      var cajas = [], rots = [], hp = [], yMin = yA, yMax = yB;
-      pts.forEach(function (p) { var X = p.xy[1] * S, Y = (W - p.xy[0]) * S, r = (p.main ? 8 : 6) + 2; cajas.push([X - r, Y - r, X + r, Y + r]); });
+      var pistas = { a: [], b: [] }, rots = [], hp = [];
       pts.slice().sort(function (a, b) { return a.xy[1] - b.xy[1]; }).forEach(function (p) {
-        var X = p.xy[1] * S, Y = (W - p.xy[0]) * S, w = p.corto.length * 7.6 + 8, ok = null;
-        for (var n = 0; n < 7 && !ok; n++) [-1, 1].forEach(function (lado) {
-          if (ok) return;
-          var ty = lado < 0 ? Y - 16 - n * 19 : Y + 26 + n * 19, b = [X - w / 2, ty - 14, X + w / 2, ty + 5];
-          if (!cajas.some(function (c) { return b[0] < c[2] && b[2] > c[0] && b[1] < c[3] && b[3] > c[1]; })) ok = [ty, lado, b];
-        });
-        if (!ok) ok = [Y - 16 - 7 * 19, -1, [X - w / 2, Y - 163, X + w / 2, Y - 144]];
-        cajas.push(ok[2]); yMin = Math.min(yMin, ok[2][1]); yMax = Math.max(yMax, ok[2][3]);
-        var y2 = ok[1] < 0 ? ok[0] + 4 : ok[0] - 13, y1 = Y + ok[1] * ((p.main ? 8 : 6) + 1);
-        rots.push('<g class="mch-rot" data-p="' + esc(p.id) + '">' + (Math.abs(y2 - y1) > 3 ? '<line x1="' + X.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + X.toFixed(1) + '" y2="' + y2.toFixed(1) + '"/>' : "") + '<text x="' + X.toFixed(1) + '" y="' + ok[0].toFixed(1) + '">' + esc(p.corto) + "</text></g>");
+        var X = p.xy[1] * S, Y = (W - p.xy[0]) * S, w = p.corto.length * 7.4 + 14, ok = null;
+        for (var n = 0; n < 4 && !ok; n++) ["a", "b"].forEach(function (k) { if (ok) return; if ((pistas[k][n] || -Infinity) < X - w / 2) { ok = [k, n]; pistas[k][n] = X + w / 2; } });
+        if (!ok) ok = ["a", 3];
+        // líneas un poco más cortas (pedido del cliente): las pistas parten más cerca del mapa, sin pasar del punto
+        var ty = ok[0] === "a" ? Math.min(yA + 12 - ok[1] * 20, Y - 16) : Math.max(yB - 2 + ok[1] * 20, Y + 24);
+        rots.push('<g class="mch-rot" data-p="' + esc(p.id) + '"><line x1="' + X.toFixed(1) + '" y1="' + Y.toFixed(1) + '" x2="' + X.toFixed(1) + '" y2="' + (ok[0] === "a" ? ty + 5 : ty - 13).toFixed(1) + '"/><text x="' + X.toFixed(1) + '" y="' + ty.toFixed(1) + '">' + esc(p.corto) + "</text></g>");
         hp.push('<g class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '" transform="translate(' + X.toFixed(1) + " " + Y.toFixed(1) + ')"><title>' + esc(p.nombre) + '</title><circle r="' + (p.main ? 8 : 6) + '"/></g>');
       });
-      var top = yMin - 10, bot = yMax + 30, latsH = "";
-      for (la = 32; la <= 44; la += 2) { var lx = (la - pr.lat0) * pr.k * S; latsH += '<line class="mch-zlat" x1="' + lx + '" x2="' + lx + '" y1="' + (top + 4) + '" y2="' + (bot - 20) + '"/><text class="mch-hlat" x="' + lx + '" y="' + (bot - 5) + '">' + la + "°S</text>"; }
+      var nA = pistas.a.length, nB = pistas.b.length, top = yA + 12 - Math.max(0, nA - 1) * 20 - 30, bot = yB - 2 + Math.max(0, nB - 1) * 20 + 34, latsH = "";
+      for (la = 32; la <= 44; la += 2) { var lx = (la - pr.lat0) * pr.k * S; latsH += '<line class="mch-zlat" x1="' + lx + '" x2="' + lx + '" y1="' + (top + 14) + '" y2="' + (bot - 22) + '"/><text class="mch-hlat" x="' + lx + '" y="' + (bot - 6) + '">' + la + "°S</text>"; }
       zo.innerHTML = '<svg class="mch-band" viewBox="' + (bx0 * S - 8).toFixed(0) + " " + top.toFixed(0) + " " + ((bx1 - bx0) * S + 16).toFixed(0) + " " + (bot - top).toFixed(0) + '" role="img" aria-label="Chile de norte a sur con los fundos">' +
         latsH + '<g transform="translate(0 ' + W * S + ") " + rot + " scale(" + S + ')">' + regs + "</g>" + rots.join("") + hp.join("") + "</svg>";
-      var vbH = $("svg", zo).viewBox.baseVal;   // proporción para que el alto máximo achique también el ancho
-      if (vbH && vbH.height) $("svg", zo).style.setProperty("--ar", (vbH.width / vbH.height).toFixed(3));
       zo.addEventListener("pointerover", function (e) { var g = e.target.closest("[data-p]"); if (g && e.pointerType === "mouse") poner(g.getAttribute("data-p")); });
     }
     var cx = 0, cy = 0, vw = 0, s = 1, anim = 0, actual = null, fx0 = 0;   // fx0: borde izquierdo de la vista final
