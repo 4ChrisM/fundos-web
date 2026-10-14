@@ -247,7 +247,8 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   proyectos sea solo de los proyectos", sin la portada, las tarjetas, el aviso de Tu casa, "Conoce cada proyecto" ni el
   recorrido 360°, y que el mapa sea la página). Se activan con `?mapa=vertical` o `?mapa=horizontal` en la dirección
   (script en el `<head>` → `html.pm` y `pm-v`/`pm-h`); **sin el parámetro el sitio queda como antes**. En ese modo
-  `initVistas` marca esas secciones `data-vista="oculta"`, deja el plano solo en Inicio ("Ver lotes" lleva ahí), la
+  `initVistas` marca esas secciones `data-vista="oculta"`, deja el plano solo en Inicio ("Ver lotes" lleva ahí), saca de
+  Proyectos el formulario de visita (#visita sigue en las otras pestañas; "Cotizar" lleva a Inicio), la
   pestaña Proyectos parte en `#mas-proyectos` y `#proyecto-ID` ("Conocer el proyecto") abre la ficha de ese fundo en la
   ventana; el 360° de la ficha abre el tour en otra pestaña. **Vertical** = la Sala de cine más alta. **Horizontal**
   (`.mch.is-horiz`, lo pidió el equipo): Chile completo acostado en una franja chica con el recuadro del tramo y, debajo,

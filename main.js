@@ -125,6 +125,7 @@
       OCULTAS.forEach(function (id) { var el = document.getElementById(id); if (el) el.setAttribute("data-vista", "oculta"); });
       var tk = $(".ticker[data-vista]"); if (tk) tk.setAttribute("data-vista", "oculta");
       var pl = $("#plano"); if (pl) pl.setAttribute("data-vista", "inicio");
+      var vi = $("#visita"); if (vi) vi.setAttribute("data-vista", "inicio compra equipo");   // tampoco el formulario de visita
       $$('a[href="#proyectos-inicio"]').forEach(function (a) { a.setAttribute("href", "#mas-proyectos"); });
     }
     var links = $$("[data-vista-link]"), cur = "";
