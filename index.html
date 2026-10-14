@@ -27,12 +27,12 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261015h">
-<script defer src="lib/manifest.js?v=20261015h"></script>
-<script defer src="lib/analitica.js?v=20261015h"></script>
-<script defer src="lib/mapa-chile.js?v=20261015h"></script>
-<script defer src="lib/planos.js?v=20261015h"></script>
-<script defer src="main.js?v=20261015h"></script>
+<link rel="stylesheet" href="styles.css?v=20261015i">
+<script defer src="lib/manifest.js?v=20261015i"></script>
+<script defer src="lib/analitica.js?v=20261015i"></script>
+<script defer src="lib/mapa-chile.js?v=20261015i"></script>
+<script defer src="lib/planos.js?v=20261015i"></script>
+<script defer src="main.js?v=20261015i"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -191,8 +191,6 @@
       <img src="assets/img/isotipo-174.webp" srcset="assets/img/isotipo-174.webp 174w, assets/img/isotipo.webp 480w" sizes="58px" alt="" width="58" height="42" decoding="async">
       <span class="brand-word" aria-hidden="true">Fundos<small>Inmobiliaria</small></span>
     </a>
-    <!-- Quitar al publicar en el dominio de Fundos -->
-    <span class="proposal-tag" title="Maqueta de diseño con datos de ejemplo. No es el sitio oficial.">Propuesta<span class="pt-long"> · datos de ejemplo</span></span>
     <span class="nav-where" data-nav-where aria-hidden="true"></span>
   </div>
   <nav class="nav-links" aria-label="Principal">
@@ -203,7 +201,7 @@
     <a class="nl-casa" href="#plano" data-casa-guia aria-label="Diseña tu casa (nuevo)"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg><span class="nl-l" aria-hidden="true">Diseña tu casa</span><span class="nl-c" aria-hidden="true">Tu casa</span><span class="nl-new" aria-hidden="true">Nuevo</span></a>
   </nav>
   <div class="nav-actions">
-    <a class="nav-portal" href="#portal"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Mi compra</a>
+    <a class="nav-portal" href="#portal"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Mi compra<span class="pronto">Próximamente</span></a>
     <a class="btn btn-gold btn-sm" href="#visita">Agendar visita</a>
     <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-controls="menu" aria-expanded="false" data-menu-open>
       <svg class="i" aria-hidden="true"><use href="#i-menu"/></svg>
@@ -230,7 +228,7 @@
         <a href="entorno.html">Mapa del entorno</a>
         <a href="#como-comprar" data-menu-link>Cómo comprar</a>
         <a href="#preguntas" data-menu-link>Preguntas</a>
-        <a href="#portal" data-menu-link>Mi compra</a>
+        <a href="#portal" data-menu-link>Mi compra <span class="pronto">Próximamente</span></a>
         <a href="#vende-tu-campo" data-menu-link>Vende tu campo</a>
         <a href="#proveedores" data-menu-link>Proveedores</a>
       </span>
@@ -485,7 +483,7 @@
     <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>5.000 m² por parcela</li>
     <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Reserva con $1.000.000, que incluye los gastos de escritura</li>
     <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Acompañamiento hasta el CBR</li>
-    <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Tu compra en línea con Fundos 360°</li>
+    <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Seguimiento de tu compra en línea (próximamente)</li>
   </ul>
 </div>
 
@@ -1026,7 +1024,7 @@
         <a class="tc-tab" href="#como-comprar" role="tab" id="tc-tab-como-comprar" data-tc-tab="como-comprar"><svg class="i" aria-hidden="true"><use href="#i-doc"/></svg>Cómo comprar</a>
         <a class="tc-tab" href="#tu-casa" role="tab" id="tc-tab-tu-casa" data-tc-tab="tu-casa"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Tu casa</a>
         <a class="tc-tab" href="#preguntas" role="tab" id="tc-tab-preguntas" data-tc-tab="preguntas"><svg class="i" aria-hidden="true"><use href="#i-people"/></svg>Preguntas</a>
-        <a class="tc-tab" href="#portal" role="tab" id="tc-tab-portal" data-tc-tab="portal"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Mi compra</a>
+        <a class="tc-tab" href="#portal" role="tab" id="tc-tab-portal" data-tc-tab="portal"><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Mi compra <span class="pronto">Próximamente</span></a>
       </div>
     </div>
   </div>
@@ -1207,7 +1205,7 @@
       </details>
       <details>
         <summary>¿Cuánto demora el proceso completo?</summary>
-        <p>Depende de cada caso y de los plazos de la notaría y del Conservador. Desde tu reserva ves cada etapa y su avance en Fundos 360°.</p>
+        <p>Depende de cada caso y de los plazos de la notaría y del Conservador. Tu ejecutivo te informa cada etapa, y muy pronto podrás seguir el avance en línea desde Mi compra.</p>
       </details>
       <details>
         <summary>¿Tienen alternativas de financiamiento?</summary>
@@ -1223,9 +1221,9 @@
 <section class="section dark portal tc-panel" id="portal" data-tc-panel aria-labelledby="portal-title">
   <div class="container portal-grid">
     <div class="portal-copy reveal">
-      <p class="kicker">Fundos 360° · Mi compra</p>
+      <p class="kicker">Mi compra <span class="pronto">Próximamente</span></p>
       <h2 id="portal-title">Tu compra, <em>en tiempo real.</em></h2>
-      <p class="lead">Gestionamos cada venta en Fundos 360°, nuestra propia plataforma. Desde tu reserva verás el avance de tu compra, tus documentos y los próximos hitos en tu celular: lo mismo que ve tu ejecutivo, lo ves tú.</p>
+      <p class="lead">Muy pronto, desde tu reserva podrás ver el avance de tu compra, tus documentos y los próximos hitos en tu celular: lo mismo que ve tu ejecutivo, lo verás tú.</p>
       <ul class="ticks">
         <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>El estado de cada etapa, de la reserva a la inscripción</li>
         <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Comprobantes y documentos siempre disponibles</li>
@@ -1233,13 +1231,14 @@
         <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Contacto directo con tu ejecutivo</li>
       </ul>
       <div class="portal-actions">
-        <a class="btn btn-gold" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-msg="Hola, tengo una reserva con Fundos y quiero mi acceso a Mi compra."><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Pedir mi acceso</a>
+        <a class="btn btn-gold" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-msg="Hola, quiero que me avisen cuando Mi compra esté disponible."><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Avísame cuando esté listo</a>
         <a class="btn btn-ghost" href="#como-comprar">Ver las etapas</a>
       </div>
-      <p class="portal-note">Disponible para compradores con reserva vigente: te enviamos tu acceso por WhatsApp o correo.</p>
+      <p class="portal-note">Mientras tanto, tu ejecutivo te informa cada etapa por WhatsApp o correo.</p>
     </div>
 
-    <div class="phone reveal" aria-label="Vista previa de la sección Mi compra" role="img">
+    <div class="phone reveal" aria-label="Vista previa de Mi compra, próximamente" role="img">
+      <span class="phone-pronto" aria-hidden="true">Próximamente</span>
       <div class="phone-screen" aria-hidden="true">
         <div class="ph-top">
           <img src="assets/img/isotipo-174.webp" alt="" width="34" height="25" decoding="async" loading="lazy">
@@ -1506,7 +1505,7 @@
       <a href="#recorrido">Recorrido 360°</a>
       <a href="#plano">Elige tu parcela</a>
       <a href="#como-comprar">Cómo comprar</a>
-      <a href="#portal">Mi compra</a>
+      <a href="#portal">Mi compra (próximamente)</a>
       <a href="#preguntas">Preguntas frecuentes</a>
       <a href="#visita">Agendar visita</a>
     </nav>
@@ -1526,7 +1525,7 @@
   </div>
   <div class="container footer-bottom">
     <p>© 2026 Fundos Inmobiliaria. Imágenes ilustrativas; valores referenciales sujetos a disponibilidad.</p>
-    <p class="footer-credit">Propuesta de diseño · <a href="https://biplot.cl/" target="_blank" rel="noopener">BiPlot</a></p>
+    <p class="footer-credit">Diseño · <a href="https://biplot.cl/" target="_blank" rel="noopener">BiPlot</a></p>
   </div>
 </footer>
 
