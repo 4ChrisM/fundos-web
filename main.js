@@ -1906,6 +1906,83 @@
   /* =============================================================
      Formulario de la portada de Puerto Varas: pocos datos, el mensaje se revisa y se envía por WhatsApp
      ============================================================= */
+  /* =============================================================
+     Trabaja con nosotros: "Vende tu campo" y "Ofrece tus servicios" (proveedores).
+     Arman el mensaje con lo escrito, lo muestran y lo envían con un enlace de WhatsApp (igual que #visita).
+     ============================================================= */
+  function initMiniForms() {
+    $$("[data-mini-form]").forEach(function (form) {
+      var el = form.elements, ok = $("[data-mini-ok]", form), wa = $("[data-mini-wa]", form), out = $("[data-mini-msg]", form);
+      var tipoF = form.getAttribute("data-mini-form");
+      var rules = {
+        nombre: function (v) { return v.trim().length >= 2; },
+        telefono: function (v) { var d = v.replace(/\D/g, ""); return d.length >= 8 && d.length <= 15; },
+        correo: function (v) { v = v.trim(); return !v || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); },
+        acepto: function (_, input) { return input.checked; }
+      };
+      function check(name) {
+        var input = el[name];
+        if (!input) return true;
+        var good = rules[name](input.value || "", input);
+        var err = $('[data-error-for="' + (input.id || name) + '"]', form);
+        var field = input.closest(".field");
+        if (field) field.classList.toggle("has-error", !good);
+        if (err) err.classList.toggle("is-shown", !good);
+        input.setAttribute("aria-invalid", good ? "false" : "true");
+        return good;
+      }
+      Object.keys(rules).forEach(function (name) {
+        var input = el[name];
+        if (input) input.addEventListener(input.type === "checkbox" ? "change" : "input", function () { if (input.getAttribute("aria-invalid") === "true") check(name); });
+      });
+      function datos() {
+        return $$("[data-label]", form).map(function (f) {
+          var v = (f.value || "").trim();
+          return v ? f.getAttribute("data-label") + ": " + v + (f.getAttribute("data-unidad") || "") : "";
+        }).filter(Boolean).join(". ");
+      }
+      function mensaje() {
+        var quien = "Hola Fundos, soy " + el.nombre.value.trim() + ". ";
+        var intro = tipoF === "campo" ? "Tengo un campo que me interesa vender." : "Quiero ofrecer mis servicios como proveedor para quienes compran parcelas.";
+        var d = datos();
+        return quien + intro + (d ? " " + d + "." : "") + " Mi teléfono: " + el.telefono.value.trim() + ".";
+      }
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var bad = Object.keys(rules).filter(function (n) { return !check(n); });
+        if (bad.length) { el[bad[0]].focus(); return; }
+        var msg = mensaje();
+        out.textContent = msg;
+        wa.href = waHref(msg);
+        var mail = $("[data-mini-mail]", form);
+        if (mail) mail.href = "mailto:" + (B.contacto && B.contacto.email || "ventas@fundosinmobiliaria.com") + "?subject=" + encodeURIComponent(tipoF === "campo" ? "Quiero vender mi campo" : "Proveedor de servicios") + "&body=" + encodeURIComponent(msg);
+        ok.hidden = false;
+        [].forEach.call(form.children, function (ch) { if (ch !== ok) ch.inert = true; });
+        ok.focus();
+      });
+      $("[data-mini-again]", form).addEventListener("click", function () {
+        ok.hidden = true;
+        [].forEach.call(form.children, function (ch) { ch.inert = false; });
+        el.nombre.focus();
+      });
+    });
+  }
+  /* Proyectos Hacienda: tarjetas genéricas desde el manifiesto (sin plano ni recorrido); sin datos, la sección no se ve */
+  function initHaciendas() {
+    var sec = $("[data-haciendas]"), list = sec && $("[data-hac-list]", sec), hs = B.haciendas || [];
+    if (!sec || !list || !hs.length) return;
+    list.innerHTML = hs.map(function (h) {
+      var msg = "Hola Fundos, quiero información del proyecto " + h.nombre + (h.zona ? " (" + h.zona + ")" : "") + ".";
+      return '<li class="hac-card">' +
+        (h.foto ? '<img class="hac-foto" src="' + esc(h.foto) + '" alt="" loading="lazy" decoding="async">' : '<span class="hac-foto hac-foto-vacia" aria-hidden="true"><svg class="i"><use href="#i-volcan"/></svg></span>') +
+        '<div class="hac-body">' + (h.estado ? '<span class="hac-estado">' + esc(h.estado) + "</span>" : "") +
+        "<h3>" + esc(h.nombre) + '</h3><p class="hac-lugar"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>' + esc([h.zona, h.region].filter(Boolean).join(", ")) + "</p>" +
+        (h.descripcion ? "<p>" + esc(h.descripcion) + "</p>" : "") + (h.superficie ? '<p class="hac-sup">' + esc(h.superficie) + "</p>" : "") +
+        '<a class="btn btn-gold btn-sm" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información</a></div></li>';
+    }).join("");
+    sec.hidden = false;
+    $$("[data-hac-link]").forEach(function (a) { a.hidden = false; });
+  }
   function initPvLead() {
     var form = $("[data-pv-lead]");
     if (!form) return;
@@ -2652,22 +2729,31 @@
     if (!root) return;
     var svg = $("[data-c-svg]", root), stage = $(".casa-stage", root), selP = $("[data-c-proyecto]", root), selL = $("[data-c-lote]", root);
     var NS = "http://www.w3.org/2000/svg", PCT = 0.10, CI = Math.cos(Math.PI / 6), SI = 0.5;
-    // Construcciones genéricas: medidas por defecto, alto y estilo de volumen
+    // Estilo rural (pedido del cliente, "vender una vida de campo"): madera en tinglado, techo de zinc a dos aguas,
+    // corredor con pilares en el lado largo del frente y chimenea. Máximo 2 viviendas por parcela (MAXCASAS).
     var TIPOS = [
-      { id: "casa", nombre: "Casa", w: 12, h: 10, alto: 3.2, forma: "caja", techoOp: true, vivienda: true, muro: "#3A3833", techo: "#5B5751", ventanas: true, puerta: true },
-      { id: "casa2", nombre: "Casa de dos pisos", w: 10, h: 8, alto: 6, pisos: 2, forma: "caja", techoOp: true, vivienda: true, muro: "#E9E3D6", techo: "#4F4B45", ventanas: true, puerta: true, faja: "#8C6A44" },
+      { id: "casa", corto: "Casa", nombre: "Casa de campo", w: 12, h: 9, alto: 3, forma: "caja", techoOp: true, dosAguas: true, vivienda: true, muro: "#B4865A", techo: "#8E3B2E", ventanas: true, puerta: true, tablas: true, corredor: true, chimenea: true },
+      { id: "casa2", corto: "Casa 2 pisos", nombre: "Casa de campo de dos pisos", w: 10, h: 8, alto: 5.8, pisos: 2, forma: "caja", techoOp: true, dosAguas: true, vivienda: true, muro: "#EDE5D3", techo: "#40594A", ventanas: true, puerta: true, faja: "#8C6A44", tablas: true, corredor: true, chimenea: true },
+      { id: "visitas", corto: "Cabaña", nombre: "Cabaña de visitas", w: 8, h: 6, alto: 2.8, forma: "caja", techoOp: true, dosAguas: true, vivienda: true, muro: "#9C6E45", techo: "#6E3528", ventanas: true, puerta: true, tablas: true, corredor: true },
       { id: "piscina", nombre: "Piscina", w: 8, h: 4, alto: 0, forma: "piscina", cuenta: false },
-      { id: "visitas", nombre: "Casa de visitas", w: 8, h: 6, alto: 2.9, forma: "caja", techoOp: true, dosAguas: true, vivienda: true, muro: "#CDBFA4", techo: "#5B5751", ventanas: true, puerta: true },
-      { id: "quincho", nombre: "Quincho", w: 6, h: 5, alto: 2.7, forma: "pergola", muro: "#8A6A45", techo: "#6E5A43", piso: "#D6C29C" },
-      { id: "garaje", nombre: "Estacionamiento", w: 6, h: 5, alto: 2.5, forma: "pergola", muro: "#6F6C66", techo: "#8F8B83", piso: "#D9D3C6" },
-      { id: "bodega", nombre: "Bodega", w: 4, h: 3, alto: 2.4, forma: "caja", techoOp: true, dosAguas: true, muro: "#A07D50", techo: "#5B5751", puerta: true }
+      { id: "quincho", nombre: "Quincho", w: 6, h: 5, alto: 2.7, forma: "pergola", muro: "#7E5B3A", techo: "#6E5A43", piso: "#D6C29C" },
+      { id: "garaje", nombre: "Cobertizo", w: 6, h: 5, alto: 2.5, forma: "pergola", muro: "#7A5A3C", techo: "#8E3B2E", piso: "#D9D3C6" },
+      { id: "bodega", nombre: "Bodega", w: 4, h: 3, alto: 2.4, forma: "caja", techoOp: true, dosAguas: true, muro: "#9A3F2E", techo: "#4B4741", puerta: true, tablas: true }
     ];
+    var MAXCASAS = 2;
+    // Parcela agroresidencial (pedido del cliente): la mitad del lote, lejos del acceso, va con frutales (25 %) y
+    // conservación natural (25 %), con especies según la zona del proyecto. Ahí no se construye.
+    var AGRO = {
+      "puerto-varas": { frutales: "manzanos, cerezos y avellanos", nativo: "maqui, arrayán y canelo", fruta: "#C8402E" },
+      "malalcahuello": { frutales: "manzanos, guindos y castaños", nativo: "ñirres, coigües y notros", fruta: "#B8332A" },
+      "marchigue": { frutales: "olivos, almendros y nogales", nativo: "quillayes, peumos y litres", fruta: "#56612E" }
+    };
     var S = { p: null, lote: null, poly: [], arboles: [], acceso: null, camino: true, vida: true, ang: 0, hora: 17, estacion: "verano", items: [], sel: -1, seq: 0, vista: "iso", zoom: 1, pan: [0, 0], base: [0, 0, 100, 100] };
     var el = {
       total: $("[data-c-total]", root), max: $("[data-c-max]", root), bar: $("[data-c-bar]", root), msg: $("[data-c-msg]", root),
       meter: $("[data-c-meter]", root), add: $("[data-c-add]", root), box: $("[data-c-sel]", root), name: $("[data-c-sel-name]", root),
       selm2: $("[data-c-sel-m2]", root), w: $("[data-c-w]", root), h: $("[data-c-h]", root), rot: $("[data-c-rot]", root),
-      del: $("[data-c-del]", root), wa: $("[data-c-wa]", root), techo: $("[data-c-techo-wrap]", root), camino: $("[data-c-camino]", root), vida: $("[data-c-vida]", root), lbl: $("[data-c-lbl]", root), full: $("[data-c-full]", root)
+      del: $("[data-c-del]", root), casas: $("[data-c-casas]", root), agroM2: $("[data-c-agro-m2]", root), agroF: $("[data-c-agro-f]", root), agroC: $("[data-c-agro-c]", root), wa: $("[data-c-wa]", root), techo: $("[data-c-techo-wrap]", root), camino: $("[data-c-camino]", root), vida: $("[data-c-vida]", root), lbl: $("[data-c-lbl]", root), full: $("[data-c-full]", root)
     };
     var con = proyectos.filter(function (p) { return planos[p.id] && p.lotes && p.lotes.length; })
       .sort(function (a, b) { return (b.id === DESTACADO) - (a.id === DESTACADO); });
@@ -2724,6 +2810,65 @@
       return S.poly.some(function (v) { return inside(v, cs); });
     }
     function choca(ca, cb) { return ca.some(function (q) { return inside(q, cb); }) || cb.some(function (q) { return inside(q, ca); }); }
+    function enAgro(it) { return !!(S.agro && choca(corners(it), S.agro.mitad)); }
+    function malo(it) { return fuera(it) || enAgro(it); }
+    function nCasas() { return S.items.filter(function (x) { return tipo(x.tipo).vivienda; }).length; }
+    // Parte del polígono con lado·(x − c) ≥ 0 (Sutherland–Hodgman contra un semiplano vertical)
+    function recorte(poly, c, lado) {
+      var out = [];
+      for (var i = 0; i < poly.length; i++) {
+        var a = poly[i], b = poly[(i + 1) % poly.length], da = lado * (a[0] - c), db = lado * (b[0] - c);
+        if (da >= 0) out.push(a);
+        if ((da >= 0) !== (db >= 0)) { var t = da / (da - db); out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]); }
+      }
+      return out;
+    }
+    function areaDe(poly) { return poly.length < 3 ? 0 : Math.abs(polyArea(poly)); }
+    // x del corte que deja `frac` de la superficie del lado elegido
+    function corte(lado, frac) {
+      var xs = S.poly.map(function (q) { return q[0]; }), lo = Math.min.apply(null, xs), hi = Math.max.apply(null, xs), A = areaDe(S.poly);
+      for (var i = 0; i < 40; i++) {
+        var m = (lo + hi) / 2, a = areaDe(recorte(S.poly, m, lado));
+        if ((a > frac * A) === (lado > 0)) lo = m; else hi = m;
+      }
+      return (lo + hi) / 2;
+    }
+    function centro(poly) { var x = 0, y = 0; poly.forEach(function (q) { x += q[0]; y += q[1]; }); return [x / poly.length, y / poly.length]; }
+    function distPoly(p, poly) { var d = Infinity; for (var i = 0; i < poly.length; i++) d = Math.min(d, distSeg(p, poly[i], poly[(i + 1) % poly.length])); return d; }
+    function agro(n) {
+      var cfg = AGRO[S.p.id] || AGRO["puerto-varas"], cx = centro(S.poly)[0];
+      var acc = S.acceso ? (S.acceso[0][0] + S.acceso[1][0]) / 2 : cx - 1, lado = acc <= cx ? 1 : -1;   // la mitad lejos del acceso
+      var c1 = corte(lado, 0.5), c2 = corte(lado, 0.25);
+      var A = { cfg: cfg, mitad: recorte(S.poly, c1, lado), cons: recorte(S.poly, c2, lado), libre: recorte(S.poly, c1, -lado), arboles: [] };
+      A.frut = recorte(A.mitad, c2, -lado);
+      A.m2 = areaDe(A.mitad);
+      // Frutales en hileras cada 6 m; conservación con árboles nativos irregulares (siempre los mismos por lote)
+      var b = function (poly) { var xs = poly.map(function (q) { return q[0]; }), ys = poly.map(function (q) { return q[1]; }); return [Math.min.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, xs), Math.max.apply(null, ys)]; };
+      var bf = b(A.frut);
+      for (var x = bf[0] + 3; x < bf[2]; x += 6) for (var y = bf[1] + 3; y < bf[3]; y += 6) {
+        if (inside([x, y], A.frut) && distPoly([x, y], A.frut) > 1.8) A.arboles.push({ x: x, y: y, h: 3.2, k: "f" });
+      }
+      var seed = n * 7919 + 104729, rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+      var bc = b(A.cons), nat = [], meta = Math.min(55, Math.round(areaDe(A.cons) / 26));
+      for (var i = 0; i < 1500 && nat.length < meta; i++) {
+        var q = [bc[0] + rnd() * (bc[2] - bc[0]), bc[1] + rnd() * (bc[3] - bc[1])];
+        if (!inside(q, A.cons) || distPoly(q, A.cons) < 1.4) continue;
+        if (nat.some(function (t) { return Math.hypot(t.x - q[0], t.y - q[1]) < 3.6; })) continue;
+        nat.push({ x: q[0], y: q[1], h: 4.4 + rnd() * 3.6, k: "n", v: rnd() });
+      }
+      A.arboles = A.arboles.concat(nat);
+      S.agro = A;
+    }
+    // Ubica una construcción en un lugar libre de la parte construible, con 4 m de holgura
+    function ubicar(it) {
+      var c0 = S.agro ? centro(S.agro.libre) : [0, 0];
+      for (var i = 0; i < 140; i++) {
+        var a = i * 2.4, r = i * 1.4;
+        it.x = snap(c0[0] + Math.cos(a) * r); it.y = snap(c0[1] + Math.sin(a) * r);
+        var cs = corners(it, 4);
+        if (!malo(it) && !S.items.some(function (o) { return o !== it && choca(corners(o), cs); })) return;
+      }
+    }
 
     // Proyección: isométrica (suelo en z = 0) o planta; "prof" ordena lo que se dibuja (lo más cercano, al final)
     function P(x, y, z) { return S.vista === "iso" ? [(x - y) * CI, (x + y) * SI - (z || 0)] : [x, y]; }
@@ -2747,8 +2892,9 @@
       S.acceso = acc ? acc.map(function (q) { var x = (q[0] - l0[0]) * k, y = (q[1] - l0[1]) * k; return [x * c - y * s, x * s + y * c]; }) : null;
       if (polyArea(S.poly) > 0) S.poly.reverse();   // mismo sentido que las construcciones: la normal (dy, −dx) apunta hacia afuera
       selL.value = String(n);
+      agro(n);
       arboles(n);
-      S.items.forEach(function (it, i) { if (fuera(it)) { it.x = 0; it.y = i * 4; it.rot = 0; } });
+      S.items.forEach(function (it) { if (malo(it)) { it.rot = 0; ubicar(it); } });
       if (!S.items.length) add("casa");
       encuadre();
       acercar();
@@ -2814,7 +2960,7 @@
       S.arboles = [];
       for (var i = 0; i < 400 && S.arboles.length < 14; i++) {
         var p = [x0 + rnd() * (x1 - x0), y0 + rnd() * (y1 - y0)];
-        if (!inside(p, S.poly)) continue;
+        if (!inside(p, S.poly) || (S.agro && inside(p, S.agro.mitad))) continue;
         var d = distBorde(p);
         if (d < 2.5 || d > 9) continue;
         if (S.arboles.some(function (t) { return Math.hypot(t[0] - p[0], t[1] - p[1]) < 8; })) continue;
@@ -2837,16 +2983,12 @@
     function add(id) {
       var t = tipo(id);
       if (!t) return;
+      if (t.vivienda && nCasas() >= MAXCASAS) { S.aviso = "Máximo " + MAXCASAS + " casas por parcela: quita una para agregar otra."; return false; }
       var it = { key: ++S.seq, tipo: t.id, nombre: t.nombre, w: t.w, h: t.h, x: 0, y: 0, rot: 0, dos: !!t.dosAguas };
-      // Lugar libre cerca del centro, con 4 m de holgura entre construcciones
-      for (var i = 0; i < 90; i++) {
-        var a = i * 2.4, r = i * 1.6;
-        it.x = snap(Math.cos(a) * r); it.y = snap(Math.sin(a) * r);
-        var cs = corners(it, 4);
-        if (!fuera(it) && !S.items.some(function (o) { return choca(corners(o), cs); })) break;
-      }
+      ubicar(it);
       S.items.push(it);
       S.sel = S.items.length - 1;
+      return true;
     }
 
     function mk(tag, at, parent) {
@@ -2911,7 +3053,7 @@
       var cs = corners(it), H = t.alto, iso = S.vista === "iso";
       var techo = bad ? "#E9A08C" : t.techo;
       if (t.forma === "piscina") { piscina(g, it, cs, bad); return; }
-      if (!iso && dosAguas(it, t)) { mk("polygon", { points: pts(cs), class: "casa-planta", fill: techo, "data-act": "move" }, g); techoDos(g, it, dosAguas(it, t), 0, techo); return; }
+      if (!iso && dosAguas(it, t)) { mk("polygon", { points: pts(cs), class: "casa-planta", fill: techo, "data-act": "move" }, g); techoDos(g, it, dosAguas(it, t), 0, techo); if (t.corredor) corredor(g, it, t, 0, techo); return; }
       if (!iso) {
         mk("polygon", { points: pts(cs), fill: t.forma === "pergola" ? tono(t.techo, 0.25) : techo, class: "casa-planta", "data-act": "move" }, g);
         if (t.forma === "pergola") for (var k = 1; k < 4; k++) {
@@ -2949,9 +3091,14 @@
         muro.push([c.a[0], c.a[1], H]);
         mk("polygon", { points: pts(muro), fill: bad ? "#C9705A" : tono(t.muro, luz), "data-act": "move" }, g);
         var at = function (d, z) { return [c.a[0] + (c.b[0] - c.a[0]) * d / c.L, c.a[1] + (c.b[1] - c.a[1]) * d / c.L, z]; };
+        if (t.tablas) {   // tinglado de madera: tablas horizontales cada 30 cm
+          var tl = "";
+          for (var zt = 0.3; zt < H - 0.1; zt += 0.3) { var t1 = P.apply(null, at(0, zt)), t2 = P.apply(null, at(c.L, zt)); tl += "M" + num(t1[0]) + " " + num(t1[1]) + "L" + num(t2[0]) + " " + num(t2[1]); }
+          mk("path", { d: tl, class: "casa-tabla", stroke: tono(bad ? "#C9705A" : t.muro, luz - 0.18) }, g);
+        }
         var desde = 0.8;
         if (c === puerta && c.L > 2.6) {
-          mk("polygon", { points: pts([at(0.8, 0), at(1.85, 0), at(1.85, Math.min(2.2, H - 0.4)), at(0.8, Math.min(2.2, H - 0.4))]), fill: "#9C7443", class: "casa-puerta" }, g);
+          mk("polygon", { points: pts([at(0.8, 0), at(1.85, 0), at(1.85, Math.min(2.2, H - 0.4)), at(0.8, Math.min(2.2, H - 0.4))]), fill: "#6E4426", class: "casa-puerta" }, g);
           desde = 2.6;
         }
         var np = t.pisos || 1, hp = H / np;
@@ -2967,11 +3114,45 @@
             var d0 = ini + (nV === 1 ? (libre - vw) / 2 : v * (vw + paso)), z0 = pf * hp + hp * 0.3, z1 = pf * hp + hp * 0.78;
             mk("polygon", S.alt <= 0 ? { points: pts([at(d0, z0), at(d0 + vw, z0), at(d0 + vw, z1), at(d0, z1)]), class: "casa-vidrio is-luz", fill: "#FFD27A", raw: 1 }
               : { points: pts([at(d0, z0), at(d0 + vw, z0), at(d0 + vw, z1), at(d0, z1)]), class: "casa-vidrio", fill: "#D7E7EE" }, g);
+            if (t.tablas) {   // ventana de campo: marco blanco con cruz
+              var m1 = P.apply(null, at(d0 + vw / 2, z0)), m2 = P.apply(null, at(d0 + vw / 2, z1)), m3 = P.apply(null, at(d0, (z0 + z1) / 2)), m4 = P.apply(null, at(d0 + vw, (z0 + z1) / 2));
+              mk("path", { d: "M" + num(m1[0]) + " " + num(m1[1]) + "L" + num(m2[0]) + " " + num(m2[1]) + "M" + num(m3[0]) + " " + num(m3[1]) + "L" + num(m4[0]) + " " + num(m4[1]), class: "casa-marco" }, g);
+            }
           }
         }
       });
       if (dos) techoDos(g, it, dos, H, techo);
       else mk("polygon", { points: pts(cs.map(function (q) { return [q[0], q[1], H]; })), fill: techo, class: "casa-techo", "data-act": "move" }, g);
+      if (t.chimenea) {   // chimenea de ladrillo sobre la cumbrera (o el techo plano), hacia un extremo
+        var ex = it.w >= it.h ? [it.w * 0.28, 0] : [0, it.h * 0.28], ch = aMundo(it, ex[0], ex[1], 0), zc = H + (dos ? dos.R : 0);
+        caja(g, ch[0], ch[1], 0.75, 0.75, it.rot, zc - 0.5, zc + 0.9, bad ? "#C9705A" : "#8C5A43", "#3A2C24");
+      }
+      if (t.corredor) corredor(g, it, t, H, techo);
+    }
+    // Corredor de campo: piso de madera, pilares y techo de zinc en el lado largo que mira al frente
+    function corredor(g, it, t, H, techo) {
+      var cs = corners(it), iso = S.vista === "iso", lados = it.w >= it.h ? [0, 2] : [1, 3], D = 2.2, best = null;
+      lados.forEach(function (i) {
+        var a = cs[i], b = cs[(i + 1) % 4], nx = b[1] - a[1], ny = -(b[0] - a[0]), L = Math.hypot(nx, ny), n = [nx / L, ny / L];
+        if (!best || n[0] + n[1] > best.n[0] + best.n[1]) best = { a: a, b: b, n: n, L: L };
+      });
+      var a = best.a, b = best.b, n = best.n, fa = [a[0] + n[0] * D, a[1] + n[1] * D], fb = [b[0] + n[0] * D, b[1] + n[1] * D];
+      if (!iso) {
+        mk("polygon", { points: pts([a, b, fb, fa]), class: "casa-corredor-p", fill: tono(techo, 0.22), "data-act": "move" }, g);
+        return;
+      }
+      var zp = 0.2, zt = H - 0.18, zl = Math.max(2.2, zt - 0.55);
+      mk("polygon", { points: pts([[a[0], a[1], zp], [b[0], b[1], zp], [fb[0], fb[1], zp], [fa[0], fa[1], zp]]), fill: "#B38455", "data-act": "move" }, g);
+      mk("polygon", { points: pts([[fa[0], fa[1], 0], [fb[0], fb[1], 0], [fb[0], fb[1], zp], [fa[0], fa[1], zp]]), fill: "#7E5A38", "data-act": "move" }, g);
+      var nP = Math.max(2, Math.ceil(best.L / 3.2) + 1), pl = "";
+      for (var k = 0; k < nP; k++) {
+        var f = k / (nP - 1), q = [fa[0] + (fb[0] - fa[0]) * f - n[0] * 0.15, fa[1] + (fb[1] - fa[1]) * f - n[1] * 0.15];
+        var p0 = P(q[0], q[1], zp), p1 = P(q[0], q[1], zl); pl += "M" + num(p0[0]) + " " + num(p0[1]) + "L" + num(p1[0]) + " " + num(p1[1]);
+      }
+      mk("path", { d: pl, class: "casa-pilar" }, g);
+      var luz = S.alt <= 0 ? -0.05 : (n[0] * S.sd[0] + n[1] * S.sd[1]) > 0 ? 0.16 : -0.1;
+      mk("polygon", { points: pts([[a[0], a[1], zt], [b[0], b[1], zt], [fb[0] + n[0] * 0.2, fb[1] + n[1] * 0.2, zl - 0.06], [fa[0] + n[0] * 0.2, fa[1] + n[1] * 0.2, zl - 0.06]]), fill: tono(techo, luz), class: "casa-techo", "data-act": "move" }, g);
+      mk("polygon", { points: pts([[fa[0] + n[0] * 0.2, fa[1] + n[1] * 0.2, zl - 0.06], [fb[0] + n[0] * 0.2, fb[1] + n[1] * 0.2, zl - 0.06], [fb[0] + n[0] * 0.2, fb[1] + n[1] * 0.2, zl - 0.22], [fa[0] + n[0] * 0.2, fa[1] + n[1] * 0.2, zl - 0.22]]), fill: tono(techo, -0.3), "data-act": "move" }, g);
     }
     // Techo a dos aguas: cumbrera a lo largo del lado mayor, 25° de pendiente (máx. 2,4 m de alto) y 35 cm de alero
     function dosAguas(it, t) {
@@ -3039,6 +3220,26 @@
       mk("circle", { cx: num(sc[0]), cy: num(sc[1]), r: num(r), class: "casa-copa", fill: "#7E9A67" }, g);
       mk("circle", { cx: num(sc[0] - r * 0.28), cy: num(sc[1] - r * 0.3), r: num(r * 0.5), class: "casa-copa-luz" }, g);
     }
+    // Frutal (copa redonda y baja con frutos) o nativo (más alto, verde oscuro e irregular)
+    function arbolAgro(g, t) {
+      var iso = S.vista === "iso", f = t.k === "f", h = t.h, r = f ? 1.55 : h * 0.3;
+      var verde = f ? "#6F9452" : (t.v > 0.5 ? "#4C6B43" : "#5D7A4A");
+      if (S.alt > 0) { var sh = P(t.x + SOL[0] * h * 0.6, t.y + SOL[1] * h * 0.6, 0); mk("ellipse", { cx: num(sh[0]), cy: num(sh[1]), rx: num(r * 1.05), ry: num(r * (iso ? 0.55 : 1)), class: "casa-sombra" }, g); }
+      if (!iso) {
+        mk("circle", { cx: num(t.x), cy: num(t.y), r: num(r), class: "casa-copa", fill: verde }, g);
+        if (f) mk("circle", { cx: num(t.x + r * 0.3), cy: num(t.y - r * 0.2), r: num(r * 0.22), fill: S.agro.cfg.fruta }, g);
+        return;
+      }
+      var s0 = P(t.x, t.y, 0), s1 = P(t.x, t.y, h * (f ? 0.45 : 0.5)), sc = P(t.x, t.y, h * (f ? 0.62 : 0.66));
+      mk("line", { x1: num(s0[0]), y1: num(s0[1]), x2: num(s1[0]), y2: num(s1[1]), class: "casa-tronco" }, g);
+      mk("circle", { cx: num(sc[0]), cy: num(sc[1]), r: num(r), class: "casa-copa", fill: verde }, g);
+      if (f) {
+        [[-0.45, 0.1], [0.35, -0.25], [0.1, 0.45]].forEach(function (o) { mk("circle", { cx: num(sc[0] + o[0] * r), cy: num(sc[1] + o[1] * r), r: num(r * 0.16), fill: S.agro.cfg.fruta }, g); });
+      } else {
+        mk("circle", { cx: num(sc[0] + r * 0.45), cy: num(sc[1] - r * 0.55), r: num(r * 0.7), class: "casa-copa", fill: tono(verde, 0.08) }, g);
+      }
+      mk("circle", { cx: num(sc[0] - r * 0.28), cy: num(sc[1] - r * 0.3), r: num(r * 0.45), class: "casa-copa-luz" }, g);
+    }
     // Cota: línea paralela a un borde, separada hacia afuera, con remates y el largo en metros
     function cota(g, a, b, n, sep, u, txt) {
       var o = [n[0] * sep, n[1] * sep], A = [a[0] + o[0], a[1] + o[1]], Bp = [b[0] + o[0], b[1] + o[1]];
@@ -3074,6 +3275,13 @@
       for (var x = x0; x <= x1; x += 5) { var s1 = seg([x, y0], [x, y1]); if (x % 10) d5 += s1; else d10 += s1; }
       for (var y = y0; y <= y1; y += 5) { var s2 = seg([x0, y], [x1, y]); if (y % 10) d5 += s2; else d10 += s2; }
       mk("path", { d: d5, class: "g5" }, gr); mk("path", { d: d10, class: "g10" }, gr);
+      // Área agroresidencial: frutales en hileras y conservación natural, con su límite (no construible)
+      if (S.agro) {
+        var ga = mk("g", { class: "casa-agro" }, svg);
+        mk("polygon", { points: pts(S.agro.frut), class: "casa-agro-f", fill: "#C3CF95" }, ga);
+        mk("polygon", { points: pts(S.agro.cons), class: "casa-agro-c", fill: "#A9BC86" }, ga);
+        mk("polygon", { points: pts(S.agro.mitad), class: "casa-agro-lim" }, ga);
+      }
       mk("polygon", { points: pts(S.poly), class: "casa-borde" }, svg);
       // Largo de cada deslinde (los de más de 12 m)
       var gl = mk("g", { class: "casa-deslindes" }, svg);
@@ -3112,16 +3320,23 @@
       var cosas = S.arboles.filter(function (t) { return !huellas.some(function (h) { return inside(t, h); }); })
         .map(function (t) { return { z: prof(t[0], t[1]), t: t }; })
         .concat(vida)
+        .concat(S.agro ? S.agro.arboles.map(function (t) { return { z: prof(t.x, t.y), ag: t }; }) : [])
         .concat(S.items.map(function (it, i) { return { z: tipo(it.tipo).forma === "piscina" ? -1e9 : prof(it.x, it.y), it: it, i: i }; }))
         .sort(function (a, b) { return a.z - b.z; });
       cosas.forEach(function (c) {
         if (c.t) { arbol(mk("g", { class: "casa-arbol" }, svg), c.t); return; }
+        if (c.ag) { arbolAgro(mk("g", { class: "casa-arbol" }, svg), c.ag); return; }
         if (c.auto) { auto(mk("g", { class: "casa-deco" }, svg), c.auto); return; }
         if (c.persona) { persona(mk("g", { class: "casa-deco" }, svg), c.persona); return; }
-        var it = c.it, i = c.i, bad = fuera(it), on = i === S.sel;
+        var it = c.it, i = c.i, bad = malo(it), on = i === S.sel;
         var g = mk("g", { class: "casa-it casa-" + it.tipo + (on ? " is-sel" : "") + (bad ? " is-bad" : ""), tabindex: "0", role: "button", "data-i": i,
-          "aria-label": it.nombre + ", " + fmt(it.w) + " por " + fmt(it.h) + " metros" + (bad ? ", fuera del lote" : "") }, svg);
+          "aria-label": it.nombre + ", " + fmt(it.w) + " por " + fmt(it.h) + " metros" + (fuera(it) ? ", fuera del lote" : bad ? ", sobre el área de frutales o conservación" : "") }, svg);
         volumen(g, it, tipo(it.tipo), bad);
+      });
+      if (S.agro) [[S.agro.frut, "Frutales · 25 %"], [S.agro.cons, "Conservación natural · 25 %"]].forEach(function (z) {
+        if (z[0].length < 3) return;
+        var c0 = centro(z[0]), q = P(c0[0], c0[1], 0);
+        var tx = mk("text", { x: num(q[0]), y: num(q[1]), "font-size": num(2.1 * u), class: "casa-agro-t" }, svg); tx.textContent = z[1];
       });
       // Seleccionada: contorno, cotas y manillas (tamaño en la esquina más cercana, giro más allá de una cota)
       var it = S.items[S.sel];
@@ -3259,15 +3474,29 @@
       };
     }
     function panel() {
-      var tot = total(), lim = limite(), over = tot > lim + 1e-6, malo = S.items.filter(fuera).length;
+      var tot = total(), lim = limite(), over = tot > lim + 1e-6, nf = S.items.filter(fuera).length, na = S.items.filter(function (x) { return !fuera(x) && enAgro(x); }).length;
+      var aviso = S.aviso; S.aviso = "";
       el.total.textContent = fmt(tot) + " m²";
       el.max.textContent = m2(lim);
       el.bar.style.width = Math.min(100, tot / lim * 100) + "%";
       el.meter.classList.toggle("is-over", over);
-      el.msg.textContent = over ? "Te pasaste por " + fmt(tot - lim) + " m²: achica o quita algo."
-        : malo ? (malo === 1 ? "Una construcción queda fuera del lote." : malo + " construcciones quedan fuera del lote.")
+      el.msg.textContent = aviso ? aviso : over ? "Te pasaste por " + fmt(tot - lim) + " m²: achica o quita algo."
+        : nf ? (nf === 1 ? "Una construcción queda fuera del lote." : nf + " construcciones quedan fuera del lote.")
+        : na ? (na === 1 ? "Una construcción quedó sobre los frutales o la conservación: ahí no se puede construir." : na + " construcciones quedaron sobre los frutales o la conservación: ahí no se puede construir.")
         : "Te quedan " + fmt(lim - tot) + " m² para construir (" + Math.round(tot / lim * 100) + " % usado).";
-      el.msg.classList.toggle("is-warn", over || !!malo);
+      el.msg.classList.toggle("is-warn", over || !!nf || !!na || !!aviso);
+      var nc = nCasas();
+      if (el.casas) el.casas.textContent = "Casas: " + nc + " de " + MAXCASAS + " permitidas";
+      $$("[data-tipo]", el.add).forEach(function (b) {
+        var lleno = tipo(b.getAttribute("data-tipo")).vivienda && nc >= MAXCASAS;
+        b.disabled = lleno;
+        b.title = lleno ? "Máximo " + MAXCASAS + " casas por parcela" : tipo(b.getAttribute("data-tipo")).nombre;
+      });
+      if (S.agro && el.agroM2) {
+        el.agroM2.textContent = m2(Math.round(S.agro.m2 / 10) * 10);
+        el.agroF.textContent = S.agro.cfg.frutales.charAt(0).toUpperCase() + S.agro.cfg.frutales.slice(1);
+        el.agroC.textContent = S.agro.cfg.nativo.charAt(0).toUpperCase() + S.agro.cfg.nativo.slice(1);
+      }
       if (el.lbl) el.lbl.textContent = "Lote " + S.lote.n + " · " + m2(S.lote.m2) + " · " + S.p.nombre;
       var it = S.items[S.sel];
       el.box.hidden = !it;
@@ -3285,15 +3514,15 @@
       }
       var lista = S.items.map(function (x) { return x.nombre.toLowerCase() + " de " + fmt(area(x)) + " m²" + (pisos(x) > 1 ? " (" + pisos(x) + " pisos)" : "") + (x.dos && tipo(x.tipo).techoOp ? " con techo a dos aguas" : ""); });
       el.wa.href = waHref("Hola Fundos, dibujé mi casa en el lote " + S.lote.n + " de " + S.p.nombre + ": " + (lista.join(", ") || "sin construcciones") +
-        ". En total " + fmt(tot) + " m² de " + m2(lim) + " permitidos. ¿Me ayudan a evaluarlo?");
+        ". En total " + fmt(tot) + " m² de " + m2(lim) + " permitidos" + (S.agro ? ", y la mitad del terreno con frutales (" + S.agro.cfg.frutales + ") y conservación natural (" + S.agro.cfg.nativo + ")" : "") + ". ¿Me ayudan a evaluarlo?");
     }
 
     el.add.innerHTML = TIPOS.map(function (t) {
-      return '<button class="casa-chip" type="button" data-tipo="' + t.id + '"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>' + esc(t.nombre) + "<small>" + t.w + "×" + t.h + " m</small></button>";
+      return '<button class="casa-chip" type="button" data-tipo="' + t.id + '" title="' + esc(t.nombre) + '"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>' + esc(t.corto || t.nombre) + "<small>" + t.w + "×" + t.h + " m</small></button>";
     }).join("");
     el.add.addEventListener("click", function (e) {
       var b = e.target.closest("[data-tipo]");
-      if (!b) return;
+      if (!b || b.disabled) return;
       add(b.getAttribute("data-tipo"));
       draw();
     });
@@ -3566,6 +3795,8 @@
     safe(initSellers, "initSellers");
     safe(initPV, "initPV");
     safe(initPvLead, "initPvLead");
+    safe(initMiniForms, "initMiniForms");
+    safe(initHaciendas, "initHaciendas");
     safe(initOffscreen, "initOffscreen");
     $$('input[type="range"]').forEach(paintRange);
   }

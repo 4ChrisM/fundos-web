@@ -33,7 +33,7 @@ Además: barra de acción fija en móvil (WhatsApp + Agendar visita), botón flo
 
 Todo lo editable está en `lib/manifest.js`.
 
-- [ ] **Contacto:** número de WhatsApp, correo y horario. Hoy es un placeholder (`+56 9 0000 0000`).
+- [x] **Contacto:** WhatsApp general +56 9 9292 2429 y ventas@fundosinmobiliaria.com (dados por el cliente, oct-2026). Falta confirmar el horario.
 - [ ] **Lotes, precios y estados:** son referenciales, basados en ejemplos del manual. Lo ideal es leerlos desde Fundos 360° (módulo Parcelas) para mostrar la disponibilidad real.
 - [ ] **Superficie por lote:** se asume 5.000 m² en todos los proyectos (confirmar, sobre todo Puerto Varas).
 - [ ] **Financiamiento:** tasa (0,9 % mensual), pie mínimo (30 %) y plazos son supuestos. Si no hay crédito directo, usar `financiamiento.habilitado = false`.
@@ -44,7 +44,7 @@ Todo lo editable está en `lib/manifest.js`.
 - [ ] **Equipo:** fotos, nombres y presentaciones del equipo real (uso autorizado), en `lib/manifest.js` (`equipo`). Teléfono, correo y WhatsApp propio de cada persona ya cargados. Falta, si se quiere: el cargo de cada persona (hoy "Equipo comercial"). El video no tiene subtítulos: conviene agregarlos (o enviarnos el texto) para quienes lo vean sin sonido.
 - [ ] **Videos:** la propuesta no incluye videos. El sitio ya está preparado: basta con subir el archivo o pegar el enlace (ver "Videos" más abajo).
 - [ ] **Concurso:** el sitio actual tiene una página de concurso; se puede sumar como banner o sección cuando esté definido.
-- [ ] **Al publicarlo en el dominio de Fundos:** quitar la etiqueta "Propuesta" del menú, quitar `noindex` y cambiar la URL de `og:image`.
+- [ ] **Al publicarlo en el dominio de Fundos (fundosinmobiliaria.com, en pausa):** ya está hecho en el commit `80c7385`; paso a paso y orden en `docs/cambio-dominio.md`.
 
 ## Estado y próximos pasos
 
@@ -55,9 +55,12 @@ Publicada en https://fundos.biplot.cl/ (cada cambio entra por un pull request a 
 
 - [ ] **Mapa "Descubre tu entorno" (`entorno.html`):** imagen satelital ya reemplazada por Sentinel-2 cloudless 2016 (libre para uso comercial con crédito). Falta bajar las fotos de Wikimedia Commons (requiere que la red permita `commons.wikimedia.org` y `upload.wikimedia.org`; fotos propias del cliente, si las tiene, son mejores). Videos del cliente ya integrados en 10 lugares (Alerce, parque, Puerto Varas, Frutillar, lago, Puerto Montt, Osorno, Petrohué, Calbuco y Caleta Angelmó, que también está en "Míralo en video" de la portada); faltan los demás si los tiene (Todos los Santos, Alerce Andino…). El de Frutillar podría ser una muestra recortada del convertidor: confirmar con el original. El cliente debe aprobar los textos de los lugares nuevos (marcados con `"revisar": true`).
 - [ ] **Mapas del entorno de Malalcahuello y Marchigüe** (`entorno.html?p=malalcahuello`, `?p=marchigue`, publicados en octubre 2026): confirmar con el cliente todos los textos de lugares (todos `"revisar": true`); la coordenada de Malalcahuello está en el sector Lolén (Lonquimay), a 20 min de Lonquimay y 50 min del pueblo, así que el chip "Cerca de Corralco" de la tarjeta (1 h 10 min) conviene revisarlo; confirmar el nombre del sector de Marchigüe y la frase "a una hora de Pichilemu" (antes decía "40 minutos"; la ruta calculada da 1 h). Sin videos ni fotos todavía: si el cliente tiene tomas de dron de esas zonas, se integran como las de Puerto Varas.
-- [ ] **WhatsApp y precios:** el número de contacto y los precios de `lib/manifest.js` son de ejemplo (`+56 9 0000 0000`).
+- [x] **WhatsApp:** número real desde oct-2026. Los precios salen de los PDF comerciales de Fundos 360°.
 - [ ] **Planos en SVG:** el cliente enviará los planos vectoriales de Malalcahuello y Puerto Varas (y después Marchigüe) para calcarlos exactos. Hoy la geometría sale de las imágenes de los masterplan, enderezada con `tools/enderezar_planos.py`. Al llegar: revisar que cada lote sea su propia forma (no una imagen incrustada), asociar cada forma a su número de lote y reemplazar la geometría de ese proyecto en `lib/planos.js`, manteniendo el formato `{d, l, r}`.
 - [ ] **Tu casa:** confirmar con el cliente la regla del 10 % (si se mide sobre la huella o sobre lo construido en todos los pisos, y si la piscina suma) (y si quieren mostrar distanciamientos a los deslindes); la forma de cada lote sale del plano actual (se afinará con los SVG).
+- [ ] **Proyectos Hacienda:** el cliente enviará nombre, región, zona y un texto corto de cada uno (genéricos, sin plano ni 360°). Se agregan en `haciendas` de `lib/manifest.js`; mientras esté vacío, la sección no se ve.
+- [ ] **Tu casa con pendientes:** más adelante, mostrar la pendiente del lote según su ubicación (modelo de elevación por coordenadas).
+- [ ] **Tu casa agroresidencial:** confirmar con el cliente las especies sugeridas de frutales y de conservación por proyecto (`AGRO` en `main.js`).
 - [ ] **Cargos del equipo:** hoy todos dicen "Equipo comercial" en `lib/manifest.js` (`equipo`); falta el cargo de cada persona (teléfono, correo y WhatsApp ya están).
 
 ## Estructura

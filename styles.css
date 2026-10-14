@@ -1322,7 +1322,7 @@ body.tour-lock { overflow: hidden; }
   .project-art { aspect-ratio: auto; min-height: 100%; }
   .steps { grid-template-columns: 1fr 1fr; }
   .values { grid-template-columns: 1fr 1fr; }
-  .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1.2fr; }
+  .footer-grid { grid-template-columns: 1.3fr 1fr 1fr 1fr 1.2fr; }
   .hero-scroll { display: grid; }
 }
 
@@ -2638,3 +2638,73 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .plan-zoom .pz-fondo button[aria-pressed="true"] { background: var(--g900); color: #FFFFFF; }
 .plan-zoom .pz-fondo + button { border-left: 0; }
 @media (pointer: coarse) { .plan-zoom .pz-fondo button { width: auto; height: 36px; } }
+
+/* Tu casa agroresidencial (pedido del cliente): máx. 2 casas, 50 % con frutales y conservación, casas de campo */
+.casa-meter-casas { margin-top: .35rem; font-size: .76rem; font-weight: 700; letter-spacing: .02em; color: var(--gold); }
+.casa-agro-box { display: grid; gap: .45rem; padding: .75rem .9rem; border: 1px solid #C9D3AE; border-radius: var(--r-lg); background: #F1F4E6; color: var(--g900); }
+.casa-agro-k { font-size: .84rem; font-weight: 700; line-height: 1.35; }
+.casa-agro-k .i { width: 16px; height: 16px; color: #4E7A3A; vertical-align: -3px; margin-right: .3rem; }
+.casa-agro-k strong { font-weight: 800; }
+.casa-agro-l { display: grid; gap: .25rem; margin: 0; padding: 0; list-style: none; font-size: .78rem; line-height: 1.35; color: var(--n600); }
+.casa-agro-l li { display: flex; gap: .45rem; align-items: baseline; }
+.casa-agro-l b { color: var(--g900); }
+.casa-sw { flex: none; width: 10px; height: 10px; border-radius: 3px; transform: translateY(1px); }
+.casa-sw-f { background: #C3CF95; box-shadow: inset 0 0 0 1.5px #7F9A55; }
+.casa-sw-c { background: #A9BC86; box-shadow: inset 0 0 0 1.5px #4C6B43; }
+.casa-agro-nota { display: flex; gap: .4rem; align-items: flex-start; margin: 0; padding-top: .4rem; border-top: 1px dashed #C9D3AE; font-size: .76rem; font-weight: 700; line-height: 1.35; color: #8A3B22; }
+.casa-agro-nota .i { width: 15px; height: 15px; flex: none; margin-top: 1px; }
+.casa-chip:disabled { opacity: .45; cursor: not-allowed; }
+.casa-chip:disabled:hover { border-color: var(--n200); background: var(--white); }
+.casa-agro-f, .casa-agro-c { pointer-events: none; }
+.casa-agro-lim { fill: none; stroke: #4E7A3A; stroke-width: calc(var(--cu) * .35); stroke-dasharray: calc(var(--cu) * 1.4) calc(var(--cu) * 1); pointer-events: none; }
+.casa-agro-t { font-family: var(--sans); font-weight: 800; text-anchor: middle; fill: #2F4A25; paint-order: stroke; stroke: rgba(255, 255, 255, .85); stroke-width: calc(var(--cu) * .5); pointer-events: none; letter-spacing: .02em; }
+.casa-tabla { fill: none; stroke-width: calc(var(--cu) * .06); pointer-events: none; }
+.casa-marco { fill: none; stroke: #F4EFE6; stroke-width: calc(var(--cu) * .12); pointer-events: none; }
+.casa-pilar { fill: none; stroke: #6B4A2C; stroke-width: calc(var(--cu) * .3); stroke-linecap: round; pointer-events: none; }
+.casa-corredor-p { stroke: rgba(40, 30, 20, .35); stroke-width: calc(var(--cu) * .1); }
+@media (min-width: 960px) {
+  .casa { grid-template-rows: auto auto auto auto auto 1fr; }
+  .casa-agro-box { grid-column: 1; grid-row: 3; }
+  .casa-sel { grid-row: 4; }
+  .casa-wa { grid-row: 5; }
+  .casa-stage { grid-row: 2 / 7; }
+}
+@media (max-width: 959px) {
+  .casa-agro-box { order: 4; }
+}
+
+/* Trabaja con nosotros: vende tu campo y proveedores (dos formularios lado a lado en computador) */
+.trabaja-grid { display: grid; gap: 1.2rem; }
+.mini-form { position: relative; display: grid; gap: .9rem; align-content: start; padding: 1.3rem; border: 1px solid var(--n200); border-radius: var(--r-xl, 20px); background: var(--white, #fff); box-shadow: 0 18px 40px -30px rgba(10, 20, 14, .45); scroll-margin-top: calc(var(--nav-h, 72px) + var(--tabs-h, 0px) + 16px); }
+.mini-head { display: flex; gap: .9rem; align-items: flex-start; }
+.mini-ico { display: grid; place-items: center; flex: none; width: 46px; height: 46px; border-radius: 14px; background: var(--g900); color: var(--gold); }
+.mini-ico .i { width: 22px; height: 22px; }
+.mini-head h3 { font: 500 1.5rem/1.15 var(--serif); color: var(--g900); }
+.mini-head h3 em { color: var(--gold-ink); }
+.mini-head p { margin-top: .35rem; font-size: .9rem; line-height: 1.5; color: var(--n600); }
+.mini-fields { display: grid; gap: .7rem .8rem; }
+.mini-fields textarea { min-height: 64px; resize: vertical; }
+.mini-check { font-size: .84rem; }
+.mini-act { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+.mini-mail { font-size: .84rem; font-weight: 700; color: var(--gold-ink); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.mini-ok { position: absolute; inset: 0; z-index: 2; display: grid; align-content: center; justify-items: start; gap: .8rem; padding: 1.4rem; border-radius: inherit; background: rgba(255, 255, 255, .97); }
+.mini-ok[hidden] { display: none; }
+.mini-ok-k { font: 500 1.4rem/1.2 var(--serif); color: var(--g900); }
+.mini-ok-msg { padding: .8rem .9rem; border-radius: 12px; background: #F3EEE4; font-size: .88rem; line-height: 1.5; color: var(--n800, #2B2A27); }
+@media (min-width: 600px) { .mini-fields { grid-template-columns: 1fr 1fr; } .mini-wide { grid-column: 1 / -1; } }
+@media (min-width: 1024px) { .trabaja-grid { grid-template-columns: 1fr 1fr; gap: 1.6rem; } .mini-form { padding: 1.6rem; } }
+
+/* Proyectos Hacienda: tarjetas genéricas (nombre, lugar, texto y botón) */
+.hac-grid { display: grid; gap: 1.2rem; margin: 0; padding: 0; list-style: none; }
+.hac-card { display: grid; overflow: hidden; border: 1px solid var(--n200); border-radius: var(--r-xl, 20px); background: var(--white, #fff); }
+.hac-foto { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.hac-foto-vacia { display: grid; place-items: center; background: linear-gradient(135deg, #24382A, #0A140E); color: var(--gold); }
+.hac-foto-vacia .i { width: 46px; height: 46px; opacity: .8; }
+.hac-body { display: grid; gap: .5rem; justify-items: start; padding: 1.1rem 1.2rem 1.3rem; }
+.hac-estado { padding: .2rem .6rem; border-radius: 999px; background: rgba(200, 161, 101, .2); font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-ink); }
+.hac-body h3 { font: 500 1.5rem/1.15 var(--serif); color: var(--g900); }
+.hac-lugar { display: flex; gap: .35rem; align-items: center; font-size: .86rem; font-weight: 700; color: var(--n600); }
+.hac-lugar .i { width: 15px; height: 15px; color: var(--gold-ink); }
+.hac-body p { font-size: .9rem; line-height: 1.5; color: var(--n600); }
+.hac-sup { font-weight: 700; color: var(--g900) !important; }
+@media (min-width: 700px) { .hac-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } }
