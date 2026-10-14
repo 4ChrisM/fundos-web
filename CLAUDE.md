@@ -6,10 +6,12 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
 "Estado y próximos pasos").
 
 ## Dónde está publicado
-- **Sitio público:** https://fundos.biplot.cl/ (GitHub Pages desde `main` de `4ChrisM/fundos-web`, dominio en `CNAME`;
-  DNS: CNAME `fundos` de biplot.cl → `4chrism.github.io`). Lleva `noindex`. Hasta octubre 2026 vivió en
-  `Biplot/biplot` (`propuestas/fundos-inmobiliaria/`, donde queda su historial de cambios). Esa dirección redirige
-  aquí desde el 6-oct-2026 (Biplot/biplot#49), conservando `?p=` y `#`.
+- **Sitio público:** https://fundosinmobiliaria.com/ (GitHub Pages desde `main` de `4ChrisM/fundos-web`, dominio en
+  `CNAME`). **Reemplaza al sitio de Squarespace** (decisión del cliente, oct-2026): DNS del dominio en Squarespace con
+  los 4 registros A de GitHub Pages (185.199.108-111.153) y CNAME `www` → `4chrism.github.io`; los registros de correo
+  (MX/TXT) no se tocan. Ya es el sitio oficial: sin `noindex` (salvo `vitrina.html`), con `robots.txt`, `sitemap.xml`,
+  `canonical` y sin la etiqueta "Propuesta". Antes vivió en `fundos.biplot.cl` (CNAME `fundos` de biplot.cl) y, hasta
+  octubre 2026, en `Biplot/biplot` (`propuestas/fundos-inmobiliaria/`, con su historial; redirige a fundos.biplot.cl).
 - **Sistema del cliente:** Fundos 360° (`4ChrisM/fundos-os`, Next.js + Supabase, módulo de leads). Ver en README el
   pendiente de conectar el formulario y la disponibilidad.
 - **Vista previa privada (artefacto de Claude):** https://claude.ai/artifact/NthH9NFHsid6PzqL8HN9wU
