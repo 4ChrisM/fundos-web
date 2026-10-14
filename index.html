@@ -21,17 +21,17 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Fundos Inmobiliaria","url":"https://www.fundosinmobiliaria.com/","slogan":"La tierra como punto de partida.","areaServed":["Malalcahuello","Marchigüe","Puerto Varas"],"address":{"@type":"PostalAddress","addressCountry":"CL"}}
 </script>
-<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"inicio","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo","trabaja-con-nosotros":"equipo","vende-tu-campo":"equipo",proveedores:"equipo",haciendas:"proyectos"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
+<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"inicio","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo","trabaja-con-nosotros":"equipo","vende-tu-campo":"equipo",proveedores:"equipo","mas-proyectos":"proyectos"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
 <link rel="preload" as="image" href="assets/video/puerto-varas.webp" media="(min-width: 960px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/video/puerto-varas-movil.webp" media="(max-width: 959px)" fetchpriority="high">
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261014d">
-<script defer src="lib/manifest.js?v=20261014d"></script>
-<script defer src="lib/analitica.js?v=20261014d"></script>
-<script defer src="lib/planos.js?v=20261014d"></script>
-<script defer src="main.js?v=20261014d"></script>
+<link rel="stylesheet" href="styles.css?v=20261014e">
+<script defer src="lib/manifest.js?v=20261014e"></script>
+<script defer src="lib/analitica.js?v=20261014e"></script>
+<script defer src="lib/planos.js?v=20261014e"></script>
+<script defer src="main.js?v=20261014e"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -668,15 +668,15 @@
      Se arma desde lib/manifest.js (foto, caracteristicas, cercanias…): un proyecto nuevo solo necesita sus datos.
      Enlace directo: #proyecto-ID. El proyecto destacado tiene su propia pestaña y aquí solo se enlaza. -->
 <!-- Invitación a "Tu casa" (diseña tu parcela en 3D) -->
-<!-- ============================== PROYECTOS HACIENDA (se arman desde lib/manifest.js: haciendas) ============================== -->
-<section class="section light haciendas" id="haciendas" data-vista="proyectos" aria-labelledby="haciendas-title" data-haciendas hidden>
+<!-- ============================== MÁS PROYECTOS (se arman desde lib/manifest.js: masProyectos) ============================== -->
+<section class="section light mas-proyectos" id="mas-proyectos" data-vista="proyectos" aria-labelledby="mas-proyectos-title" data-mas-proyectos hidden>
   <div class="container">
     <header class="section-head reveal">
-      <p class="kicker">Más proyectos Fundos</p>
-      <h2 id="haciendas-title">Proyectos <em>Hacienda</em></h2>
-      <p class="lead">Parcelas en la costa, los lagos, los valles y la cordillera, de Valparaíso a Los Lagos. Pide información y un asesor te cuenta los detalles.</p>
+      <p class="kicker">Más proyectos</p>
+      <h2 id="mas-proyectos-title">Fundos en <em>todo Chile</em></h2>
+      <p class="lead">Parcelas de 5.000&nbsp;m² en la costa, los lagos, los valles y la cordillera, de Valparaíso a Los Lagos. Pide información y un asesor te cuenta los detalles.</p>
     </header>
-    <ul class="hac-grid" data-hac-list></ul>
+    <ul class="mp-grid" data-mp-list></ul>
   </div>
 </section>
 
@@ -1494,7 +1494,7 @@
       <h2>Trabaja con nosotros</h2>
       <a href="#vende-tu-campo">Vende tu campo</a>
       <a href="#proveedores">Ofrece tus servicios</a>
-      <a href="#haciendas" data-hac-link hidden>Proyectos Hacienda</a>
+      <a href="#mas-proyectos" data-mp-link hidden>Más proyectos</a>
     </nav>
     <div class="footer-col">
       <h2>Contacto</h2>
