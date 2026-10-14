@@ -155,6 +155,11 @@
       tag.className = "pm-voto";
       tag.textContent = "Vista previa para votación · " + (root.classList.contains("pm-h") ? "Opción B · Horizontal" : "Opción A · Vertical");
       var nl = $(".nav-left") || (brand && brand.parentNode); if (nl) nl.appendChild(tag);
+      // Solo la pestaña Proyectos: el resto del contenido se quita de la página (no solo se oculta)
+      $$("main > *").forEach(function (el) { if (el.id !== "mas-proyectos") el.parentNode.removeChild(el); });
+      $$(".footer, .mbar, .wa-float, .quick, #menu").forEach(function (el) { el.parentNode.removeChild(el); });
+      $$("[data-vista-link]").forEach(function (a) { if (a.getAttribute("data-vista-link") !== "proyectos") a.parentNode.removeChild(a); });
+      $$(".nav-links > :not([data-vista-link])").forEach(function (el) { el.parentNode.removeChild(el); });
     }
     function set(v) {
       if (CERRADO && v !== "proyectos") return false;
