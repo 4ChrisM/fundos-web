@@ -230,9 +230,12 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   "Conoce cada proyecto" (reusa las clases `.py-*`: foto grande con el nombre, miniaturas, franja de datos, características
   con íconos, "Cerca de tu parcela" y acciones; sin fotos, el emblema en un recuadro crema) (`[data-mch-ficha]`, Escape o × la cierran y el foco vuelve a la tarjeta): fotos con miniaturas (`galeria` del
   proyecto en el manifiesto, armadas por `tools/galeria_build.py` en `assets/img/galeria/`; el satelital del entorno
-  lleva crédito Sentinel-2/EOX), descripción, datos (desde, disponibles, 5.000 m², reserva), destacados, cercanías y
+  lleva crédito Sentinel-2/EOX). **Los 13 fundos tienen fotos** (oct-2026): los 10 de `masProyectos` con fotos del
+  cliente, subidas a `subidas/` como "NN. Nombre.webp" (el número da el orden, la primera va en el resumen; `ALIAS` del
+  script reconoce el fundo), convertidas y borradas de la rama; los títulos (`alt`) se escribieron a mano según lo que se
+  ve en cada foto (por confirmar con el cliente), descripción, datos (desde, disponibles, 5.000 m², reserva), destacados, cercanías y
   "Ver lotes y precios" / "Recorrido 360°" / "Conocer el proyecto"; los de `masProyectos` muestran emblema, lema,
-  etiquetas, "Fotos del proyecto: próximamente" y "Quiero información" por WhatsApp. Tocar el Chile completo viaja al
+  etiquetas (sin `galeria`, "Fotos del proyecto: próximamente") y "Quiero información" por WhatsApp. Tocar el Chile completo viaja al
   fundo más cercano en latitud; tocar un punto de la lupa mueve el carrusel. Un punto por proyecto (dorado los 3 con
   plano: lat/lon del enlace `mapa` del manifiesto; claros los de `masProyectos`: `lat`/`lon` aproximados); la región sale
   de dónde cae el punto. Sin `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`, `mpCard`).
