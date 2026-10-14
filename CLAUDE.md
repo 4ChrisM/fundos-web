@@ -206,6 +206,15 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   Santo Domingo, Lago Rapel, Bucalemu, Talca, Retiro, San Fabián de Alico, Cobquecura, Río Liucura, Río Negro y Puerto
   Montt (textos resumidos de su sitio; los nombres antiguos dentro de esos textos, como "Fundo Río Mar" o "La Gran
   Reserva", no se usan).
+- **Mapa "Fundos en todo Chile"** (`[data-mch]` en `#mas-proyectos`, `initMapaChile`; pedido del cliente: "jugar con la
+  latitud"): regiones de Chile centro-sur (31,4°S a 44°S) desde `lib/mapa-chile.js`, **generado** por
+  `tools/mapa_chile_build.py` (límites de la BCN vía github.com/fcortes/Chile-GeoJSON, simplificados con shapely,
+  proyección equirectangular `proy`; incluye la silueta de Chile para el recuadro). Un punto por proyecto (dorado los 3
+  con plano: lat/lon del enlace `mapa` del manifiesto; verde los de `masProyectos`: `lat`/`lon` aproximados) y la región
+  sale de dónde cae el punto. Al lado, cada región con sus proyectos **a la altura de su latitud** (se empujan para no
+  chocar) unida al mapa con una línea (`layout()`, se recalcula al cambiar de tamaño o pestaña). Pasar o enfocar una región
+  la destaca; los proyectos llevan a su apartado (`#proyecto-ID`, `#puerto-varas`) o a su tarjeta (`#mp-ID`, que destella).
+  Crédito "Límites regionales: BCN · ubicación referencial".
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el

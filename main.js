@@ -2114,7 +2114,7 @@
     list.innerHTML = hs.map(function (h) {
       var msg = "Hola Fundos, quiero información del proyecto " + h.nombre + (h.zona ? " (" + h.zona + ")" : "") + ".";
       var m = /^(Fundos de)\s+(.+)$/.exec(h.nombre || "");
-      return '<li class="mp-card">' +
+      return '<li class="mp-card" id="mp-' + esc(h.id) + '">' +
         '<div class="mp-emb">' + EMB(h.id) + '<p class="emb-pre" aria-hidden="true">Fundos de</p><h3 class="emb-n"><span class="sr-only">Fundos de </span>' + esc(m ? m[2] : h.nombre) + "</h3>" + EMB_ORN +
         (h.lema ? '<p class="emb-l">' + esc(h.lema) + "</p>" : "") + "</div>" +
         '<div class="mp-body">' + (h.estado ? '<span class="mp-estado">' + esc(h.estado) + "</span>" : "") +
@@ -2125,6 +2125,138 @@
     }).join("");
     sec.hidden = false;
     $$("[data-mp-link]").forEach(function (a) { a.hidden = false; });
+    safe(function () { initMapaChile(sec, hs); }, "initMapaChile");
+  }
+  /* Mapa de Chile por regiones ("jugar con la latitud", pedido del cliente): las regiones de lib/mapa-chile.js (BCN),
+     un punto por proyecto (dorado los que tienen plano y 360°, verde los demás) y, al lado, cada región con sus proyectos
+     a la altura de su latitud, unida al mapa con una línea. Pasar o tocar una región la destaca en el mapa. */
+  function initMapaChile(sec, hs) {
+    var M = B.mapaChile, box = $("[data-mch]", sec);
+    if (!M || !box) return;
+    var mapEl = $("[data-mch-map]", box), listEl = $("[data-mch-list]", box), lin = $("[data-mch-lineas]", box);
+    var pr = M.proy, NS = "http://www.w3.org/2000/svg";
+    function xy(lat, lon) { return [(lon - pr.lon0) * pr.c * pr.k, (-lat - pr.lat0) * pr.k]; }
+    function dentro(p, ring) {
+      var c = false;
+      for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        var a = ring[i], b = ring[j];
+        if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c;
+      }
+      return c;
+    }
+    function region(p) {
+      var best = null, dmin = Infinity;
+      M.regiones.forEach(function (r) {
+        r.anillos.forEach(function (ring) {
+          if (dentro(p, ring)) { best = r; dmin = -1; return; }
+          if (dmin < 0) return;
+          ring.forEach(function (q) { var d = Math.hypot(q[0] - p[0], q[1] - p[1]); if (d < dmin) { dmin = d; best = r; } });   // en la costa, la más cercana
+        });
+      });
+      return best;
+    }
+    // Proyectos: los principales (con plano) y los demás, con su punto y región
+    var pts = [];
+    proyectos.forEach(function (p) {
+      var m = /query=(-?[\d.]+),(-?[\d.]+)/.exec(p.mapa || "");
+      if (m) pts.push({ id: p.id, nombre: "Fundos de " + p.nombre, lat: +m[1], lon: +m[2], main: true, href: p.id === DESTACADO ? "#puerto-varas" : "#proyecto-" + p.id });
+    });
+    hs.forEach(function (h) { if (h.lat && h.lon) pts.push({ id: h.id, nombre: h.nombre, lat: h.lat, lon: h.lon, href: "#mp-" + h.id }); });
+    pts.forEach(function (p) { p.xy = xy(p.lat, p.lon); p.reg = region(p.xy); });
+    var regs = [];
+    pts.forEach(function (p) {
+      if (!p.reg) return;
+      var g = regs.filter(function (r) { return r.r === p.reg; })[0];
+      if (!g) regs.push(g = { r: p.reg, ps: [] });
+      g.ps.push(p);
+    });
+    regs.forEach(function (g) {
+      g.ps.sort(function (a, b) { return b.lat - a.lat; });
+      g.y = g.ps.reduce(function (a, p) { return a + p.xy[1]; }, 0) / g.ps.length;
+      g.x = Math.max.apply(null, g.ps.map(function (p) { return p.xy[0]; }));
+    });
+    regs.sort(function (a, b) { return a.y - b.y; });
+    var cods = regs.map(function (g) { return g.r.cod; });
+
+    // Mapa
+    var vb = M.viewBox, h = [];
+    h.push('<svg class="mch-svg" viewBox="' + vb.join(" ") + '" role="img" aria-label="Mapa de Chile con los proyectos de Fundos por región">');
+    for (var la = Math.ceil(pr.lat0); la <= Math.floor(pr.lat0 + vb[3] / pr.k); la++) {
+      if (la % 2) continue;
+      var yy = (la - pr.lat0) * pr.k;
+      h.push('<line class="mch-lat" x1="0" x2="' + vb[2] + '" y1="' + yy + '" y2="' + yy + '"/><text class="mch-lat-t" x="4" y="' + (yy - 4) + '">' + la + "°S</text>");
+    }
+    M.regiones.forEach(function (r) {
+      var d = r.anillos.map(function (ring) { return "M" + ring.map(function (q) { return q[0] + " " + q[1]; }).join("L") + "Z"; }).join("");
+      h.push('<path class="mch-reg' + (cods.indexOf(r.cod) >= 0 ? " is-con" : "") + '" data-cod="' + r.cod + '" d="' + d + '"><title>' + esc(r.nombre) + "</title></path>");
+    });
+    pts.forEach(function (p) {
+      if (!p.reg) return;
+      h.push('<a href="' + esc(p.href) + '" class="mch-pin' + (p.main ? " is-main" : "") + '" data-cod="' + p.reg.cod + '" data-p="' + esc(p.id) + '" transform="translate(' + p.xy[0].toFixed(1) + " " + p.xy[1].toFixed(1) + ')">' +
+        "<title>" + esc(p.nombre) + '</title><circle r="' + (p.main ? 7.5 : 5.5) + '"/></a>');
+    });
+    // Recuadro: Chile completo con la zona del mapa
+    var S = M.silueta, k0 = S.recorte;
+    h.push('<g class="mch-sil" transform="translate(' + (vb[2] * 0.06) + " " + (vb[3] * 0.62) + ') scale(1.05)"><path d="' + S.anillos.map(function (ring) { return "M" + ring.map(function (q) { return q[0] + " " + q[1]; }).join("L") + "Z"; }).join("") +
+      '"/><rect x="' + k0[0][0] + '" y="' + k0[0][1] + '" width="' + (k0[1][0] - k0[0][0]) + '" height="' + (k0[1][1] - k0[0][1]) + '"/></g>');
+    h.push("</svg>");
+    mapEl.innerHTML = h.join("");
+
+    // Lista por región (de norte a sur)
+    listEl.innerHTML = regs.map(function (g) {
+      return '<li class="mch-row" data-cod="' + g.r.cod + '"><p class="mch-reg-t">' + esc(g.r.nombre) + '</p><ul class="mch-ps">' + g.ps.map(function (p) {
+        return '<li><a class="mch-p' + (p.main ? " is-main" : "") + '" href="' + esc(p.href) + '" data-p="' + esc(p.id) + '"><i aria-hidden="true"></i>' + esc(p.nombre.replace(/^Fundos de /, "")) + "</a></li>";
+      }).join("") + "</ul></li>";
+    }).join("");
+    box.hidden = false;
+
+    // Cada región a la altura de su latitud (sin choques) y su línea al mapa
+    var rows = $$(".mch-row", listEl);
+    function layout() {
+      var svg = $("svg", mapEl);
+      if (!svg) return;
+      var bb = box.getBoundingClientRect(), mb = svg.getBoundingClientRect(), lb = listEl.getBoundingClientRect();
+      var esc2 = mb.height / vb[3], top0 = mb.top - lb.top, gap = 10, prev = -Infinity, ys = [];
+      rows.forEach(function (row, i) {
+        var hgt = row.offsetHeight, want = top0 + regs[i].y * esc2 - hgt * 0.35;
+        var y = Math.max(want, prev + gap);
+        ys.push(y); prev = y + hgt;
+      });
+      listEl.style.height = Math.max(mb.height, prev) + "px";
+      rows.forEach(function (row, i) { row.style.top = Math.max(0, ys[i]) + "px"; });
+      // líneas
+      var ox = bb.left, oy = bb.top, d = "";
+      lin.setAttribute("viewBox", "0 0 " + bb.width + " " + bb.height);
+      rows.forEach(function (row, i) {
+        var g = regs[i], px = mb.left - ox + g.x * esc2 + 8, py = mb.top - oy + g.y * esc2;
+        var rb = $(".mch-reg-t", row).getBoundingClientRect(), tx = rb.left - ox - 8, ty = rb.top - oy + rb.height / 2, mx = mb.right - ox + 6;
+        d += '<path class="mch-ln" data-cod="' + g.r.cod + '" d="M' + px.toFixed(1) + " " + py.toFixed(1) + "H" + mx.toFixed(1) + "L" + (tx - 10).toFixed(1) + " " + ty.toFixed(1) + "H" + tx.toFixed(1) + '"/>';
+      });
+      lin.innerHTML = d;
+    }
+    // Destacar región: lista, mapa y líneas
+    function on(cod) {
+      $$("[data-cod]", box).forEach(function (n) { n.classList.toggle("is-on", cod != null && n.getAttribute("data-cod") === String(cod)); });
+      box.classList.toggle("has-on", cod != null);
+    }
+    box.addEventListener("pointerover", function (e) { var n = e.target.closest("[data-cod]"); on(n ? n.getAttribute("data-cod") : null); });
+    box.addEventListener("pointerleave", function () { on(null); });
+    box.addEventListener("focusin", function (e) { var n = e.target.closest("[data-cod]"); on(n ? n.getAttribute("data-cod") : null); });
+    box.addEventListener("focusout", function () { on(null); });
+    // Ir a un proyecto de la lista: destaca su tarjeta
+    box.addEventListener("click", function (e) {
+      var a = e.target.closest("a[href^='#mp-']");
+      if (!a) return;
+      var card = document.getElementById(a.getAttribute("href").slice(1));
+      if (!card) return;
+      e.preventDefault();
+      card.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center", inline: "center" });
+      card.classList.remove("is-flash"); void card.offsetWidth; card.classList.add("is-flash");
+    });
+    layout();
+    window.addEventListener("resize", layout);
+    window.addEventListener("fundos:vista", function () { window.setTimeout(layout, 30); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
   }
   function initPvLead() {
     var form = $("[data-pv-lead]");
