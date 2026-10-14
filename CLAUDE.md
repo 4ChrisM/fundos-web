@@ -215,15 +215,18 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   un recuadro dorado (`.mch-win`) que viaja al fundo elegido; al lado, la **lupa** (`[data-mch-lupa]`): el mismo mapa con
   un `viewBox` de 6,5° de latitud que se anima hasta el fundo, con regiones, ciudades de referencia (`CIU`, ceden su
   nombre si chocan), latitud de cada grado, línea dorada en la latitud del fundo y los nombres sin choques ni cortes en
-  el borde (`rotulos()`; textos a tamaño fijo en pantalla con `--fs`). A la derecha el fundo activo (`[data-mch-act]`) y
-  el carrusel tipo Netflix de norte a sur (`.mch-row`, flechas en computador; al pasar el mouse la tarjeta se eleva con
+  el borde (`rotulos()`; textos a tamaño fijo en pantalla con `--fs`). A la derecha (pedido del cliente: mapa más chico, carrusel arriba y resumen abajo) el
+  carrusel tipo Netflix de norte a sur (`.mch-row`, flechas en computador; al pasar el mouse la tarjeta se eleva con
   borde dorado y "Ver ficha" en la esquina, sin salirse de la fila, que antes la cortaba; en celular el activo es el primero
   de la fila). **El carrusel avanza solo** (pedido del cliente: un fundo cada 4,5 s, vuelve al comienzo, y la lupa viaja
   con él); se detiene con el mouse encima, con el foco adentro, con la ficha abierta, fuera de la vista, 12 s tras tocar
   la fila y con el botón "Pausar" (`[data-mch-auto]`); con movimiento reducido parte en pausa. **Todas las tarjetas llevan emblema dibujado** (pedido del
   cliente, también Puerto Varas, Marchigüe y Malalcahuello: escenas en `EMB` a partir de sus logos), los tres con plano
-  con el sello "Plano y recorrido 360°". Tocar una tarjeta (o "Ver ficha y fotos") despliega la **ficha**
-  (`[data-mch-ficha]`, Escape o × la cierran y el foco vuelve a la tarjeta; la página no se mueve si la ficha asoma en
+  con el sello "Plano y recorrido 360°". Bajo el carrusel, el **resumen del fundo activo** (`[data-mch-act]`, `.mch-res`:
+  primera foto de `galeria` o el emblema, región y latitud, texto, datos y "Ver ficha y fotos" + "Ver lotes" o "Quiero
+  información"), que cambia con el carrusel. Tocar una tarjeta (o "Ver ficha y fotos") despliega la **ficha** con el mismo estilo oscuro de
+  "Conoce cada proyecto" (reusa las clases `.py-*`: foto grande con el nombre, miniaturas, franja de datos, características
+  con íconos, "Cerca de tu parcela" y acciones; sin fotos, el emblema en un recuadro crema) (`[data-mch-ficha]`, Escape o × la cierran y el foco vuelve a la tarjeta; la página no se mueve si la ficha asoma en
   pantalla, pedido del cliente; si quedó fuera, baja solo lo justo para mostrar su comienzo): fotos con miniaturas (`galeria` del
   proyecto en el manifiesto, armadas por `tools/galeria_build.py` en `assets/img/galeria/`; el satelital del entorno
   lleva crédito Sentinel-2/EOX), descripción, datos (desde, disponibles, 5.000 m², reserva), destacados, cercanías y

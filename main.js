@@ -2310,9 +2310,20 @@
       $$("[data-p]", box).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-p") === id); });
       if (!nuevo && !ya) return;
       viajar(p, ya); rotulos();
-      var txt = p.main ? (function () { var d = datosP(p); return "Plano y recorrido 360°" + (d.desde ? " · desde " + clp(d.desde) : "") + " · " + d.n + (d.n === 1 ? " disponible" : " disponibles"); })() : (p.h.lema || "");
-      act.innerHTML = '<p class="mch-act-k">' + esc(rn(p)) + " · " + lat(p) + '</p><h3 class="mch-act-t">Fundos de ' + esc(p.corto) + '</h3><p class="mch-act-p">' + esc(txt) + "</p>" +
-        '<button class="btn btn-gold mch-act-b" type="button" data-mch-ver aria-controls="fundos-ficha">Ver ficha y fotos<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></button>';
+      // Resumen del fundo activo bajo el carrusel (pedido del cliente): foto o emblema, texto, datos y acciones
+      var x = p.main ? p.p : p.h, g0 = (x.galeria || [])[0], d = p.main ? datosP(p) : null;
+      var datos = p.main ? [(d.desde ? "Desde " + clp(d.desde) : ""), d.n + (d.n === 1 ? " disponible" : " disponibles"), "Plano y recorrido 360°"].filter(Boolean) : (x.datos || []).slice(0, 3);
+      var msg = "Hola Fundos, quiero información del proyecto " + p.nombre + (x.zona ? " (" + x.zona + ")" : "") + ".";
+      act.innerHTML = '<div class="mch-res">' +
+        (g0 ? '<div class="mch-res-foto"><img src="' + esc(g0.src) + '" alt="' + esc(g0.alt) + '" decoding="async"></div>' : '<div class="mch-res-foto is-emb" aria-hidden="true">' + EMB(p.id) + "</div>") +
+        '<div class="mch-res-txt"><p class="mch-act-k">' + esc(rn(p)) + " · " + lat(p) + '</p><h3 class="mch-act-t">Fundos de ' + esc(p.corto) + "</h3>" +
+        (!p.main && x.lema ? '<p class="mch-res-lema">' + esc(x.lema) + "</p>" : "") +
+        '<p class="mch-act-p">' + esc((p.main ? x.resumen || x.descripcion : x.descripcion) || "") + "</p>" +
+        '<ul class="mch-res-datos">' + datos.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" +
+        '<div class="mch-res-acts"><button class="btn btn-gold" type="button" data-mch-ver aria-controls="fundos-ficha">Ver ficha y fotos<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></button>' +
+        (p.main ? '<a class="btn btn-line" href="#plano" data-py-act="plano" data-mr="plano"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg>Ver lotes</a>'
+          : '<a class="btn btn-line" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información</a>') +
+        "</div></div></div>";
     }
 
     // Ficha que se despliega bajo el carrusel: fotos, descripción, datos y acciones
@@ -2321,45 +2332,59 @@
       var p = porId(id);
       if (!p) return;
       poner(id);
-      var x = p.main ? p.p : p.h, gal = x.galeria || [], d = p.main ? datosP(p) : null, html;
-      var fotos = gal.length ? '<figure class="mf-foto"><img src="' + esc(gal[0].src) + '" alt="' + esc(gal[0].alt) + '" decoding="async"><figcaption>' + esc(gal[0].alt) + (gal[0].credito ? " · " + esc(gal[0].credito) : "") + "</figcaption></figure>" +
-          (gal.length > 1 ? '<div class="mf-mini" role="group" aria-label="Fotos de Fundos de ' + esc(p.corto) + '">' + gal.map(function (g, i) { return '<button type="button" data-i="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="' + esc(g.alt) + '"><img src="' + esc(g.mini || g.src) + '" alt="" loading="lazy" decoding="async"></button>'; }).join("") + "</div>" : "")
-        : '<div class="mf-foto is-emb">' + EMB(p.id) + '<p class="mf-pronto">Fotos del proyecto: próximamente</p></div>';
-      var datos = p.main
-        ? '<ul class="mf-datos">' + (d.desde ? "<li><b>" + clp(d.desde) + "</b>desde</li>" : "") + "<li><b>" + d.n + "</b>" + (d.n === 1 ? "disponible" : "disponibles") + "</li><li><b>5.000 m²</b>por parcela</li><li><b>" + clp(RESERVA) + "</b>reserva, incluye escritura</li></ul>"
-        : (x.datos && x.datos.length ? '<ul class="mf-datos is-tags">' + x.datos.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" : "");
-      var dest = p.main ? (x.destacados || (x.caracteristicas || []).map(function (c) { return c.titulo + ": " + c.texto; })) : [];
-      var cerca = p.main && x.cercanias ? '<p class="mf-cerca"><b>Cerca:</b> ' + x.cercanias.map(function (c) { return esc(c[0]) + " " + esc(c[1]); }).join(" · ") + "</p>" : "";
+      // Mismo estilo que "Conoce cada proyecto" (pedido del cliente): foto grande con el nombre encima, franja de datos,
+      // características con íconos, "Cerca de tu parcela" y acciones; las miniaturas cambian la foto grande
+      var x = p.main ? p.p : p.h, gal = x.galeria || [], d = p.main ? datosP(p) : null;
+      var ico = function (n, cls) { return '<svg class="i' + (cls ? " " + cls : "") + '" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; };
+      var g0 = gal[0];
+      var hero = '<div class="py-hero' + (g0 ? "" : " is-emb") + '">' +
+        (g0 ? '<img src="' + esc(g0.src) + '" alt="' + esc(g0.alt) + '" decoding="async">' : '<div class="mf-emb" aria-hidden="true">' + EMB(p.id) + "</div>") +
+        '<div class="py-hero-in"><p class="kicker">' + esc([rn(p), x.zona].filter(Boolean).join(" · ")) + " · " + lat(p) + "</p>" +
+        '<h3 class="mf-t">Fundos de <em>' + esc(p.corto) + "</em></h3>" + (!p.main && x.lema ? '<p class="mf-lema">' + esc(x.lema) + "</p>" : "") +
+        '<p class="py-desc">' + esc((p.main ? x.descripcion || x.resumen : x.descripcion) || "").replace(/^Fundos de [^:]+: /, "") + "</p></div>" +
+        (g0 ? '<p class="py-cred" data-mf-cap><span>' + esc(g0.alt) + "</span>" + (g0.credito ? "<span>" + esc(g0.credito) + "</span>" : "") + "</p>" : "") + "</div>";
+      var mini = gal.length > 1 ? '<div class="mf-mini" role="group" aria-label="Fotos de Fundos de ' + esc(p.corto) + '">' + gal.map(function (g, i) { return '<button type="button" data-i="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="' + esc(g.alt) + '"><img src="' + esc(g.mini || g.src) + '" alt="" loading="lazy" decoding="async"></button>'; }).join("") + "</div>"
+        : (g0 ? "" : '<p class="mf-pronto">' + ico("sparkle") + "Fotos del proyecto: próximamente</p>");
+      var stats = p.main
+        ? '<dl class="py-stats">' + (d.desde ? "<div><dt>Desde</dt><dd>" + clp(d.desde) + "</dd></div>" : "") +
+          "<div><dt>Disponibles</dt><dd>" + d.n + " <small>de " + x.lotes.length + "</small></dd></div>" +
+          "<div><dt>Parcelas</dt><dd>" + m2(x.lotes.length && x.lotes[0].m2 ? x.lotes[0].m2 : 5000) + "</dd></div>" +
+          "<div><dt>Reserva</dt><dd>" + clp(RESERVA) + ' <small class="fact-nota">incluye escritura</small></dd></div></dl>'
+        : '<dl class="py-stats"><div><dt>Región</dt><dd>' + esc(p.reg.nombre) + "</dd></div><div><dt>Ubicación</dt><dd>" + esc(x.zona || "") + "</dd></div><div><dt>Latitud</dt><dd>" + lat(p) + "</dd></div><div><dt>Parcelas</dt><dd>" + m2(5000) + "</dd></div></dl>";
+      var cars = p.main ? (x.caracteristicas || (x.destacados || []).map(function (t) { return { icono: "check", titulo: t }; })) : (x.datos || []).map(function (t) { return { icono: "check", titulo: t }; });
+      var why = cars.length ? '<ul class="py-why">' + cars.map(function (c) { return "<li>" + ico(c.icono || "check") + "<div><h4>" + esc(c.titulo) + "</h4>" + (c.texto ? "<p>" + esc(c.texto) + "</p>" : "") + "</div></li>"; }).join("") + "</ul>" : "";
+      var near = p.main && (x.cercanias || []).length ? '<div class="py-near"><h4>Cerca de tu parcela</h4><ul>' + x.cercanias.map(function (c) {
+          var t = String(c[1]).split(" · ");
+          return "<li>" + (t.length > 1 ? "<b>" + esc(t[1]) + "</b><small>" + esc(t[0]) + "</small>" : "<b>" + esc(c[1]) + "</b>") + "<span>" + esc(c[0]) + "</span></li>";
+        }).join("") + "</ul>" + (x.cercaniasNota ? "<p>" + esc(x.cercaniasNota) + "</p>" : "") +
+        (x.entorno ? '<a class="py-near-map" href="' + esc(x.entorno) + '">' + ico("compass") + "Explorar el mapa del entorno</a>" : "") + "</div>" : "";
       var msg = "Hola Fundos, quiero información del proyecto " + p.nombre + (x.zona ? " (" + x.zona + ")" : "") + ".";
-      var acts = p.main
-        ? '<a class="btn btn-gold" href="#plano" data-py-act="plano" data-mf="plano">Ver lotes y precios<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>' +
-          (x.tour ? '<a class="btn btn-ghost" href="#recorrido" data-py-act="tour" data-mf="tour"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrido 360°</a>' : "") +
-          '<a class="btn btn-ghost" href="' + esc(p.href) + '">Conocer el proyecto</a>'
-        : '<a class="btn btn-gold" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información</a>';
-      html = '<button class="mf-x" type="button" data-mf-cerrar aria-label="Cerrar la ficha">×</button><div class="mf-gal">' + fotos + '</div><div class="mf-txt">' +
-        '<p class="mch-act-k">' + esc([x.zona, rn(p)].filter(Boolean).join(" · ")) + " · " + lat(p) + '</p><h3 class="mf-t">Fundos de ' + esc(p.corto) + "</h3>" +
-        (!p.main && x.lema ? '<p class="mf-lema">' + esc(x.lema) + "</p>" : "") +
-        "<p>" + esc((p.main ? x.descripcion || x.resumen : x.descripcion) || "").replace(/^Fundos de [^:]+: /, "") + "</p>" + datos +
-        (dest.length ? '<ul class="mf-lista">' + dest.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" : "") + cerca +
-        '<div class="mf-acts">' + acts + "</div></div>";
-      ficha.innerHTML = html;
+      var acts = '<div class="py-acts">' + (p.main
+        ? '<a class="btn btn-gold" href="#plano" data-py-act="plano" data-mf="plano">Ver lotes y precios' + ico("arrow", "i-go") + "</a>" +
+          '<a class="btn btn-ghost" href="#visita" data-py-act="cotizar" data-mf="cotizar">' + ico("send") + "Cotizar " + esc(p.corto) + "</a>" +
+          (x.tour ? '<a class="btn btn-ghost" href="#recorrido" data-py-act="tour" data-mf="tour">' + ico("360") + "Recorrido 360°</a>" : "")
+        : '<a class="btn btn-gold" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "Quiero información</a>" +
+          '<a class="btn btn-ghost" href="#visita" data-mf="cotizar">' + ico("calendar") + "Agendar una conversación</a>") + "</div>";
+      ficha.innerHTML = '<button class="mf-x" type="button" data-mf-cerrar aria-label="Cerrar la ficha">' + ico("close") + "</button>" +
+        '<article class="py">' + hero + mini + stats + (why || near ? '<div class="py-body">' + why + near + "</div>" : "") + acts + "</article>";
       ficha.setAttribute("aria-label", "Ficha de " + p.nombre);
       ficha.hidden = false;
       abierta = id;
       $$(".mch-tile-b", row).forEach(function (b) { b.setAttribute("aria-expanded", String(b.parentNode.getAttribute("data-p") === id)); });
-      var mini = $(".mf-mini", ficha);
-      if (mini) mini.addEventListener("click", function (e) {
+      var mi = $(".mf-mini", ficha);
+      if (mi) mi.addEventListener("click", function (e) {
         var b = e.target.closest("button[data-i]");
         if (!b) return;
-        var g = gal[+b.getAttribute("data-i")], img = $(".mf-foto img", ficha);
+        var g = gal[+b.getAttribute("data-i")], img = $(".py-hero > img", ficha);
         img.src = g.src; img.alt = g.alt;
-        $(".mf-foto figcaption", ficha).textContent = g.alt + (g.credito ? " · " + g.credito : "");
-        $$("button", mini).forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+        $("[data-mf-cap]", ficha).innerHTML = "<span>" + esc(g.alt) + "</span>" + (g.credito ? "<span>" + esc(g.credito) + "</span>" : "");
+        $$("button", mi).forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
       });
       $$("[data-mf]", ficha).forEach(function (a) {
         a.addEventListener("click", function (e) {
           if (a.getAttribute("data-mf") === "plano") Plan.apply({ id: p.id, soloDisponibles: true });
           if (a.getAttribute("data-mf") === "tour") { e.preventDefault(); Tour.open(p.id, true); }
+          if (a.getAttribute("data-mf") === "cotizar") Visit.prefill({ proyecto: p.main ? p.corto : p.nombre, mensaje: (p.main ? "Quiero cotizar una parcela en " : "Quiero información de ") + p.nombre + ".", scroll: true });
         });
       });
       // La página no se mueve si la ficha ya asoma; solo si queda fuera de la vista, baja lo justo para mostrar su comienzo
@@ -2377,7 +2402,10 @@
     }
     ficha.addEventListener("click", function (e) { if (e.target.closest("[data-mf-cerrar]")) cerrarFicha(); });
     ficha.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarFicha(); });
-    act.addEventListener("click", function (e) { if (e.target.closest("[data-mch-ver]") && actual) abrirFicha(actual.id); });
+    act.addEventListener("click", function (e) {
+      if (e.target.closest("[data-mch-ver]") && actual) abrirFicha(actual.id);
+      if (e.target.closest("[data-mr='plano']") && actual) Plan.apply({ id: actual.id, soloDisponibles: true });
+    });
 
     function primera() {
       var r = row.getBoundingClientRect(), best = null, dmin = Infinity;
