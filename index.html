@@ -27,12 +27,12 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261014h">
-<script defer src="lib/manifest.js?v=20261014h"></script>
-<script defer src="lib/analitica.js?v=20261014h"></script>
-<script defer src="lib/mapa-chile.js?v=20261014h"></script>
-<script defer src="lib/planos.js?v=20261014h"></script>
-<script defer src="main.js?v=20261014h"></script>
+<link rel="stylesheet" href="styles.css?v=20261015a">
+<script defer src="lib/manifest.js?v=20261015a"></script>
+<script defer src="lib/analitica.js?v=20261015a"></script>
+<script defer src="lib/mapa-chile.js?v=20261015a"></script>
+<script defer src="lib/planos.js?v=20261015a"></script>
+<script defer src="main.js?v=20261015a"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -678,11 +678,14 @@
       <p class="lead">Parcelas de 5.000&nbsp;m² en la costa, los lagos, los valles y la cordillera, de Valparaíso a Los Lagos. Pide información y un asesor te cuenta los detalles.</p>
     </header>
     <div class="mch" data-mch hidden>
-      <div class="mch-col">
-        <div class="mch-map" data-mch-map></div>
-        <p class="mch-ley"><span class="mch-ley-p"><i class="mch-pt is-main"></i>Con plano y recorrido 360°</span><span class="mch-ley-p"><i class="mch-pt"></i>Más proyectos</span><span class="mch-fuente">Límites regionales: BCN · ubicación referencial</span></p>
+      <div class="mch-band" data-mch-map></div>
+      <div class="mch-ns" aria-hidden="true"><span><svg class="i"><use href="#i-arrow"/></svg>Norte · Valparaíso</span><span>Sur · Chiloé<svg class="i"><use href="#i-arrow"/></svg></span></div>
+      <div class="mch-fila">
+        <button class="mch-flecha is-prev" type="button" data-mch-mover="-1" aria-label="Fundos más al norte"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <ul class="mch-row" data-mch-list aria-label="Fundos de norte a sur"></ul>
+        <button class="mch-flecha" type="button" data-mch-mover="1" aria-label="Fundos más al sur"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
       </div>
-      <div class="mch-grupos" data-mch-list></div>
+      <p class="mch-ley"><span class="mch-ley-p"><i class="mch-pt is-main"></i>Con plano y recorrido 360°</span><span class="mch-ley-p"><i class="mch-pt"></i>Más proyectos</span><span class="mch-fuente">Límites regionales: BCN · ubicación referencial</span></p>
     </div>
     <ul class="mp-grid" data-mp-list></ul>
   </div>

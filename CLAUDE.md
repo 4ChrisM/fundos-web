@@ -211,11 +211,13 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `tools/mapa_chile_build.py` (límites de la BCN vía github.com/fcortes/Chile-GeoJSON, simplificados con shapely,
   proyección equirectangular `proy`; incluye la silueta de Chile para el recuadro). Un punto por proyecto (dorado los 3
   con plano: lat/lon del enlace `mapa` del manifiesto; verde los de `masProyectos`: `lat`/`lon` aproximados); la región
-  sale de dónde cae el punto. **Mapa fijo a la izquierda (desde 1024 px) y a la derecha las tarjetas de todos los fundos
-  agrupadas por región de norte a sur** (el cliente encontraba vacía la lista de nombres y quería ver todos los fundos):
+  sale de dónde cae el punto. **Franja de Chile** (propuesta 1 del artefacto de 5 propuestas, elegida por el cliente):
+  Chile acostado de norte a sur a todo el ancho (mapa girado −90°: mar abajo, cordillera arriba; alto máx. 470 px en
+  computador, en celular la franja se desliza), un punto y un rótulo por fundo en pistas arriba y abajo sin choques, y
+  latitudes cada 2°. Debajo, la fila de tarjetas de los 13 fundos de norte a sur (`.mch-row`, flechas en computador):
   los de plano con `mpCardMain` (foto aérea, sello "Plano y recorrido 360°", desde/disponibles, "Ver lotes y precios") y
-  los demás con su emblema (`mpCard`). La región a la vista se ilumina en el mapa (`alScroll`); tocar un punto o región
-  lleva a su tarjeta o grupo. En celular el mapa va arriba y cada región es una franja que se desliza. Sin
+  los demás con su emblema (`mpCard`). Tocar un punto o rótulo lleva a su tarjeta (destella; si la fila no se ve, la
+  página baja lo justo); al deslizar la fila se marcan el punto, el rótulo y la región de la primera tarjeta. Sin
   `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`). Crédito "Límites regionales: BCN".
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
