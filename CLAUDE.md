@@ -7,7 +7,9 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
 
 ## Dónde está publicado
 - **Sitio público:** https://fundos.biplot.cl/ (GitHub Pages desde `main` de `4ChrisM/fundos-web`, dominio en `CNAME`;
-  DNS: CNAME `fundos` de biplot.cl → `4chrism.github.io`). Lleva `noindex`. Hasta octubre 2026 vivió en
+  DNS: CNAME `fundos` de biplot.cl → `4chrism.github.io`). Lleva `noindex`. **Pasará a fundosinmobiliaria.com**
+  (reemplaza al sitio de Squarespace; el cliente lo dejó para después): cambio listo en el commit `80c7385`, paso a paso
+  y orden en `docs/cambio-dominio.md` (primero los DNS, después fusionar). Hasta octubre 2026 vivió en
   `Biplot/biplot` (`propuestas/fundos-inmobiliaria/`, donde queda su historial de cambios). Esa dirección redirige
   aquí desde el 6-oct-2026 (Biplot/biplot#49), conservando `?p=` y `#`.
 - **Sistema del cliente:** Fundos 360° (`4ChrisM/fundos-os`, Next.js + Supabase, módulo de leads). Ver en README el
@@ -64,7 +66,9 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   (`initPlan`, `initTour`, `initSim`, `initVisit`, `initSellers`, `initVideo`, `initCompra`, …) aislados con `safe()`.
 - `lib/manifest.js` **único lugar de datos**: contacto, proyectos, lotes (`[n, categoría, estado]`), categorías de
   precio (color, precio, precio lista), financiamiento, `equipo` (nombre, apodo, cargo, foto, bio, whatsapp, video)
-  y `videoPortada` (mp4/webm y versión `Movil`). Precios y contacto son de ejemplo (placeholder `+56 9 0000 0000`).
+  y `videoPortada` (mp4/webm y versión `Movil`). Contacto general real (oct-2026): WhatsApp +56 9 9292 2429 y
+  ventas@fundosinmobiliaria.com (también escritos en los `href` de `index.html` para la página sin JavaScript); el horario
+  falta confirmarlo. `haciendas`: proyectos Hacienda genéricos (ver "Trabaja con nosotros y Hacienda").
 - `lib/planos.js` **generado, no editar a mano**: por proyecto `viewBox`, `contorno`, `calles` (servidumbres),
   `agua`, opcional `caminoPrincipal`, y `lotes[n] = {d, l, r}` (path SVG, punto de etiqueta, radio libre). Lotes y
   servidumbres forman una cobertura continua (bordes compartidos, sin huecos ni traslapes).
@@ -169,6 +173,26 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   es una **foto real** de una casa de campo en Puyuhuapi, Aysén (Wikimedia Commons, LBM1948, CC BY-SA 4.0, recortada;
   `assets/img/casa-parcela-800/1400.webp`, crédito obligatorio en el pie) con una miniatura del diseño en 3D encima
   (`assets/img/tu-casa-800.webp`, captura de la herramienta). Se bajó con un flujo temporal de GitHub Actions, ya borrado.
+- **Parcela agroresidencial en Tu casa** (pedidos del cliente, oct-2026): **máximo 2 viviendas** (`MAXCASAS`; casa, casa de
+  dos pisos y cabaña; los botones se desactivan y el medidor dice "Casas: n de 2") que juntas con lo demás no pasan del 10 %;
+  **la mitad del lote va con frutales (25 %) y conservación natural (25 %)** para mostrar que es agroresidencial: `agro()`
+  corta el lote (ya girado con su lado largo horizontal) con una línea vertical en la mitad lejos del acceso (`recorte()`
+  y `corte()`), los frutales van en hileras cada 6 m más cerca de la casa y la conservación al fondo, con árboles nativos
+  irregulares (`arbolAgro()`); especies y color de la fruta por proyecto en `AGRO` (Puerto Varas: manzanos, cerezos,
+  avellanos / maqui, arrayán, canelo; Malalcahuello: manzanos, guindos, castaños / ñirres, coigües, notros; Marchigüe:
+  olivos, almendros, nogales / quillayes, peumos, litres; por confirmar). **No se construye ahí** (aviso en el panel y en el
+  texto legal): una construcción encima se marca en rojo (`enAgro()`, `malo()`) y `ubicar()` pone lo nuevo en la mitad
+  libre. **Casas de campo** (para vender una vida de campo): madera en tinglado (`tablas`), ventanas con marco blanco y
+  cruz, techo de zinc a dos aguas por defecto, **corredor** con piso de madera y pilares en el lado largo del frente
+  (`corredor()`) y chimenea (`chimenea`). **Pendiente para más adelante:** pendientes del terreno según la ubicación.
+- **Trabaja con nosotros y Hacienda** (oct-2026): en la pestaña Equipo, `#trabaja-con-nosotros` con dos formularios
+  (`[data-mini-form]`, `initMiniForms`): **"Vende tu campo a Fundos"** (`#vende-tu-campo`: Fundos compra campos para
+  parcelar) y **"Ofrece tus servicios"** (`#proveedores`: red de proveedores). Arman el mensaje con los campos que tienen
+  `data-label`, lo muestran y lo envían por WhatsApp (`[data-mini-wa]`, evento `generate_lead` con el formulario) o por
+  correo. Enlaces en el menú y en el pie ("Trabaja con nosotros"). **Proyectos Hacienda** (`#haciendas`, pestaña
+  Proyectos, `initHaciendas`): tarjetas genéricas desde `haciendas` del manifiesto (nombre, región, zona, descripción,
+  superficie, foto y estado opcionales; sin plano ni 360°, pedido del cliente) con "Quiero información" por WhatsApp. Con
+  la lista vacía la sección y su enlace del pie no se ven; el cliente enviará los datos.
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el

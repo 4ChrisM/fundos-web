@@ -21,17 +21,17 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Fundos Inmobiliaria","url":"https://www.fundosinmobiliaria.com/","slogan":"La tierra como punto de partida.","areaServed":["Malalcahuello","Marchigüe","Puerto Varas"],"address":{"@type":"PostalAddress","addressCountry":"CL"}}
 </script>
-<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"inicio","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
+<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"inicio","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo","trabaja-con-nosotros":"equipo","vende-tu-campo":"equipo",proveedores:"equipo",haciendas:"proyectos"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
 <link rel="preload" as="image" href="assets/video/puerto-varas.webp" media="(min-width: 960px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/video/puerto-varas-movil.webp" media="(max-width: 959px)" fetchpriority="high">
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261009i">
-<script defer src="lib/manifest.js?v=20261009i"></script>
-<script defer src="lib/analitica.js?v=20261009i"></script>
-<script defer src="lib/planos.js?v=20261009i"></script>
-<script defer src="main.js?v=20261009i"></script>
+<link rel="stylesheet" href="styles.css?v=20261014a">
+<script defer src="lib/manifest.js?v=20261014a"></script>
+<script defer src="lib/analitica.js?v=20261014a"></script>
+<script defer src="lib/planos.js?v=20261014a"></script>
+<script defer src="main.js?v=20261014a"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -230,11 +230,13 @@
         <a href="#como-comprar" data-menu-link>Cómo comprar</a>
         <a href="#preguntas" data-menu-link>Preguntas</a>
         <a href="#portal" data-menu-link>Mi compra</a>
+        <a href="#vende-tu-campo" data-menu-link>Vende tu campo</a>
+        <a href="#proveedores" data-menu-link>Proveedores</a>
       </span>
     </nav>
     <div class="menu-cta">
       <a class="btn btn-gold" href="#visita" data-menu-link>Agendar visita</a>
-      <a class="btn btn-ghost" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
+      <a class="btn btn-ghost" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
     </div>
   </div>
 </dialog>
@@ -301,7 +303,7 @@
       <div class="pv-lead-done" data-pv-lead-done hidden tabindex="-1">
         <p class="pv-lead-t">Último paso: envíanos tu mensaje</p>
         <blockquote data-pv-lead-msg></blockquote>
-        <a class="btn btn-gold" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-pv-lead-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</a>
+        <a class="btn btn-gold" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-pv-lead-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</a>
         <button class="link-btn" type="button" data-pv-lead-edit>Editar mis datos</button>
       </div>
     </form>
@@ -666,6 +668,18 @@
      Se arma desde lib/manifest.js (foto, caracteristicas, cercanias…): un proyecto nuevo solo necesita sus datos.
      Enlace directo: #proyecto-ID. El proyecto destacado tiene su propia pestaña y aquí solo se enlaza. -->
 <!-- Invitación a "Tu casa" (diseña tu parcela en 3D) -->
+<!-- ============================== PROYECTOS HACIENDA (se arman desde lib/manifest.js: haciendas) ============================== -->
+<section class="section light haciendas" id="haciendas" data-vista="proyectos" aria-labelledby="haciendas-title" data-haciendas hidden>
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="kicker">Línea Hacienda</p>
+      <h2 id="haciendas-title">Proyectos <em>Hacienda</em></h2>
+      <p class="lead">Campos de mayor superficie para quienes buscan más espacio. Pide información y un asesor te cuenta los detalles.</p>
+    </header>
+    <ul class="hac-grid" data-hac-list></ul>
+  </div>
+</section>
+
 <section class="section cream casa-promo" id="disena-proyectos" data-vista="proyectos" aria-labelledby="disena-proyectos-t">
   <div class="container casa-promo-in">
     <div class="casa-promo-txt reveal">
@@ -834,7 +848,7 @@
           <a class="skip-plan" href="#plan-panel">Saltar el plano</a>
           <div class="plan-view">
             <div class="plan-canvas" data-canvas>
-              <noscript><p class="noscript">Activa JavaScript para recorrer el plano interactivo, o <a href="https://wa.me/56900000000?text=Hola%20Fundos%2C%20quiero%20el%20plano%20comercial%20con%20los%20lotes%20disponibles." target="_blank" rel="noopener">escríbenos por WhatsApp</a> y te enviamos el plano comercial.</p></noscript>
+              <noscript><p class="noscript">Activa JavaScript para recorrer el plano interactivo, o <a href="https://wa.me/56992922429?text=Hola%20Fundos%2C%20quiero%20el%20plano%20comercial%20con%20los%20lotes%20disponibles." target="_blank" rel="noopener">escríbenos por WhatsApp</a> y te enviamos el plano comercial.</p></noscript>
             </div>
             <div class="plan-zoom" data-zoom-ui>
               <div class="pz-fondo" role="group" aria-label="Fondo del plano" data-fondo-ui hidden>
@@ -870,7 +884,7 @@
             <div class="lot-help">
               <span class="faces" aria-hidden="true"><img src="assets/img/cara-1.webp" alt="" width="32" height="32" loading="lazy" decoding="async"><img src="assets/img/cara-6.webp" alt="" width="32" height="32" loading="lazy" decoding="async"><img src="assets/img/cara-3.webp" alt="" width="32" height="32" loading="lazy" decoding="async"></span>
               <p>¿Prefieres que te ayudemos a elegir? Cuéntanos qué buscas y te recomendamos lotes.</p>
-              <a class="btn btn-ghost btn-sm" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-wa data-wa-msg="Hola Fundos, ¿me ayudan a elegir una parcela?"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Pedir recomendación</a>
+              <a class="btn btn-ghost btn-sm" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-msg="Hola Fundos, ¿me ayudan a elegir una parcela?"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Pedir recomendación</a>
             </div>
           </div>
           <div class="lot-detail" data-panel-detail hidden>
@@ -887,7 +901,7 @@
             <div class="lot-actions">
               <a class="btn btn-gold lot-guia-btn" href="#tu-casa" data-d-guia hidden><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Diseñar mi casa aquí</a>
               <a class="btn btn-gold" href="#visita" data-d-reserve>Reservar este lote</a>
-              <a class="btn btn-ghost" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-d-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg><span>Consultar</span></a>
+              <a class="btn btn-ghost" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-d-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg><span>Consultar</span></a>
               <button class="btn btn-ghost fav-btn" type="button" aria-pressed="false" data-d-fav><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg><span>Guardar</span></button>
             </div>
             <p class="lot-toast" role="status" data-d-toast hidden></p>
@@ -911,7 +925,7 @@
               </div>
               <dl class="lot-pago-dl" data-pago-dl></dl>
               <p class="lot-pago-nota" data-pago-nota></p>
-              <a class="lot-sim" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-pago-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviarme esta simulación</a>
+              <a class="lot-sim" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-pago-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviarme esta simulación</a>
             </div>
             <a class="lot-sim" href="#tu-casa" data-d-casa>Dibuja tu casa en este lote<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
           </div>
@@ -925,7 +939,7 @@
           <p><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg><strong data-favs-count>0</strong> <span data-favs-label>lotes guardados</span></p>
           <div class="favs-list" data-favs-list></div>
           <div class="favs-actions">
-            <a class="btn btn-gold btn-sm" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-favs-send><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</a>
+            <a class="btn btn-gold btn-sm" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-favs-send><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</a>
             <button class="btn btn-ghost btn-sm" type="button" data-favs-clear>Borrar todos</button>
           </div>
         </div>
@@ -1055,10 +1069,10 @@
     <header class="section-head casa-head reveal">
       <p class="kicker">Diseña tu parcela</p>
       <h2 id="casa-title">¿Cuánto puedes <em>construir?</em></h2>
-      <p class="lead">En una parcela de 5.000&nbsp;m² puedes construir hasta <strong>500&nbsp;m²</strong>: el 10&nbsp;% de la superficie. Elige tu lote, ubica tu casa a escala y mira cuánto espacio te queda.</p>
+      <p class="lead">En una parcela de 5.000&nbsp;m² puedes construir hasta <strong>500&nbsp;m²</strong> (el 10&nbsp;% de la superficie) en un máximo de <strong>2 casas</strong>, y la mitad del terreno queda para <strong>frutales y conservación natural</strong>: una parcela agroresidencial. Elige tu lote, ubica tu casa de campo a escala y mira cómo queda.</p>
     </header>
     <div class="casa reveal" data-casa>
-      <noscript><p class="casa-noscript">Activa JavaScript para dibujar tu casa sobre el lote. En una parcela de 5.000&nbsp;m² puedes construir hasta 500&nbsp;m² (10&nbsp;%).</p></noscript>
+      <noscript><p class="casa-noscript">Activa JavaScript para dibujar tu casa sobre el lote. En una parcela de 5.000&nbsp;m² puedes construir hasta 500&nbsp;m² (10&nbsp;%) en un máximo de 2 casas; la mitad del terreno va con frutales y conservación natural.</p></noscript>
       <div class="casa-side">
         <div class="casa-pick">
           <div class="field">
@@ -1076,6 +1090,15 @@
           <p class="casa-meter-v"><strong data-c-total>0 m²</strong> <span>de <b data-c-max>500 m²</b> permitidos</span></p>
           <div class="casa-bar" aria-hidden="true"><span data-c-bar></span></div>
           <p class="casa-meter-msg" role="status" data-c-msg></p>
+          <p class="casa-meter-casas" data-c-casas>Casas: 1 de 2 permitidas</p>
+        </div>
+        <div class="casa-agro-box">
+          <p class="casa-agro-k"><svg class="i" aria-hidden="true"><use href="#i-leaf"/></svg>Parcela agroresidencial · <strong data-c-agro-m2>2.500 m²</strong> (50&nbsp;%)</p>
+          <ul class="casa-agro-l">
+            <li><i class="casa-sw casa-sw-f" aria-hidden="true"></i><span><b>Frutales</b> <span data-c-agro-f>Manzanos, cerezos y avellanos</span></span></li>
+            <li><i class="casa-sw casa-sw-c" aria-hidden="true"></i><span><b>Conservación natural</b> <span data-c-agro-c>Maqui, arrayán y canelo</span></span></li>
+          </ul>
+          <p class="casa-agro-nota"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg>No se puede construir sobre los árboles frutales ni el área de conservación.</p>
         </div>
         <div class="casa-add">
           <p class="casa-add-k" id="c-add-k">Agrega a tu parcela</p>
@@ -1101,7 +1124,7 @@
             <button class="btn btn-ghost btn-sm" type="button" data-c-del aria-label="Quitar" title="Quitar"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg><span class="casa-bt">Quitar</span></button>
           </div>
         </div>
-        <a class="btn btn-gold casa-wa" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-c-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar mi diseño a un asesor</a>
+        <a class="btn btn-gold casa-wa" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-c-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar mi diseño a un asesor</a>
       </div>
       <figure class="casa-stage">
         <div class="casa-lienzo">
@@ -1133,7 +1156,7 @@
         <figcaption class="casa-help" data-c-help>Arrastra la casa para moverla. La esquina dorada cambia el tamaño y el círculo la gira. Con teclado: flechas para mover y R para girar.</figcaption>
       </figure>
     </div>
-    <p class="casa-legal">Referencial. La forma del lote sale del plano del proyecto y se lleva a su superficie; el sol se calcula para la latitud del proyecto suponiendo el norte hacia arriba del plano; la superficie construible, los distanciamientos a los deslindes y el permiso de edificación los fija la Dirección de Obras de la comuna.</p>
+    <p class="casa-legal">Referencial. No se puede construir sobre el área de árboles frutales ni de conservación natural; las especies son sugerencias según la zona del proyecto. La forma del lote sale del plano del proyecto y se lleva a su superficie; el sol se calcula para la latitud del proyecto suponiendo el norte hacia arriba del plano; la superficie construible, los distanciamientos a los deslindes y el permiso de edificación los fija la Dirección de Obras de la comuna.</p>
   </div>
 </section>
 
@@ -1143,7 +1166,7 @@
       <p class="kicker">Preguntas frecuentes</p>
       <h2 id="faq-title">Lo que todos <em>nos preguntan.</em></h2>
       <p class="lead">¿No encuentras tu respuesta? Escríbenos y un ejecutivo te responde.</p>
-      <a class="btn btn-dark" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-wa data-wa-msg="Hola Fundos, tengo una pregunta sobre sus parcelas."><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Preguntar por WhatsApp</a>
+      <a class="btn btn-dark" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-msg="Hola Fundos, tengo una pregunta sobre sus parcelas."><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Preguntar por WhatsApp</a>
     </header>
     <div class="faq reveal">
       <details open>
@@ -1190,7 +1213,7 @@
         <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Contacto directo con tu ejecutivo</li>
       </ul>
       <div class="portal-actions">
-        <a class="btn btn-gold" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-wa data-wa-msg="Hola, tengo una reserva con Fundos y quiero mi acceso a Mi compra."><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Pedir mi acceso</a>
+        <a class="btn btn-gold" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-msg="Hola, tengo una reserva con Fundos y quiero mi acceso a Mi compra."><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Pedir mi acceso</a>
         <a class="btn btn-ghost" href="#como-comprar">Ver las etapas</a>
       </div>
       <p class="portal-note">Disponible para compradores con reserva vigente: te enviamos tu acceso por WhatsApp o correo.</p>
@@ -1278,6 +1301,81 @@
 </section>
 
 
+<!-- ============================== TRABAJA CON NOSOTROS: VENDE TU CAMPO Y PROVEEDORES ============================== -->
+<section class="section cream trabaja" id="trabaja-con-nosotros" data-vista="equipo" aria-labelledby="trabaja-title">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="kicker">Trabaja con nosotros</p>
+      <h2 id="trabaja-title">Crezcamos <em>juntos en el campo.</em></h2>
+      <p class="lead">Si tienes un campo para vender o un servicio para quienes construyen su vida en una parcela, conversemos.</p>
+    </header>
+    <div class="trabaja-grid">
+      <form class="mini-form reveal" id="vende-tu-campo" data-mini-form="campo" novalidate aria-labelledby="campo-title">
+        <div class="mini-head">
+          <span class="mini-ico" aria-hidden="true"><svg class="i"><use href="#i-map"/></svg></span>
+          <div>
+            <h3 id="campo-title">Vende tu campo <em>a Fundos</em></h3>
+            <p>Compramos campos para desarrollar nuevos proyectos de parcelas. Cuéntanos de tu terreno y te contactamos para evaluarlo, sin compromiso.</p>
+          </div>
+        </div>
+        <div class="mini-fields">
+          <div class="field"><label for="cp-nombre">Nombre</label><input id="cp-nombre" name="nombre" type="text" autocomplete="name" required><p class="error" data-error-for="cp-nombre">Escribe tu nombre.</p></div>
+          <div class="field"><label for="cp-tel">Teléfono</label><input id="cp-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9" required><p class="error" data-error-for="cp-tel">Revisa el teléfono.</p></div>
+          <div class="field"><label for="cp-region">Región</label><select id="cp-region" name="region" data-label="Región"><option value="">Elige una región</option><option>Región de Valparaíso</option><option>Región Metropolitana</option><option>Región de O'Higgins</option><option>Región del Maule</option><option>Región de Ñuble</option><option>Región del Biobío</option><option>Región de La Araucanía</option><option>Región de Los Ríos</option><option>Región de Los Lagos</option><option>Región de Aysén</option><option>Otra</option></select></div>
+          <div class="field"><label for="cp-comuna">Comuna o sector</label><input id="cp-comuna" name="comuna" type="text" data-label="Comuna o sector"></div>
+          <div class="field"><label for="cp-ha">Superficie <small>hectáreas</small></label><input id="cp-ha" name="hectareas" type="number" inputmode="decimal" min="0" step="0.5" data-label="Superficie" data-unidad=" ha"></div>
+          <div class="field"><label for="cp-agua">Agua</label><select id="cp-agua" name="agua" data-label="Agua"><option value="">Elige</option><option>Tiene derechos de agua</option><option>Tiene pozo, noria o vertiente</option><option>Sin agua</option><option>No lo sé</option></select></div>
+          <div class="field mini-wide"><label for="cp-msg">Cuéntanos más <small>opcional</small></label><textarea id="cp-msg" name="mensaje" rows="2" placeholder="Acceso, electricidad, roles, precio esperado…" data-label="Detalle"></textarea></div>
+        </div>
+        <label class="check mini-check"><input type="checkbox" name="acepto" required> Acepto que Fundos me contacte por este medio.</label>
+        <p class="error" data-error-for="acepto">Marca la casilla para continuar.</p>
+        <div class="mini-act">
+          <button class="btn btn-gold" type="submit"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</button>
+          <a class="mini-mail" href="mailto:ventas@fundosinmobiliaria.com?subject=Quiero%20vender%20mi%20campo" data-mini-mail>o escríbenos a ventas@fundosinmobiliaria.com</a>
+        </div>
+        <div class="mini-ok" data-mini-ok hidden tabindex="-1">
+          <p class="mini-ok-k">Tu mensaje está listo</p>
+          <p class="mini-ok-msg" data-mini-msg></p>
+          <a class="btn btn-gold" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-mini-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Abrir WhatsApp</a>
+          <button class="btn btn-ghost btn-sm" type="button" data-mini-again>Editar</button>
+        </div>
+      </form>
+
+      <form class="mini-form reveal" id="proveedores" data-mini-form="proveedor" novalidate aria-labelledby="prov-title">
+        <div class="mini-head">
+          <span class="mini-ico" aria-hidden="true"><svg class="i"><use href="#i-key"/></svg></span>
+          <div>
+            <h3 id="prov-title">Ofrece tus <em>servicios</em></h3>
+            <p>¿Construyes casas de campo, haces pozos, cercos o paisajismo? Súmate a nuestra red de proveedores para recomendarte a quienes compran su parcela.</p>
+          </div>
+        </div>
+        <div class="mini-fields">
+          <div class="field"><label for="pv-nombre">Nombre</label><input id="pv-nombre" name="nombre" type="text" autocomplete="name" required><p class="error" data-error-for="pv-nombre">Escribe tu nombre.</p></div>
+          <div class="field"><label for="pv-empresa">Empresa <small>opcional</small></label><input id="pv-empresa" name="empresa" type="text" autocomplete="organization" data-label="Empresa"></div>
+          <div class="field"><label for="pv-rubro">Rubro</label><select id="pv-rubro" name="rubro" data-label="Rubro"><option value="">Elige un rubro</option><option>Construcción de casas</option><option>Arquitectura y diseño</option><option>Pozos, norias y agua</option><option>Electricidad y energía solar</option><option>Cercos y portones</option><option>Caminos y movimiento de tierra</option><option>Paisajismo, frutales y huertos</option><option>Topografía y regularización</option><option>Otro</option></select></div>
+          <div class="field"><label for="pv-zona">Zona donde trabajas</label><select id="pv-zona" name="zona" data-label="Zona"><option value="">Elige</option><option>Puerto Varas y Los Lagos</option><option>Malalcahuello y La Araucanía</option><option>Marchigüe y O'Higgins</option><option>Varias zonas</option></select></div>
+          <div class="field"><label for="pv-tel">Teléfono</label><input id="pv-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9" required><p class="error" data-error-for="pv-tel">Revisa el teléfono.</p></div>
+          <div class="field"><label for="pv-correo">Correo <small>opcional</small></label><input id="pv-correo" name="correo" type="email" autocomplete="email" data-label="Correo"><p class="error" data-error-for="pv-correo">Revisa el correo.</p></div>
+          <div class="field mini-wide"><label for="pv-msg">Tu servicio <small>opcional</small></label><textarea id="pv-msg" name="mensaje" rows="2" placeholder="Qué haces, experiencia, sitio web o redes…" data-label="Detalle"></textarea></div>
+        </div>
+        <label class="check mini-check"><input type="checkbox" name="acepto" required> Acepto que Fundos me contacte por este medio.</label>
+        <p class="error" data-error-for="acepto">Marca la casilla para continuar.</p>
+        <div class="mini-act">
+          <button class="btn btn-gold" type="submit"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</button>
+          <a class="mini-mail" href="mailto:ventas@fundosinmobiliaria.com?subject=Proveedor%20de%20servicios" data-mini-mail>o escríbenos a ventas@fundosinmobiliaria.com</a>
+        </div>
+        <div class="mini-ok" data-mini-ok hidden tabindex="-1">
+          <p class="mini-ok-k">Tu mensaje está listo</p>
+          <p class="mini-ok-msg" data-mini-msg></p>
+          <a class="btn btn-gold" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-mini-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Abrir WhatsApp</a>
+          <button class="btn btn-ghost btn-sm" type="button" data-mini-again>Editar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+
 <!-- ============================== VISITA / CONTACTO ============================== -->
 <section class="section dark visit" id="visita" data-vista="inicio proyectos compra equipo" aria-labelledby="visita-title">
   <svg class="visit-lines" viewBox="0 0 1600 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -1295,8 +1393,8 @@
       <p class="lead">Te mostramos los lotes disponibles, los accesos y el entorno, y respondemos todas tus preguntas en terreno. Si estás lejos, lo recorremos contigo por videollamada.</p>
       <p class="visit-people"><span class="faces" aria-hidden="true"><img src="assets/img/cara-8.webp" alt="" width="40" height="40" loading="lazy" decoding="async"><img src="assets/img/cara-6.webp" alt="" width="40" height="40" loading="lazy" decoding="async"><img src="assets/img/cara-7.webp" alt="" width="40" height="40" loading="lazy" decoding="async"><img src="assets/img/cara-4.webp" alt="" width="40" height="40" loading="lazy" decoding="async"></span><span>Te responde una persona del equipo, en horario hábil.</span></p>
       <ul class="contact-list">
-        <li><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg><div><span>WhatsApp</span><a href="https://wa.me/56900000000" target="_blank" rel="noopener" data-wa data-wa-visible>+56 9 0000 0000</a></div></li>
-        <li><svg class="i" aria-hidden="true"><use href="#i-send"/></svg><div><span>Correo</span><a href="mailto:contacto@fundosinmobiliaria.com" data-email>contacto@fundosinmobiliaria.com</a></div></li>
+        <li><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg><div><span>WhatsApp</span><a href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-visible>+56 9 9292 2429</a></div></li>
+        <li><svg class="i" aria-hidden="true"><use href="#i-send"/></svg><div><span>Correo</span><a href="mailto:ventas@fundosinmobiliaria.com" data-email>ventas@fundosinmobiliaria.com</a></div></li>
         <li><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg><div><span>Horario</span><p data-horario>Lunes a sábado, 9:00 a 19:00</p></div></li>
       </ul>
     </div>
@@ -1359,7 +1457,7 @@
         <svg class="ok-check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 27l7 7 15-16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h3>Último paso: envíanos tu mensaje</h3>
         <blockquote class="ok-msg" data-visit-msg></blockquote>
-        <a class="btn btn-gold" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-visit-fallback><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</a>
+        <a class="btn btn-gold" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-visit-fallback><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</a>
         <p data-visit-note>Se abrirá WhatsApp con este texto. Un ejecutivo te confirma la visita.</p>
         <button class="btn btn-line btn-sm" type="button" data-visit-again>Editar mi solicitud</button>
       </div>
@@ -1391,10 +1489,16 @@
       <a href="#preguntas">Preguntas frecuentes</a>
       <a href="#visita">Agendar visita</a>
     </nav>
+    <nav class="footer-col" aria-label="Trabaja con nosotros">
+      <h2>Trabaja con nosotros</h2>
+      <a href="#vende-tu-campo">Vende tu campo</a>
+      <a href="#proveedores">Ofrece tus servicios</a>
+      <a href="#haciendas" data-hac-link hidden>Proyectos Hacienda</a>
+    </nav>
     <div class="footer-col">
       <h2>Contacto</h2>
-      <a href="https://wa.me/56900000000" target="_blank" rel="noopener" data-wa data-wa-visible>+56 9 0000 0000</a>
-      <a href="mailto:contacto@fundosinmobiliaria.com" data-email>contacto@fundosinmobiliaria.com</a>
+      <a href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa data-wa-visible>+56 9 9292 2429</a>
+      <a href="mailto:ventas@fundosinmobiliaria.com" data-email>ventas@fundosinmobiliaria.com</a>
       <p data-horario>Lunes a sábado, 9:00 a 19:00</p>
     </div>
   </div>
@@ -1407,12 +1511,12 @@
 <nav class="quick" aria-label="Contacto rápido">
 <!-- Barra de acción móvil -->
 <div class="mbar" data-mbar>
-  <a class="mbar-wa" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
+  <a class="mbar-wa" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
   <a class="btn btn-gold" href="#visita">Agendar visita</a>
 </div>
 
 <!-- Botón flotante WhatsApp (escritorio) -->
-<a class="wa-float" href="https://wa.me/56900000000" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" data-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg></a>
+<a class="wa-float" href="https://wa.me/56992922429" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" data-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg></a>
 </nav>
 
 <!-- Visor de video -->
@@ -1441,7 +1545,7 @@
       <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Reserva, documentos y escritura</li>
     </ul>
     <div class="sd-actions">
-      <a class="btn btn-gold" href="https://wa.me/56900000000" target="_blank" rel="noopener" data-sd-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Escribir por WhatsApp</a>
+      <a class="btn btn-gold" href="https://wa.me/56992922429" target="_blank" rel="noopener" data-sd-wa><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Escribir por WhatsApp</a>
       <a class="btn btn-line" href="#visita" data-sd-visit><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>Agendar visita</a>
     </div>
     <nav class="sd-nav" aria-label="Otras personas del equipo">

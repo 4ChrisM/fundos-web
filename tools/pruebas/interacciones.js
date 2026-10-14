@@ -123,7 +123,7 @@ const ARGS = ["--proxy-server=" + (process.env.HTTPS_PROXY || "http://127.0.0.1:
   await page.locator(".visit-form").screenshot({ path: "i-form-errors.png" });
   await page.fill("#v-nombre", "Camila Rojas");
   await page.fill("#v-telefono", "+56 9 8765 4321");
-  await page.locator('.check input').check();
+  await page.locator('#visita .check input').check();
   await page.locator('.visit-form button[type="submit"]').click();
   await page.waitForTimeout(600);
   results.okMsg = await page.locator("[data-visit-msg]").textContent();
