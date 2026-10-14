@@ -21,19 +21,19 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Fundos Inmobiliaria","url":"https://www.fundosinmobiliaria.com/","slogan":"La tierra como punto de partida.","areaServed":["Malalcahuello","Marchigüe","Puerto Varas"],"address":{"@type":"PostalAddress","addressCountry":"CL"}}
 </script>
-<script>/* Propuestas para votar (pestaña Proyectos solo con el mapa): ?mapa=vertical | ?mapa=horizontal */(function(){var m=/[?&]mapa=(vertical|horizontal)\b/.exec(location.search);if(m){document.documentElement.classList.add("pm","pm-"+m[1].charAt(0))}})();</script>
+<script>/* Propuestas para votar (pestaña Proyectos solo con el mapa): ?mapa=vertical | ?mapa=horizontal */(function(){var m=/[?&]mapa=(vertical|horizontal)\b/.exec(location.search);if(m){document.documentElement.classList.add("pm","pm-"+m[1].charAt(0));if(/[?&]cerrado=1\b/.test(location.search))document.documentElement.classList.add("pm-cerrado")}})();</script>
 <script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"inicio","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo","trabaja-con-nosotros":"equipo","vende-tu-campo":"equipo",proveedores:"equipo","mas-proyectos":"proyectos"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
 <link rel="preload" as="image" href="assets/video/puerto-varas.webp" media="(min-width: 960px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/video/puerto-varas-movil.webp" media="(max-width: 959px)" fetchpriority="high">
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261015p">
-<script defer src="lib/manifest.js?v=20261015p"></script>
-<script defer src="lib/analitica.js?v=20261015p"></script>
-<script defer src="lib/mapa-chile.js?v=20261015p"></script>
-<script defer src="lib/planos.js?v=20261015p"></script>
-<script defer src="main.js?v=20261015p"></script>
+<link rel="stylesheet" href="styles.css?v=20261015q">
+<script defer src="lib/manifest.js?v=20261015q"></script>
+<script defer src="lib/analitica.js?v=20261015q"></script>
+<script defer src="lib/mapa-chile.js?v=20261015q"></script>
+<script defer src="lib/planos.js?v=20261015q"></script>
+<script defer src="main.js?v=20261015q"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
