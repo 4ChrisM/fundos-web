@@ -243,6 +243,18 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   plano: lat/lon del enlace `mapa` del manifiesto; claros los de `masProyectos`: `lat`/`lon` aproximados); la región sale
   de dónde cae el punto. Sin `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`, `mpCard`).
   Crédito "Chile continental · límites regionales: BCN". Prueba: `tools/pruebas/fundos-chile.js`.
+- **Propuestas para votar: pestaña Proyectos solo con el mapa** (pedido del cliente, oct-2026: "que la página de
+  proyectos sea solo de los proyectos", sin la portada, las tarjetas, el aviso de Tu casa, "Conoce cada proyecto" ni el
+  recorrido 360°, y que el mapa sea la página). Se activan con `?mapa=vertical` o `?mapa=horizontal` en la dirección
+  (script en el `<head>` → `html.pm` y `pm-v`/`pm-h`); **sin el parámetro el sitio queda como antes**. En ese modo
+  `initVistas` marca esas secciones `data-vista="oculta"`, deja el plano solo en Inicio ("Ver lotes" lleva ahí), la
+  pestaña Proyectos parte en `#mas-proyectos` y `#proyecto-ID` ("Conocer el proyecto") abre la ficha de ese fundo en la
+  ventana; el 360° de la ficha abre el tour en otra pestaña. **Vertical** = la Sala de cine más alta. **Horizontal**
+  (`.mch.is-horiz`, lo pidió el equipo): Chile completo acostado en una franja chica con el recuadro del tramo y, debajo,
+  el tramo de 31°S a 44°S a todo el ancho (norte a la izquierda, mar abajo) con punto y rótulo por fundo en pistas sin
+  choques y latitudes cada 2° (en celular se desliza y sigue al fundo activo); mismo carrusel, resumen y ventana. Cuando
+  el equipo elija, se deja una como la pestaña Proyectos por defecto, se quitan el parámetro y lo que no se use, y se
+  ajustan las pruebas que usan esas secciones (`interacciones`, `plano`, `recorrido`, `_vista.js`).
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el
