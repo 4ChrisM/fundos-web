@@ -70,7 +70,7 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   ventas@fundosinmobiliaria.com (también escritos en los `href` de `index.html` para la página sin JavaScript); horario
   martes a viernes de 10:00 a 19:00 y visitas a terreno los fines de semana (`contacto.horario` y `contacto.visitas`,
   `[data-horario]`/`[data-visitas]`); en `#visita`, si eligen un día de semana sin videollamada, `[data-fecha-nota]` avisa
-  (no bloquea). `haciendas`: proyectos Hacienda genéricos (ver "Trabaja con nosotros y Hacienda").
+  (no bloquea). `masProyectos`: proyectos genéricos "Fundos de …" (ver "Trabaja con nosotros y Más proyectos").
 - `lib/planos.js` **generado, no editar a mano**: por proyecto `viewBox`, `contorno`, `calles` (servidumbres),
   `agua`, opcional `caminoPrincipal`, y `lotes[n] = {d, l, r}` (path SVG, punto de etiqueta, radio libre). Lotes y
   servidumbres forman una cobertura continua (bordes compartidos, sin huecos ni traslapes).
@@ -187,12 +187,14 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   libre. **Casas de campo** (para vender una vida de campo): madera en tinglado (`tablas`), ventanas con marco blanco y
   cruz, techo de zinc a dos aguas por defecto, **corredor** con piso de madera y pilares en el lado largo del frente
   (`corredor()`) y chimenea (`chimenea`). **Pendiente para más adelante:** pendientes del terreno según la ubicación.
-- **Trabaja con nosotros y Hacienda** (oct-2026): en la pestaña Equipo, `#trabaja-con-nosotros` con dos formularios
+- **Trabaja con nosotros y Más proyectos** (oct-2026): en la pestaña Equipo, `#trabaja-con-nosotros` con dos formularios
   (`[data-mini-form]`, `initMiniForms`): **"Vende tu campo a Fundos"** (`#vende-tu-campo`: Fundos compra campos para
   parcelar) y **"Ofrece tus servicios"** (`#proveedores`: red de proveedores). Arman el mensaje con los campos que tienen
   `data-label`, lo muestran y lo envían por WhatsApp (`[data-mini-wa]`, evento `generate_lead` con el formulario) o por
-  correo. Enlaces en el menú y en el pie ("Trabaja con nosotros"). **Proyectos Hacienda** (`#haciendas`, pestaña
-  Proyectos, `initHaciendas`): tarjetas genéricas desde `haciendas` del manifiesto (nombre, región, zona, descripción,
+  correo. Enlaces en el menú y en el pie ("Trabaja con nosotros"). **Más proyectos** (`#mas-proyectos`, "Fundos en todo
+  Chile", pestaña Proyectos, `initMasProyectos`, clases `.mp-*`): proyectos heredados que Fundos tomó de otra empresa;
+  **el cliente pidió que sea sutil: nunca nombrar la marca anterior ni presentarlos como una línea aparte**, y cada uno se
+  llama "Fundos de …". Tarjetas genéricas desde `masProyectos` del manifiesto (nombre, región, zona, descripción,
   `datos` (etiquetas), `paisaje` y `lat`, estado opcional; **sin precios ni plano ni 360°**, pedido del cliente) con "Quiero
   información" por WhatsApp; en celular, franja que se desliza. **Diseño híbrido** (el cliente eligió mezclar las propuestas):
   tarjeta verde oscuro con el paisaje en línea (`paisajeSvg()`: mar, lago, valle, cordillera, río o bosque, con arco de sol
@@ -287,7 +289,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   llamándose `equipo-elvys.*`. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
   originales no van a `main`; se convierten con ffmpeg a MP4 + WebM con `loudnorm`).
   No suponer género ni cargos: hoy todos dicen "Equipo comercial" hasta tener los cargos reales.
-- Santo Domingo fuera de la propuesta principal (plano, cotizador, 360°); desde oct-2026 aparece solo como tarjeta en Proyectos Hacienda (lo pidió el cliente). No bajar videos de internet: solo material propio del cliente.
+- Santo Domingo fuera de la propuesta principal (plano, cotizador, 360°); desde oct-2026 aparece solo como tarjeta en Más proyectos (lo pidió el cliente). No bajar videos de internet: solo material propio del cliente.
 - Planos con líneas rectas como el masterplan. En computador la herramienta completa (proyectos, filtros, chips,
   plano y leyenda en franja baja) cabe en la pantalla: el plano mide entre 380 y 480 px de alto y no pasa del 47 % de la ventana (`layoutPlan`); los
   chips de precio van en una sola fila (precio arriba, precio lista y disponibles abajo); el

@@ -1980,10 +1980,10 @@
       });
     });
   }
-  /* Proyectos Hacienda: tarjeta verde con el paisaje en línea (estilo de los logos, sol dorado) teñido con el color del
+  /* Más proyectos ("Fundos de …", sin plano ni recorrido): tarjeta verde con el paisaje en línea (estilo de los logos, sol dorado) teñido con el color del
      tipo de paisaje y una regla de latitud de Chile que marca dónde está; sin precios, plano ni recorrido. Sin datos, no se ve */
-  var HAC_COLOR = { mar: "#2D5A62", lago: "#36596A", valle: "#7E6A3E", cordillera: "#46584A", rio: "#30584A", bosque: "#2C4733" };
-  var HAC_TIPO = { mar: "Costa", lago: "Lago", valle: "Valle", cordillera: "Cordillera", rio: "Río", bosque: "Bosque" };
+  var MP_COLOR = { mar: "#2D5A62", lago: "#36596A", valle: "#7E6A3E", cordillera: "#46584A", rio: "#30584A", bosque: "#2C4733" };
+  var MP_TIPO = { mar: "Costa", lago: "Lago", valle: "Valle", cordillera: "Cordillera", rio: "Río", bosque: "Bosque" };
   function paisajeSvg(tipo) {
     var c = "#F2EDE3", g = "#C8A165";
     var sol = '<path d="M112 92a48 48 0 0 1 96 0" fill="none" stroke="' + g + '" stroke-width="1.6"/>';
@@ -1998,10 +1998,10 @@
       rio: sol + L("M30 96l40-20 26 12 34-24 40 30 30-14 60 16") + L("M150 132c-30-8 30-14 10-24s20-10 6-16", 1.4) + L("M164 132c-28-8 30-14 12-24s18-10 6-16", 1.1) + L("M30 104h110M196 104h94") + pino(70, 102, 20) + pino(84, 102, 14) + pino(240, 102, 18),
       bosque: sol + L("M30 104h260") + pino(80, 104, 40) + pino(104, 104, 30) + pino(126, 104, 46) + pino(196, 104, 34) + pino(220, 104, 44) + pino(244, 104, 26) + L("M150 104c4-14 18-18 22-8 6-10 22-6 20 8", 1.3)
     };
-    return '<svg class="hac-dib" viewBox="0 0 320 140" aria-hidden="true" focusable="false">' + (d[tipo] || d.valle) + "</svg>";
+    return '<svg class="mp-dib" viewBox="0 0 320 140" aria-hidden="true" focusable="false">' + (d[tipo] || d.valle) + "</svg>";
   }
-  function initHaciendas() {
-    var sec = $("[data-haciendas]"), list = sec && $("[data-hac-list]", sec), hs = B.haciendas || [];
+  function initMasProyectos() {
+    var sec = $("[data-mas-proyectos]"), list = sec && $("[data-mp-list]", sec), hs = B.masProyectos || [];
     if (!sec || !list || !hs.length) return;
     var lats = hs.map(function (h) { return Math.abs(h.lat || 0); }).filter(Boolean);
     var la = Math.floor(Math.min.apply(null, lats.concat([33]))), lb = Math.ceil(Math.max.apply(null, lats.concat([42])));
@@ -2009,20 +2009,20 @@
     var marcas = lats.map(function (l) { return '<i style="top:' + pos(l) + '"></i>'; }).join("");
     list.innerHTML = hs.map(function (h) {
       var msg = "Hola Fundos, quiero información del proyecto " + h.nombre + (h.zona ? " (" + h.zona + ")" : "") + ".";
-      var m = /^(Fundos (?:de|del))\s+(.+)$/.exec(h.nombre || ""), tipo = h.paisaje || "valle";
-      var lat = h.lat ? '<span class="hac-lat" aria-label="Latitud ' + Math.round(Math.abs(h.lat)) + ' grados sur"><span class="hac-regla" aria-hidden="true">' + marcas +
+      var m = /^(Fundos de)\s+(.+)$/.exec(h.nombre || ""), tipo = h.paisaje || "valle";
+      var lat = h.lat ? '<span class="mp-lat" aria-label="Latitud ' + Math.round(Math.abs(h.lat)) + ' grados sur"><span class="mp-regla" aria-hidden="true">' + marcas +
         '<b style="top:' + pos(h.lat) + '"></b></span><small>' + Math.round(Math.abs(h.lat)) + "°S</small></span>" : "";
-      return '<li class="hac-card" style="--pc:' + (HAC_COLOR[tipo] || HAC_COLOR.valle) + '">' +
-        '<div class="hac-art"><span class="hac-tipo">' + esc(HAC_TIPO[tipo] || "") + "</span>" + paisajeSvg(tipo) + lat + "</div>" +
-        '<div class="hac-body">' + (h.estado ? '<span class="hac-estado">' + esc(h.estado) + "</span>" : "") +
-        '<p class="hac-k">' + esc([h.region, h.zona].filter(Boolean).join(" · ")) + "</p>" +
+      return '<li class="mp-card" style="--pc:' + (MP_COLOR[tipo] || MP_COLOR.valle) + '">' +
+        '<div class="mp-art"><span class="mp-tipo">' + esc(MP_TIPO[tipo] || "") + "</span>" + paisajeSvg(tipo) + lat + "</div>" +
+        '<div class="mp-body">' + (h.estado ? '<span class="mp-estado">' + esc(h.estado) + "</span>" : "") +
+        '<p class="mp-k">' + esc([h.region, h.zona].filter(Boolean).join(" · ")) + "</p>" +
         "<h3>" + (m ? "<small>" + esc(m[1]) + "</small>" + esc(m[2]) : esc(h.nombre)) + "</h3>" +
         (h.descripcion ? "<p>" + esc(h.descripcion) + "</p>" : "") +
-        (h.datos && h.datos.length ? '<ul class="hac-datos">' + h.datos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" : "") +
-        '<a class="hac-cta" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';
+        (h.datos && h.datos.length ? '<ul class="mp-datos">' + h.datos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" : "") +
+        '<a class="mp-cta" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';
     }).join("");
     sec.hidden = false;
-    $$("[data-hac-link]").forEach(function (a) { a.hidden = false; });
+    $$("[data-mp-link]").forEach(function (a) { a.hidden = false; });
   }
   function initPvLead() {
     var form = $("[data-pv-lead]");
@@ -3837,7 +3837,7 @@
     safe(initPV, "initPV");
     safe(initPvLead, "initPvLead");
     safe(initMiniForms, "initMiniForms");
-    safe(initHaciendas, "initHaciendas");
+    safe(initMasProyectos, "initMasProyectos");
     safe(initOffscreen, "initOffscreen");
     $$('input[type="range"]').forEach(paintRange);
   }
