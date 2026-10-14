@@ -21,11 +21,11 @@ const URL = "http://127.0.0.1:8765/#mas-proyectos";
     r.activo = await p.evaluate(() => document.querySelector(".mch-act-t").textContent);
     r.fotos = await p.evaluate(() => document.querySelectorAll(".mf-mini button").length);
     await p.click(".mf-mini button:nth-child(3)"); await p.waitForTimeout(300);
-    r.foto3 = await p.evaluate(() => document.querySelector(".mf-foto figcaption").textContent);
+    r.foto3 = await p.evaluate(() => document.querySelector("[data-mf-cap]").textContent);
     await p.screenshot({ path: `ux/fch-${w}-pv.png` });
     // Un fundo sin fotos: emblema y "próximamente"
     const s = await p.$('.mch-tile[data-p="talca"] .mch-tile-b'); await s.evaluate(e => e.scrollIntoView({ inline: "center", block: "center" })); await s.click(); await p.waitForTimeout(800);
-    r.talca = await p.evaluate(() => [document.querySelector(".mf-t").textContent, !!document.querySelector(".mf-pronto"), !!document.querySelector('.mf-acts a[href^="https://wa.me"]')]);
+    r.talca = await p.evaluate(() => [document.querySelector(".mf-t").textContent, !!document.querySelector(".mf-pronto"), !!document.querySelector('.mch-ficha .py-acts a[href^="https://wa.me"]')]);
     await p.keyboard.press("Escape"); await p.waitForTimeout(200);
     r.cierraEsc = await p.evaluate(() => document.querySelector("[data-mch-ficha]").hidden && document.activeElement.classList.contains("mch-tile-b"));
     // Tocar el Chile completo cerca de 40°S lleva a un fundo del sur
