@@ -2775,6 +2775,8 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .mch-res-datos { display: flex; flex-wrap: wrap; gap: .35rem; margin: .7rem 0 0; padding: 0; list-style: none; }
 .mch-res-datos li { padding: .22rem .65rem; border-radius: 999px; background: #F1EADB; font-size: .72rem; font-weight: 700; color: var(--g900); }
 .mch-res-acts { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
+.mch-res-acts .btn { min-height: 44px; padding: .55rem 1rem; font-size: .86rem; white-space: nowrap; }
+@media (min-width: 640px) and (max-width: 1239px) { .mch-res { grid-template-columns: minmax(0, 34%) minmax(0, 1fr); } }
 @media (min-width: 640px) { .mch-res { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); align-items: center; } }
 @media (prefers-reduced-motion: reduce) { .mch-res { animation: none; } }
 .mch-fila-h { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }

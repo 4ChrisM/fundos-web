@@ -16,7 +16,10 @@ const URL = "http://127.0.0.1:8765/#mas-proyectos";
     const vb0 = await p.evaluate(() => document.querySelector("[data-mch-lupa] svg").getAttribute("viewBox"));
     // Tocar Puerto Varas: la lupa viaja y se abre la ficha con 6 fotos
     const t = await p.$('.mch-tile[data-p="puerto-varas"] .mch-tile-b');
-    await t.evaluate(e => e.scrollIntoView({ inline: "center", block: "center" })); await t.click(); await p.waitForTimeout(1300);
+    await t.evaluate(e => e.scrollIntoView({ inline: "center", block: "center" })); await t.click(); await p.waitForTimeout(300);
+    r.tocarNoAbre = await p.evaluate(() => document.querySelector("[data-mch-ficha]").hidden);
+    await p.click("[data-mch-ver]"); await p.waitForTimeout(1300);
+    r.llevaALaFicha = await p.evaluate(() => Math.abs(document.querySelector("[data-mch-ficha]").getBoundingClientRect().top) < 140);
     r.lupaViaja = vb0 !== await p.evaluate(() => document.querySelector("[data-mch-lupa] svg").getAttribute("viewBox"));
     r.activo = await p.evaluate(() => document.querySelector(".mch-act-t").textContent);
     r.fotos = await p.evaluate(() => document.querySelectorAll(".mf-mini button").length);
@@ -24,7 +27,7 @@ const URL = "http://127.0.0.1:8765/#mas-proyectos";
     r.foto3 = await p.evaluate(() => document.querySelector("[data-mf-cap]").textContent);
     await p.screenshot({ path: `ux/fch-${w}-pv.png` });
     // Un fundo sin fotos: emblema y "próximamente"
-    const s = await p.$('.mch-tile[data-p="talca"] .mch-tile-b'); await s.evaluate(e => e.scrollIntoView({ inline: "center", block: "center" })); await s.click(); await p.waitForTimeout(800);
+    const s = await p.$('.mch-tile[data-p="talca"] .mch-tile-b'); await s.evaluate(e => e.scrollIntoView({ inline: "center", block: "center" })); await s.click(); await p.waitForTimeout(800);   // con la ficha abierta, se cambia ahí
     r.talca = await p.evaluate(() => [document.querySelector(".mf-t").textContent, !!document.querySelector(".mf-pronto"), !!document.querySelector('.mch-ficha .py-acts a[href^="https://wa.me"]')]);
     await p.keyboard.press("Escape"); await p.waitForTimeout(200);
     r.cierraEsc = await p.evaluate(() => document.querySelector("[data-mch-ficha]").hidden && document.activeElement.classList.contains("mch-tile-b"));
