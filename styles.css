@@ -2854,6 +2854,14 @@ html.pm .mas-proyectos .section-head .lead { font-size: .94rem; max-width: 62ch;
 @media (max-width: 979px) {
   .mch.is-galeria .mch-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 }
+/* Enlace cerrado para votar (&cerrado=1): sin menú, pestañas, pie ni botones que lleven a otras partes del sitio */
+html.pm-cerrado .nav-links, html.pm-cerrado .nav-actions, html.pm-cerrado .nav-where, html.pm-cerrado .footer, html.pm-cerrado .mbar,
+html.pm-cerrado .wa-float, html.pm-cerrado .quick, html.pm-cerrado [data-py-act="plano"], html.pm-cerrado [data-py-act="cotizar"],
+html.pm-cerrado [data-mf="cotizar"], html.pm-cerrado [data-mr="plano"], html.pm-cerrado .py-near-map { display: none !important; }
+html.pm-cerrado .nav .brand { pointer-events: none; }
+html.pm-cerrado[data-vista="proyectos"] main { padding-top: var(--nav-h); }
+.pm-voto { margin-left: 1rem; padding: .3rem .75rem; border: 1px solid rgba(200, 161, 101, .55); border-radius: 999px; color: var(--gold); font: 700 .74rem/1.2 var(--sans); letter-spacing: .04em; white-space: nowrap; }
+@media (max-width: 640px) { .pm-voto { margin-left: .5rem; padding: .25rem .55rem; font-size: .64rem; white-space: normal; max-width: 52vw; } }
 /* Horizontal: Chile completo acostado en una franja chica y el tramo con los fundos a todo el ancho */
 .mch.is-horiz { grid-template-columns: minmax(0, 1fr); align-items: start; gap: 10px; }
 .mch.is-horiz .mch-mapas { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; height: auto; }

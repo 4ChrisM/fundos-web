@@ -256,7 +256,10 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   (`.mch.is-horiz`, lo pidió el equipo): Chile completo acostado en una franja chica con el recuadro del tramo y, debajo,
   el tramo de 31°S a 44°S a todo el ancho (norte a la izquierda, mar abajo) con punto y rótulo por fundo en pistas sin
   choques (líneas acortadas: las pistas parten un poco dentro del mapa, con borde claro en el texto; el cliente probó una
-  versión "en una lámina" con rótulos junto al punto y prefirió esta) y latitudes cada 2° (en celular se desliza y sigue al fundo activo); mismo carrusel, resumen y ventana. Cuando
+  versión "en una lámina" con rótulos junto al punto y prefirió esta) y latitudes cada 2° (en celular se desliza y sigue al fundo activo); mismo carrusel, resumen y ventana. **Enlaces cerrados para votar**: con
+  `&cerrado=1` (`html.pm-cerrado`) la página queda solo en Proyectos: sin menú, pestañas, pie, WhatsApp flotante ni botones
+  que lleven a otras partes del sitio (ver lotes, cotizar, mapa del entorno), el logo no enlaza, no se puede cambiar de
+  pestaña ni por `#`, y la barra muestra "Vista previa para votación · Opción A · Vertical" (o B · Horizontal). Cuando
   el equipo elija, se deja una como la pestaña Proyectos por defecto, se quitan el parámetro y lo que no se use, y se
   ajustan las pruebas que usan esas secciones (`interacciones`, `plano`, `recorrido`, `_vista.js`).
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),

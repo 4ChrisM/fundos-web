@@ -147,7 +147,17 @@
       var vs = box.getAttribute("data-vista").split(/\s+/);
       return vs.indexOf(cur) >= 0 ? cur : vs[0];
     }
+    // Enlace cerrado para votar (&cerrado=1): solo la pestaña Proyectos, sin poder ir al resto del sitio
+    var CERRADO = root.classList.contains("pm-cerrado");
+    if (CERRADO) {
+      var brand = $(".nav .brand"); if (brand) { brand.removeAttribute("href"); brand.setAttribute("aria-disabled", "true"); }
+      var tag = document.createElement("span");
+      tag.className = "pm-voto";
+      tag.textContent = "Vista previa para votación · " + (root.classList.contains("pm-h") ? "Opción B · Horizontal" : "Opción A · Vertical");
+      var nl = $(".nav-left") || (brand && brand.parentNode); if (nl) nl.appendChild(tag);
+    }
     function set(v) {
+      if (CERRADO && v !== "proyectos") return false;
       if (!PRIMERA[v] || v === cur) return false;
       cur = v;
       root.setAttribute("data-vista", v);
@@ -187,6 +197,7 @@
         if (tp && tp.entorno) { e.preventDefault(); e.stopImmediatePropagation(); window.location.href = tp.entorno + "#tour-360"; return; }
       }
       var v = vistaPara(a.getAttribute("href"));
+      if (CERRADO && v && v !== "proyectos") { e.preventDefault(); e.stopImmediatePropagation(); return; }
       if (v && v !== cur) { set(v); window.scrollTo({ top: 0, behavior: "instant" }); }
     }, true);
     function fromHash() {
@@ -198,7 +209,7 @@
     }
     window.addEventListener("hashchange", fromHash);
     window.addEventListener("popstate", fromHash);
-    var v0 = vistaPara(location.hash) || "inicio";
+    var v0 = CERRADO ? "proyectos" : vistaPara(location.hash) || "inicio";
     set(v0);
     if (location.hash && targetFor(location.hash) && targetFor(location.hash).id !== PRIMERA[v0]) {
       window.setTimeout(function () { jump(targetFor(location.hash)); }, 60);
