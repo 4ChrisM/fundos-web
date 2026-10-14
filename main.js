@@ -2328,7 +2328,7 @@
 
     // Ficha que se despliega bajo el carrusel: fotos, descripción, datos y acciones
     var abierta = null;
-    function abrirFicha(id) {
+    function abrirFicha(id, ir) {
       var p = porId(id);
       if (!p) return;
       poner(id);
@@ -2387,11 +2387,12 @@
           if (a.getAttribute("data-mf") === "cotizar") Visit.prefill({ proyecto: p.main ? p.corto : p.nombre, mensaje: (p.main ? "Quiero cotizar una parcela en " : "Quiero información de ") + p.nombre + ".", scroll: true });
         });
       });
-      // La página no se mueve si la ficha ya asoma; solo si queda fuera de la vista, baja lo justo para mostrar su comienzo
-      var r = ficha.getBoundingClientRect(), tope = navBottomPx() + 12;
-      if (r.top > window.innerHeight - 140) window.scrollTo({ top: window.scrollY + r.top - (window.innerHeight - 280), behavior: reduced ? "auto" : "smooth" });
-      else if (r.bottom < tope) window.scrollTo({ top: window.scrollY + r.top - tope, behavior: reduced ? "auto" : "smooth" });
-      try { ficha.focus({ preventScroll: true }); } catch (err) { ficha.focus(); }
+      // "Ver ficha y fotos" lleva a la ficha; si solo se cambia de fundo con la ficha abierta, la página no se mueve
+      if (ir) {
+        var r = ficha.getBoundingClientRect();
+        window.scrollTo({ top: window.scrollY + r.top - navBottomPx() - 12, behavior: reduced ? "auto" : "smooth" });
+        try { ficha.focus({ preventScroll: true }); } catch (err) { ficha.focus(); }
+      }
     }
     function cerrarFicha() {
       if (!abierta) return;
@@ -2401,9 +2402,9 @@
       if (b) b.focus({ preventScroll: true });
     }
     ficha.addEventListener("click", function (e) { if (e.target.closest("[data-mf-cerrar]")) cerrarFicha(); });
-    ficha.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarFicha(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && abierta && (ficha.contains(document.activeElement) || box.contains(document.activeElement))) cerrarFicha(); });
     act.addEventListener("click", function (e) {
-      if (e.target.closest("[data-mch-ver]") && actual) abrirFicha(actual.id);
+      if (e.target.closest("[data-mch-ver]") && actual) abrirFicha(actual.id, true);
       if (e.target.closest("[data-mr='plano']") && actual) Plan.apply({ id: actual.id, soloDisponibles: true });
     });
 
@@ -2419,7 +2420,14 @@
       if (c) row.scrollTo({ left: c.offsetLeft - row.offsetLeft - 4, behavior: reduced ? "auto" : "smooth" });
     }
     var tick = 0, fijo = false, finFijo = 0, tactil = window.matchMedia && matchMedia("(hover: none)").matches;
-    row.addEventListener("click", function (e) { var b = e.target.closest(".mch-tile-b"); if (b) abrirFicha(b.parentNode.getAttribute("data-p")); });
+    // Tocar una tarjeta elige el fundo (resumen y mapa) y detiene un rato el avance; con la ficha abierta, la cambia ahí mismo
+    row.addEventListener("click", function (e) {
+      var b = e.target.closest(".mch-tile-b"), id = b && b.parentNode.getAttribute("data-p");
+      if (!id) return;
+      tocado = Date.now() + 12000;
+      poner(id);
+      if (abierta) abrirFicha(id);
+    });
     row.addEventListener("pointerover", function (e) { var t = e.target.closest(".mch-tile"); if (t && e.pointerType === "mouse") poner(t.getAttribute("data-p")); });
     row.addEventListener("focusin", function (e) { var t = e.target.closest(".mch-tile"); if (t) poner(t.getAttribute("data-p")); });
     // En celular, el fundo activo es el primero de la fila al deslizar
@@ -2448,7 +2456,7 @@
     $$("[data-mch-mover]", box).forEach(function (b) {
       b.addEventListener("click", function () { row.scrollBy({ left: (+b.getAttribute("data-mch-mover")) * row.clientWidth * 0.85, behavior: reduced ? "auto" : "smooth" }); });
     });
-    // El carrusel avanza solo (un fundo cada 4,5 s y vuelve al comienzo); se detiene con el mouse encima, con el foco
+    // El carrusel avanza solo (un fundo cada 3 s y vuelve al comienzo); se detiene con el mouse encima, con el foco
     // adentro, con la ficha abierta, fuera de la vista o con el botón Pausar. Con movimiento reducido parte en pausa.
     var auto = $("[data-mch-auto]", box), pausado = reduced, encima = false, enVista = false, tocado = 0;
     function corre() { return !pausado && !encima && !abierta && enVista && !document.hidden && Date.now() > tocado && !box.contains(document.activeElement); }
@@ -2456,7 +2464,7 @@
       if (!corre()) return;
       var i = pts.indexOf(actual), n = pts[(i + 1) % pts.length];
       llevar(n.id);
-    }, 4500);
+    }, 3000);
     function botonAuto() {
       if (!auto) return;
       auto.setAttribute("aria-pressed", String(!pausado));
