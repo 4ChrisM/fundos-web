@@ -125,6 +125,7 @@
       OCULTAS.forEach(function (id) { var el = document.getElementById(id); if (el) el.setAttribute("data-vista", "oculta"); });
       var tk = $(".ticker[data-vista]"); if (tk) tk.setAttribute("data-vista", "oculta");
       var pl = $("#plano"); if (pl) pl.setAttribute("data-vista", "inicio");
+      var vi = $("#visita"); if (vi) vi.setAttribute("data-vista", "inicio compra equipo");   // tampoco el formulario de visita
       $$('a[href="#proyectos-inicio"]').forEach(function (a) { a.setAttribute("href", "#mas-proyectos"); });
     }
     var links = $$("[data-vista-link]"), cur = "";
@@ -2345,7 +2346,19 @@
         '<span class="mch-info" aria-hidden="true">Ver ficha →</span></button>' +
         '<p class="mch-tile-sub"><b>' + esc(p.corto) + "</b>" + esc(p.reg.nombre) + "</p></li>";
     }
-    row.innerHTML = pts.map(tile).join("");
+    // Propuesta vertical (?mapa=vertical): en vez de carrusel, galería de norte a sur agrupada por región (pedido del
+    // cliente); tocar un fundo abre su ficha y el mapa sigue al fundo que se mira
+    var galeria = document.documentElement.classList.contains("pm-v");
+    if (galeria) {
+      box.classList.add("is-galeria");
+      var ultima = null;
+      row.innerHTML = pts.map(function (p) {
+        var h = p.reg.cod !== ultima ? '<li class="mch-grupo" aria-hidden="true">' + esc(rn(p)) + "</li>" : "";
+        ultima = p.reg.cod;
+        return h + tile(p);
+      }).join("");
+      var ft = $(".mch-fila-t", box); if (ft) ft.textContent = "Los " + pts.length + " fundos, de norte a sur";
+    } else row.innerHTML = pts.map(tile).join("");
 
     function poner(id, ya) {
       var p = porId(id);
@@ -2491,7 +2504,8 @@
       poner(id);
       var c = $('.mch-tile[data-p="' + id + '"]', row);
       fijo = true; window.clearTimeout(finFijo); finFijo = window.setTimeout(function () { fijo = false; }, 400);
-      if (c) row.scrollTo({ left: c.offsetLeft - row.offsetLeft - 4, behavior: reduced ? "auto" : "smooth" });
+      if (c && galeria) c.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
+      else if (c) row.scrollTo({ left: c.offsetLeft - row.offsetLeft - 4, behavior: reduced ? "auto" : "smooth" });
     }
     var tick = 0, fijo = false, finFijo = 0, tactil = window.matchMedia && matchMedia("(hover: none)").matches;
     // Tocar una tarjeta elige el fundo (resumen y mapa) y detiene un rato el avance; con la ficha abierta, la cambia ahí mismo
@@ -2500,8 +2514,20 @@
       if (!id) return;
       tocado = Date.now() + 12000;
       poner(id);
-      if (abierta) abrirFicha(id);
+      if (galeria) abrirFicha(id, "x");   // en la galería, tocar un fundo abre su ficha
+      else if (abierta) abrirFicha(id);
     });
+    // En la galería, el fundo activo es el que está a media pantalla al bajar
+    if (galeria) window.addEventListener("scroll", function () {
+      if (tick || fijo || abierta) return;
+      tick = window.requestAnimationFrame(function () {
+        tick = 0;
+        if (Vista.current && Vista.current() !== "proyectos") return;
+        var mid = window.innerHeight * 0.55, best = null, d0 = Infinity;
+        $$(".mch-tile", row).forEach(function (t) { var r = t.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - mid); if (d < d0) { d0 = d; best = t; } });
+        if (best) poner(best.getAttribute("data-p"));
+      });
+    }, { passive: true });
     row.addEventListener("pointerover", function (e) { var t = e.target.closest(".mch-tile"); if (t && e.pointerType === "mouse") poner(t.getAttribute("data-p")); });
     row.addEventListener("focusin", function (e) { var t = e.target.closest(".mch-tile"); if (t) poner(t.getAttribute("data-p")); });
     // En celular, el fundo activo es el primero de la fila al deslizar
@@ -2533,7 +2559,7 @@
     });
     // El carrusel avanza solo (un fundo cada 3 s y vuelve al comienzo); se detiene con el mouse encima, con el foco
     // adentro, con la ficha abierta, fuera de la vista o con el botón Pausar. Con movimiento reducido parte en pausa.
-    var auto = $("[data-mch-auto]", box), pausado = reduced, encima = false, enVista = false, tocado = 0;
+    var auto = $("[data-mch-auto]", box), pausado = reduced || galeria, encima = false, enVista = false, tocado = 0;
     function corre() { return !pausado && !encima && !abierta && enVista && !document.hidden && Date.now() > tocado && !box.contains(document.activeElement); }
     window.setInterval(function () {
       if (!corre()) return;
