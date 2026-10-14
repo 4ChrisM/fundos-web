@@ -2830,6 +2830,9 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 @keyframes mfIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 .mch-ficha .py { border: 0; border-radius: 0; }
 .mch-ficha .kicker { color: var(--gold); }
+/* Fotos claras (playa, cielo): degradado más alto y sombra suave para que el texto se lea */
+.mch-ficha .py-hero::after { background: linear-gradient(to top, rgba(8, 18, 12, .92) 0%, rgba(8, 18, 12, .6) 45%, rgba(8, 18, 12, .1) 80%); }
+.mch-ficha .py-hero-in { text-shadow: 0 1px 12px rgba(0, 0, 0, .45); }
 .mch-ficha .py-cred { left: .85rem; right: auto; align-items: flex-start; text-align: left; }
 .mf-x { position: absolute; top: 10px; right: 10px; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgba(247, 245, 240, .35); border-radius: 50%; background: rgba(10, 20, 14, .55); color: #fff; cursor: pointer; backdrop-filter: blur(4px); }
 .mf-x .i { width: 18px; height: 18px; }
