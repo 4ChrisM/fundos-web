@@ -310,6 +310,11 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   (HLG): convertir a SDR con `zscale` + `tonemap` antes de codificar.
 
 ## Decisiones tomadas con el cliente
+- **Sin "Propuesta" ni Fundos 360° a la vista** (pedido del cliente, oct-2026): se quitó la etiqueta "Propuesta · datos de
+  ejemplo" de la barra, el pie dice "Diseño · BiPlot" y el mapa del entorno "Volver al sitio". **Mi compra** (`#portal`)
+  queda como **"Próximamente"** (etiqueta `.pronto` en la barra, el menú, la pestaña y la sección; sello en el celular de
+  muestra; botón "Avísame cuando esté listo" por WhatsApp). No nombrar Fundos 360° en textos visibles hasta que el
+  cliente lo pida (el sitio sigue con `noindex` hasta el cambio de dominio).
 - Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la portada de Proyectos; de respaldo, un cuadro del mismo video (`portada.webp`, `portada-movil.webp`). La foto grupal del equipo se quitó (incluía a Marjorie, que salió): en Nosotros va un mosaico con las fotos actuales (`.team-mosaic`, actualizarlo si cambia el equipo). Las tarjetas de proyectos (`.project-art.has-foto`) usan la vista aérea de cada parcela; la ilustración SVG queda oculta (la clonan otros módulos como respaldo).
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
   Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Stefy, Diego, Geonela y Elvis; grabados por el cliente en la misma oficina). Todas las

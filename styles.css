@@ -300,6 +300,11 @@ input[type="range"]:focus-visible { outline: 2px solid var(--gold); outline-offs
 .nav-actions { display: flex; align-items: center; gap: .6rem; }
 .nav-portal { display: none; align-items: center; gap: .45rem; white-space: nowrap; font-size: .88rem; font-weight: 700; color: var(--cream-80); padding: .5rem .2rem; }
 .nav-portal:hover { color: var(--gold); }
+/* "Mi compra" aún no está disponible (pedido del cliente): etiqueta "Próximamente" */
+.pronto { display: inline-block; margin-left: .45rem; padding: .16rem .45rem; border: 1px solid currentColor; border-radius: 999px; font: 800 .56rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; vertical-align: .14em; opacity: .8; }
+.kicker .pronto { margin-left: .6rem; color: var(--gold); opacity: 1; }
+.nav-portal .pronto { margin-left: .1rem; }
+.phone-pronto { position: absolute; top: 18%; left: 50%; z-index: 3; transform: translateX(-50%) rotate(-6deg); padding: .45rem 1rem; border-radius: 999px; background: var(--gold); color: var(--g900); font: 800 .78rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; box-shadow: 0 12px 30px -12px rgba(0, 0, 0, .6); white-space: nowrap; }
 .nav-portal .i { color: var(--gold); width: 1.1em; height: 1.1em; }
 .nav .btn-sm { display: none; }
 .nav-toggle { display: inline-grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(247, 245, 240, .3); color: var(--n050); }
