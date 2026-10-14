@@ -1980,20 +1980,46 @@
       });
     });
   }
-  /* Proyectos Hacienda: tarjetas genéricas desde el manifiesto (sin plano ni recorrido); sin datos, la sección no se ve */
+  /* Proyectos Hacienda: tarjeta verde con el paisaje en línea (estilo de los logos, sol dorado) teñido con el color del
+     tipo de paisaje y una regla de latitud de Chile que marca dónde está; sin precios, plano ni recorrido. Sin datos, no se ve */
+  var HAC_COLOR = { mar: "#2D5A62", lago: "#36596A", valle: "#7E6A3E", cordillera: "#46584A", rio: "#30584A", bosque: "#2C4733" };
+  var HAC_TIPO = { mar: "Costa", lago: "Lago", valle: "Valle", cordillera: "Cordillera", rio: "Río", bosque: "Bosque" };
+  function paisajeSvg(tipo) {
+    var c = "#F2EDE3", g = "#C8A165";
+    var sol = '<path d="M112 92a48 48 0 0 1 96 0" fill="none" stroke="' + g + '" stroke-width="1.6"/>';
+    var L = function (d, w) { return '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="' + (w || 1.6) + '" stroke-linecap="round" stroke-linejoin="round"/>'; };
+    var pino = function (x, y, h) { return L("M" + x + " " + y + "v-" + h + "M" + (x - h * 0.28) + " " + (y - h * 0.3) + "L" + x + " " + (y - h * 1.05) + "L" + (x + h * 0.28) + " " + (y - h * 0.3) + "Z", 1.3); };
+    var cipres = function (x, y, h) { return '<path d="M' + x + " " + y + "c-" + h * 0.14 + " -" + h * 0.35 + " -" + h * 0.12 + " -" + h * 0.75 + " 0 -" + h + "c" + h * 0.12 + " " + h * 0.25 + " " + h * 0.14 + " " + h * 0.65 + " 0 " + h + 'Z" fill="' + c + '"/>'; };
+    var d = {
+      mar: sol + L("M30 104h260") + L("M60 116c10-4 20-4 30 0s20 4 30 0", 1.2) + L("M150 124c10-4 20-4 30 0s20 4 30 0", 1.2) + L("M200 112c10-4 20-4 30 0", 1.2) + L("M30 104c18-2 30-14 40-30 8 6 14 18 26 30") + pino(54, 86, 18) + L("M246 70l6-4 6 4M262 64l5-3 5 3", 1.1),
+      lago: sol + L("M40 96l40-28 22 14 30-22 36 26 26-14 46 24") + L("M30 104h260") + L("M70 114h60M160 114h90", 1.1) + L("M212 100l10-24v24zM208 100h20l-4 5h-12z", 1.2) + pino(52, 102, 22) + pino(66, 102, 16),
+      valle: sol + L("M20 108c40-18 80-22 140-10s100 4 140-12") + L("M20 124c50-14 110-16 170-6s80 0 110-8", 1.2) + L("M60 116c40-6 80-6 120 0", 1) + cipres(96, 100, 30) + cipres(108, 100, 24) + cipres(118, 100, 28) + L("M200 96h18v-10h-18zM196 86l13-8 13 8", 1.2),
+      cordillera: sol + L("M30 104l50-46 18 16 30-36 36 40 22-18 54 44") + L("M116 48l12 12 10-8", 1.1) + L("M30 104h260") + L("M230 104v-30M218 80c4-6 20-6 24 0M214 90c6-6 26-6 32 0M222 72c3-4 13-4 16 0", 1.3) + L("M80 116c30 4 70 10 120 4", 1.1),
+      rio: sol + L("M30 96l40-20 26 12 34-24 40 30 30-14 60 16") + L("M150 132c-30-8 30-14 10-24s20-10 6-16", 1.4) + L("M164 132c-28-8 30-14 12-24s18-10 6-16", 1.1) + L("M30 104h110M196 104h94") + pino(70, 102, 20) + pino(84, 102, 14) + pino(240, 102, 18),
+      bosque: sol + L("M30 104h260") + pino(80, 104, 40) + pino(104, 104, 30) + pino(126, 104, 46) + pino(196, 104, 34) + pino(220, 104, 44) + pino(244, 104, 26) + L("M150 104c4-14 18-18 22-8 6-10 22-6 20 8", 1.3)
+    };
+    return '<svg class="hac-dib" viewBox="0 0 320 140" aria-hidden="true" focusable="false">' + (d[tipo] || d.valle) + "</svg>";
+  }
   function initHaciendas() {
     var sec = $("[data-haciendas]"), list = sec && $("[data-hac-list]", sec), hs = B.haciendas || [];
     if (!sec || !list || !hs.length) return;
+    var lats = hs.map(function (h) { return Math.abs(h.lat || 0); }).filter(Boolean);
+    var la = Math.floor(Math.min.apply(null, lats.concat([33]))), lb = Math.ceil(Math.max.apply(null, lats.concat([42])));
+    var pos = function (l) { return ((Math.abs(l) - la) / (lb - la) * 100).toFixed(1) + "%"; };
+    var marcas = lats.map(function (l) { return '<i style="top:' + pos(l) + '"></i>'; }).join("");
     list.innerHTML = hs.map(function (h) {
       var msg = "Hola Fundos, quiero información del proyecto " + h.nombre + (h.zona ? " (" + h.zona + ")" : "") + ".";
-      return '<li class="hac-card">' +
-        (h.logo ? '<span class="hac-foto hac-logo"><img src="' + esc(h.logo) + '" alt="Logo de ' + esc(h.nombre) + '" loading="lazy" decoding="async"></span>'
-          : h.foto ? '<img class="hac-foto" src="' + esc(h.foto) + '" alt="" loading="lazy" decoding="async">' : '<span class="hac-foto hac-foto-vacia" aria-hidden="true"><svg class="i"><use href="#i-volcan"/></svg></span>') +
+      var m = /^(Fundos (?:de|del))\s+(.+)$/.exec(h.nombre || ""), tipo = h.paisaje || "valle";
+      var lat = h.lat ? '<span class="hac-lat" aria-label="Latitud ' + Math.round(Math.abs(h.lat)) + ' grados sur"><span class="hac-regla" aria-hidden="true">' + marcas +
+        '<b style="top:' + pos(h.lat) + '"></b></span><small>' + Math.round(Math.abs(h.lat)) + "°S</small></span>" : "";
+      return '<li class="hac-card" style="--pc:' + (HAC_COLOR[tipo] || HAC_COLOR.valle) + '">' +
+        '<div class="hac-art"><span class="hac-tipo">' + esc(HAC_TIPO[tipo] || "") + "</span>" + paisajeSvg(tipo) + lat + "</div>" +
         '<div class="hac-body">' + (h.estado ? '<span class="hac-estado">' + esc(h.estado) + "</span>" : "") +
-        "<h3>" + esc(h.nombre) + '</h3><p class="hac-lugar"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>' + esc([h.zona, h.region].filter(Boolean).join(", ")) + "</p>" +
-        (h.descripcion ? "<p>" + esc(h.descripcion) + "</p>" : "") + (h.superficie ? '<p class="hac-sup">' + esc(h.superficie) + "</p>" : "") +
+        '<p class="hac-k">' + esc([h.region, h.zona].filter(Boolean).join(" · ")) + "</p>" +
+        "<h3>" + (m ? "<small>" + esc(m[1]) + "</small>" + esc(m[2]) : esc(h.nombre)) + "</h3>" +
+        (h.descripcion ? "<p>" + esc(h.descripcion) + "</p>" : "") +
         (h.datos && h.datos.length ? '<ul class="hac-datos">' + h.datos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" : "") +
-        '<a class="btn btn-gold btn-sm" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información</a></div></li>';
+        '<a class="hac-cta" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></li>';
     }).join("");
     sec.hidden = false;
     $$("[data-hac-link]").forEach(function (a) { a.hidden = false; });
