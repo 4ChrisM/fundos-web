@@ -2728,17 +2728,19 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 }
 @media (min-width: 600px) { .mp-emb { min-height: 282px; justify-content: center; } }
 
-/* Fundos en todo Chile: mapa por regiones y lista a la altura de su latitud (unidas por líneas) */
-.mch { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(40px, 7vw, 110px); margin: .5rem 0 2.6rem; }
+/* Fundos en todo Chile: mapa fijo a la izquierda y las tarjetas de todos los fundos por región, de norte a sur */
+.mch { display: grid; gap: 1.4rem; }
 .mch[hidden] { display: none; }
-.mch-map { position: relative; z-index: 1; }
-.mch-svg { display: block; height: clamp(440px, 62vh, 640px); width: auto; overflow: visible; }
+.mch-col { position: relative; }
+.mch-map { display: flex; justify-content: center; }
+.mch-svg { display: block; height: 420px; width: auto; max-width: 100%; overflow: visible; }
 .mch-lat { stroke: rgba(122, 93, 51, .22); stroke-width: 1; stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
 .mch-lat-t { font: 700 11px var(--sans); fill: rgba(122, 93, 51, .65); letter-spacing: .04em; }
-.mch-reg { fill: #E4E0D4; stroke: #FFFFFF; stroke-width: 1.2; vector-effect: non-scaling-stroke; transition: fill .25s; }
-.mch-reg.is-con { fill: #C9D2BC; }
-.mch.has-on .mch-reg.is-con:not(.is-on) { fill: #DCE0D2; }
-.mch-reg.is-on { fill: #8FA77D !important; }
+.mch-reg { fill: #E4E0D4; stroke: #FFFFFF; stroke-width: 1.2; vector-effect: non-scaling-stroke; transition: fill .3s; }
+.mch-reg.is-con { fill: #C9D2BC; cursor: pointer; }
+.mch-reg.is-on { fill: #8FA77D; }
+.mch-reg-n { font: 800 11px var(--sans); letter-spacing: .12em; text-transform: uppercase; fill: #7A5D33; opacity: .55; paint-order: stroke; stroke: #F5F2EC; stroke-width: 3px; transition: opacity .3s; pointer-events: none; }
+.mch-reg-n.is-on { opacity: 1; fill: #22301F; }
 .mch-pin circle { fill: #2E3A2C; stroke: #FFFFFF; stroke-width: 2; vector-effect: non-scaling-stroke; transition: transform .2s; transform-box: fill-box; transform-origin: center; }
 .mch-pin.is-main circle { fill: #C8A165; }
 .mch-pin.is-on circle, .mch-pin:hover circle, .mch-pin:focus-visible circle { transform: scale(1.35); }
@@ -2746,35 +2748,47 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .mch-pin:focus-visible circle { stroke: #0A140E; stroke-width: 3; }
 .mch-sil path { fill: #CFC9BA; }
 .mch-sil rect { fill: none; stroke: #7A5D33; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
-.mch-list { position: relative; margin: 0; padding: 0; list-style: none; }
-.mch-row { position: absolute; left: 0; right: 0; padding: .35rem .2rem .35rem 0; transition: opacity .25s; }
-.mch.has-on .mch-row:not(.is-on) { opacity: .45; }
-.mch-reg-t { margin: 0 0 .3rem; font-size: .66rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-ink); }
-.mch-ps { display: flex; flex-wrap: wrap; gap: .3rem .45rem; margin: 0; padding: 0; list-style: none; }
-.mch-p { display: inline-flex; align-items: center; gap: .4rem; min-height: 32px; padding: .2rem .7rem .2rem .55rem; border: 1px solid #E2DCCF; border-radius: 999px; background: #FFFFFF; font: 500 1.02rem/1.1 var(--serif); color: #22301F; text-decoration: none; transition: border-color .2s, background-color .2s; }
-.mch-p i { width: 9px; height: 9px; border-radius: 50%; background: #2E3A2C; flex: none; }
-.mch-p.is-main i { background: #C8A165; }
-.mch-p:hover { border-color: var(--gold); background: #FBF8F2; }
-.mch-p:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
-.mch-lineas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.mch-ln { fill: none; stroke: rgba(122, 93, 51, .45); stroke-width: 1; transition: stroke .2s; }
-.mch-ln.is-on { stroke: #7A5D33; stroke-width: 1.6; }
-.mch-ley { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; align-items: center; margin: 1rem 0 0; font-size: .76rem; font-weight: 700; color: var(--n600); }
+.mch-ley { display: flex; flex-wrap: wrap; gap: .3rem 1rem; align-items: center; justify-content: center; margin: .8rem 0 0; font-size: .74rem; font-weight: 700; color: var(--n600); }
 .mch-ley-p { display: inline-flex; align-items: center; gap: .4rem; }
 .mch-pt { width: 10px; height: 10px; border-radius: 50%; background: #2E3A2C; box-shadow: 0 0 0 2px #fff; }
 .mch-pt.is-main { background: #C8A165; }
-.mch-fuente { margin-left: auto; font-weight: 600; font-size: .7rem; color: var(--n600); opacity: .8; }
+.mch-fuente { flex-basis: 100%; text-align: center; font-weight: 600; font-size: .68rem; opacity: .8; }
+.mch-grupos { display: grid; gap: 2.2rem; min-width: 0; }
+.mch-g { scroll-margin-top: calc(var(--nav-h, 72px) + 16px); }
+.mch-g-h { display: flex; align-items: baseline; gap: .7rem; margin-bottom: .9rem; padding-bottom: .55rem; border-bottom: 1px solid #E2DCCF; }
+.mch-g-t { margin: 0; font: 500 1.6rem/1.1 var(--serif); color: #22301F; transition: color .3s; }
+.mch-g.is-on .mch-g-t { color: #4E6B3E; }
+.mch-g-lat { font-size: .74rem; font-weight: 800; letter-spacing: .08em; color: var(--gold-ink); }
+.mch-g-n { margin-left: auto; font-size: .74rem; font-weight: 700; color: var(--n600); }
+.mch-cards { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 600px) { .mch-cards { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); } }
+/* Tarjeta de los proyectos con plano: foto aérea con el nombre encima */
+.mp-foto { position: relative; display: grid; align-content: end; min-height: 282px; overflow: hidden; background: #24382A; }
+.mp-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mp-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 20, 14, 0) 30%, rgba(10, 20, 14, .78)); }
+.mp-foto-t { position: relative; z-index: 1; padding: 1rem 1rem 1.1rem; text-align: center; }
+.mp-foto-t .emb-pre { color: rgba(247, 245, 240, .85); }
+.mp-foto-t .emb-pre::before, .mp-foto-t .emb-pre::after { background: rgba(247, 245, 240, .7); }
+.mp-foto-t .emb-n { color: #FFFFFF; }
+.mp-sello { position: absolute; top: 12px; left: 12px; z-index: 1; display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .65rem; border-radius: 999px; background: #C8A165; font-size: .68rem; font-weight: 800; color: #0A140E; }
+.mp-sello .i { width: 14px; height: 14px; }
+@media (min-width: 1024px) {
+  .mch { grid-template-columns: minmax(250px, 300px) minmax(0, 1fr); gap: 2.6rem; align-items: start; }
+  .mch-col { position: sticky; top: calc(var(--nav-h, 72px) + 20px); }
+  .mch-svg { height: min(600px, calc(100vh - var(--nav-h, 72px) - 120px)); }
+  .mch-cards { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+}
+@media (max-width: 599px) {
+  .mch-cards { display: flex; gap: .8rem; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--gutter, 16px)); padding: 0 var(--gutter, 16px) .6rem; scroll-padding: 0 var(--gutter, 16px); scrollbar-width: thin; }
+  .mch-cards .mp-card { flex: 0 0 84%; scroll-snap-align: start; }
+  .mch-svg { height: 360px; }
+  .mch-reg-n { font-size: 14px; }
+}
 .mp-card.is-flash { animation: mpFlash 1.6s ease; }
 @keyframes mpFlash { 0%, 100% { box-shadow: 0 18px 40px -32px rgba(10, 20, 14, .5); } 25% { box-shadow: 0 0 0 3px var(--gold), 0 18px 40px -20px rgba(122, 93, 51, .5); } }
-@media (max-width: 599px) {
-  .mch { column-gap: 26px; }
-  .mch-svg { height: 430px; }
-  .mch-lat-t { font-size: 13px; }
-  .mch-row { padding: .15rem 0; }
-  .mch-reg-t { margin-bottom: .15rem; font-size: .6rem; letter-spacing: .16em; }
-  .mch-ps { gap: .1rem .6rem; }
-  .mch-p { min-height: 26px; padding: 0; gap: .3rem; border: 0; background: none; font-size: .9rem; }
-  .mch-p i { width: 7px; height: 7px; }
-  .mch-fuente { margin-left: 0; }
-}
 @media (prefers-reduced-motion: reduce) { .mp-card.is-flash { animation: none; } }
+.mp-foto-t .emb-n { font-size: 1.3rem; letter-spacing: .13em; overflow-wrap: anywhere; }
+.mch { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) { .mch { grid-template-columns: minmax(250px, 300px) minmax(0, 1fr); } }
+.mch-grupos { grid-template-columns: minmax(0, 1fr); }
+.mch-g { min-width: 0; }
