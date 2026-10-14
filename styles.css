@@ -2694,39 +2694,36 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 @media (min-width: 600px) { .mini-fields { grid-template-columns: 1fr 1fr; } .mini-wide { grid-column: 1 / -1; } }
 @media (min-width: 1024px) { .trabaja-grid { grid-template-columns: 1fr 1fr; gap: 1.6rem; } .mini-form { padding: 1.6rem; } }
 
-/* Proyectos Hacienda: tarjetas genéricas (nombre, lugar, texto y botón) */
-.hac-grid { display: grid; gap: 1.2rem; margin: 0; padding: 0; list-style: none; }
-.hac-card { display: grid; overflow: hidden; border: 1px solid var(--n200); border-radius: var(--r-xl, 20px); background: var(--white, #fff); }
-.hac-foto { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
-.hac-foto-vacia { display: grid; place-items: center; background: linear-gradient(135deg, #24382A, #0A140E); color: var(--gold); }
-.hac-foto-vacia .i { width: 46px; height: 46px; opacity: .8; }
-.hac-body { display: grid; gap: .5rem; justify-items: start; padding: 1.1rem 1.2rem 1.3rem; }
-.hac-estado { padding: .2rem .6rem; border-radius: 999px; background: rgba(200, 161, 101, .2); font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-ink); }
-.hac-body h3 { font: 500 1.5rem/1.15 var(--serif); color: var(--g900); }
-.hac-lugar { display: flex; gap: .35rem; align-items: center; font-size: .86rem; font-weight: 700; color: var(--n600); }
-.hac-lugar .i { width: 15px; height: 15px; color: var(--gold-ink); }
-.hac-body p { font-size: .9rem; line-height: 1.5; color: var(--n600); }
-.hac-sup { font-weight: 700; color: var(--g900) !important; }
-@media (min-width: 600px) { .hac-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); } }
-.hac-logo { display: grid; place-items: center; aspect-ratio: 16 / 10; background: #F8F5EF; border-bottom: 1px solid var(--n200); }
-.hac-logo img { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
-.hac-card { grid-template-rows: auto 1fr; }
-.hac-body { align-content: start; }
-.hac-body .btn { margin-top: auto; }
-.hac-body h3 { font-size: 1.35rem; }
-.hac-datos { display: flex; flex-wrap: wrap; gap: .3rem; margin: .1rem 0 .3rem; padding: 0; list-style: none; }
-.hac-datos li { padding: .18rem .55rem; border-radius: 999px; background: #F1EEE6; font-size: .72rem; font-weight: 700; color: var(--g900); }
 .field-nota { margin-top: -.3rem; font-size: .8rem; line-height: 1.4; color: var(--n600); }
 .field-nota.is-aviso { color: #9A5B12; font-weight: 700; }
-.hac-body { display: flex; flex-direction: column; align-items: flex-start; }
-.hac-card { grid-template-columns: minmax(0, 1fr); }
-.hac-logo { overflow: hidden; }
-.hac-logo img { width: 100%; height: 100%; object-fit: contain; }
-.hac-body { min-width: 0; }
-.hac-body .btn { margin-top: auto; }
-.hac-datos { margin-bottom: .8rem; }
-.hac-logo { position: relative; aspect-ratio: 4 / 3; }
-.hac-logo img { position: absolute; inset: 4% 0; width: 100%; height: 92%; object-fit: contain; }
+
+/* Proyectos Hacienda (híbrido): tarjeta verde, paisaje en línea teñido con el color del tipo de lugar y regla de latitud */
+.hac-grid { display: grid; gap: 1.2rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 600px) { .hac-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); } }
+.hac-card { display: flex; flex-direction: column; overflow: hidden; border-radius: 22px; background: #0F2018; color: #F2EDE3; box-shadow: 0 22px 44px -30px rgba(10, 20, 14, .6); }
+.hac-art { position: relative; padding: 30px 48px 0 14px; background: linear-gradient(180deg, var(--pc) 0%, color-mix(in srgb, var(--pc) 45%, #0F2018) 70%, #0F2018 100%); }
+.hac-dib { display: block; width: 100%; height: auto; }
+.hac-tipo { position: absolute; top: 13px; left: 18px; font-size: .62rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: rgba(242, 237, 227, .8); }
+.hac-lat { position: absolute; top: 14px; right: 12px; bottom: 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 30px; }
+.hac-regla { position: relative; flex: 1; width: 100%; }
+.hac-regla::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px solid rgba(200, 161, 101, .45); }
+.hac-regla i { position: absolute; left: 50%; width: 10px; height: 1px; margin-left: -5px; background: rgba(200, 161, 101, .5); }
+.hac-regla b { position: absolute; left: 50%; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: #C8A165; box-shadow: 0 0 0 4px rgba(200, 161, 101, .25); }
+.hac-lat small { font-size: .62rem; font-weight: 800; color: #C8A165; letter-spacing: .04em; }
+.hac-body { display: flex; flex-direction: column; align-items: flex-start; gap: .55rem; flex: 1; min-width: 0; padding: 1rem 1.3rem 1.3rem; }
+.hac-body .hac-k { margin: 0; font-size: .64rem; line-height: 1.5; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #C8A165; }
+.hac-body h3 { margin: 0; font: 500 1.55rem/1.08 var(--serif); color: #F2EDE3; }
+.hac-body h3 small { display: block; margin-bottom: .3rem; font: 700 .64rem/1 var(--sans); letter-spacing: .24em; text-transform: uppercase; color: rgba(242, 237, 227, .55); }
+.hac-body p { margin: 0; font-size: .86rem; line-height: 1.5; color: rgba(242, 237, 227, .78); }
+.hac-estado { padding: .2rem .6rem; border-radius: 999px; background: rgba(200, 161, 101, .2); font-size: .64rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #E7C98F; }
+.hac-datos { display: flex; flex-wrap: wrap; gap: .35rem; margin: .15rem 0 .9rem; padding: 0; list-style: none; }
+.hac-datos li { padding: .18rem .6rem; border: 1px solid rgba(200, 161, 101, .45); border-radius: 999px; font-size: .7rem; font-weight: 700; color: #E9DFC9; }
+.hac-cta { display: inline-flex; align-items: center; gap: .45rem; margin-top: auto; min-height: 44px; font-size: .86rem; font-weight: 800; color: #C8A165; text-decoration: none; }
+.hac-cta .i { width: 17px; height: 17px; }
+.hac-cta .i-go { width: 15px; height: 15px; transition: transform .25s; }
+.hac-cta:hover { color: #E7C98F; }
+.hac-cta:hover .i-go { transform: translateX(3px); }
+.hac-cta:focus-visible { outline: 2px solid #C8A165; outline-offset: 3px; border-radius: 4px; }
 @media (max-width: 599px) {
   .hac-grid { display: flex; gap: .8rem; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--gutter, 16px)); padding: 0 var(--gutter, 16px) .6rem; scroll-padding: 0 var(--gutter, 16px); scrollbar-width: thin; }
   .hac-card { flex: 0 0 84%; scroll-snap-align: start; }

@@ -193,12 +193,15 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `data-label`, lo muestran y lo envían por WhatsApp (`[data-mini-wa]`, evento `generate_lead` con el formulario) o por
   correo. Enlaces en el menú y en el pie ("Trabaja con nosotros"). **Proyectos Hacienda** (`#haciendas`, pestaña
   Proyectos, `initHaciendas`): tarjetas genéricas desde `haciendas` del manifiesto (nombre, región, zona, descripción,
-  `datos` (etiquetas), `logo` (se muestra entero sobre crema) o `foto` (se recorta), estado opcional; **sin precios ni plano
-  ni 360°**, pedido del cliente) con "Quiero información" por WhatsApp; en celular, franja que se desliza. Con la lista
+  `datos` (etiquetas), `paisaje` y `lat`, estado opcional; **sin precios ni plano ni 360°**, pedido del cliente) con "Quiero
+  información" por WhatsApp; en celular, franja que se desliza. **Diseño híbrido** (el cliente eligió mezclar las propuestas):
+  tarjeta verde oscuro con el paisaje en línea (`paisajeSvg()`: mar, lago, valle, cordillera, río o bosque, con arco de sol
+  dorado como los logos) sobre el color de ese paisaje (`HAC_COLOR`, se funde en el verde) y una regla de latitud de Chile
+  a la derecha con la marca del proyecto y sus °S. Los logos recortados de capturas se descartaron ("feísimos"). Con la lista
   vacía la sección y su enlace del pie no se ven. Desde oct-2026 tiene los 10 proyectos del sitio actual del cliente:
   Santo Domingo, Lago Rapel, Bucalemu, Talca, Retiro, San Fabián de Alico, Cobquecura, Río Liucura, Río Negro y Puerto
   Montt (textos resumidos de su sitio; los nombres antiguos dentro de esos textos, como "Fundo Río Mar" o "La Gran
-  Reserva", no se usan). Logos `assets/img/hacienda-ID.webp` recortados de capturas (~270 px): pedir los originales.
+  Reserva", no se usan).
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el
