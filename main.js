@@ -2296,6 +2296,64 @@
         latsH + '<g transform="translate(0 ' + W * S + ") " + rot + " scale(" + S + ')">' + regs + "</g>" + rots.join("") + hp.join("") + "</svg>";
       zo.addEventListener("pointerover", function (e) { var g = e.target.closest("[data-p]"); if (g && e.pointerType === "mouse") poner(g.getAttribute("data-p")); });
     }
+
+    // Propuesta vertical (?mapa=vertical): como la horizontal pero de pie (pedido del cliente). El tramo de Chile queda
+    // fijo, con punto y nombre por fundo a los costados con una línea corta, latitudes cada 2° y Chile completo en chico
+    // en la esquina; el tramo se estira hasta el alto de la galería para que no queden vacíos (armarV mide y rehace)
+    var vlargo = document.documentElement.classList.contains("pm-v"), estatico = horiz || vlargo;
+    function armarV() {
+      var SV = 4, Wc = zo.clientWidth || 400, rr = row.getBoundingClientRect(), Hc = Math.max(rr.bottom - zo.getBoundingClientRect().top, 700);   // hasta el final de la galería
+      var la0 = 31.2, la1 = 44.2, cen = (la0 + la1) / 2;
+      if (window.innerWidth < 980) Hc = Wc * 2;   // en celular, un largo fijo
+      var arma = function (a, b, u) {   // {svg, ancho, alto} para el tramo a..b; u = unidades por píxel (textos y puntos a tamaño fijo en pantalla)
+        var y0 = (a - pr.lat0) * pr.k, y1 = (b - pr.lat0) * pr.k, xA = Infinity, xB = -Infinity;
+        M.regiones.forEach(function (r) { r.anillos.forEach(function (ring) { ring.forEach(function (q) { if (q[1] >= y0 && q[1] <= y1) { xA = Math.min(xA, q[0]); xB = Math.max(xB, q[0]); } }); }); });
+        xA *= SV; xB *= SV;
+        var ocup = { i: [], d: [] }, rots = [], pins = [], mw = { i: 0, d: 0 };
+        pts.slice().sort(function (p, q) { return p.xy[1] - q.xy[1]; }).forEach(function (p) {
+          // lado del rótulo: el más cercano según el ancho de Chile a esa latitud (costa a la izquierda, cordillera a la derecha)
+          var lA = Infinity, lB = -Infinity;
+          M.regiones.forEach(function (r) { r.anillos.forEach(function (ring) { ring.forEach(function (q) { if (Math.abs(q[1] - p.xy[1]) < 0.6 * pr.k) { lA = Math.min(lA, q[0]); lB = Math.max(lB, q[0]); } }); }); });
+          var X = p.xy[0] * SV, Y = p.xy[1] * SV, w = (p.corto.length * 7.6 + 6) * u, lado = p.xy[0] - lA < lB - p.xy[0] ? "i" : "d", ty = Y, k = 0;
+          var libre = function (l, y) { return !ocup[l].some(function (o) { return Math.abs(o - y) < 19 * u; }); };
+          while (!libre(lado, ty) && k < 30) { k++; ty = Y + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 19 * u; }
+          ocup[lado].push(ty); mw[lado] = Math.max(mw[lado], w);
+          var lx = lado === "i" ? xA - 16 * u : xB + 16 * u;
+          rots.push('<g class="mch-rot is-v" data-p="' + esc(p.id) + '"><polyline points="' + X.toFixed(1) + "," + Y.toFixed(1) + " " + (lado === "i" ? lx + 4 * u : lx - 4 * u).toFixed(1) + "," + ty.toFixed(1) + '"/><text x="' + lx.toFixed(1) + '" y="' + ty.toFixed(1) + '" dy=".35em" class="' + (lado === "i" ? "ta-fin" : "ta-ini") + '">' + esc(p.corto) + "</text></g>");
+          pins.push('<g class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '" transform="translate(' + X.toFixed(1) + " " + Y.toFixed(1) + ')"><title>' + esc(p.nombre) + '</title><circle r="' + ((p.main ? 8 : 6) * u).toFixed(2) + '"/></g>');
+        });
+        var vx = xA - (24 * u) - mw.i, vwid = (xB + 24 * u + Math.max(mw.d, 30 * u)) - vx, vy = y0 * SV, vh = (y1 - y0) * SV, lats = "";
+        for (var l = Math.ceil(a / 2) * 2; l <= b; l += 2) { var ly = (l - pr.lat0) * pr.k * SV; lats += '<line class="mch-zlat" x1="' + vx + '" x2="' + (vx + vwid) + '" y1="' + ly + '" y2="' + ly + '"/><text class="mch-hlat ta-fin" x="' + (vx + vwid - 4 * u) + '" y="' + (ly - 5 * u) + '">' + l + "°S</text>"; }
+        return { ancho: vwid, alto: vh, svg: '<svg class="mch-band is-v" style="--fs:' + u.toFixed(3) + '" viewBox="' + vx.toFixed(0) + " " + vy.toFixed(0) + " " + vwid.toFixed(0) + " " + vh.toFixed(0) + '" role="img" aria-label="Chile de norte a sur con los fundos">' +
+          lats + '<g transform="scale(' + SV + ')">' + regs + "</g>" + rots.join("") + pins.join("") + "</svg>" };
+      };
+      // cuántos grados de Chile hacen que el mapa mida lo mismo que la galería (búsqueda binaria: los rótulos y el ancho
+      // de Chile cambian con el tramo); si ni Chile entero alcanza, se muestra entero
+      var a, b, r, lo = 13, hi = 37.9;
+      var prueba = function (span) {
+        a = Math.max(17.6, cen - span / 2); b = Math.min(55.5, a + span); a = Math.max(17.6, b - span);
+        r = arma(a, b, (b - a) * pr.k * SV / Hc);
+        return Wc * r.alto / r.ancho;   // alto con que se dibuja
+      };
+      if (prueba(hi) < Hc) prueba(hi);
+      else {
+        for (var it = 0; it < 12; it++) { var mid = (lo + hi) / 2; if (prueba(mid) < Hc) lo = mid; else hi = mid; }
+        prueba(lo);
+      }
+      zo.innerHTML = r.svg;
+      var w0 = $(".mch-win", ch); if (w0) { w0.setAttribute("y", ((a - pr.lat0) * pr.k).toFixed(1)); w0.setAttribute("height", ((b - a) * pr.k).toFixed(1)); w0.setAttribute("x", 0); w0.setAttribute("width", W); }
+      if (actual) poner(actual.id, true);
+    }
+    if (vlargo) {
+      box.classList.add("is-largo");
+      armarV();
+      zo.addEventListener("pointerover", function (e) { var g = e.target.closest("[data-p]"); if (g && e.pointerType === "mouse") poner(g.getAttribute("data-p")); });
+      var tRe = 0, ultimoAlto = 0;
+      var reArmar = function () { window.clearTimeout(tRe); tRe = window.setTimeout(function () { var h = Math.round(row.getBoundingClientRect().height); if (h && Math.abs(h - ultimoAlto) > 8) { ultimoAlto = h; armarV(); } }, 120); };
+      if ("ResizeObserver" in window) new ResizeObserver(reArmar).observe(row);
+      window.addEventListener("resize", reArmar);
+      window.addEventListener("fundos:vista", reArmar);
+    }
     var cx = 0, cy = 0, vw = 0, s = 1, anim = 0, actual = null, fx0 = 0;   // fx0: borde izquierdo de la vista final
     function medir() {
       var r = zo.getBoundingClientRect();
@@ -2386,7 +2444,7 @@
       $$(".mch-reg", box).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-cod") === cod); });
       $$("[data-p]", box).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-p") === id); });
       if (!nuevo && !ya) return;
-      if (!horiz) { viajar(p, ya); rotulos(); }
+      if (!estatico) { viajar(p, ya); rotulos(); }
       else if (zo.scrollWidth > zo.clientWidth + 4) {   // franja horizontal angosta (celular): se desliza hasta el fundo
         var hpn = $('.mch-band .mch-pin[data-p="' + id + '"]', zo);
         if (hpn) zo.scrollTo({ left: zo.scrollLeft + hpn.getBoundingClientRect().left - zo.getBoundingClientRect().left - zo.clientWidth / 2, behavior: ya || reduced ? "auto" : "smooth" });
@@ -2596,12 +2654,12 @@
     row.addEventListener("touchstart", function () { tocado = Date.now() + 12000; }, { passive: true });
     if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { enVista = es[0].isIntersecting; }, { threshold: 0.35 }).observe(box);
     else enVista = true;
-    function rehacer() { if (!horiz) { medir(); if (actual) { viajar(actual, true); rotulos(); } } flechas(); }
+    function rehacer() { if (!estatico) { medir(); if (actual) { viajar(actual, true); rotulos(); } } flechas(); }
     window.addEventListener("resize", rehacer);
     window.addEventListener("fundos:vista", function () { window.setTimeout(rehacer, 50); });
     box.hidden = false;
     var ley = $("[data-mch-ley]", sec); if (ley) ley.hidden = false;
-    if (!horiz) medir();
+    if (!estatico) medir();
     poner(pts[0].id, true); flechas();
     // En las propuestas, los enlaces #proyecto-ID ("Conocer el proyecto") abren la ficha de ese fundo en la ventana
     if (document.documentElement.classList.contains("pm")) {
