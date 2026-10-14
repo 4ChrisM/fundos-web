@@ -250,9 +250,13 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `initVistas` marca esas secciones `data-vista="oculta"`, deja el plano solo en Inicio ("Ver lotes" lleva ahí), saca de
   Proyectos el formulario de visita (#visita sigue en las otras pestañas; "Cotizar" lleva a Inicio), la
   pestaña Proyectos parte en `#mas-proyectos` y `#proyecto-ID` ("Conocer el proyecto") abre la ficha de ese fundo en la
-  ventana; el 360° de la ficha abre el tour en otra pestaña. **Vertical** = mapa fijo a la izquierda (lupa) y, en vez de carrusel, una **galería de norte a sur agrupada por región**
-  (`.mch.is-galeria`, `.mch-grupo`; pedido del cliente): tocar un fundo abre su ficha y la lupa sigue al fundo que está a
-  media pantalla al bajar; sin resumen ni avance automático. **Horizontal**
+  ventana; el 360° de la ficha abre el tour en otra pestaña. **Vertical** = "como la horizontal pero de pie" (pedido del cliente): **mapa estático y largo** a la izquierda
+  (`.mch.is-largo`, `armarV()`: tramo de Chile con punto y nombre por fundo a los costados con línea corta, el lado según
+  el ancho de Chile a esa latitud, latitudes cada 2°; una búsqueda binaria elige cuántos grados mostrar para que el mapa
+  llegue al final de la galería, hasta Chile entero, y se rehace al cambiar el alto; textos y puntos a tamaño fijo con
+  `--fs`) y a la derecha una **galería de norte a sur agrupada por región** en 3 columnas (`.mch.is-galeria`,
+  `.mch-grupo`), mitad y mitad. Tocar un fundo abre su ficha; al bajar se marca el fundo a media pantalla (sin mover el
+  mapa); sin resumen ni avance automático. **Horizontal**
   (`.mch.is-horiz`, lo pidió el equipo): Chile completo acostado en una franja chica con el recuadro del tramo y, debajo,
   el tramo de 31°S a 44°S a todo el ancho (norte a la izquierda, mar abajo) con punto y rótulo por fundo en pistas sin
   choques (líneas acortadas: las pistas parten un poco dentro del mapa, con borde claro en el texto; el cliente probó una
