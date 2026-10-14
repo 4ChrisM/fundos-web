@@ -5,12 +5,12 @@
   @media (max-width: 959px) { .fundos-vitrina iframe { height: 1240px; } }
 </style>
 <div class="fundos-vitrina">
-  <iframe src="https://fundos.biplot.cl/vitrina.html" title="El entorno de Fundos Puerto Varas" loading="lazy" allow="fullscreen; autoplay"></iframe>
+  <iframe src="https://fundosinmobiliaria.com/vitrina.html" title="El entorno de Fundos Puerto Varas" loading="lazy" allow="fullscreen; autoplay"></iframe>
 </div>
 <script>
   // Ajusta el alto del iframe a su contenido (la página de Fundos avisa su alto)
   window.addEventListener("message", function (e) {
-    if (e.origin !== "https://fundos.biplot.cl" || !e.data || !e.data.fundosVitrina) return;
+    if (e.origin !== "https://fundosinmobiliaria.com" || !e.data || !e.data.fundosVitrina) return;
     document.querySelectorAll(".fundos-vitrina iframe").forEach(function (f) {
       if (f.contentWindow === e.source) f.style.height = e.data.fundosVitrina + "px";
     });
