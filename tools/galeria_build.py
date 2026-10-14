@@ -2,7 +2,8 @@
 """Fotos de la ficha de cada proyecto en "Fundos en todo Chile" (galería que se despliega al tocar un fundo).
 
 Arma assets/img/galeria/<proyecto>-<n>.webp (1000 px de ancho) y su miniatura <proyecto>-<n>-mini.webp (240 px) a partir
-de material que ya está en el repo (vistas aéreas de los tours, portadas de los videos del cliente y satelitales) y
+de material que ya está en el repo (vistas aéreas de los tours, portadas de los videos del cliente y satelitales) o
+de fotos del cliente subidas a subidas/ (si el original ya no está, se deja lo convertido) y
 deja la lista en `galeria` de cada proyecto en lib/manifest.js (eso se escribe a mano: ver FUENTES abajo). Las imágenes
 con transparencia (satelital recortado del plano) se apoyan sobre el verde de la marca.
 
@@ -20,6 +21,8 @@ FUENTES = {
                       "assets/entorno/malalcahuello/sat-detalle.webp"],
     "marchigue": ["assets/img/tour-marchigue-1600.webp", "assets/planos/marchigue-satelite.webp",
                   "assets/entorno/marchigue/sat-detalle.webp"],
+    # Fotos del cliente (subidas a subidas/ en la rama de trabajo; los originales no van a main)
+    "santo-domingo": ["subidas/0%d. Santo Domingo.webp" % n for n in range(1, 7)],
 }
 
 
@@ -34,6 +37,8 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     for pid, fuentes in FUENTES.items():
         for n, f in enumerate(fuentes, 1):
+            if not (RAIZ / f).exists():   # original ya borrado: se deja lo convertido
+                continue
             im = Image.open(RAIZ / f).convert("RGBA")
             fondo = Image.new("RGBA", im.size, (36, 56, 42, 255))
             fondo.alpha_composite(im)
