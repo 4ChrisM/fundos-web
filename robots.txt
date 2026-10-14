@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /vitrina.html
-Disallow: /subidas/
-
-Sitemap: https://fundosinmobiliaria.com/sitemap.xml

@@ -5,12 +5,12 @@
   @media (max-width: 1099px) { .fundos-mapa iframe { height: 1500px; } }
 </style>
 <div class="fundos-mapa">
-  <iframe src="https://fundosinmobiliaria.com/entorno.html?embed=1" title="Mapa del entorno de Fundos Puerto Varas" loading="lazy" allow="fullscreen; autoplay; gyroscope; accelerometer; xr-spatial-tracking" allowfullscreen></iframe>
+  <iframe src="https://fundos.biplot.cl/entorno.html?embed=1" title="Mapa del entorno de Fundos Puerto Varas" loading="lazy" allow="fullscreen; autoplay; gyroscope; accelerometer; xr-spatial-tracking" allowfullscreen></iframe>
 </div>
 <script>
   // Ajusta el alto del iframe a su contenido (el mapa avisa su alto)
   window.addEventListener("message", function (e) {
-    if (e.origin !== "https://fundosinmobiliaria.com" || !e.data || !e.data.fundosEntorno) return;
+    if (e.origin !== "https://fundos.biplot.cl" || !e.data || !e.data.fundosEntorno) return;
     document.querySelectorAll(".fundos-mapa iframe").forEach(function (f) {
       if (f.contentWindow === e.source) f.style.height = e.data.fundosEntorno + "px";
     });
