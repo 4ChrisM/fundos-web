@@ -26,6 +26,8 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
+  // Medición (lib/analitica.js): no hace nada si no hay ID de Google Analytics en el manifiesto
+  function medir(nombre, datos) { if (window.fundosEvento) safe(function () { window.fundosEvento(nombre, datos); }, "medir"); }
   function miles(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
   function clp(n) { return "$" + miles(n); }
   function m2(n) { return miles(n) + " m²"; }
@@ -940,10 +942,12 @@
       var span = $("span", d.fav);
       if (span) span.textContent = on ? "Guardado" : "Guardar";
     }
+    var medido = "";
     function select(n, opts) {
       opts = opts || {};
       var p = P(), l = lotOf(p, n);
       if (!l) return;
+      if (medido !== p.id + n) { medido = p.id + n; medir("ver_lote", { proyecto: p.nombre, lote: String(n), estado: l.estado }); }
       S.sel = n;
       $$(".lot.is-active", canvas).forEach(function (el) { el.classList.remove("is-active"); el.removeAttribute("aria-current"); });
       $$(".pin.is-active", canvas).forEach(function (el) { el.classList.remove("is-active"); });
@@ -2054,6 +2058,7 @@
         '<nav class="mf-nav" aria-label="Otros fundos"><button type="button" data-mf-ir="' + esc(ant.id) + '">' + ico("arrow") + "<span><small>Anterior</small>" + esc(ant.nombre) + "</span></button>" +
         '<span class="mf-cuenta">' + (i + 1) + " de " + pts.length + '</span><button type="button" data-mf-ir="' + esc(sig.id) + '"><span><small>Siguiente</small>' + esc(sig.nombre) + "</span>" + ico("arrow") + "</button></nav></article></div>";
       ficha.setAttribute("aria-label", "Ficha de " + p.nombre);
+      medir("ver_ficha", { fundo: p.nombre, con_plano: p.main ? "si" : "no" });
       if (!ficha.open) { if (typeof ficha.showModal === "function") ficha.showModal(); else ficha.setAttribute("open", ""); }
       abierta = id;
       $$(".mch-tile-b", row).forEach(function (b) { b.setAttribute("aria-expanded", String(b.parentNode.getAttribute("data-p") === id)); });
@@ -2465,6 +2470,7 @@
     function show(i) {
       cur = (i + gente.length) % gente.length;
       var g = gente[cur];
+      if (g && g.nombre) medir("ver_asesor", { asesor: g.nombre });
       photo(g);
       el.title.textContent = titulo(g);
       el.role.textContent = sub(g);
