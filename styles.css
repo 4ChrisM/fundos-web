@@ -2226,6 +2226,7 @@ html.js[data-vista="compra"] main, html.js[data-vista="equipo"] main { padding-t
 .lot-pago-h { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
 .lot-pago-t { font: 700 .66rem/1.2 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
 .lot-pago-seg { display: flex; padding: 3px; border: 1px solid rgba(247, 245, 240, .22); border-radius: 999px; }
+.lot-pago-seg[hidden] { display: none; }
 .lot-pago-seg button { min-height: 30px; padding: .2rem .7rem; border: 0; border-radius: 999px; background: none; color: var(--cream-80); font: 700 .74rem/1 var(--sans); cursor: pointer; }
 .lot-pago-seg button[aria-pressed="true"] { background: var(--gold); color: var(--g900); }
 .lot-pago-seg button:focus-visible, .lot-pago-plazos button:focus-visible { outline: 2px solid var(--n050); outline-offset: 2px; }

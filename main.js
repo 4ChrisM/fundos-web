@@ -1335,7 +1335,7 @@
       PG.n = plz[Math.min(2, plz.length - 1)];
       pg.pie.min = PG.pie; pg.pie.value = PG.pie;
       pg.plazos.innerHTML = plz.map(function (n) { return '<button type="button" data-plazo="' + n + '" aria-pressed="' + (n === PG.n) + '" aria-label="' + n + ' meses">' + n + " m</button>"; }).join("");
-      if (fin.habilitado === false) pg.seg.forEach(function (b) { b.hidden = true; });
+      if (fin.habilitado === false) { var sg = $(".lot-pago-seg", d.pago); if (sg) sg.hidden = true; }   // solo contado
       pg.seg.forEach(function (b) { b.addEventListener("click", function () { PG.modo = b.getAttribute("data-pago"); pagarSel(); }); });
       pg.pie.addEventListener("input", function () { PG.pie = +pg.pie.value; pagarSel(); });
       pg.plazos.addEventListener("click", function (e) { var b = e.target.closest("[data-plazo]"); if (b) { PG.n = +b.getAttribute("data-plazo"); pagarSel(); } });
