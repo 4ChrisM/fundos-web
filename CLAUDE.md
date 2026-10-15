@@ -339,9 +339,10 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   detalle del lote toma el mismo alto (`--stage-h`) y los enlaces a `#plano` llevan directo a la herramienta.
   En celular el plano parte acercado (lotes tocables) con botón para ver completo.
 - **Cotizador dentro del lote** (oct-2026, pedido del cliente: "no vale la pena tenerlo aparte"): ya no hay pestaña
-  Simulador; el detalle de cada lote trae **"Cómo pagarlo"** (`[data-d-pago]`, `pagar()` en `initPlan`): Contado o En cuotas
-  (pie desde `financiamiento.pieMinimo`, plazos de `financiamiento.plazos`, tasa referencial), filas y "Enviarme esta
-  simulación" por WhatsApp. `#simulador` (enlaces viejos) lleva al plano.
+  Simulador; el detalle de cada lote trae **"Cómo pagarlo"** (`[data-d-pago]`, `pagar()` en `initPlan`): reserva + valor
+  al escriturar, y "Enviarme esta simulación" por WhatsApp. **Fundos aún no tiene financiamiento** (cliente, 16-oct-2026):
+  `financiamiento.habilitado = false` esconde el selector Contado / En cuotas y la pregunta frecuente dice que por ahora
+  es al contado; con `true` vuelve "En cuotas" (pie desde `pieMinimo`, `plazos`, `tasaMensual`). `#simulador` lleva al plano.
 - **La reserva de $1.000.000 cubre todos los gastos de escritura** (notaría y Conservador) y **no se descuenta del precio**
   (confirmado por el cliente): al contado se paga reserva + valor de la parcela; en cuotas, reserva + pie + cuotas. Así lo
   dicen los pasos de "Cómo comprar", las preguntas frecuentes, las fichas de proyecto ("incluye escritura") y el cotizador.

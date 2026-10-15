@@ -91,8 +91,8 @@ const ARGS = ["--proxy-server=" + (process.env.HTTPS_PROXY || "http://127.0.0.1:
   {
     const pg = await page.context().newPage();
     await pg.goto(URL + "#lote-malalcahuello-18", { waitUntil: "networkidle" }); await pg.waitForTimeout(1500);
-    await pg.click('[data-pago="cuotas"]'); await pg.waitForTimeout(300);
-    results.cuota = await pg.evaluate(() => document.querySelector(".lot-pago-dl .is-cuota").innerText.replace(/\n/g, " "));
+    // sin financiamiento (financiamiento.habilitado = false): solo contado, sin el selector Contado / En cuotas
+    results.soloContado = await pg.evaluate(() => [getComputedStyle(document.querySelector(".lot-pago-seg")).display === "none" || document.querySelector(".lot-pago-seg").hidden, document.querySelector(".lot-pago-dl").innerText.replace(/\n/g, " ")]);
     results.simNote = await pg.evaluate(() => document.querySelector("[data-pago-nota]").textContent);
     await pg.locator("[data-d-pago]").screenshot({ path: "i-sim.png" });
     await pg.close();

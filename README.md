@@ -34,7 +34,7 @@ Todo lo editable está en `lib/manifest.js`.
 - [x] **Contacto:** WhatsApp general +56 9 9292 2429 y ventas@fundosinmobiliaria.com (dados por el cliente, oct-2026). Horario: martes a viernes de 10:00 a 19:00; visitas a terreno los fines de semana.
 - [ ] **Lotes, precios y estados:** son referenciales, basados en ejemplos del manual. Lo ideal es leerlos desde Fundos 360° (módulo Parcelas) para mostrar la disponibilidad real.
 - [ ] **Superficie por lote:** se asume 5.000 m² en todos los proyectos (confirmar, sobre todo Puerto Varas).
-- [ ] **Financiamiento:** tasa (0,9 % mensual), pie mínimo (30 %) y plazos son supuestos. Si no hay crédito directo, usar `financiamiento.habilitado = false`.
+- [x] **Financiamiento:** Fundos aún no tiene; el cotizador muestra solo el pago al contado (`financiamiento.habilitado = false`). Si se habilita, confirmar tasa, pie mínimo y plazos.
 - [ ] **Preguntas frecuentes:** revisar las respuestas (condiciones de devolución de la reserva, construcción, plazos).
 - [ ] **Destacados y cercanías:** las distancias se miden desde cada pueblo, no desde el proyecto. Reemplazar por los tiempos reales.
 - [ ] **Google Analytics (activo desde el 15-oct-2026, `G-Q5JZT7NZP3`):** marcar `generate_lead` como evento clave en Administrar → Eventos cuando aparezca.
