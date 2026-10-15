@@ -2554,3 +2554,5 @@ html.js[data-vista="proyectos"] main { padding-top: var(--nav-h); }
 .mch-fuente { margin-left: auto; font-weight: 600; font-size: .68rem; opacity: .85; }
 @media (max-width: 767px) { .mch-fuente { margin-left: 0; } }
 @media (prefers-reduced-motion: reduce) { .mch-tile-b, .mch-reg { transition: none; } .mch-tile:hover .mch-tile-b { transform: none; } }
+/* Campo trampa de los formularios (bots): fuera de la vista y del teclado */
+.hp { position: absolute !important; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
