@@ -5,11 +5,12 @@
 //      MIN=1 prueba con el panel y la ficha minimizados · SHOTS=id1,id2 guarda capturas de esos lugares
 const path = require("path");
 const { chromium } = require("playwright");
+const { sinBanner } = require("./_cookies");
 const P = process.argv[2] || "";
 const DIR = path.join(__dirname, "..", "entorno", P);
 const TAG = P || "puerto-varas";
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--proxy-server=" + process.env.HTTPS_PROXY] });
+  const b = sinBanner(await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--proxy-server=" + process.env.HTTPS_PROXY] }));
   const errs = [], probs = [];
   const sizes = [[1920,1080,"xl",false],[1440,900,"d",false],[1280,720,"s",false],[1100,800,"n",false],[390,844,"m",true],[320,640,"t",true],[844,390,"l",true]];
   const ids = require(path.join(DIR, "lugares.json")).lugares.map(l => l.id);

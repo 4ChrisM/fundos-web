@@ -1,8 +1,9 @@
 const { chromium } = require("playwright");
+const { sinBanner } = require("./_cookies");
 const { vista, proyecto, clasica } = require("./_vista");
 const B = "http://127.0.0.1:8765/";
 (async () => {
-  const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--proxy-server=" + process.env.HTTPS_PROXY] });
+  const browser = sinBanner(await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--proxy-server=" + process.env.HTTPS_PROXY] }));
   for (const [w, h] of [[320, 640], [360, 780], [390, 844], [414, 896], [600, 900], [768, 1024], [844, 390], [1024, 768], [1280, 800], [1440, 900], [1920, 1080]]) {
     const mob = w < 700;
     const pg = await (await browser.newContext({ viewport: { width: w, height: h }, isMobile: mob, hasTouch: mob })).newPage();

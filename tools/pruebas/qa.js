@@ -1,4 +1,5 @@
 const { chromium } = require("playwright");
+const { sinBanner } = require("./_cookies");
 const { vista, proyecto, clasica } = require("./_vista");
 const B = "http://127.0.0.1:8765/";
 const ARGS = ["--proxy-server=" + process.env.HTTPS_PROXY, "--ignore-certificate-errors-spki-list=KnP1OnzHv/y42eRQmbGwoYTHcSJF448m6CU5mdngwKk=,PS48cX347wDVcRynzq+DFqswl2PLNE1sG6uQvxMCOS0="];
@@ -13,7 +14,7 @@ async function page(browser, w, h, mob) {
   return p;
 }
 (async () => {
-  const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ARGS });
+  const browser = sinBanner(await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ARGS }));
   // ---- 1440: clics y foco no mueven la página
   let d = await page(browser, 1440, 900);
   await d.evaluate(() => document.getElementById("plano").scrollIntoView({ behavior: "instant" })); await W(900);

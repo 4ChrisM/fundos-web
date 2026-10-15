@@ -1,8 +1,9 @@
 // "Tu casa": lote a escala en 3D y planta, agregar, mover, zoom, girar con teclado, medidor del 10 %, enlace desde el plano
 const { chromium } = require("playwright");
+const { sinBanner } = require("./_cookies");
 const B = "http://127.0.0.1:8765/";
 (async () => {
-  const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--proxy-server=" + process.env.HTTPS_PROXY] });
+  const browser = sinBanner(await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--proxy-server=" + process.env.HTTPS_PROXY] }));
   const out = {}, logs = [];
   for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch });

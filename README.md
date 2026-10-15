@@ -37,6 +37,7 @@ Todo lo editable está en `lib/manifest.js`.
 - [x] **Financiamiento:** Fundos aún no tiene; el cotizador muestra solo el pago al contado (`financiamiento.habilitado = false`). Si se habilita, confirmar tasa, pie mínimo y plazos.
 - [ ] **Preguntas frecuentes:** revisar las respuestas (condiciones de devolución de la reserva, construcción, plazos).
 - [ ] **Destacados y cercanías:** las distancias se miden desde cada pueblo, no desde el proyecto. Reemplazar por los tiempos reales.
+- [ ] **Información legal (oct-2026):** política de privacidad, de cookies y aviso legal publicados; Google Analytics solo con consentimiento (banner). Falta que el cliente y su abogado revisen los textos (plazos de conservación, proveedores) y entregar el domicilio de la empresa si quieren incluirlo.
 - [ ] **Google Analytics (activo desde el 15-oct-2026, `G-Q5JZT7NZP3`):** marcar `generate_lead` como evento clave en Administrar → Eventos cuando aparezca.
 - [ ] **Vercel y repositorio de Biplot:** mover `fundos-web` a la organización de Biplot y publicarlo en Vercel (cambiar de nuevo los 5 registros DNS en Squarespace).
 - [ ] **Mi compra:** es un módulo nuevo que se propone sobre Fundos 360°. Hoy la sección lo muestra como vista previa.
