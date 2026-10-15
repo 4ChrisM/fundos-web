@@ -285,6 +285,16 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `medir()`: `ver_ficha` (fundo), `ver_lote` (proyecto, lote, estado) y `ver_asesor`. Cada cambio de pestaña manda un
   `page_view` ("Fundos · Proyectos"…): en GA hay que **apagar "Cambios de página basados en el historial del
   navegador"** de la medición mejorada para no contar doble. Dentro de un iframe marca `incrustado`.
+- **Información legal y cookies** (pedido del cliente, oct-2026, por la Ley 21.719 que rige desde el 1-dic-2026):
+  `privacidad.html`, `cookies.html` y `aviso-legal.html` (páginas simples con `styles.css`, clases `.lg-*`; responsable
+  **Fundos Inmobiliaria SpA, RUT 78.424.042-8**, derechos por ventas@fundosinmobiliaria.com, mismo correo que los T&C de
+  la reserva en Fundos 360°; plazos de conservación y proveedores por confirmar con el cliente y su abogado). **Google
+  Analytics solo carga con consentimiento**: `lib/analitica.js` muestra el banner (estilos propios en el script, sirve
+  también en `entorno.html` y las páginas legales; no en iframes), guarda la decisión 12 meses en `localStorage`
+  "fundos-cookies" y al retirarla borra `_ga`; `[data-cookies-prefs]` (pie, `cookies.html#preferencias`) reabre las
+  preferencias. Si se agrega una cookie o un almacenamiento nuevo, sumarlo a la tabla de `cookies.html`. Las casillas
+  de los formularios dicen que Fundos usa los datos según la política de privacidad (enlace en pestaña nueva). Pie con
+  razón social, RUT y enlaces legales (`.footer-legal`). Pruebas: `tools/pruebas/_cookies.js` deja la decisión tomada.
 - `assets/img` fotos y logos (WebP) · `assets/video` saludo del equipo (MP4 H.264 + WebM de respaldo + portada) ·
   `assets/fonts` Cormorant Garamond y Mulish autoalojadas.
 

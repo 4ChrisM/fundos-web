@@ -2,9 +2,10 @@
 // ficha en una ventana con fotos, flechas y teclado; enlaces #proyecto-ID y enlaces viejos (#recorrido, #conoce).
 // Uso: node fundos-chile.js   (desde una carpeta temporal con ux/; ver LEEME.md)
 const { chromium } = require("playwright");
+const { sinBanner } = require("./_cookies");
 const BASE = "http://127.0.0.1:8765/";
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = sinBanner(await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" }));
   const out = {}, errs = [];
   for (const [w, h, touch] of [[1440, 900, false], [1280, 760, false], [390, 844, true], [320, 640, true]]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch });

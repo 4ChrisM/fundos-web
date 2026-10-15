@@ -30,3 +30,9 @@ Se corren desde una carpeta temporal porque guardan capturas (`ux/*.png`). Cada 
 | `_vista.js` | Ayuda para las demás: elegir pestaña (`vista`), proyecto del plano (`proyecto`) o dejar el plano en Malalcahuello en Inicio (`clasica`) |
 
 Nota: el Chromium de pruebas no reproduce H.264, por eso los videos del sitio llevan también WebM.
+
+## Banner de cookies
+Las pruebas parten con las cookies ya decididas (`_cookies.js`, `sinBanner(browser)`), para que el banner no tape los
+botones. Al escribir una prueba nueva, envolver el `chromium.launch(...)` igual. El banner mismo se prueba aparte:
+primera visita con banner y sin Google Analytics, "Aceptar" carga `gtag`, "Rechazar" no, y las preferencias del pie
+(`[data-cookies-prefs]`) borran las cookies `_ga` al retirar el consentimiento.

@@ -26,13 +26,13 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261016k">
+<link rel="stylesheet" href="styles.css?v=20261016l">
 <link rel="preconnect" href="https://fundos-os.vercel.app" crossorigin>
-<script defer src="lib/manifest.js?v=20261016k"></script>
-<script defer src="lib/analitica.js?v=20261016k"></script>
-<script defer src="lib/mapa-chile.js?v=20261016k"></script>
-<script defer src="lib/planos.js?v=20261016k"></script>
-<script defer src="main.js?v=20261016k"></script>
+<script defer src="lib/manifest.js?v=20261016l"></script>
+<script defer src="lib/analitica.js?v=20261016l"></script>
+<script defer src="lib/mapa-chile.js?v=20261016l"></script>
+<script defer src="lib/planos.js?v=20261016l"></script>
+<script defer src="main.js?v=20261016l"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -296,7 +296,7 @@
       </div>
       <label class="pv-lead-ok-c">
         <input type="checkbox" name="acepto" required>
-        <span>Acepto que Fundos me contacte por WhatsApp o teléfono.</span>
+        <span>Acepto que Fundos Inmobiliaria use mis datos para contactarme por WhatsApp o teléfono, según su <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</span>
       </label>
       <p class="pv-lead-err" data-err="acepto">Necesitamos tu autorización para contactarte.</p>
       <button class="btn btn-gold" type="submit"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero el plano y los precios</button>
@@ -975,7 +975,7 @@
           <div class="field"><label for="cp-agua">Agua</label><select id="cp-agua" name="agua" data-label="Agua"><option value="">Elige</option><option>Tiene derechos de agua</option><option>Tiene pozo, noria o vertiente</option><option>Sin agua</option><option>No lo sé</option></select></div>
           <div class="field mini-wide"><label for="cp-msg">Cuéntanos más <small>opcional</small></label><textarea id="cp-msg" name="mensaje" rows="2" placeholder="Acceso, electricidad, roles, precio esperado…" data-label="Detalle"></textarea></div>
         </div>
-        <label class="check mini-check"><input type="checkbox" name="acepto" required> Acepto que Fundos me contacte por este medio.</label>
+        <label class="check mini-check"><input type="checkbox" name="acepto" required> Acepto que Fundos Inmobiliaria use estos datos para responderme, según su <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</label>
         <p class="error" data-error-for="acepto">Marca la casilla para continuar.</p>
         <div class="mini-act">
           <button class="btn btn-gold" type="submit"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</button>
@@ -1006,7 +1006,7 @@
           <div class="field"><label for="pv-correo">Correo <small>opcional</small></label><input id="pv-correo" name="correo" type="email" autocomplete="email" data-label="Correo"><p class="error" data-error-for="pv-correo">Revisa el correo.</p></div>
           <div class="field mini-wide"><label for="pv-msg">Tu servicio <small>opcional</small></label><textarea id="pv-msg" name="mensaje" rows="2" placeholder="Qué haces, experiencia, sitio web o redes…" data-label="Detalle"></textarea></div>
         </div>
-        <label class="check mini-check"><input type="checkbox" name="acepto" required> Acepto que Fundos me contacte por este medio.</label>
+        <label class="check mini-check"><input type="checkbox" name="acepto" required> Acepto que Fundos Inmobiliaria use estos datos para responderme, según su <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</label>
         <p class="error" data-error-for="acepto">Marca la casilla para continuar.</p>
         <div class="mini-act">
           <button class="btn btn-gold" type="submit"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Enviar por WhatsApp</button>
@@ -1098,7 +1098,7 @@
       </div>
       <label class="check">
         <input type="checkbox" name="acepto" required>
-        <span>Acepto que Fundos Inmobiliaria me contacte por WhatsApp o teléfono.</span>
+        <span>Acepto que Fundos Inmobiliaria use mis datos para contactarme por WhatsApp o teléfono, según su <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</span>
       </label>
       <p class="error" data-error-for="acepto">Necesitamos tu autorización para contactarte.</p>
       <button class="btn btn-gold btn-lg" type="submit"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Revisar y enviar por WhatsApp</button>
@@ -1154,7 +1154,13 @@
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>© 2026 Fundos Inmobiliaria. Imágenes ilustrativas; valores referenciales sujetos a disponibilidad.</p>
+    <p>© 2026 Fundos Inmobiliaria SpA · RUT 78.424.042-8. Imágenes ilustrativas; valores referenciales sujetos a disponibilidad.</p>
+    <nav class="footer-legal" aria-label="Información legal">
+      <a href="privacidad.html">Política de privacidad</a>
+      <a href="cookies.html">Política de cookies</a>
+      <a href="aviso-legal.html">Aviso legal</a>
+      <a href="cookies.html#preferencias" data-cookies-prefs>Preferencias de cookies</a>
+    </nav>
     <p class="footer-credit">Diseño · <a href="https://biplot.cl/" target="_blank" rel="noopener">BiPlot</a></p>
   </div>
 </footer>
