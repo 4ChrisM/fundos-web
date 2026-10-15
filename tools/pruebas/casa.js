@@ -64,7 +64,7 @@ const B = "http://127.0.0.1:8765/";
       await p.goto(B + "#lote-malalcahuello-20", { waitUntil: "networkidle" }); await p.waitForTimeout(1500);
       await p.click("[data-d-casa]"); await p.waitForTimeout(1200);
       r.desdePlano = await p.evaluate(() => [location.hash, document.querySelector("#c-proyecto").value, document.querySelector("#c-lote").value, !document.querySelector("#tu-casa").hidden]);
-      // Guía: el aviso de Inicio lleva al plano (paso 1), al elegir un lote aparece "Diseñar mi casa aquí" (paso 2)
+      // Guía: el aviso de Inicio lleva al plano (paso 1), al elegir un lote aparece "Diseñar mi fundo aquí" (paso 2)
       await p.goto(B, { waitUntil: "networkidle" }); await p.waitForTimeout(1000);
       await p.click("#disena-inicio .btn-gold"); await p.waitForTimeout(1200);
       const g1 = await p.evaluate(() => [!document.querySelector("[data-plan-guia]").hidden, document.querySelector("[data-plan-guia-paso]").textContent]);

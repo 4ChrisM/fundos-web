@@ -170,8 +170,10 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   el plano" (`[data-casa-guia]`) llevan a `#plano` con la guía (`Plan.guia`, `[data-plan-guia]`): paso 1 "toca un lote
   disponible" (los disponibles destellan), paso 2 con "Diseñar mi casa aquí" (`[data-d-guia]`, primero en el detalle del
   lote) que abre la herramienta en ese lote. El aviso ofrece además "o pruébalo con un lote de ejemplo" (`#tu-casa`).
-  **Acceso visible** (el cliente lo encontraba escondido): "Diseña tu casa" con etiqueta "Nuevo" en la barra (`.nl-casa`;
-  en la franja de celular, "Tu casa" con un punto) y en el menú (`.menu-casa`), y un aviso con imagen (`.casa-promo`,
+  **Acceso visible** (el cliente lo encontraba escondido): "Diseña tu fundo" con etiqueta "Nuevo" en la barra (`.nl-casa`;
+  en la franja de celular, "Tu fundo" con un punto; el cliente pidió "fundo" en vez de "casa" en los accesos, 16-oct-2026:
+  barra, menú, pestaña de Tu compra, guía "Diseñar mi fundo aquí" y "Diseña tu fundo en este lote"; los textos que
+  describen la casa dibujada siguen diciendo casa) y en el menú (`.menu-casa`), y un aviso con imagen (`.casa-promo`,
   `#disena-inicio` en Inicio tras "Por qué"). La imagen del aviso
   es una **foto real** de una casa de campo en Puyuhuapi, Aysén (Wikimedia Commons, LBM1948, CC BY-SA 4.0, recortada;
   `assets/img/casa-parcela-800/1400.webp`, crédito obligatorio en el pie) con una miniatura del diseño en 3D encima
