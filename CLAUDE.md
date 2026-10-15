@@ -235,7 +235,7 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   "NN. Nombre.webp" (el número da el orden; `ALIAS` del script reconoce el fundo), convertidas y borradas de la rama; los
   títulos (`alt`) se escribieron a mano según lo que se ve en cada foto (por confirmar con el cliente). Los 3 con plano
   muestran descripción, datos (desde, disponibles, 5.000 m², reserva), destacados, cercanías y "Ver lotes y precios" /
-  "Cotizar" / "Recorrido 360°" (al mapa del entorno); los de `masProyectos`, emblema, lema, etiquetas y "Quiero
+  "Cotizar" / "Recorrido 360°" (al mapa del entorno) / "Descubre el entorno" (`entorno` del proyecto); los de `masProyectos`, emblema, lema, etiquetas y "Quiero
   información" por WhatsApp / "Agendar una conversación". Un punto por proyecto (dorado los 3 con plano: lat/lon del
   enlace `mapa` del manifiesto; claros los de `masProyectos`: `lat`/`lon` aproximados); la región sale de dónde cae el
   punto. Sin `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`, `mpCard`). Crédito "Chile
