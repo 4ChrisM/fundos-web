@@ -28,6 +28,29 @@
   }
   // Medición (lib/analitica.js): no hace nada si no hay ID de Google Analytics en el manifiesto
   function medir(nombre, datos) { if (window.fundosEvento) safe(function () { window.fundosEvento(nombre, datos); }, "medir"); }
+  // Leads a Fundos 360° (fundos360.leads del manifiesto): los formularios con datos de contacto crean el lead en el CRM
+  // además de abrir WhatsApp. Envío silencioso (text/plain: sin preflight); si falla, WhatsApp sigue igual.
+  var UTM = (function () {
+    try {
+      var q = new URLSearchParams(location.search), u = {};
+      ["utm_source", "utm_medium", "utm_campaign"].forEach(function (k) { if (q.get(k)) u[k] = q.get(k).slice(0, 100); });
+      if (Object.keys(u).length) sessionStorage.setItem("fundos-utm", JSON.stringify(u));
+      return JSON.parse(sessionStorage.getItem("fundos-utm") || "{}");
+    } catch (e) { return {}; }
+  })();
+  function enviarLead(d, form) {
+    var url = (B.fundos360 || {}).leads;
+    if (!url || !window.fetch) return;
+    var hp = form && form.elements.sitio_web;
+    d.sitio_web = hp ? hp.value : "";
+    if (UTM.utm_campaign) d.campana = UTM.utm_campaign;
+    var utm = [UTM.utm_source, UTM.utm_medium, UTM.utm_campaign].filter(Boolean).join(" / ");
+    if (utm) d.utm = utm;
+    try {
+      fetch(url, { method: "POST", mode: "cors", keepalive: true, credentials: "omit", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(d) })
+        .catch(function () { /* sin conexión con Fundos 360°: el contacto sigue por WhatsApp */ });
+    } catch (e) { /* idem */ }
+  }
   function miles(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
   function clp(n) { return "$" + miles(n); }
   function m2(n) { return miles(n) + " m²"; }
@@ -1596,6 +1619,13 @@
       fb.href = asesor && asesor.whatsapp && el.mensaje.value.indexOf(asesor.nombre) >= 0
         ? "https://wa.me/" + asesor.whatsapp.replace(/\D/g, "") + "?text=" + encodeURIComponent(msg) : waHref(msg);
       if (okMsg) okMsg.textContent = msg;
+      enviarLead({
+        formulario: res ? "reserva-lote" : horario === "videollamada" ? "videollamada" : "visita",
+        nombre: el.nombre.value, telefono: el.telefono.value, email: el.correo ? el.correo.value : "",
+        proyecto: nada ? "" : proyectoTxt, lote: res ? "Lote " + res.n + " de " + res.proyecto + " (" + res.detalle + ")" : "",
+        fecha: fecha || "", horario: horario, mensaje: el.mensaje.value,
+        asesor: asesor && el.mensaje.value.indexOf(asesor.nombre) >= 0 ? asesor.nombre : ""
+      }, form);
       ok.hidden = false;
       inertForm(true);
       ok.focus();
@@ -2183,6 +2213,7 @@
         " Mi teléfono: " + el.telefono.value.trim() + "." + (correo ? " Mi correo: " + correo + "." : "");
       wa.href = waHref(msg);
       $("[data-pv-lead-msg]", form).textContent = msg;
+      enviarLead({ formulario: "portada", nombre: el.nombre.value, telefono: el.telefono.value, email: correo, proyecto: p ? p.nombre : "", mensaje: "Pidió el plano de disponibilidad y la lista de precios." }, form);
       done.hidden = false;
       inert(true);
       done.focus();

@@ -26,12 +26,12 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261016d">
-<script defer src="lib/manifest.js?v=20261016d"></script>
-<script defer src="lib/analitica.js?v=20261016d"></script>
-<script defer src="lib/mapa-chile.js?v=20261016d"></script>
-<script defer src="lib/planos.js?v=20261016d"></script>
-<script defer src="main.js?v=20261016d"></script>
+<link rel="stylesheet" href="styles.css?v=20261016e">
+<script defer src="lib/manifest.js?v=20261016e"></script>
+<script defer src="lib/analitica.js?v=20261016e"></script>
+<script defer src="lib/mapa-chile.js?v=20261016e"></script>
+<script defer src="lib/planos.js?v=20261016e"></script>
+<script defer src="main.js?v=20261016e"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -267,6 +267,7 @@
 
     <!-- Formulario rápido: arma el mensaje y lo envía por WhatsApp (mismo flujo que el de la visita) -->
     <form class="pv-lead" data-pv-lead novalidate aria-labelledby="pv-lead-t">
+      <div class="hp" aria-hidden="true"><label>No completar <input name="sitio_web" tabindex="-1" autocomplete="off"></label></div>
       <p class="pv-lead-k">Cotiza sin compromiso</p>
       <h2 class="pv-lead-t" id="pv-lead-t">Recibe el plano y los precios</h2>
       <div class="pv-lead-f">
@@ -1046,6 +1047,7 @@
     </div>
 
     <form class="visit-form reveal" data-visit novalidate>
+      <div class="hp" aria-hidden="true"><label>No completar <input name="sitio_web" tabindex="-1" autocomplete="off"></label></div>
       <p class="visit-intent" data-visit-intent hidden><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span data-visit-intent-txt></span><button type="button" class="link-btn" data-visit-intent-clear>Quitar</button></p>
       <div class="form-row">
         <div class="field">

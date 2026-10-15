@@ -258,6 +258,14 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   pide Ctrl para la rueda (la página de afuera sigue bajando), abre el video y el tour sobre el mapa en pantallas
   angostas, abre en pestaña nueva los enlaces que salen del mapa y avisa su alto con `postMessage({fundosEntorno})`.
   Código para Squarespace: `docs/squarespace-mapa.html`.
+- **Leads a Fundos 360°** (oct-2026, pedido del cliente): "Agenda tu visita" (`initVisit`) y "Recibe el plano y los
+  precios" (`initPvLead`) crean el lead en el CRM al enviarse, además de abrir WhatsApp: `enviarLead()` en `main.js`
+  manda un POST `text/plain` (sin preflight, `keepalive`) a `fundos360.leads` del manifiesto (vacío = no se envía) con
+  formulario, nombre, teléfono, correo, proyecto, lote, fecha, horario, mensaje, asesor pedido y la campaña (`utm_*`
+  de la primera página, guardados en `sessionStorage` "fundos-utm"). Campo trampa `sitio_web` (`.hp`, fuera de la
+  vista) contra bots. Del lado de Fundos 360°: `app/api/leads/web/route.ts` de `4ChrisM/fundos-os` (solo acepta el
+  origen fundosinmobiliaria.com, crea el lead sin asignar con origen "Sitio web", no duplica el mismo teléfono en 10
+  min). "Vende tu campo" y "Proveedores" no van al CRM de ventas.
 - **Medición de visitas** (`lib/analitica.js`, cargado en `index.html`, `entorno.html` y `vitrina.html`): Google
   Analytics 4 (el cliente eligió solo Google; Clarity queda disponible), ID `G-Q5JZT7NZP3` en `analitica.ga4` del manifiesto
   (vacío = no se carga nada). Eventos: `generate_lead` (WhatsApp con mensaje armado; `formulario`: visita, portada,
