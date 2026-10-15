@@ -2139,6 +2139,7 @@
       var acts = '<div class="py-acts">' + (p.main
         ? '<a class="btn btn-gold" href="#plano" data-py-act="plano" data-mf="plano">Ver lotes y precios' + ico("arrow", "i-go") + "</a>" +
           '<a class="btn btn-ghost" href="#visita" data-py-act="cotizar" data-mf="cotizar">' + ico("send") + "Cotizar " + esc(p.corto) + "</a>" + tour +
+          (x.entorno ? '<a class="btn btn-ghost" href="' + esc(x.entorno) + '" data-py-act="entorno">' + ico("compass") + "Descubre el entorno</a>" : "") +
           (x.video ? '<button class="btn btn-ghost" type="button" data-mf="video">' + ico("play") + "Ver video</button>" : "")
         : '<a class="btn btn-gold" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "Quiero información</a>" +
           '<a class="btn btn-ghost" href="#visita" data-mf="cotizar">' + ico("calendar") + "Agendar una conversación</a>") + "</div>";
