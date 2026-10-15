@@ -7,7 +7,7 @@ Sitio estático (HTML, CSS y JavaScript, sin build ni dependencias). Funciona ab
 ## Cómo verla
 
 - **Local:** desde la raíz del repo, `python3 -m http.server 8080` y abre http://localhost:8080/
-- **Publicada:** https://fundos.biplot.cl/ (GitHub Pages desde `main` de este repo, dominio en `CNAME`; lleva `noindex`, no aparece en buscadores). La dirección anterior, `biplot.cl/propuestas/fundos-inmobiliaria/`, redirige aquí.
+- **Publicada:** https://fundosinmobiliaria.com/ (GitHub Pages desde `main` de este repo, dominio en `CNAME`). Desde oct-2026 reemplaza al sitio de Squarespace y se deja indexar (`robots.txt`, `sitemap.xml`, `canonical`). Antes vivió en `fundos.biplot.cl` y en `biplot.cl/propuestas/fundos-inmobiliaria/`.
 
 ## Qué propone
 
@@ -46,7 +46,7 @@ Todo lo editable está en `lib/manifest.js`.
 
 ## Estado y próximos pasos
 
-Publicada en https://fundos.biplot.cl/ (cada cambio entra por un pull request a `main`).
+Publicada en https://fundosinmobiliaria.com/ (cada cambio entra por un pull request a `main`).
 
 
 - [ ] **Conectar con Fundos 360° (`4ChrisM/fundos-os`):** que el formulario de visita cree el lead en Fundos 360° (además de abrir WhatsApp) y que el plano lea la disponibilidad real de las parcelas. El webhook actual (`/api/leads/webhook`) pide una clave secreta y no sirve para una página pública: hay que agregar en Fundos 360° una ruta pública para la web (p. ej. `/api/leads/web`) con campo trampa, límite de envíos y solo desde fundos.biplot.cl, que cree el lead con origen "Sitio web", proyecto y parcela, en "pendiente de llamado"; y otra de solo lectura con la disponibilidad por proyecto.
