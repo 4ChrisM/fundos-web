@@ -897,10 +897,15 @@ html:not(.js) .plan-zoom { display: none; }
 .footer { background: #070F0A; color: var(--cream-70); padding: clamp(3.5rem, 7vw, 5.5rem) 0 calc(6rem + env(safe-area-inset-bottom)); border-top: 1px solid var(--line-dark); }
 .footer-grid { display: grid; gap: 2.4rem; }
 .footer-brand img { width: 92px; margin-bottom: 1.2rem; }
+/* Tablet: la marca arriba y las cuatro columnas debajo, para que el correo quepa */
+@media (min-width: 720px) and (max-width: 1023px) {
+  .footer-grid.footer-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .footer-brand { grid-column: 1 / -1; }
+}
 .footer-claim { font-family: var(--serif); font-size: 1.9rem; line-height: 1.1; color: var(--n050); max-width: 14ch; }
 .footer-col { display: grid; gap: .6rem; align-content: start; min-width: 0; font-size: .94rem; }
 .footer-col h2 { font: 700 .7rem/1 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; }
-.footer-col a { width: fit-content; max-width: 100%; overflow-wrap: anywhere; transition: color .2s; }   /* el correo no se sale en tablet */
+.footer-col a { width: fit-content; max-width: 100%; transition: color .2s; }
 .footer-col a:hover { color: var(--gold); }
 .footer-bottom { position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .8rem 2rem; margin-top: 3rem; padding-top: 1.5rem; font-size: .78rem; color: var(--cream-55); }
 .footer-bottom::before { content: ""; position: absolute; top: 0; left: var(--gutter); right: var(--gutter); height: 1px; background: var(--line-dark); }

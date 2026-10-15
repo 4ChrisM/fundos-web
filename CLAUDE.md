@@ -61,13 +61,13 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `initHero`, `initFinder`, `initProjects`, `initFichas` e `initTour`, y su CSS). Los enlaces viejos (`#proyectos`,
   `#proyectos-inicio`, `#conoce`, `#recorrido`, `#inicio`, `#buscador`, `#recorrido-ID`) llevan al mapa y `#proyecto-ID`
   ("Conocer el proyecto" de Inicio) abre la ficha de ese fundo en la ventana. El recorrido 360° de cada proyecto se abre
-  en su mapa del entorno (`entorno.html[?p=ID]#tour-360`), también desde el menú y el pie. `videoPortada` del manifiesto
-  y `assets/video/portada*` ya no se usan.
+  en su mapa del entorno (`entorno.html[?p=ID]#tour-360`), también desde el menú y el pie. El video de caballos
+  (`videoPortada`, `assets/video/portada*`) se quitó; queda en el historial.
 - `index.html` todo el contenido (se lee sin JS) · `styles.css` tokens del manual + estilos · `main.js` módulos IIFE
   (`initPlan`, `initVisit`, `initSellers`, `initVideo`, `initCompra`, `initMapaChile`, …) aislados con `safe()`.
 - `lib/manifest.js` **único lugar de datos**: contacto, proyectos, lotes (`[n, categoría, estado]`), categorías de
   precio (color, precio, precio lista), financiamiento, `equipo` (nombre, apodo, cargo, foto, bio, whatsapp, video)
-  y `videoPortada` (mp4/webm y versión `Movil`). Contacto general real (oct-2026): WhatsApp +56 9 9292 2429 y
+  y `videoDestacado` (mp4/webm y versión `Movil`). Contacto general real (oct-2026): WhatsApp +56 9 9292 2429 y
   ventas@fundosinmobiliaria.com (también escritos en los `href` de `index.html` para la página sin JavaScript); horario
   martes a viernes de 10:00 a 19:00 y visitas a terreno los fines de semana (`contacto.horario` y `contacto.visitas`,
   `[data-horario]`/`[data-visitas]`); en `#visita`, si eligen un día de semana sin videollamada, `[data-fecha-nota]` avisa
