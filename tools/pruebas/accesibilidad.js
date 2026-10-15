@@ -44,19 +44,16 @@ const ARGS = ["--proxy-server=" + process.env.HTTPS_PROXY, "--ignore-certificate
   // selección -> aria-current
   await d.evaluate(() => { location.hash = "#lote-malalcahuello-5"; }); await d.waitForTimeout(900);
   out.ariaCurrent = await d.evaluate(() => [...document.querySelectorAll('.lot[aria-current="true"]')].map(x => x.getAttribute("data-n")));
-  // tarjetas con nombre de proyecto y aviso de pestaña nueva
-  out.cardLink = await d.evaluate(() => document.querySelector(".project [data-goto-plan]").textContent.trim().replace(/\s+/g, " "));
+  // galería de fundos: cada tarjeta dice su nombre; aviso de pestaña nueva
+  out.cardLink = await d.evaluate(() => document.querySelector('.mch-tile[data-p="marchigue"] .mch-tile-b').getAttribute("aria-label"));
   out.blankDesc = await d.evaluate(() => { const a = [...document.querySelectorAll('a[target="_blank"]')]; return [a.length, a.filter(x => /nueva-pestana/.test(x.getAttribute("aria-describedby") || "")).length]; });
-  // recorrido: foco al cerrar tras abrir desde tarjeta
-  await d.evaluate(() => document.querySelector('.project .art-360').scrollIntoView({ block: "center", behavior: "instant" }));
-  await d.focus(".project .art-360"); await d.keyboard.press("Enter"); await d.waitForTimeout(2500);
-  out.tourFocus = await d.evaluate(() => [document.activeElement.className || document.activeElement.tagName, document.activeElement.getAttribute("aria-label") || document.activeElement.textContent.trim().slice(0, 40)]);
-  // inmersivo de respaldo
-  await d.evaluate(() => { Object.defineProperty(Document.prototype, "fullscreenEnabled", { get: () => false, configurable: true }); });
-  await d.evaluate(() => document.querySelector("[data-tour-full]").click()); await d.waitForTimeout(400);
-  out.immersive = await d.evaluate(() => ({ imm: document.querySelector(".is-immersive") !== null, inert: document.querySelectorAll("[data-tour-inert]").length, focus: document.activeElement.getAttribute("aria-label") || document.activeElement.className }));
+  // ficha del fundo (ventana): se abre con el teclado, el foco queda en cerrar y vuelve a la tarjeta con Escape
+  await d.evaluate(() => document.querySelector('.nav-links [data-vista-link="proyectos"]').click()); await d.waitForTimeout(400);
+  await d.focus('.mch-tile[data-p="marchigue"] .mch-tile-b'); await d.keyboard.press("Enter"); await d.waitForTimeout(700);
+  out.fichaFocus = await d.evaluate(() => [document.querySelector("[data-mch-ficha]").open, document.activeElement.getAttribute("aria-label")]);
   await d.keyboard.press("Escape"); await d.waitForTimeout(400);
-  out.afterImm = await d.evaluate(() => ({ imm: document.querySelector(".is-immersive") !== null, inert: document.querySelectorAll("[data-tour-inert],[inert]").length, focus: document.activeElement.getAttribute("aria-label") || document.activeElement.className }));
+  out.fichaVuelve = await d.evaluate(() => [document.querySelector("[data-mch-ficha]").open, document.activeElement.getAttribute("aria-label")]);
+  await d.evaluate(() => document.querySelector('.nav-links [data-vista-link="inicio"]').click()); await d.waitForTimeout(400);
   // envío del formulario: inerte detrás de la confirmación
   await d.fill("#v-nombre", "Ana Pérez"); await d.fill("#v-telefono", "+56 9 1111 2222");
   await d.evaluate(() => { const c = document.querySelector('#visita [name="acepto"]'); if (!c.checked) c.click(); });

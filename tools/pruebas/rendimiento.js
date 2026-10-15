@@ -38,19 +38,12 @@ const ARGS = ["--proxy-server=" + process.env.HTTPS_PROXY, "--ignore-certificate
   await d.waitForTimeout(1800);
   await d.keyboard.type("65 4321", { delay: 30 });
   out.prefill = await d.evaluate(() => [document.getElementById("v-telefono").value, document.getElementById("v-nombre").value, document.activeElement.id]);
-  // recorrido: volver a elegir el mismo no recarga
-  await d.evaluate(() => document.getElementById("recorrido").scrollIntoView({ behavior: "instant" })); await d.waitForTimeout(300);
-  await d.click("[data-tour-enter]"); await d.waitForTimeout(3500);
-  const f1 = await d.evaluate(() => { const f = document.querySelector(".tour-stage iframe"); if (f) f.dataset.mark = "1"; return !!f; });
-  await d.evaluate(() => document.querySelector('.tour-pick[aria-current="true"]').click()); await d.waitForTimeout(1500);
-  out.tourSame = await d.evaluate(() => { const f = document.querySelector(".tour-stage iframe"); return f ? f.dataset.mark === "1" : "no-iframe"; }) + " (had " + f1 + ")";
-  out.liveAnims = await d.evaluate(() => document.getAnimations().filter(a => a.playState === "running" && a.effect && a.effect.target && a.effect.target.closest && a.effect.target.closest(".tour-stage")).map(a => a.animationName));
   out.idleAnims = await d.evaluate(() => { window.scrollTo(0, document.getElementById("tu-compra").offsetTop); return new Promise(r => setTimeout(() => r(document.getAnimations().filter(a => a.playState === "running").map(a => a.animationName)), 600)); });
   await ctx.close();
   // sin JavaScript
   const nj = await (await browser.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false })).newPage();
   await nj.goto(B, { waitUntil: "networkidle" }); await clasica(nj);
-  out.nojs = await nj.evaluate(() => ({ js: document.documentElement.classList.contains("js"), links: getComputedStyle(document.querySelector(".nav-links")).display, toggle: getComputedStyle(document.querySelector(".nav-toggle")).display, filters: getComputedStyle(document.querySelector(".plan-filters")).display, sim: getComputedStyle(document.querySelector(".sim-controls")).display, reveal: getComputedStyle(document.querySelector(".reveal")).opacity }));
+  out.nojs = await nj.evaluate(() => ({ js: document.documentElement.classList.contains("js"), links: getComputedStyle(document.querySelector(".nav-links")).display, toggle: getComputedStyle(document.querySelector(".nav-toggle")).display, filters: getComputedStyle(document.querySelector(".plan-filters")).display, reveal: getComputedStyle(document.querySelector(".reveal")).opacity }));
   await nj.screenshot({ path: "ux/nojs-top.png" });
   await nj.evaluate(() => document.getElementById("plano").scrollIntoView()); await nj.screenshot({ path: "ux/nojs-plan.png" });
   console.log(JSON.stringify(out, null, 1)); console.log(errs.join("\n") || "no errors");

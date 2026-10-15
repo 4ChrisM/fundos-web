@@ -10,27 +10,13 @@ const B = "http://127.0.0.1:8765/";
   d.on("console", x => { if (x.type() === "error" || x.type() === "warning") logs.push(x.type() + " " + x.text()); });
   await d.route(/netlify|github\.io/, r => r.fulfill({ status: 200, contentType: "text/html", body: "<body>tour</body>" }));
   await d.goto(B, { waitUntil: "networkidle" }); await d.waitForTimeout(800); await clasica(d);
-  // buscador: todos + 15M
-  await d.selectOption("#f-presupuesto", "15000000"); await d.waitForTimeout(600);
-  out.finder15 = await d.evaluate(() => ({ n: document.querySelector("[data-finder-count]").textContent, label: document.querySelector("[data-finder-label]").textContent, by: document.querySelector("[data-finder-by]").textContent, cta: document.querySelector("[data-finder-cta]").textContent }));
-  await d.click(".finder-btn"); await d.waitForTimeout(900);
-  out.planFromFinder = await d.evaluate(() => ({ tab: document.querySelector('#plano [aria-selected="true"]').dataset.tab, summary: document.querySelector("[data-summary]").textContent, others: document.querySelector("[data-plan-others]").textContent }));
-  await d.click("[data-plan-others] button"); await d.waitForTimeout(400);
-  out.afterOther = await d.evaluate(() => ({ tab: document.querySelector('#plano [aria-selected="true"]').dataset.tab, summary: document.querySelector("[data-summary]").textContent }));
-  // buscador sin resultados
-  await d.evaluate(() => window.scrollTo(0, 0));
-  await d.selectOption("#f-destino", "puerto-varas"); await d.selectOption("#f-presupuesto", "10000000"); await d.waitForTimeout(500);
-  out.finderZero = await d.evaluate(() => ({ countHidden: document.querySelector("[data-finder-count]").hidden, label: document.querySelector("[data-finder-label]").textContent, cta: document.querySelector("[data-finder-cta]").textContent }));
-  await d.click(".finder-btn"); await d.waitForTimeout(800);
-  out.planZero = await d.evaluate(() => ({ summary: document.querySelector("[data-summary]").textContent, note: document.querySelector("[data-plan-others]").textContent }));
-  // formulario: mensaje de otro proyecto no queda pegado
-  await d.evaluate(() => document.querySelector("#recorrido").scrollIntoView({ behavior: "instant" }));
-  await d.click("[data-tour-visit]"); await d.waitForTimeout(300);
+  // formulario: el mensaje de otro proyecto no queda pegado (Cotizar desde la ficha de cada fundo)
+  await d.goto(B + "#proyecto-malalcahuello", { waitUntil: "networkidle" }); await d.waitForTimeout(1000);
+  await d.click('.mch-ficha [data-mf="cotizar"]'); await d.waitForTimeout(500);
   const msg1 = await d.inputValue("#v-mensaje");
-  await d.evaluate(() => document.querySelector("#conoce").scrollIntoView({ behavior: "instant" }));
-  await d.click('[data-py-tab="marchigue"]'); await d.waitForTimeout(300);
-  out.fichaStats = await d.evaluate(() => document.querySelector(".py-stats").textContent);
-  await d.click('[data-py-act="cotizar"]'); await d.waitForTimeout(500);
+  await d.evaluate(() => { location.hash = "#proyecto-marchigue"; }); await d.waitForTimeout(1000);
+  out.fichaStats = await d.evaluate(() => document.querySelector(".mch-ficha .py-stats").textContent);
+  await d.click('.mch-ficha [data-mf="cotizar"]'); await d.waitForTimeout(500);
   out.stale = { before: msg1, after: await d.inputValue("#v-mensaje"), proyecto: await d.inputValue("#v-proyecto") };
   // mensaje de WhatsApp
   await d.fill("#v-nombre", "Ana"); await d.fill("#v-telefono", "+56 9 1111 2222");
@@ -40,11 +26,7 @@ const B = "http://127.0.0.1:8765/";
   await d.click('.visit-form button[type="submit"]'); await d.waitForTimeout(300);
   out.waMsg = await d.evaluate(() => document.querySelector("[data-visit-msg]").textContent);
   out.fallbackColor = await d.evaluate(() => { const a = document.querySelector("[data-visit-fallback]"); const cs = getComputedStyle(a); return cs.color + " / " + cs.backgroundColor + " / " + cs.textDecorationLine; });
-  // recorrido desde la tarjeta: el visor queda en pantalla
   await d.click("[data-visit-again]");
-  await d.evaluate(() => document.querySelector("#proyectos").scrollIntoView({ behavior: "instant" }));
-  await d.click('.art-360[data-tour-open="marchigue"]'); await d.waitForTimeout(1600);
-  out.tourStage = await d.evaluate(() => { const r = document.querySelector("[data-tour-stage]").getBoundingClientRect(); return [Math.round(r.top), Math.round(r.bottom), innerHeight]; });
   // cómo pagar un lote (cotizador dentro del detalle)
   await d.evaluate(() => document.querySelector("#plano").scrollIntoView({ behavior: "instant" }));
   await d.click('#plano [data-tab="malalcahuello"]'); await d.waitForTimeout(300);

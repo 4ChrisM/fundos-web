@@ -77,9 +77,8 @@
   var Visit = { prefill: function () {} };
   var Plan = { apply: function () {}, show: function () {}, current: function () { return (proyectos[0] || {}).id; } };
   var Casa = { set: function () {} };
-  var Tour = { open: function () {} };
-  var Video = { open: function () {} };
   var Vista = { set: function () { return false; }, current: function () { return ""; } };
+  var Video = { open: function () {} };   // visor de video de un proyecto (initVideo)
   var DESTACADO = proyecto(B.destacado) ? B.destacado : "";
 
   // Alto real de la barra superior (con la franja de pestañas en celular y tablet)
@@ -115,30 +114,20 @@
      ============================================================= */
   function initVistas() {
     var root = document.documentElement;
-    var PRIMERA = { inicio: "puerto-varas", proyectos: "proyectos-inicio", compra: "tu-compra", equipo: "nosotros" };
-    // Propuestas para votar (?mapa=vertical | horizontal): la pestaña Proyectos es solo el mapa "Fundos en todo Chile";
-    // la portada, las tarjetas, el aviso de Tu casa, "Conoce cada proyecto" y el recorrido 360° no se muestran, y el
-    // plano queda en Inicio ("Ver lotes" lleva ahí)
-    var PM = root.classList.contains("pm"), OCULTAS = ["inicio", "buscador", "proyectos", "disena-proyectos", "conoce", "recorrido"];
-    if (PM) {
-      PRIMERA.proyectos = "mas-proyectos";
-      OCULTAS.forEach(function (id) { var el = document.getElementById(id); if (el) el.setAttribute("data-vista", "oculta"); });
-      var tk = $(".ticker[data-vista]"); if (tk) tk.setAttribute("data-vista", "oculta");
-      var pl = $("#plano"); if (pl) pl.setAttribute("data-vista", "inicio");
-      var vi = $("#visita"); if (vi) vi.setAttribute("data-vista", "inicio compra equipo");   // tampoco el formulario de visita
-      $$('a[href="#proyectos-inicio"]').forEach(function (a) { a.setAttribute("href", "#mas-proyectos"); });
-    }
+    var PRIMERA = { inicio: "puerto-varas", proyectos: "mas-proyectos", compra: "tu-compra", equipo: "nosotros" };
+    // La pestaña Proyectos es solo el mapa "Fundos en todo Chile" (ganó la opción vertical, oct-2026). Los enlaces viejos
+    // a lo que antes estaba ahí (portada, tarjetas, "Conoce cada proyecto", recorrido 360°) llevan al mapa, y
+    // #proyecto-ID abre la ficha de ese fundo
+    var VIEJAS = ["inicio", "proyectos-inicio", "buscador", "proyectos", "disena-proyectos", "conoce", "recorrido"];
     var links = $$("[data-vista-link]"), cur = "";
     function targetFor(hash) {
       var id = decodeURIComponent((hash || "").replace(/^#/, ""));
       if (!id) return null;
-      if (PM && (OCULTAS.indexOf(id) >= 0 || id === "proyectos-inicio" || /^proyecto-/.test(id))) return $("#mas-proyectos");
+      if (VIEJAS.indexOf(id) >= 0 || /^(proyecto|recorrido)-/.test(id)) return $("#mas-proyectos");
       var el = document.getElementById(id);
       if (!el && /^lote-/.test(id)) el = $("#plano");
       if (!el && id === "simulador") el = $("#plano");   // el simulador ahora vive dentro del lote
-      if (!el && /^recorrido-/.test(id)) el = $("#recorrido");
       if (!el && /^equipo-\d+$/.test(id)) el = $("#nosotros");
-      if (!el && /^proyecto-/.test(id)) el = $("#conoce");
       return el;
     }
     function vistaPara(hash) {
@@ -147,22 +136,7 @@
       var vs = box.getAttribute("data-vista").split(/\s+/);
       return vs.indexOf(cur) >= 0 ? cur : vs[0];
     }
-    // Enlace cerrado para votar (&cerrado=1): solo la pestaña Proyectos, sin poder ir al resto del sitio
-    var CERRADO = root.classList.contains("pm-cerrado");
-    if (CERRADO) {
-      var brand = $(".nav .brand"); if (brand) { brand.removeAttribute("href"); brand.setAttribute("aria-disabled", "true"); }
-      var tag = document.createElement("span");
-      tag.className = "pm-voto";
-      tag.textContent = "Vista previa para votación · " + (root.classList.contains("pm-h") ? "Opción B · Horizontal" : "Opción A · Vertical");
-      var nl = $(".nav-left") || (brand && brand.parentNode); if (nl) nl.appendChild(tag);
-      // Solo la pestaña Proyectos: el resto del contenido se quita de la página (no solo se oculta)
-      $$("main > *").forEach(function (el) { if (el.id !== "mas-proyectos") el.parentNode.removeChild(el); });
-      $$(".footer, .mbar, .wa-float, .quick, #menu").forEach(function (el) { el.parentNode.removeChild(el); });
-      $$("[data-vista-link]").forEach(function (a) { if (a.getAttribute("data-vista-link") !== "proyectos") a.parentNode.removeChild(a); });
-      $$(".nav-links > :not([data-vista-link])").forEach(function (el) { el.parentNode.removeChild(el); });
-    }
     function set(v) {
-      if (CERRADO && v !== "proyectos") return false;
       if (!PRIMERA[v] || v === cur) return false;
       cur = v;
       root.setAttribute("data-vista", v);
@@ -195,14 +169,13 @@
     document.addEventListener("click", function (e) {
       var a = e.target.closest && e.target.closest('a[href^="#"]');
       if (!a || a.hasAttribute("data-vista-link")) return;
-      // En la pestaña Puerto Varas no está el recorrido: su 360° se abre en el mapa del entorno
+      // El recorrido 360° se abre en el mapa del entorno de cada proyecto (portal desde la parcela)
       var to = a.getAttribute("data-tour-open");
-      if (to && cur === "inicio") {
+      if (to) {
         var tp = proyecto(to === "plan" ? Plan.current() : to);
         if (tp && tp.entorno) { e.preventDefault(); e.stopImmediatePropagation(); window.location.href = tp.entorno + "#tour-360"; return; }
       }
       var v = vistaPara(a.getAttribute("href"));
-      if (CERRADO && v && v !== "proyectos") { e.preventDefault(); e.stopImmediatePropagation(); return; }
       if (v && v !== cur) { set(v); window.scrollTo({ top: 0, behavior: "instant" }); }
     }, true);
     function fromHash() {
@@ -214,7 +187,7 @@
     }
     window.addEventListener("hashchange", fromHash);
     window.addEventListener("popstate", fromHash);
-    var v0 = CERRADO ? "proyectos" : vistaPara(location.hash) || "inicio";
+    var v0 = vistaPara(location.hash) || "inicio";
     set(v0);
     if (location.hash && targetFor(location.hash) && targetFor(location.hash).id !== PRIMERA[v0]) {
       window.setTimeout(function () { jump(targetFor(location.hash)); }, 60);
@@ -281,170 +254,12 @@
   }
 
   /* =============================================================
-     Hero: el paisaje se mueve por capas (cursor + scroll)
+     Enlaces que eligen un proyecto en el plano (pie de página)
      ============================================================= */
-  function initHero() {
-    var hero = $("[data-hero]");
-    if (!hero || reduced) return;
-    var svg = $(".hero-scene", hero), inner = $(".hero-inner", hero), photo = $(".hero-photo img", hero);
-    var layers = (svg ? $$(".layer", svg) : []).map(function (g) { return { g: g, d: parseFloat(g.getAttribute("data-depth")) || 0 }; });
-    var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, visible = true, lastY = -1;
-
-    if (fineHover) {
-      hero.addEventListener("pointermove", function (e) {
-        tx = (e.clientX / window.innerWidth - 0.5) * 2;
-        ty = (e.clientY / window.innerHeight - 0.5) * 2;
-        kick();
-      });
-      hero.addEventListener("pointerleave", function () { tx = 0; ty = 0; kick(); });
-    }
-    window.addEventListener("scroll", kick, { passive: true });
-    // Medidas fuera del cuadro de animación: frame() solo escribe, nunca fuerza un layout
-    var svgH = 900, heroH = 1;
-    function measure() { svgH = (svg && svg.getBoundingClientRect().height) || 900; heroH = hero.offsetHeight || 1; }
-    measure();
-    if ("ResizeObserver" in window) new ResizeObserver(function () { measure(); kick(); }).observe(hero);
-    else window.addEventListener("resize", function () { measure(); kick(); });
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) kick(); }).observe(hero);
-    }
-
-    function kick() { if (!raf && visible) raf = window.requestAnimationFrame(frame); }
-    function frame() {
-      raf = 0;
-      cx += (tx - cx) * 0.07;
-      cy += (ty - cy) * 0.07;
-      var sy = Math.max(0, window.scrollY);
-      var k = 900 / svgH; // px → unidades del viewBox
-      layers.forEach(function (L) {
-        var x = -cx * L.d * 38;
-        var y = -cy * L.d * 10 + sy * (1 - L.d) * 0.3 * k;
-        L.g.setAttribute("transform", "translate(" + x.toFixed(2) + " " + y.toFixed(2) + ")");
-      });
-      if (photo) photo.style.transform = "translate3d(" + (-cx * 8).toFixed(1) + "px," + (sy * 0.16 - cy * 6).toFixed(1) + "px,0) scale(1.04)";
-      if (inner) {
-        inner.style.transform = "translate3d(0," + (sy * -0.12).toFixed(1) + "px,0)";
-        inner.style.opacity = String(clamp(1 - sy / (heroH * 0.8), 0, 1));
-      }
-      if (Math.abs(tx - cx) > 0.002 || Math.abs(ty - cy) > 0.002 || sy !== lastY) { lastY = sy; kick(); }
-    }
-    kick();
-  }
-
-  /* =============================================================
-     Tarjetas de proyecto
-     ============================================================= */
-  function initProjects() {
-    // Cifras siempre sincronizadas con los datos
-    proyectos.forEach(function (p) {
-      var card = $('.project[data-project="' + p.id + '"]');
-      if (!card || p.estado !== "venta") return;
-      var badge = $(".badge", card), dd = $(".facts div:first-child dd", card);
-      if (badge) badge.textContent = disponibles(p).length + " disponibles";
-      if (dd && desde(p)) dd.textContent = clp(desde(p));
-    });
-
-    if (fineHover) {
-      $$(".project").forEach(function (card) {
-        card.addEventListener("pointermove", function (e) {
-          var r = card.getBoundingClientRect();
-          card.style.setProperty("--mx", ((((e.clientX - r.left) / r.width) - 0.5) * 2).toFixed(3));
-        });
-        card.addEventListener("pointerleave", function () { card.style.setProperty("--mx", "0"); });
-      });
-    }
-
+  function initIrAlPlano() {
     $$("[data-goto-plan]").forEach(function (a) {
       a.addEventListener("click", function () { Plan.show(a.getAttribute("data-goto-plan")); });
     });
-    // Enlaces repetidos en cada tarjeta: el lector de pantalla oye de qué proyecto son
-    $$(".project[data-project]").forEach(function (card) {
-      var p = proyecto(card.getAttribute("data-project"));
-      if (!p) return;
-      $$('[data-goto-plan], .art-360, a[href^="#proyecto-"], a[href="#puerto-varas"]', card).forEach(function (a) {
-        if (!$(".sr-only", a)) a.insertAdjacentHTML("beforeend", '<span class="sr-only"> de ' + esc(p.nombre) + "</span>");
-      });
-    });
-    $$("[data-chip-total]").forEach(function (li) {
-      var p = proyecto(li.getAttribute("data-chip-total"));
-      if (p) li.textContent = p.lotes.length + " parcelas en total";
-    });
-    // "Ver parcelas disponibles": abre el plano mostrando solo lo que se puede comprar
-    $$("[data-plan-disp]").forEach(function (a) {
-      a.addEventListener("click", function () { Plan.apply({ id: Plan.current(), soloDisponibles: true }); });
-    });
-  }
-
-  /* =============================================================
-     Buscador del hero
-     ============================================================= */
-  function initFinder() {
-    var form = $("[data-finder]");
-    if (!form) return;
-    var dest = $("#f-destino", form), bud = $("#f-presupuesto", form);
-    var count = $("[data-finder-count]", form), label = $("[data-finder-label]", form), cta = $("[data-finder-cta]", form), by = $("[data-finder-by]", form);
-    var liveF = $("[data-finder-live]", form), liveT = 0;
-    function say(t) { if (!liveF) return; window.clearTimeout(liveT); liveT = window.setTimeout(function () { liveF.textContent = t; }, 450); }
-
-    function matches(p, max) {
-      return disponibles(p).filter(function (l) { return l.precio <= max; }).length;
-    }
-    // Resultado por proyecto: el total que se promete es el mismo que después se muestra
-    function result() {
-      var id = dest.value, max = +bud.value || Infinity, todos = id === "todos";
-      var list = todos ? proyectos.filter(function (x) { return x.lotes && x.lotes.length; }) : [proyecto(id)].filter(Boolean);
-      var rows = list.map(function (x) { return { p: x, n: matches(x, max) }; }).sort(function (a, b) { return b.n - a.n || desde(a.p) - desde(b.p); });
-      var total = rows.reduce(function (t, r) { return t + r.n; }, 0);
-      var cheapest = list.slice().sort(function (a, b) { return desde(a) - desde(b); })[0];
-      return { n: total, max: max, rows: rows, todos: todos, target: total ? rows[0].p : cheapest };
-    }
-    function countTo(to) {
-      var from = parseInt(count.textContent, 10) || 0;
-      if (reduced || from === to) { count.textContent = to; return; }
-      var t0 = performance.now();
-      (function step(t) {
-        var k = Math.min(1, (t - t0) / 420);
-        count.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)));
-        if (k < 1) window.requestAnimationFrame(step);
-      })(t0);
-    }
-    function update() {
-      var r = result();
-      var parts = r.rows.filter(function (x) { return x.n; });
-      if (!r.target) return;
-      if (r.n === 0) {
-        count.hidden = true;
-        label.textContent = "No hay parcelas hasta " + clp(r.max) + (r.todos ? "" : " en " + r.target.nombre) + ". Parten en " + clp(desde(r.target)) + ".";
-        cta.textContent = "Ver desde " + clp(desde(r.target));
-        by.hidden = true;
-        say(label.textContent);
-        return;
-      }
-      count.hidden = false;
-      countTo(r.n);
-      label.textContent = (r.n === 1 ? "parcela disponible" : "parcelas disponibles") + (r.max < Infinity ? " en tu presupuesto" : " hoy");
-      by.hidden = !(r.todos && parts.length > 1);
-      by.textContent = parts.map(function (x) { return x.n + " en " + x.p.nombre; }).join(" · ");
-      cta.textContent = r.todos && parts.length > 1 ? "Ver en " + r.target.nombre : "Ver parcelas";
-      say(r.n + " " + label.textContent + (by.hidden ? "" : ": " + by.textContent));
-    }
-    dest.addEventListener("change", update);
-    bud.addEventListener("change", update);
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var r = result();
-      if (!r.target) return;
-      if (r.n === 0) {
-        Plan.apply({ id: r.target.id, max: Infinity, soloDisponibles: true, nota: "No hay lotes hasta " + clp(r.max) + ": te mostramos todos los disponibles de " + r.target.nombre + "." });
-      } else {
-        Plan.apply({
-          id: r.target.id, max: r.max, soloDisponibles: true,
-          otros: r.todos ? r.rows.filter(function (x) { return x.n; }).map(function (x) { return { id: x.p.id, nombre: x.p.nombre, n: x.n }; }) : []
-        });
-      }
-      Plan.land();
-    });
-    update();
   }
 
   /* =============================================================
@@ -1829,123 +1644,6 @@
   }
 
   /* =============================================================
-     Conoce cada proyecto (pestaña Proyectos): un apartado por proyecto, armado desde el manifiesto.
-     Selector que crece con los proyectos; enlace directo #proyecto-ID. El destacado tiene su pestaña.
-     ============================================================= */
-  function initFichas() {
-    var sec = $("[data-py]");
-    if (!sec) return;
-    var tabs = $("[data-py-tabs]", sec), panel = $("[data-py-panel]", sec);
-    var lista = (B.proyectos || []).filter(function (p) { return p.id !== B.destacado && p.estado !== "oculto"; });
-    if (!lista.length) return;
-    var dest = proyecto(B.destacado), cur = "";
-    var ico = function (n, cls) { return '<svg class="i' + (cls ? " " + cls : "") + '" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; };
-
-    tabs.innerHTML = lista.map(function (p) {
-      var f = p.foto || {};
-      return '<button type="button" role="tab" id="py-tab-' + p.id + '" aria-controls="py-panel" aria-selected="false" tabindex="-1" data-py-tab="' + p.id + '">' +
-        (f.src ? '<img src="' + esc(f.src) + '" alt="" width="56" height="56" loading="lazy" decoding="async" style="object-position:' + esc(f.pos || "50% 50%") + '">' : '<span class="py-tab-dot" aria-hidden="true"></span>') +
-        '<span><strong>' + esc(p.nombre) + '</strong><small>' + esc(p.region) + '</small></span></button>';
-    }).join("") + (dest ? '<a class="py-tab-dest" href="#puerto-varas">' + ico("sparkle") + '<span><strong>' + esc(dest.nombre) + '</strong><small>Ver su pestaña</small></span></a>' : "");
-
-    function tiempo(t) {
-      var x = String(t).split(" · ");
-      return x.length > 1 ? "<b>" + esc(x[1]) + "</b><small>" + esc(x[0]) + "</small>" : "<b>" + esc(t) + "</b>";
-    }
-    function render(p) {
-      var f = p.foto || {}, d0 = desde(p), disp = disponibles(p).length;
-      var hero = f.src
-        ? '<img src="' + esc(f.src) + '"' + (f.src2x ? ' srcset="' + esc(f.src) + ' 700w, ' + esc(f.src2x) + ' 1200w" sizes="(min-width: 1200px) 1140px, 100vw"' : "") +
-          ' width="' + (f.w || 1200) + '" height="' + (f.h || 800) + '" alt="' + esc(f.alt || "") + '" decoding="async" style="object-position:' + esc(f.pos || "50% 50%") + '">'
-        : "";
-      var cred = f.lugar || f.credito ? '<p class="py-cred">' + (f.lugar ? "<span>" + esc(f.lugar) + "</span>" : "") +
-        (!f.credito ? "" : f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener">Foto: ' + esc(f.credito) + "</a>" : "<span>Foto: " + esc(f.credito) + "</span>") + "</p>" : "";
-      var stats = '<dl class="py-stats">' +
-        (d0 ? "<div><dt>Desde</dt><dd>" + clp(d0) + "</dd></div>" : "") +
-        "<div><dt>Disponibles</dt><dd>" + disp + " <small>de " + p.lotes.length + "</small></dd></div>" +
-        "<div><dt>Parcelas</dt><dd>" + m2(p.lotes.length ? p.lotes[0].m2 : 5000) + "</dd></div>" +
-        "<div><dt>Reserva</dt><dd>" + clp(RESERVA) + ' <small class="fact-nota">incluye escritura</small></dd></div></dl>';
-      var cars = p.caracteristicas || (p.destacados || []).map(function (t) { return { icono: "check", titulo: t }; });
-      var why = '<ul class="py-why">' + cars.map(function (c) {
-        return "<li>" + ico(c.icono || "check") + "<div><h4>" + esc(c.titulo) + "</h4>" + (c.texto ? "<p>" + esc(c.texto) + "</p>" : "") + "</div></li>";
-      }).join("") + "</ul>";
-      var near = (p.cercanias || []).length ? '<div class="py-near"><h4>Cerca de tu parcela</h4><ul>' + p.cercanias.map(function (c) {
-        return "<li>" + tiempo(c[1]) + "<span>" + esc(c[0]) + "</span></li>";
-      }).join("") + "</ul>" + (p.cercaniasNota ? "<p>" + esc(p.cercaniasNota) + "</p>" : "") +
-        (p.entorno ? '<a class="py-near-map" href="' + esc(p.entorno) + '">' + ico("compass") + "Explorar el mapa del entorno</a>" : "") + "</div>" : "";
-      var acts = '<div class="py-acts">' +
-        '<a class="btn btn-gold" href="#plano" data-py-act="plano">Ver lotes disponibles' + ico("arrow", "i-go") + "</a>" +
-        '<a class="btn btn-ghost" href="#visita" data-py-act="cotizar">' + ico("send") + "Cotizar " + esc(p.nombre) + "</a>" +
-        (p.tour ? '<a class="btn btn-ghost" href="#recorrido" data-py-act="tour">' + ico("360") + "Recorrido 360°</a>" : "") +
-        (p.video ? '<button class="btn btn-ghost" type="button" data-py-act="video">' + ico("play") + "Ver video</button>" : "") +
-        "</div>";
-      panel.innerHTML =
-        '<article class="py" aria-labelledby="py-t-' + p.id + '">' +
-          '<div class="py-hero">' + hero + '<div class="py-hero-in"><p class="kicker">' + esc(p.region + " · " + p.zona) + '</p>' +
-            '<h3 id="py-t-' + p.id + '">Fundos <em>' + esc(p.nombre) + "</em></h3>" +
-            (p.descripcion ? '<p class="py-desc">' + esc(p.descripcion) + "</p>" : "") + "</div>" + cred + "</div>" +
-          stats +
-          '<div class="py-body">' + why + near + "</div>" + acts +
-        "</article>";
-      $$("[data-py-act]", panel).forEach(function (a) {
-        a.addEventListener("click", function (e) {
-          var act = a.getAttribute("data-py-act");
-          if (act === "plano") Plan.apply({ id: p.id, soloDisponibles: true });
-          if (act === "cotizar") Visit.prefill({ proyecto: p.nombre, mensaje: "Quiero cotizar una parcela en " + p.nombre + ": precios, disponibilidad y formas de pago.", scroll: true });
-          if (act === "tour") { e.preventDefault(); Tour.open(p.id, true); }
-          if (act === "video") Video.open(p.id);
-        });
-      });
-    }
-    function select(id, focus) {
-      var p = proyecto(id);
-      if (!p || lista.indexOf(p) < 0) p = lista[0];
-      if (p.id !== cur) { cur = p.id; render(p); }
-      $$("[data-py-tab]", tabs).forEach(function (b) {
-        var on = b.getAttribute("data-py-tab") === p.id;
-        b.setAttribute("aria-selected", on ? "true" : "false");
-        b.tabIndex = on ? 0 : -1;
-        if (on && focus) b.focus();
-      });
-      panel.setAttribute("aria-labelledby", "py-tab-" + p.id);
-    }
-    $$("[data-py-tab]", tabs).forEach(function (b, i, all) {
-      b.addEventListener("click", function () {
-        select(b.getAttribute("data-py-tab"));
-        try { history.replaceState(null, "", "#proyecto-" + cur); } catch (x) { /* marco sin historial */ }
-      });
-      b.addEventListener("keydown", function (e) {
-        var k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key], j = e.key === "Home" ? 0 : e.key === "End" ? all.length - 1 : k ? (i + k + all.length) % all.length : -1;
-        if (j < 0) return;
-        e.preventDefault();
-        all[j].click();
-        all[j].focus();
-      });
-    });
-    function fromHash() {
-      var m = /^#proyecto-(.+)$/.exec(location.hash);
-      if (m) select(decodeURIComponent(m[1]));
-    }
-    // Los enlaces #proyecto-ID eligen su proyecto antes de que la página salte al apartado
-    document.addEventListener("click", function (e) {
-      var a = e.target.closest && e.target.closest('a[href^="#proyecto-"]');
-      if (a) select(a.getAttribute("href").slice(10));
-    }, true);
-    // #proyecto-ID no es un elemento: el salto al apartado lo hace este módulo
-    window.addEventListener("hashchange", function () {
-      if (!/^#proyecto-/.test(location.hash)) return;
-      fromHash();
-      window.requestAnimationFrame(function () {
-        var y = window.scrollY + sec.getBoundingClientRect().top - navBottomPx() - 8;
-        window.scrollTo({ top: Math.max(0, y), behavior: reduced ? "auto" : "smooth" });
-      });
-    });
-    select(lista[0].id);
-    fromHash();
-    sec.hidden = false;
-  }
-
-  /* =============================================================
      Formulario de la portada de Puerto Varas: pocos datos, el mensaje se revisa y se envía por WhatsApp
      ============================================================= */
   /* =============================================================
@@ -2186,25 +1884,20 @@
     if (!sec || !list || !hs.length) return;
     sec.hidden = false;
     $$("[data-mp-link]").forEach(function (a) { a.hidden = false; });
-    if (document.documentElement.classList.contains("pm")) {   // en las propuestas esta sección es la pestaña Proyectos
-      var k = $(".kicker", sec), ld = $(".lead", sec);
-      if (k) k.textContent = "Nuestros proyectos";
-      if (ld) ld.textContent = "Parcelas de 5.000 m² de Valparaíso a Los Lagos: tres proyectos con plano y recorrido 360° y diez más en la costa, los lagos, los valles y la cordillera. Toca un fundo para ver su ficha y fotos.";
-    }
     var conMapa = false;
     safe(function () { conMapa = initMapaChile(sec, hs); }, "initMapaChile");
     if (!conMapa) list.innerHTML = hs.map(mpCard).join("");
     list.hidden = conMapa;
   }
-  /* Sala de cine (elegida por el cliente, paleta Arena): Chile completo de pie con un recuadro dorado que viaja al fundo
-     que se mira; al lado, la "lupa" con ese tramo en grande (regiones, ciudades de referencia, latitud y fundos), y a la
-     derecha el fundo activo y el carrusel de norte a sur. Tocar un fundo despliega su ficha con fotos debajo. */
+  /* Fundos en todo Chile (la pestaña Proyectos; ganó la opción vertical en la votación del equipo, oct-2026): a la
+     izquierda un mapa largo y fijo de Chile con un punto y un rótulo por fundo a los costados (latitudes cada 2°), que se
+     estira hasta el alto de la galería; a la derecha la galería de norte a sur agrupada por región. Tocar un fundo (en la
+     galería o en el mapa) abre su ficha en una ventana sobre la página, con flechas para pasar al anterior o siguiente. */
   function initMapaChile(sec, hs) {
     var M = B.mapaChile, box = $("[data-mch]", sec);
     if (!M || !box) return false;
-    var ch = $("[data-mch-chile]", box), zo = $("[data-mch-lupa]", box), act = $("[data-mch-act]", box), row = $("[data-mch-list]", box),
-      ficha = $("[data-mch-ficha]", sec), pr = M.proy, W = M.viewBox[2], H = M.viewBox[3], ZH = 6.5 * pr.k;   // la lupa muestra 6,5° de latitud
-    var NS = "http://www.w3.org/2000/svg";
+    var zo = $("[data-mch-mapa]", box), row = $("[data-mch-list]", box), ficha = $("[data-mch-ficha]", sec), pr = M.proy;
+    if (!zo || !row || !ficha) return false;
     function xy(lat, lon) { return [(lon - pr.lon0) * pr.c * pr.k, (-lat - pr.lat0) * pr.k]; }
     function dentro(p, ring) {
       var c = false;
@@ -2228,7 +1921,7 @@
     var pts = [];
     proyectos.forEach(function (p) {
       var m = /query=(-?[\d.]+),(-?[\d.]+)/.exec(p.mapa || "");
-      if (m && p.lotes && p.lotes.length) pts.push({ id: p.id, corto: p.nombre, nombre: "Fundos de " + p.nombre, lat: +m[1], lon: +m[2], main: true, p: p, href: p.id === DESTACADO ? "#puerto-varas" : "#proyecto-" + p.id });
+      if (m && p.lotes && p.lotes.length) pts.push({ id: p.id, corto: p.nombre, nombre: "Fundos de " + p.nombre, lat: +m[1], lon: +m[2], main: true, p: p });
     });
     hs.forEach(function (h) { if (h.lat && h.lon) pts.push({ id: h.id, corto: h.nombre.replace(/^Fundos de /, ""), nombre: h.nombre, lat: h.lat, lon: h.lon, h: h }); });
     pts.forEach(function (p) { p.xy = xy(p.lat, p.lon); p.reg = region(p.xy); });
@@ -2241,70 +1934,14 @@
     function rn(p) { return { 7: "Región del Maule", 8: "Región del Biobío", 13: "Región Metropolitana" }[p.reg.cod] || "Región de " + p.reg.nombre; }
     function datosP(p) { var d = disponibles(p.p), desde = d.length ? Math.min.apply(null, d.map(function (l) { return l.precio || Infinity; })) : 0; return { n: d.length, desde: isFinite(desde) ? desde : 0 }; }
     var regs = M.regiones.map(function (r) { return '<path class="mch-reg' + (cods.indexOf(r.cod) >= 0 ? " is-con" : "") + '" data-cod="' + r.cod + '" d="' + r.anillos.map(ringD).join("") + '"><title>' + esc(r.nombre) + "</title></path>"; }).join("");
+    var actual = null;
 
-    // Chile completo, con latitudes cada 5° y el recuadro de la lupa
-    var tk = "";
-    for (var la = 20; la <= 55; la += 5) { var ty = (la - pr.lat0) * pr.k; tk += '<line class="mch-tickl" x1="-34" x2="0" y1="' + ty + '" y2="' + ty + '"/><text class="mch-tick" x="-34" y="' + (ty - 3) + '">' + la + "°</text>"; }
-    ch.innerHTML = '<svg viewBox="-36 -4 ' + (W + 40) + " " + (H + 8) + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Chile completo, de Arica a Magallanes, con la ubicación de los fundos">' + tk + regs +
-      '<rect class="mch-win" rx="3" x="0" y="0" width="' + W + '" height="' + ZH + '"/>' +
-      pts.map(function (p) { return '<circle class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '" cx="' + p.xy[0].toFixed(1) + '" cy="' + p.xy[1].toFixed(1) + '" r="' + (p.main ? 4.2 : 3.2) + '"/>'; }).join("") + "</svg>";
-    var win = $(".mch-win", ch);
-
-    // Lupa: el mismo mapa con un viewBox que sigue al fundo elegido
-    var CIU = [["Arica", -18.48, -70.31], ["Iquique", -20.21, -70.15], ["Antofagasta", -23.65, -70.4], ["Copiapó", -27.37, -70.33], ["La Serena", -29.9, -71.25], ["Valparaíso", -33.05, -71.62], ["Santiago", -33.45, -70.67], ["Rancagua", -34.17, -70.74], ["Pichilemu", -34.39, -72.0], ["Talca", -35.43, -71.66], ["Chillán", -36.61, -72.1], ["Concepción", -36.83, -73.05], ["Los Ángeles", -37.47, -72.35], ["Temuco", -38.74, -72.6], ["Valdivia", -39.81, -73.25], ["Osorno", -40.57, -73.14], ["Puerto Montt", -41.47, -72.94], ["Castro", -42.48, -73.76], ["Coyhaique", -45.57, -72.07], ["Punta Arenas", -53.16, -70.91]];
-    var lats = "";
-    for (la = 18; la <= 56; la++) { var y = (la - pr.lat0) * pr.k; lats += '<line class="mch-zlat" x1="-200" x2="' + (W + 200) + '" y1="' + y + '" y2="' + y + '"/><text class="mch-zlatt" x="0" y="' + (y - 3) + '">' + la + "°S</text>"; }
-    var regl = M.regiones.map(function (r) {
-      var big = r.anillos.reduce(function (a, b) { return b.length > a.length ? b : a; }), x = 0, yy = 0;
-      big.forEach(function (q) { x += q[0]; yy += q[1]; }); x /= big.length; yy /= big.length;
-      var pp = pts.filter(function (p) { return p.reg.cod === r.cod; });
-      if (pp.length) yy = pp.reduce(function (a, p) { return a + p.xy[1]; }, 0) / pp.length + 0.55 * pr.k;
-      return '<text class="mch-zreg" text-anchor="middle" x="' + x.toFixed(1) + '" y="' + yy.toFixed(1) + '">' + esc(r.nombre) + "</text>";
-    }).join("");
-    var ciu = CIU.map(function (c) { var q = xy(c[1], c[2]); return '<g class="mch-city" aria-hidden="true"><circle data-r="2.6" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="1"/><text x="' + q[0].toFixed(1) + '" y="' + q[1].toFixed(1) + '" dy=".35em">' + esc(c[0]) + "</text></g>"; }).join("");
-    var pins = pts.map(function (p) { return '<g class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '"><title>' + esc(p.nombre) + '</title><circle data-r="' + (p.main ? 6.5 : 5) + '" cx="' + p.xy[0].toFixed(1) + '" cy="' + p.xy[1].toFixed(1) + '" r="1"/><text x="' + p.xy[0].toFixed(1) + '" y="' + p.xy[1].toFixed(1) + '" dy=".35em">' + esc(p.corto) + "</text></g>"; }).join("");
-    zo.innerHTML = '<svg role="img" aria-label="Tramo de Chile alrededor del fundo elegido">' + lats + regs + regl + ciu + '<line class="mch-zline" x1="-200" x2="' + (W + 200) + '" y1="0" y2="0"/><text class="mch-zlinet" x="0" y="0"></text>' + pins + "</svg>";
-    var zs = $("svg", zo), zl = $(".mch-zline", zs), zt = $(".mch-zlinet", zs);
-
-    // Propuesta horizontal (?mapa=horizontal, para votar): Chile completo acostado en una franja chica con el recuadro del
-    // tramo que se ve abajo, y ese tramo (31°S a 44°S) a todo el ancho con un punto y un rótulo por fundo en pistas arriba
-    // y abajo sin choques, y latitudes cada 2° (norte a la izquierda, el mar abajo)
-    var horiz = document.documentElement.classList.contains("pm-h");
-    if (horiz) {
-      box.classList.add("is-horiz");
-      var S = 4, bx0 = (31.2 - pr.lat0) * pr.k, bx1 = (44.2 - pr.lat0) * pr.k, rot = "rotate(-90)";
-      ch.innerHTML = '<svg viewBox="-2 -2 ' + (H + 4) + " " + (W + 4) + '" preserveAspectRatio="xMinYMid meet" role="img" aria-label="Chile completo, de Arica a Magallanes">' +
-        '<g transform="translate(0 ' + W + ") " + rot + '">' + regs + "</g>" +
-        '<rect class="mch-win" rx="3" x="' + bx0.toFixed(1) + '" y="0" width="' + (bx1 - bx0).toFixed(1) + '" height="' + W + '"/>' +
-        pts.map(function (p) { return '<circle class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '" cx="' + p.xy[1].toFixed(1) + '" cy="' + (W - p.xy[0]).toFixed(1) + '" r="' + (p.main ? 4.2 : 3.2) + '"/>'; }).join("") + "</svg>";
-      var yA = Infinity, yB = -Infinity;
-      M.regiones.forEach(function (r) { r.anillos.forEach(function (ring) { ring.forEach(function (q) { if (q[1] >= bx0 && q[1] <= bx1) { yA = Math.min(yA, W - q[0]); yB = Math.max(yB, W - q[0]); } }); }); });
-      yA *= S; yB *= S;
-      var pistas = { a: [], b: [] }, rots = [], hp = [];
-      pts.slice().sort(function (a, b) { return a.xy[1] - b.xy[1]; }).forEach(function (p) {
-        var X = p.xy[1] * S, Y = (W - p.xy[0]) * S, w = p.corto.length * 7.4 + 14, ok = null;
-        for (var n = 0; n < 4 && !ok; n++) ["a", "b"].forEach(function (k) { if (ok) return; if ((pistas[k][n] || -Infinity) < X - w / 2) { ok = [k, n]; pistas[k][n] = X + w / 2; } });
-        if (!ok) ok = ["a", 3];
-        // líneas un poco más cortas (pedido del cliente): las pistas parten más cerca del mapa, sin pasar del punto
-        var ty = ok[0] === "a" ? Math.min(yA + 12 - ok[1] * 20, Y - 16) : Math.max(yB - 2 + ok[1] * 20, Y + 24);
-        rots.push('<g class="mch-rot" data-p="' + esc(p.id) + '"><line x1="' + X.toFixed(1) + '" y1="' + Y.toFixed(1) + '" x2="' + X.toFixed(1) + '" y2="' + (ok[0] === "a" ? ty + 5 : ty - 13).toFixed(1) + '"/><text x="' + X.toFixed(1) + '" y="' + ty.toFixed(1) + '">' + esc(p.corto) + "</text></g>");
-        hp.push('<g class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '" transform="translate(' + X.toFixed(1) + " " + Y.toFixed(1) + ')"><title>' + esc(p.nombre) + '</title><circle r="' + (p.main ? 8 : 6) + '"/></g>');
-      });
-      var nA = pistas.a.length, nB = pistas.b.length, top = yA + 12 - Math.max(0, nA - 1) * 20 - 30, bot = yB - 2 + Math.max(0, nB - 1) * 20 + 34, latsH = "";
-      for (la = 32; la <= 44; la += 2) { var lx = (la - pr.lat0) * pr.k * S; latsH += '<line class="mch-zlat" x1="' + lx + '" x2="' + lx + '" y1="' + (top + 14) + '" y2="' + (bot - 22) + '"/><text class="mch-hlat" x="' + lx + '" y="' + (bot - 6) + '">' + la + "°S</text>"; }
-      zo.innerHTML = '<svg class="mch-band" viewBox="' + (bx0 * S - 8).toFixed(0) + " " + top.toFixed(0) + " " + ((bx1 - bx0) * S + 16).toFixed(0) + " " + (bot - top).toFixed(0) + '" role="img" aria-label="Chile de norte a sur con los fundos">' +
-        latsH + '<g transform="translate(0 ' + W * S + ") " + rot + " scale(" + S + ')">' + regs + "</g>" + rots.join("") + hp.join("") + "</svg>";
-      zo.addEventListener("pointerover", function (e) { var g = e.target.closest("[data-p]"); if (g && e.pointerType === "mouse") poner(g.getAttribute("data-p")); });
-    }
-
-    // Propuesta vertical (?mapa=vertical): como la horizontal pero de pie (pedido del cliente). El tramo de Chile queda
-    // fijo, con punto y nombre por fundo a los costados con una línea corta, latitudes cada 2° y Chile completo en chico
-    // en la esquina; el tramo se estira hasta el alto de la galería para que no queden vacíos (armarV mide y rehace)
-    var vlargo = document.documentElement.classList.contains("pm-v"), estatico = horiz || vlargo;
+    // Mapa largo: el tramo de Chile que hace que el mapa mida lo mismo que la galería (búsqueda binaria: los rótulos y el
+    // ancho de Chile cambian con el tramo); si ni Chile entero alcanza, se muestra entero. En celular, un largo fijo.
     function armarV() {
       var SV = 4, Wc = zo.clientWidth || 400, rr = row.getBoundingClientRect(), Hc = Math.max(rr.bottom - zo.getBoundingClientRect().top, 700);   // hasta el final de la galería
-      var la0 = 31.2, la1 = 44.2, cen = (la0 + la1) / 2;
-      if (window.innerWidth < 980) Hc = Wc * 2;   // en celular, un largo fijo
+      var cen = 37.7;
+      if (window.innerWidth < 980) Hc = Wc * 2;
       var arma = function (a, b, u) {   // {svg, ancho, alto} para el tramo a..b; u = unidades por píxel (textos y puntos a tamaño fijo en pantalla)
         var y0 = (a - pr.lat0) * pr.k, y1 = (b - pr.lat0) * pr.k, xA = Infinity, xB = -Infinity;
         M.regiones.forEach(function (r) { r.anillos.forEach(function (ring) { ring.forEach(function (q) { if (q[1] >= y0 && q[1] <= y1) { xA = Math.min(xA, q[0]); xB = Math.max(xB, q[0]); } }); }); });
@@ -2319,16 +1956,14 @@
           while (!libre(lado, ty) && k < 30) { k++; ty = Y + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 19 * u; }
           ocup[lado].push(ty); mw[lado] = Math.max(mw[lado], w);
           var lx = lado === "i" ? xA - 16 * u : xB + 16 * u;
-          rots.push('<g class="mch-rot is-v" data-p="' + esc(p.id) + '"><polyline points="' + X.toFixed(1) + "," + Y.toFixed(1) + " " + (lado === "i" ? lx + 4 * u : lx - 4 * u).toFixed(1) + "," + ty.toFixed(1) + '"/><text x="' + lx.toFixed(1) + '" y="' + ty.toFixed(1) + '" dy=".35em" class="' + (lado === "i" ? "ta-fin" : "ta-ini") + '">' + esc(p.corto) + "</text></g>");
+          rots.push('<g class="mch-rot" data-p="' + esc(p.id) + '"><polyline points="' + X.toFixed(1) + "," + Y.toFixed(1) + " " + (lado === "i" ? lx + 4 * u : lx - 4 * u).toFixed(1) + "," + ty.toFixed(1) + '"/><text x="' + lx.toFixed(1) + '" y="' + ty.toFixed(1) + '" dy=".35em" class="' + (lado === "i" ? "ta-fin" : "ta-ini") + '">' + esc(p.corto) + "</text></g>");
           pins.push('<g class="mch-pin' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '" transform="translate(' + X.toFixed(1) + " " + Y.toFixed(1) + ')"><title>' + esc(p.nombre) + '</title><circle r="' + ((p.main ? 8 : 6) * u).toFixed(2) + '"/></g>');
         });
         var vx = xA - (24 * u) - mw.i, vwid = (xB + 24 * u + Math.max(mw.d, 30 * u)) - vx, vy = y0 * SV, vh = (y1 - y0) * SV, lats = "";
-        for (var l = Math.ceil(a / 2) * 2; l <= b; l += 2) { var ly = (l - pr.lat0) * pr.k * SV; lats += '<line class="mch-zlat" x1="' + vx + '" x2="' + (vx + vwid) + '" y1="' + ly + '" y2="' + ly + '"/><text class="mch-hlat ta-fin" x="' + (vx + vwid - 4 * u) + '" y="' + (ly - 5 * u) + '">' + l + "°S</text>"; }
-        return { ancho: vwid, alto: vh, svg: '<svg class="mch-band is-v" style="--fs:' + u.toFixed(3) + '" viewBox="' + vx.toFixed(0) + " " + vy.toFixed(0) + " " + vwid.toFixed(0) + " " + vh.toFixed(0) + '" role="img" aria-label="Chile de norte a sur con los fundos">' +
+        for (var l = Math.ceil(a / 2) * 2; l <= b; l += 2) { var ly = (l - pr.lat0) * pr.k * SV; lats += '<line class="mch-zlat" x1="' + vx + '" x2="' + (vx + vwid) + '" y1="' + ly + '" y2="' + ly + '"/>' + (ly - y0 * SV > 16 * u ? '<text class="mch-hlat ta-fin" x="' + (vx + vwid - 4 * u) + '" y="' + (ly - 5 * u) + '">' + l + "°S</text>" : ""); }   // sin rótulo si quedaría cortado arriba
+        return { ancho: vwid, alto: vh, svg: '<svg class="mch-band" style="--fs:' + u.toFixed(3) + '" viewBox="' + vx.toFixed(0) + " " + vy.toFixed(0) + " " + vwid.toFixed(0) + " " + vh.toFixed(0) + '" role="img" aria-label="Chile de norte a sur con los fundos">' +
           lats + '<g transform="scale(' + SV + ')">' + regs + "</g>" + rots.join("") + pins.join("") + "</svg>" };
       };
-      // cuántos grados de Chile hacen que el mapa mida lo mismo que la galería (búsqueda binaria: los rótulos y el ancho
-      // de Chile cambian con el tramo); si ni Chile entero alcanza, se muestra entero
       var a, b, r, lo = 13, hi = 37.9;
       var prueba = function (span) {
         a = Math.max(17.6, cen - span / 2); b = Math.min(55.5, a + span); a = Math.max(17.6, b - span);
@@ -2341,138 +1976,42 @@
         prueba(lo);
       }
       zo.innerHTML = r.svg;
-      var w0 = $(".mch-win", ch); if (w0) { w0.setAttribute("y", ((a - pr.lat0) * pr.k).toFixed(1)); w0.setAttribute("height", ((b - a) * pr.k).toFixed(1)); w0.setAttribute("x", 0); w0.setAttribute("width", W); }
       if (actual) poner(actual.id, true);
     }
-    if (vlargo) {
-      box.classList.add("is-largo");
-      armarV();
-      zo.addEventListener("pointerover", function (e) { var g = e.target.closest("[data-p]"); if (g && e.pointerType === "mouse") poner(g.getAttribute("data-p")); });
-      var tRe = 0, ultimoAlto = 0;
-      var reArmar = function () { window.clearTimeout(tRe); tRe = window.setTimeout(function () { var h = Math.round(row.getBoundingClientRect().height); if (h && Math.abs(h - ultimoAlto) > 8) { ultimoAlto = h; armarV(); } }, 120); };
-      if ("ResizeObserver" in window) new ResizeObserver(reArmar).observe(row);
-      window.addEventListener("resize", reArmar);
-      window.addEventListener("fundos:vista", reArmar);
-    }
-    var cx = 0, cy = 0, vw = 0, s = 1, anim = 0, actual = null, fx0 = 0;   // fx0: borde izquierdo de la vista final
-    function medir() {
-      var r = zo.getBoundingClientRect();
-      if (!r.height || !r.width) return;
-      vw = ZH * r.width / r.height; s = ZH / r.height;
-      zs.style.setProperty("--fs", s.toFixed(4));
-      $$("circle[data-r]", zs).forEach(function (c) { c.setAttribute("r", (+c.getAttribute("data-r") * s).toFixed(2)); });
-      $$(".mch-city text", zs).forEach(function (t) { t.setAttribute("dx", (5 * s).toFixed(2)); });
-    }
-    function rotulos() {   // nombres de los fundos sin choques: a la derecha, si no a la izquierda; el elegido siempre
-      var cajas = [], fs = 11.5 * s, orden = pts.slice().sort(function (a, b) { return (b === actual) - (a === actual); });
-      orden.forEach(function (p) {
-        var t = $('.mch-pin[data-p="' + p.id + '"] text', zs), w = p.corto.length * fs * (p === actual ? 0.68 : 0.6), h = fs * 1.3, r0 = ((p.main ? 6.5 : 5) + 4) * s;
-        var ops = [[p.xy[0] + r0, "start", p.xy[0] + r0], [p.xy[0] - r0, "end", p.xy[0] - r0 - w]], ok = null;
-        ops.forEach(function (o) {
-          if (ok) return;
-          var b = [o[2], p.xy[1] - h / 2, o[2] + w, p.xy[1] + h / 2];
-          if (b[0] < fx0 + 2 * s || b[2] > fx0 + vw - 2 * s) return;   // que no se corte en el borde de la lupa
-          if (!cajas.some(function (c) { return b[0] < c[2] && b[2] > c[0] && b[1] < c[3] && b[3] > c[1]; })) ok = [o, b];
-        });
-        if (!ok && p === actual) { var o2 = ops[0][2] + w > fx0 + vw ? ops[1] : ops[0]; ok = [o2, [o2[2], p.xy[1] - h / 2, o2[2] + w, p.xy[1] + h / 2]]; }
-        if (!ok) { t.setAttribute("visibility", "hidden"); return; }
-        t.removeAttribute("visibility"); t.setAttribute("x", ok[0][0].toFixed(1)); t.setAttribute("text-anchor", ok[0][1]); cajas.push(ok[1]);
-        pts.forEach(function (q) { if (q !== p) { var rr = (q.main ? 6.5 : 5) * s; cajas.push([q.xy[0] - rr, q.xy[1] - rr, q.xy[0] + rr, q.xy[1] + rr]); } });
-      });
-      // Las ciudades ceden su nombre a los fundos
-      var cf = 10.5 * s, rf = 9.5 * s;
-      $$(".mch-zreg", zs).forEach(function (t) { var x = +t.getAttribute("x"), y = +t.getAttribute("y"), w = t.textContent.length * rf * 0.82; cajas.push([x - w / 2, y - rf, x + w / 2, y + rf * 0.3]); });
-      $$(".mch-city", zs).forEach(function (g) {
-        var c = $("circle", g), t = $("text", g), x = +c.getAttribute("cx") + 5 * s, y = +c.getAttribute("cy"), bx = [x, y - cf * 0.65, x + t.textContent.length * cf * 0.58, y + cf * 0.65];
-        t.setAttribute("visibility", cajas.some(function (k) { return bx[0] < k[2] && bx[2] > k[0] && bx[1] < k[3] && bx[3] > k[1]; }) ? "hidden" : "visible");
-      });
-    }
-    function bordeX(x) { return Math.max(-vw * 0.15, Math.min(W + vw * 0.15 - vw, x - vw / 2)); }
-    function vista(x, y) {
-      if (!vw) return;
-      var x0 = bordeX(x), y0 = Math.max(-ZH * 0.1, Math.min(H - ZH * 0.9, y - ZH / 2));
-      zs.setAttribute("viewBox", x0.toFixed(2) + " " + y0.toFixed(2) + " " + vw.toFixed(2) + " " + ZH.toFixed(2));
-      $$(".mch-zlatt", zs).forEach(function (t) { t.setAttribute("x", (x0 + 6 * s).toFixed(2)); });
-      zt.setAttribute("x", (x0 + 6 * s).toFixed(2));
-      win.setAttribute("x", Math.max(0, x0).toFixed(1)); win.setAttribute("width", (Math.min(W, x0 + vw) - Math.max(0, x0)).toFixed(1)); win.setAttribute("y", y0.toFixed(1));
-    }
-    function viajar(p, ya) {
-      var tx = p.xy[0] - 0.4 * pr.k, ty = p.xy[1];
-      fx0 = bordeX(tx);
-      zl.setAttribute("transform", "translate(0 " + ty.toFixed(1) + ")"); zt.setAttribute("y", (ty - 7 * s).toFixed(1));
-      zt.textContent = lat(p);
-      $$(".mch-zlatt", zs).forEach(function (t) { t.setAttribute("visibility", Math.abs(parseFloat(t.textContent) - Math.abs(p.lat)) < 0.4 ? "hidden" : "visible"); });
-      window.cancelAnimationFrame(anim);
-      if (ya || reduced || !vw) { cx = tx; cy = ty; vista(cx, cy); return; }
-      var ax = cx, ay = cy, t0 = performance.now(), dur = Math.min(900, 380 + Math.abs(ty - ay) * 2.2);
-      (function paso(t) {
-        var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
-        cx = ax + (tx - ax) * e; cy = ay + (ty - ay) * e; vista(cx, cy);
-        if (k < 1) anim = window.requestAnimationFrame(paso);
-      })(t0);
-    }
 
-    // Carrusel de norte a sur
+    // Galería de norte a sur agrupada por región, con el emblema de cada fundo (pedido del cliente)
     function tile(p) {
-      // portada dibujada para todos (pedido del cliente); las fotos van en la ficha
       var art = '<span class="mch-art">' + EMB(p.id) + (p.main ? '<span class="mch-sello"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Plano y recorrido 360°</span>' : "") +
         '<span class="emb-pre">Fundos de</span><span class="emb-n">' + esc(p.corto) + "</span></span>";
       return '<li class="mch-tile' + (p.main ? " is-main" : "") + '" data-p="' + esc(p.id) + '"><button type="button" class="mch-tile-b" aria-controls="fundos-ficha" aria-label="' + esc(p.nombre + ": ver ficha y fotos") + '">' + art +
         '<span class="mch-info" aria-hidden="true">Ver ficha →</span></button>' +
         '<p class="mch-tile-sub"><b>' + esc(p.corto) + "</b>" + esc(p.reg.nombre) + "</p></li>";
     }
-    // Propuesta vertical (?mapa=vertical): en vez de carrusel, galería de norte a sur agrupada por región (pedido del
-    // cliente); tocar un fundo abre su ficha y el mapa sigue al fundo que se mira
-    var galeria = document.documentElement.classList.contains("pm-v");
-    if (galeria) {
-      box.classList.add("is-galeria");
-      var ultima = null;
-      row.innerHTML = pts.map(function (p) {
-        var h = p.reg.cod !== ultima ? '<li class="mch-grupo" aria-hidden="true">' + esc(rn(p)) + "</li>" : "";
-        ultima = p.reg.cod;
-        return h + tile(p);
-      }).join("");
-      var ft = $(".mch-fila-t", box); if (ft) ft.textContent = "Los " + pts.length + " fundos, de norte a sur";
-    } else row.innerHTML = pts.map(tile).join("");
+    var ultima = null;
+    row.innerHTML = pts.map(function (p) {
+      var h = p.reg.cod !== ultima ? '<li class="mch-grupo" aria-hidden="true">' + esc(rn(p)) + "</li>" : "";
+      ultima = p.reg.cod;
+      return h + tile(p);
+    }).join("");
+    var ft = $(".mch-fila-t", box); if (ft) ft.textContent = "Los " + pts.length + " fundos, de norte a sur";
 
+    // Fundo activo: se marca en el mapa (punto, rótulo y región) y en la galería
     function poner(id, ya) {
       var p = porId(id);
-      if (!p) return;
-      var nuevo = p !== actual;
+      if (!p || (p === actual && !ya)) return;
       actual = p;
       var cod = String(p.reg.cod);
       $$(".mch-reg", box).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-cod") === cod); });
       $$("[data-p]", box).forEach(function (n) { n.classList.toggle("is-on", n.getAttribute("data-p") === id); });
-      if (!nuevo && !ya) return;
-      if (!estatico) { viajar(p, ya); rotulos(); }
-      else if (zo.scrollWidth > zo.clientWidth + 4) {   // franja horizontal angosta (celular): se desliza hasta el fundo
-        var hpn = $('.mch-band .mch-pin[data-p="' + id + '"]', zo);
-        if (hpn) zo.scrollTo({ left: zo.scrollLeft + hpn.getBoundingClientRect().left - zo.getBoundingClientRect().left - zo.clientWidth / 2, behavior: ya || reduced ? "auto" : "smooth" });
-      }
-      // Resumen del fundo activo bajo el carrusel (pedido del cliente): foto o emblema, texto, datos y acciones
-      var x = p.main ? p.p : p.h, g0 = (x.galeria || [])[0], d = p.main ? datosP(p) : null;
-      var datos = p.main ? [(d.desde ? "Desde " + clp(d.desde) : ""), d.n + (d.n === 1 ? " disponible" : " disponibles"), "Plano y recorrido 360°"].filter(Boolean) : (x.datos || []).slice(0, 3);
-      var msg = "Hola Fundos, quiero información del proyecto " + p.nombre + (x.zona ? " (" + x.zona + ")" : "") + ".";
-      act.innerHTML = '<div class="mch-res">' +
-        (g0 ? '<div class="mch-res-foto"><img src="' + esc(g0.src) + '" alt="' + esc(g0.alt) + '" decoding="async"></div>' : '<div class="mch-res-foto is-emb" aria-hidden="true">' + EMB(p.id) + "</div>") +
-        '<div class="mch-res-txt"><p class="mch-act-k">' + esc(rn(p)) + " · " + lat(p) + '</p><h3 class="mch-act-t">Fundos de ' + esc(p.corto) + "</h3>" +
-        (!p.main && x.lema ? '<p class="mch-res-lema">' + esc(x.lema) + "</p>" : "") +
-        '<p class="mch-act-p">' + esc((p.main ? x.resumen || x.descripcion : x.descripcion) || "") + "</p>" +
-        '<ul class="mch-res-datos">' + datos.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" +
-        '<div class="mch-res-acts"><button class="btn btn-gold" type="button" data-mch-ver aria-controls="fundos-ficha">Ver ficha y fotos<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></button>' +
-        (p.main ? '<a class="btn btn-line" href="#plano" data-py-act="plano" data-mr="plano"><svg class="i" aria-hidden="true"><use href="#i-map"/></svg>Ver lotes</a>'
-          : '<a class="btn btn-line" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Quiero información</a>') +
-        "</div></div></div>";
     }
 
-    // Ficha que se despliega bajo el carrusel: fotos, descripción, datos y acciones
+    // Ficha en una ventana sobre la página, con el estilo de "Conoce cada proyecto" (.py-*): foto grande con el nombre
+    // encima, miniaturas, franja de datos, características con íconos, "Cerca de tu parcela" y acciones
     var abierta = null;
     function abrirFicha(id, ir) {
       var p = porId(id);
       if (!p) return;
       poner(id);
-      // Mismo estilo que "Conoce cada proyecto" (pedido del cliente): foto grande con el nombre encima, franja de datos,
-      // características con íconos, "Cerca de tu parcela" y acciones; las miniaturas cambian la foto grande
       var x = p.main ? p.p : p.h, gal = x.galeria || [], d = p.main ? datosP(p) : null;
       var ico = function (n, cls) { return '<svg class="i' + (cls ? " " + cls : "") + '" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; };
       var g0 = gal[0];
@@ -2498,12 +2037,13 @@
         }).join("") + "</ul>" + (x.cercaniasNota ? "<p>" + esc(x.cercaniasNota) + "</p>" : "") +
         (x.entorno ? '<a class="py-near-map" href="' + esc(x.entorno) + '">' + ico("compass") + "Explorar el mapa del entorno</a>" : "") + "</div>" : "";
       var msg = "Hola Fundos, quiero información del proyecto " + p.nombre + (x.zona ? " (" + x.zona + ")" : "") + ".";
+      // el recorrido 360° se abre en el mapa del entorno del proyecto (como en Inicio); sin mapa, el tour en otra pestaña
+      var tour = x.tour ? (x.entorno ? '<a class="btn btn-ghost" href="' + esc(x.entorno) + '#tour-360" data-py-act="tour">'
+        : '<a class="btn btn-ghost" href="' + esc(x.tour) + '" target="_blank" rel="noopener" data-py-act="tour">') + ico("360") + "Recorrido 360°</a>" : "";
       var acts = '<div class="py-acts">' + (p.main
         ? '<a class="btn btn-gold" href="#plano" data-py-act="plano" data-mf="plano">Ver lotes y precios' + ico("arrow", "i-go") + "</a>" +
-          '<a class="btn btn-ghost" href="#visita" data-py-act="cotizar" data-mf="cotizar">' + ico("send") + "Cotizar " + esc(p.corto) + "</a>" +
-          (x.tour ? (document.documentElement.classList.contains("pm")
-            ? '<a class="btn btn-ghost" href="' + esc(x.tour) + '" target="_blank" rel="noopener" data-py-act="tour">' + ico("360") + "Recorrido 360°</a>"   // en las propuestas no hay sección de recorrido
-            : '<a class="btn btn-ghost" href="#recorrido" data-py-act="tour" data-mf="tour">' + ico("360") + "Recorrido 360°</a>") : "")
+          '<a class="btn btn-ghost" href="#visita" data-py-act="cotizar" data-mf="cotizar">' + ico("send") + "Cotizar " + esc(p.corto) + "</a>" + tour +
+          (x.video ? '<button class="btn btn-ghost" type="button" data-mf="video">' + ico("play") + "Ver video</button>" : "")
         : '<a class="btn btn-gold" href="' + esc(waHref(msg)) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "Quiero información</a>" +
           '<a class="btn btn-ghost" href="#visita" data-mf="cotizar">' + ico("calendar") + "Agendar una conversación</a>") + "</div>";
       var i = pts.indexOf(p), ant = pts[(i - 1 + pts.length) % pts.length], sig = pts[(i + 1) % pts.length];
@@ -2527,18 +2067,15 @@
         $$("button", mi).forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
       });
       $$("[data-mf]", ficha).forEach(function (a) {
-        a.addEventListener("click", function (e) {
+        a.addEventListener("click", function () {
           cerrarFicha();   // las acciones llevan a otra parte de la página: primero se cierra la ventana
           if (a.getAttribute("data-mf") === "plano") Plan.apply({ id: p.id, soloDisponibles: true });
-          if (a.getAttribute("data-mf") === "tour") { e.preventDefault(); Tour.open(p.id, true); }
+          if (a.getAttribute("data-mf") === "video") Video.open(p.id);
           if (a.getAttribute("data-mf") === "cotizar") Visit.prefill({ proyecto: p.main ? p.corto : p.nombre, mensaje: (p.main ? "Quiero cotizar una parcela en " : "Quiero información de ") + p.nombre + ".", scroll: true });
         });
       });
       $(".mf-scroll", ficha).scrollTop = 0;
       if (ir) { var f0 = $(ir === "sig" ? ".mf-flecha:not(.is-prev)" : ir === "ant" ? ".mf-flecha.is-prev" : ".mf-x", ficha); if (f0) f0.focus(); }
-      // el carrusel acompaña al fundo que se ve en la ventana
-      var c = $('.mch-tile[data-p="' + id + '"]', row);
-      if (c) row.scrollTo({ left: c.offsetLeft - row.offsetLeft - 4, behavior: "auto" });
     }
     function cerrarFicha() { if (ficha.open) { if (typeof ficha.close === "function") ficha.close(); else { ficha.removeAttribute("open"); alCerrar(); } } }
     function alCerrar() {
@@ -2565,36 +2102,16 @@
       var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; sx = null;
       if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { var b = $(dx < 0 ? ".mf-flecha:not(.is-prev)" : ".mf-flecha.is-prev", ficha); if (b) abrirFicha(b.getAttribute("data-mf-ir")); }
     });
-    act.addEventListener("click", function (e) {
-      if (e.target.closest("[data-mch-ver]") && actual) abrirFicha(actual.id, "x");
-      if (e.target.closest("[data-mr='plano']") && actual) Plan.apply({ id: actual.id, soloDisponibles: true });
-    });
 
-    function primera() {
-      var r = row.getBoundingClientRect(), best = null, dmin = Infinity;
-      $$(".mch-tile", row).forEach(function (c) { var d = Math.abs(c.getBoundingClientRect().left - r.left); if (d < dmin) { dmin = d; best = c; } });
-      return best;
-    }
-    function llevar(id) {
-      poner(id);
-      var c = $('.mch-tile[data-p="' + id + '"]', row);
-      fijo = true; window.clearTimeout(finFijo); finFijo = window.setTimeout(function () { fijo = false; }, 400);
-      if (c && galeria) c.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
-      else if (c) row.scrollTo({ left: c.offsetLeft - row.offsetLeft - 4, behavior: reduced ? "auto" : "smooth" });
-    }
-    var tick = 0, fijo = false, finFijo = 0, tactil = window.matchMedia && matchMedia("(hover: none)").matches;
-    // Tocar una tarjeta elige el fundo (resumen y mapa) y detiene un rato el avance; con la ficha abierta, la cambia ahí mismo
+    // Tocar un fundo (galería o mapa) abre su ficha; al bajar, el fundo activo es el que está a media pantalla
     row.addEventListener("click", function (e) {
       var b = e.target.closest(".mch-tile-b"), id = b && b.parentNode.getAttribute("data-p");
-      if (!id) return;
-      tocado = Date.now() + 12000;
-      poner(id);
-      if (galeria) abrirFicha(id, "x");   // en la galería, tocar un fundo abre su ficha
-      else if (abierta) abrirFicha(id);
+      if (id) abrirFicha(id, "x");
     });
-    // En la galería, el fundo activo es el que está a media pantalla al bajar
-    if (galeria) window.addEventListener("scroll", function () {
-      if (tick || fijo || abierta) return;
+    zo.addEventListener("click", function (e) { var g = e.target.closest(".mch-pin, .mch-rot"); if (g) abrirFicha(g.getAttribute("data-p"), "x"); });
+    var tick = 0;
+    window.addEventListener("scroll", function () {
+      if (tick || abierta) return;
       tick = window.requestAnimationFrame(function () {
         tick = 0;
         if (Vista.current && Vista.current() !== "proyectos") return;
@@ -2603,72 +2120,28 @@
         if (best) poner(best.getAttribute("data-p"));
       });
     }, { passive: true });
-    row.addEventListener("pointerover", function (e) { var t = e.target.closest(".mch-tile"); if (t && e.pointerType === "mouse") poner(t.getAttribute("data-p")); });
+    function alPasar(e) { var g = e.target.closest("[data-p]"); if (g && e.pointerType === "mouse") poner(g.getAttribute("data-p")); }
+    row.addEventListener("pointerover", alPasar);
+    zo.addEventListener("pointerover", alPasar);
     row.addEventListener("focusin", function (e) { var t = e.target.closest(".mch-tile"); if (t) poner(t.getAttribute("data-p")); });
-    // En celular, el fundo activo es el primero de la fila al deslizar
-    row.addEventListener("scroll", function () {
-      if (tick) return;
-      // mientras la fila se mueve sola hacia el fundo elegido en el mapa, no cambia el fundo activo
-      if (fijo) { window.clearTimeout(finFijo); finFijo = window.setTimeout(function () { fijo = false; }, 200); }
-      tick = window.requestAnimationFrame(function () { tick = 0; flechas(); if (!tactil || fijo) return; var c = primera(); if (c) poner(c.getAttribute("data-p")); });
-    }, { passive: true });
-    zo.addEventListener("click", function (e) { var g = e.target.closest(".mch-pin, .mch-rot"); if (g) llevar(g.getAttribute("data-p")); });
-    ch.addEventListener("click", function (e) {   // tocar el Chile completo viaja al fundo más cercano en latitud
-      var svg = $("svg", ch), pt = svg.createSVGPoint(), m = svg.getScreenCTM();
-      if (!m) return;
-      pt.x = e.clientX; pt.y = e.clientY;
-      var q = pt.matrixTransform(m.inverse()), best = pts[0];
-      var qv = horiz ? q.x : q.y;   // en la franja horizontal la latitud va de izquierda a derecha
-      pts.forEach(function (p) { if (Math.abs(p.xy[1] - qv) < Math.abs(best.xy[1] - qv)) best = p; });
-      llevar(best.id);
-    });
-    // Flechas: avanzan una página (desaparecen en los extremos)
-    var prev = $('[data-mch-mover="-1"]', box), next = $('[data-mch-mover="1"]', box);
-    function flechas() {
-      if (!prev) return;
-      prev.disabled = row.scrollLeft < 4;
-      next.disabled = row.scrollLeft + row.clientWidth > row.scrollWidth - 4;
-    }
-    $$("[data-mch-mover]", box).forEach(function (b) {
-      b.addEventListener("click", function () { row.scrollBy({ left: (+b.getAttribute("data-mch-mover")) * row.clientWidth * 0.85, behavior: reduced ? "auto" : "smooth" }); });
-    });
-    // El carrusel avanza solo (un fundo cada 3 s y vuelve al comienzo); se detiene con el mouse encima, con el foco
-    // adentro, con la ficha abierta, fuera de la vista o con el botón Pausar. Con movimiento reducido parte en pausa.
-    var auto = $("[data-mch-auto]", box), pausado = reduced || galeria, encima = false, enVista = false, tocado = 0;
-    function corre() { return !pausado && !encima && !abierta && enVista && !document.hidden && Date.now() > tocado && !box.contains(document.activeElement); }
-    window.setInterval(function () {
-      if (!corre()) return;
-      var i = pts.indexOf(actual), n = pts[(i + 1) % pts.length];
-      llevar(n.id);
-    }, 3000);
-    function botonAuto() {
-      if (!auto) return;
-      auto.setAttribute("aria-pressed", String(!pausado));
-      $("span", auto).textContent = pausado ? "Reproducir" : "Pausar";
-      $("svg", auto).innerHTML = pausado ? '<path d="M2 1l9 5-9 5z"/>' : '<path d="M2 1h3v10H2zM7 1h3v10H7z"/>';
-    }
-    if (auto) auto.addEventListener("click", function () { pausado = !pausado; botonAuto(); auto.blur(); });
-    botonAuto();
-    box.addEventListener("mouseenter", function () { encima = true; });
-    box.addEventListener("mouseleave", function () { encima = false; });
-    row.addEventListener("touchstart", function () { tocado = Date.now() + 12000; }, { passive: true });
-    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { enVista = es[0].isIntersecting; }, { threshold: 0.35 }).observe(box);
-    else enVista = true;
-    function rehacer() { if (!estatico) { medir(); if (actual) { viajar(actual, true); rotulos(); } } flechas(); }
-    window.addEventListener("resize", rehacer);
-    window.addEventListener("fundos:vista", function () { window.setTimeout(rehacer, 50); });
+
     box.hidden = false;
     var ley = $("[data-mch-ley]", sec); if (ley) ley.hidden = false;
-    if (!estatico) medir();
-    poner(pts[0].id, true); flechas();
-    // En las propuestas, los enlaces #proyecto-ID ("Conocer el proyecto") abren la ficha de ese fundo en la ventana
-    if (document.documentElement.classList.contains("pm")) {
-      var deHash = function () { var m = /^#proyecto-(.+)$/.exec(location.hash); if (m && porId(m[1])) window.setTimeout(function () { abrirFicha(m[1], "x"); }, 80); };
-      window.addEventListener("hashchange", deHash);
-      deHash();
-    }
+    armarV();
+    poner(pts[0].id, true);
+    // el mapa se rehace cuando cambia el alto de la galería (ancho de la ventana, fuentes, pestaña)
+    var tRe = 0, ultimoAlto = 0;
+    var reArmar = function () { window.clearTimeout(tRe); tRe = window.setTimeout(function () { var h = Math.round(row.getBoundingClientRect().height); if (h && Math.abs(h - ultimoAlto) > 8) { ultimoAlto = h; armarV(); } }, 120); };
+    if ("ResizeObserver" in window) new ResizeObserver(reArmar).observe(row);
+    window.addEventListener("resize", reArmar);
+    window.addEventListener("fundos:vista", reArmar);
+    // Los enlaces #proyecto-ID ("Conocer el proyecto") abren la ficha de ese fundo
+    var deHash = function () { var m = /^#proyecto-(.+)$/.exec(location.hash); if (m && porId(m[1])) window.setTimeout(function () { abrirFicha(m[1], "x"); }, 80); };
+    window.addEventListener("hashchange", deHash);
+    deHash();
     return true;
   }
+
   function initPvLead() {
     var form = $("[data-pv-lead]");
     if (!form) return;
@@ -2710,261 +2183,6 @@
       done.focus();
     });
     $("[data-pv-lead-edit]", form).addEventListener("click", function () { done.hidden = true; inert(false); el.nombre.focus(); });
-  }
-
-  /* =============================================================
-     Recorrido virtual 360°: se abre dentro de la página
-     El marco se crea solo cuando la persona entra (no carga nada antes)
-     ============================================================= */
-  function initTour() {
-    var root = $("[data-tour]");
-    if (!root) return;
-    var stage = $("[data-tour-stage]", root), poster = $("[data-tour-poster]", root), frame = $("[data-tour-frame]", root);
-    var lens = $("[data-tour-enter]", root), status = $("[data-tour-status]", root), fullBtn = $("[data-tour-full]", root);
-    var picks = $$("[data-tour-pick]", root);
-    var first = proyecto(DESTACADO) && proyecto(DESTACADO).tour ? proyecto(DESTACADO) : proyectos.filter(function (p) { return p.tour; })[0];
-    if (!stage || !first) return;
-    var cur = "", blocked = false, iframe = null, timer = 0, token = 0;
-    var seen = {};   // proyectos cuyo recorrido sí se abrió
-
-    function T() { return proyecto(cur); }
-    function state(v) { if (v) stage.setAttribute("data-state", v); return stage.getAttribute("data-state"); }
-    function setText(sel, txt) { $$(sel, root).forEach(function (el) { el.textContent = txt; }); }
-    function art(id) { return $('.project[data-project="' + id + '"] .project-art svg'); }
-    // Fondo con foto real del proyecto (tourFoto en el manifiesto); si no hay, la ilustración de su tarjeta
-    function fondo(p, box, mini) {
-      var f = p.tourFoto, src;
-      if (f && (mini ? f.mini || f.src : f.src)) {
-        var img = document.createElement("img");
-        img.alt = ""; img.decoding = "async";
-        if (mini) { img.src = f.mini || f.src; img.width = 80; img.height = 80; img.loading = "lazy"; }
-        else {
-          img.src = f.src; img.width = 1600; img.height = 1000;
-          if (f.src2x) { img.srcset = f.src + " 800w, " + f.src2x + " 1600w"; img.sizes = "(min-width: 1024px) 70vw, 100vw"; }
-        }
-        box.appendChild(img);
-      } else if ((src = art(p.id))) box.appendChild(src.cloneNode(true));
-    }
-
-    // Miniaturas del selector, tomadas de la ilustración de cada proyecto
-    picks.forEach(function (a) {
-      var p = proyecto(a.getAttribute("data-tour-pick"));
-      if (!p || !p.tour) { a.hidden = true; return; }
-      a.href = p.tour;
-      var box = $(".tour-pick-art", a);
-      if (box) fondo(p, box, true);
-      a.addEventListener("click", function (e) {
-        if (blocked) { select(p.id, false); return; } // sin marco: el enlace abre el recorrido en otra pestaña y la sección se pone al día
-        e.preventDefault();
-        select(p.id, state() === "live" || state() === "loading");
-      });
-    });
-
-    function select(id, go) {
-      var p = proyecto(id);
-      if (!p || !p.tour) return;
-      var changed = id !== cur;
-      cur = id;
-      picks.forEach(function (a) { a.setAttribute("aria-current", a.getAttribute("data-tour-pick") === id ? "true" : "false"); });
-      var nav = $(".tour-picker", root), act = $('.tour-pick[aria-current="true"]', root);
-      if (nav && act && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: act.offsetLeft - (nav.clientWidth - act.offsetWidth) / 2, behavior: reduced ? "auto" : "smooth" });
-      if (changed) {
-        poster.innerHTML = "";
-        fondo(p, poster, false);
-        setText("[data-tour-name], [data-tour-hud-name], [data-tour-dock-name]", p.nombre);
-        setText("[data-tour-region]", p.region + " · " + p.zona);
-        setText("[data-tour-label]", "al recorrido 360° de " + p.nombre);
-        lens.href = p.tour;
-        $$("[data-tour-newtab]", root).forEach(function (a) { a.href = p.tour; });
-        var share = $("[data-tour-share]", root);
-        if (share) share.href = "https://wa.me/?text=" + encodeURIComponent("Mira el recorrido 360° de " + p.nombre + " de Fundos Inmobiliaria: " + p.tour);
-      }
-      if (go && !changed && (state() === "live" || state() === "loading")) return; // ya está abierto: no se recarga
-      if (go) enter();
-      else if (changed) leave();
-    }
-
-    // Centro del portal: la lente
-    function center() {
-      var s = stage.getBoundingClientRect(), l = lens.getBoundingClientRect();
-      if (!l.width) return;
-      stage.style.setProperty("--cx", Math.round(l.left + l.width / 2 - s.left) + "px");
-      stage.style.setProperty("--cy", Math.round(l.top + l.height / 2 - s.top) + "px");
-    }
-    function drop(f, wait) {
-      window.setTimeout(function () { if (f && f.parentNode) f.parentNode.removeChild(f); }, wait);
-    }
-
-    function enter() {
-      if (blocked) return;
-      var p = T(), my = ++token;
-      window.clearTimeout(timer);
-      if (state() === "live") { state("loading"); drop(iframe, reduced ? 0 : 650); iframe = null; }
-      else { drop(iframe, 0); iframe = null; }
-      center();
-      state("loading");
-      setText("[data-tour-cta]", "Cargando");
-      status.textContent = "Cargando el recorrido de " + p.nombre + "…";
-      var f = document.createElement("iframe");
-      f.src = p.tour;
-      f.title = "Recorrido virtual 360° de " + p.nombre;
-      f.setAttribute("allow", "fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking; autoplay");
-      f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-      f.addEventListener("load", function () { window.setTimeout(function () { reveal(my); }, 180); });
-      // Se espera al cierre del portal anterior antes de montar el nuevo
-      window.setTimeout(function () { if (my === token && !blocked) { frame.appendChild(f); iframe = f; } }, frame.firstChild ? (reduced ? 0 : 650) : 0);
-      timer = window.setTimeout(function () { reveal(my); }, 12000);
-    }
-    function reveal(my) {
-      if (my !== token || blocked || state() !== "loading") return;
-      window.clearTimeout(timer);
-      state("live");
-      seen[cur] = true;
-      setText("[data-tour-cta]", "Entrar");
-      setText("[data-tour-dock-q]", "¿Te gustó");
-      status.textContent = "Recorrido de " + T().nombre + " abierto. Arrastra para mirar alrededor.";
-      var ae = document.activeElement;
-      if (!ae || ae === document.body || root.contains(ae)) $("[data-tour-close]", root).focus({ preventScroll: true });
-    }
-    function leave() {
-      token++;
-      window.clearTimeout(timer);
-      if (blocked) return;
-      var was = state();
-      state("poster");
-      setText("[data-tour-cta]", "Entrar");
-      exitFull();
-      drop(iframe, was === "live" && !reduced ? 700 : 0); // el marco se retira al cerrarse el portal
-      iframe = null;
-      if (was === "live") status.textContent = "Saliste del recorrido.";
-    }
-
-    // Donde no se permite incrustar otros sitios (política de seguridad), se ofrece abrirlo aparte
-    document.addEventListener("securitypolicyviolation", function (e) {
-      var d = e.effectiveDirective || e.violatedDirective || "";
-      if (blocked || state() !== "loading" || !/^(frame|child|default)-src/.test(d)) return;
-      blocked = true;
-      token++;
-      window.clearTimeout(timer);
-      drop(iframe, 0); iframe = null;
-      state("blocked");
-      setText("[data-tour-cta]", "Abrir");
-      status.textContent = "El recorrido no se puede mostrar aquí. Puedes abrirlo en una pestaña nueva.";
-    });
-
-    lens.addEventListener("click", function (e) {
-      if (blocked) return;
-      e.preventDefault();
-      if (state() === "poster") enter();
-    });
-    $("[data-tour-close]", root).addEventListener("click", function () { leave(); lens.focus({ preventScroll: true }); });
-
-    // Pantalla completa: nativa si el navegador la permite; si no, a toda la ventana
-    function isFull() { return document.fullscreenElement === stage || stage.classList.contains("is-immersive"); }
-    function syncFull() {
-      var on = isFull();
-      fullBtn.setAttribute("aria-label", on ? "Salir de pantalla completa" : "Ver en pantalla completa");
-      fullBtn.title = on ? "Salir de pantalla completa" : "Pantalla completa";
-      $("use", fullBtn).setAttribute("href", on ? "#i-shrink" : "#i-expand");
-    }
-    function immersive() {
-      stage.classList.add("is-immersive");
-      document.body.classList.add("tour-lock");
-      var n = stage;
-      while (n && n !== document.body) {
-        [].forEach.call(n.parentNode.children, function (s) {
-          if (s !== n && !s.inert && s.tagName !== "SCRIPT") { s.inert = true; s.setAttribute("data-tour-inert", ""); }
-        });
-        n = n.parentNode;
-      }
-      syncFull();
-      $("[data-tour-close]", root).focus({ preventScroll: true });
-    }
-    function exitFull() {
-      if (document.fullscreenElement === stage && document.exitFullscreen) {
-        var r = document.exitFullscreen();
-        if (r && r.catch) r.catch(function () {});
-      }
-      var wasImm = stage.classList.contains("is-immersive");
-      stage.classList.remove("is-immersive");
-      document.body.classList.remove("tour-lock");
-      $$("[data-tour-inert]").forEach(function (s) { s.inert = false; s.removeAttribute("data-tour-inert"); });
-      syncFull();
-      if (wasImm) fullBtn.focus({ preventScroll: true });
-    }
-    fullBtn.addEventListener("click", function () {
-      if (isFull()) { exitFull(); return; }
-      if (stage.requestFullscreen && document.fullscreenEnabled) {
-        var r = stage.requestFullscreen();
-        if (r && r.then) r.then(syncFull, immersive);
-      } else immersive();
-    });
-    document.addEventListener("fullscreenchange", syncFull);
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && stage.classList.contains("is-immersive")) exitFull(); });
-
-    // La ilustración responde al cursor mientras espera
-    if (fineHover && !reduced) {
-      stage.addEventListener("pointermove", function (e) {
-        if (state() === "live") return;
-        var r = stage.getBoundingClientRect();
-        stage.style.setProperty("--mx", (((e.clientX - r.left) / r.width - 0.5) * 2).toFixed(3));
-        stage.style.setProperty("--my", (((e.clientY - r.top) / r.height - 0.5) * 2).toFixed(3));
-      });
-    }
-
-    // Acciones de cierre
-    var plan = $("[data-tour-plan]", root), visit = $("[data-tour-visit]", root);
-    if (plan) plan.addEventListener("click", function () { Plan.show(cur); });
-    if (visit) visit.addEventListener("click", function () {
-      Visit.prefill({ proyecto: T().nombre, mensaje: seen[cur] ? "Vi el recorrido 360° de " + T().nombre + "." : "" });
-    });
-
-    // Conexión anticipada a los recorridos cuando la sección se acerca
-    if ("IntersectionObserver" in window) {
-      var io = new IntersectionObserver(function (en) {
-        if (!en[0].isIntersecting) return;
-        io.disconnect();
-        var seen = {};
-        proyectos.forEach(function (p) {
-          if (!p.tour) return;
-          var o = p.tour.split("/").slice(0, 3).join("/");
-          if (seen[o]) return;
-          seen[o] = 1;
-          var l = document.createElement("link");
-          l.rel = "preconnect"; l.href = o;
-          document.head.appendChild(l);
-        });
-      }, { rootMargin: "600px 0px" });
-      io.observe(root);
-    }
-
-    // Accesos desde otras partes de la página
-    var pickerNav = $(".tour-picker", root);
-    if (pickerNav) pickerNav.addEventListener("focusin", function (e) {
-      var a = e.target.closest(".tour-pick");
-      if (a) a.scrollIntoView({ inline: "nearest", block: "nearest", behavior: reduced ? "auto" : "smooth" });
-    });
-    function toStage() {
-      stage.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
-      var t = state() === "live" ? $("[data-tour-close]", root) : (state() === "blocked" ? $("[data-tour-blocked] a", root) : lens);
-      if (t) t.focus({ preventScroll: true });
-    }
-    Tour.open = function (id, go) { select(id, go); window.setTimeout(toStage, 40); };
-    $$("[data-tour-open]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        var id = a.getAttribute("data-tour-open");
-        if (id === "plan") id = Plan.current();
-        e.preventDefault();
-        Tour.open(id, true);
-      });
-    });
-    $$('a[href="#recorrido"]:not([data-tour-open])').forEach(function (a) {
-      a.addEventListener("click", function (e) { e.preventDefault(); toStage(); });
-    });
-
-    var m = /^#recorrido-([a-z0-9-]+)$/.exec(location.hash);
-    select(m && proyecto(m[1]) ? m[1] : first.id, false);
-    if (m) window.setTimeout(toStage, 80);
   }
 
   /* =============================================================
@@ -3029,8 +2247,7 @@
   }
 
   function initVideo() {
-    // Portadas: video de fondo sobre una imagen que queda de respaldo. Se crean cuando su pestaña se ve.
-    heroVideo($("[data-hero]"), B.videoPortada || {}, $("[data-hero-video-toggle]"));
+    // Portada de Inicio: video de fondo sobre una imagen que queda de respaldo. Se crea cuando su pestaña se ve.
     heroVideo($("[data-pvhero]"), B.videoDestacado || {}, $("[data-pv-toggle]"));
 
     // Visor
@@ -3041,11 +2258,6 @@
     var loading = false;
 
     function stop() { box.innerHTML = ""; loading = false; }
-    function open(id) {
-      var p = proyecto(id);
-      if (!p || !p.video) return;
-      openSrc(p.video, p.nombre + " en video", false);
-    }
     function openSrc(src, titulo, vertical, webm) {
       var s = videoSource(src);
       dlg.classList.toggle("is-vertical", !!vertical);
@@ -3057,7 +2269,7 @@
       if (s.frame) {
         var f = document.createElement("iframe");
         f.src = s.frame;
-        f.title = "Video de " + p.nombre;
+        f.title = titulo;
         f.setAttribute("allow", "autoplay; fullscreen; picture-in-picture; encrypted-media");
           f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
         loading = true;
@@ -3077,13 +2289,13 @@
       }
       dlg.showModal();
     }
+    Video.open = function (id) { var p = proyecto(id); if (p && p.video) openSrc(p.video, p.nombre + " en video", false); };
     $$("[data-video-file]").forEach(function (a) {
       a.addEventListener("click", function (e) {
         e.preventDefault();
         openSrc(a.getAttribute("href"), a.getAttribute("data-video-title") || "Video", a.hasAttribute("data-vertical"), a.getAttribute("data-video-webm"));
       });
     });
-    Video.open = open;
     // Si el sitio no permite incrustar reproductores externos, se ofrece el enlace
     document.addEventListener("securitypolicyviolation", function (e) {
       var d = e.effectiveDirective || e.violatedDirective || "";
@@ -3096,19 +2308,13 @@
     dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
     dlg.addEventListener("close", stop);
 
-    $$("[data-video-open]").forEach(function (b) {
-      var p = proyecto(b.getAttribute("data-video-open"));
-      if (!p || !p.video) return;
-      b.hidden = false;
-      b.addEventListener("click", function () { open(p.id); });
-    });
   }
 
   /* =============================================================
      Barra de acción móvil
      ============================================================= */
   function initMobileBar() {
-    var bar = $("[data-mbar]"), hero = $("[data-hero]"), visit = $("#visita"), fab = $(".wa-float");
+    var bar = $("[data-mbar]"), hero = $("[data-pvhero]"), visit = $("#visita"), fab = $(".wa-float");
     if (!bar || !hero || !("IntersectionObserver" in window)) return;
     var pastHero = false, atVisit = false;
     // En pantallas bajas (teléfono horizontal) la barra aparece apenas se desplaza la página
@@ -3337,7 +2543,7 @@
     var io = new IntersectionObserver(function (en) {
       en.forEach(function (x) { x.target.classList.toggle("is-offscreen", !x.isIntersecting); });
     }, { rootMargin: "80px 0px" });
-    $$(".hero, .ticker, .tour-stage, .phone, .plan-canvas").forEach(function (el) { io.observe(el); });
+    $$(".hero, .phone, .plan-canvas").forEach(function (el) { io.observe(el); });
   }
 
   /* =============================================================
@@ -4382,8 +3588,7 @@
     $$("[data-otro]").forEach(function (card) {
       var o = proyecto(card.getAttribute("data-otro"));
       if (!o) return;
-      var d0 = desde(o), src = $('.project[data-project="' + o.id + '"] .project-art svg'), art = $("[data-otro-art]", card);
-      if (src && art && !$("img", art)) art.appendChild(src.cloneNode(true));
+      var d0 = desde(o);
       $$("[data-otro-disp]", card).forEach(function (el) { el.textContent = disponibles(o).length; });
       if (d0) $$("[data-otro-desde]", card).forEach(function (el) { el.textContent = clp(d0); });
       if (o.resumen) $$("[data-otro-txt]", card).forEach(function (el) { el.textContent = o.resumen; });
@@ -4463,17 +3668,13 @@
     window.__fundosBoot = true;
     document.documentElement.classList.add("js");
     safe(initContact, "initContact");
-    safe(initFichas, "initFichas");
     safe(initVistas, "initVistas");
     safe(initNav, "initNav");
     safe(initReveals, "initReveals");
-    safe(initHero, "initHero");
-    safe(initProjects, "initProjects");
+    safe(initIrAlPlano, "initIrAlPlano");
     safe(initVisit, "initVisit");
     safe(initPlan, "initPlan");
-    safe(initTour, "initTour");
     safe(initVideo, "initVideo");
-    safe(initFinder, "initFinder");
     safe(initMobileBar, "initMobileBar");
     safe(initFaq, "initFaq");
     safe(initCompra, "initCompra");

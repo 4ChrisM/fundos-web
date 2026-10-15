@@ -1,7 +1,7 @@
-// Ayuda para las pruebas desde que la página va en pestañas (Puerto Varas · Proyectos · Tu compra · Equipo).
+// Ayuda para las pruebas desde que la página va en pestañas (Inicio · Proyectos · Tu compra · Equipo).
 // vista(page, "proyectos") abre esa pestaña como lo haría una persona (clic en la pestaña) y deja la página arriba.
 // proyecto(page, "malalcahuello") deja el plano en ese proyecto (enlace del pie) sin mover la página.
-// clasica(page) = la página de antes de las pestañas: Proyectos con el plano en Malalcahuello.
+// clasica(page) = el plano en Malalcahuello (vive en Inicio desde que Proyectos es solo el mapa de Chile).
 async function vista(page, v) {
   await page.evaluate((v) => {
     const a = document.querySelector('.nav-links [data-vista-link="' + v + '"]');
@@ -18,5 +18,5 @@ async function proyecto(page, id) {
   }, id);
   await page.waitForTimeout(250);
 }
-async function clasica(page) { await vista(page, "proyectos"); await proyecto(page, "malalcahuello"); }
+async function clasica(page) { await vista(page, "inicio"); await proyecto(page, "malalcahuello"); }
 module.exports = { vista, proyecto, clasica };
