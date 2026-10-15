@@ -96,7 +96,7 @@
     var msg = "Hola Fundos, quiero información sobre sus parcelas.";
     $$("[data-wa]").forEach(function (a) { a.href = waHref(a.getAttribute("data-wa-msg") || msg); });
     if (contacto.whatsappVisible) $$("[data-wa-visible]").forEach(function (a) { a.textContent = contacto.whatsappVisible; });
-    if (contacto.email) $$("[data-email]").forEach(function (a) { a.href = "mailto:" + contacto.email; a.textContent = contacto.email; });
+    if (contacto.email) $$("[data-email]").forEach(function (a) { a.href = "mailto:" + contacto.email; a.innerHTML = esc(contacto.email).replace("@", "@<wbr>"); });   // si no cabe, se corta tras la @
     if (contacto.horario) $$("[data-horario]").forEach(function (p) { p.textContent = contacto.horario; });
     if (contacto.visitas) $$("[data-visitas]").forEach(function (p) { p.textContent = contacto.visitas; });
     // Aviso para lectores de pantalla: estos enlaces abren otra pestaña o la app
@@ -2187,7 +2187,7 @@
 
   /* =============================================================
      Videos: portada del hero y visor para cada proyecto
-     Se configuran en lib/manifest.js (videoPortada y video de cada proyecto)
+     Se configuran en lib/manifest.js (videoDestacado y video de cada proyecto)
      ============================================================= */
   function videoSource(src) {
     var m = /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/.exec(src);

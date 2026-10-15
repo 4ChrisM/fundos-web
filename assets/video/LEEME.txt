@@ -1,6 +1,7 @@
-Videos propios del sitio (opcional).
+Videos propios del sitio.
 
-- portada.mp4: video de fondo del hero (sin sonido, 10-20 s, H.264 1920 px, < 8 MB).
-- <proyecto>.mp4: video de cada proyecto, si no se usa YouTube o Vimeo.
+- puerto-varas(-movil).mp4/.webm/.webp: portada de Inicio (sin sonido, en bucle; H.264 + WebM de respaldo).
+- equipo-*.mp4/.webm/.webp: saludos del equipo (ficha y tarjeta).
+- <proyecto>.mp4: video de cada proyecto, si no se usa YouTube o Vimeo (botón "Ver video" en su ficha).
 
 Las rutas se configuran en lib/manifest.js.
