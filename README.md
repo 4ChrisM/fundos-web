@@ -41,7 +41,7 @@ Todo lo editable está en `lib/manifest.js`.
 - [ ] **Vercel y repositorio de Biplot:** mover `fundos-web` a la organización de Biplot y publicarlo en Vercel (cambiar de nuevo los 5 registros DNS en Squarespace).
 - [ ] **Mi compra:** es un módulo nuevo que se propone sobre Fundos 360°. Hoy la sección lo muestra como vista previa.
 - [ ] **Fotos:** las ilustraciones son intencionales, pero se pueden sumar fotos de dron reales: hoy las fotos de cada proyecto son vistas aéreas sacadas de sus recorridos 360° (`foto` y `tourFoto` en el manifiesto).
-- [ ] **Equipo:** fotos, nombres y presentaciones del equipo real (uso autorizado), en `lib/manifest.js` (`equipo`). Teléfono, correo y WhatsApp propio de cada persona ya cargados. Falta, si se quiere: el cargo de cada persona (hoy "Equipo comercial"). El video no tiene subtítulos: conviene agregarlos (o enviarnos el texto) para quienes lo vean sin sonido.
+- [ ] **Equipo:** fotos, nombres y presentaciones del equipo real (uso autorizado), en `lib/manifest.js` (`equipo`). Teléfono, correo y WhatsApp propio de cada persona ya cargados. Cargos: asesoras y asesores inmobiliarios (dado por el cliente, oct-2026). El video no tiene subtítulos: conviene agregarlos (o enviarnos el texto) para quienes lo vean sin sonido.
 - [ ] **Videos:** la propuesta no incluye videos. El sitio ya está preparado: basta con subir el archivo o pegar el enlace (ver "Videos" más abajo).
 - [ ] **Concurso:** el sitio actual tiene una página de concurso; se puede sumar como banner o sección cuando esté definido.
 
@@ -59,7 +59,7 @@ Publicada en https://fundosinmobiliaria.com/ (cada cambio entra por un pull requ
 - [ ] **Más proyectos ("Fundos en todo Chile"):** ya están los 10 proyectos "Fundos de …" (sin precios) en `masProyectos` de `lib/manifest.js`. Se muestran en la pestaña Proyectos (mapa largo de Chile y galería de norte a sur; ficha con fotos al tocar un fundo). Falta revisar los textos resumidos y los emblemas dibujados (también los de Puerto Varas, Marchigüe y Malalcahuello), y confirmar los títulos de las fotos de cada fundo (`galeria`).
 - [ ] **Tu casa con pendientes:** más adelante, mostrar la pendiente del lote según su ubicación (modelo de elevación por coordenadas).
 - [ ] **Tu casa agroresidencial:** confirmar con el cliente las especies sugeridas de frutales y de conservación por proyecto (`AGRO` en `main.js`).
-- [ ] **Cargos del equipo:** hoy todos dicen "Equipo comercial" en `lib/manifest.js` (`equipo`); falta el cargo de cada persona (teléfono, correo y WhatsApp ya están).
+- [x] **Cargos del equipo:** "Asesora inmobiliaria" / "Asesor inmobiliario" según lo indicó el cliente (`cargo` en `equipo`).
 
 ## Estructura
 

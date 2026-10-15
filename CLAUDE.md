@@ -350,7 +350,8 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   "Agendar con…" envía el formulario de visita a su WhatsApp (mientras el mensaje lo nombre). Los archivos de Elvis siguen
   llamándose `equipo-elvys.*`. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
   originales no van a `main`; se convierten con ffmpeg a MP4 + WebM con `loudnorm`).
-  No suponer género ni cargos: hoy todos dicen "Equipo comercial" hasta tener los cargos reales.
+  No suponer género ni cargos: los cargos los dio el cliente (oct-2026): "Asesora inmobiliaria" (Jeanette, Valentina,
+  Geonela, María del Mar, Stefany) y "Asesor inmobiliario" (Elvis, Diego); a una persona nueva, preguntarlo.
 - Santo Domingo fuera de la propuesta principal (plano, cotizador, 360°); desde oct-2026 aparece solo como tarjeta en Más proyectos (lo pidió el cliente). No bajar videos de internet: solo material propio del cliente.
 - Planos con líneas rectas como el masterplan. En computador la herramienta completa (proyectos, filtros, chips,
   plano y leyenda en franja baja) cabe en la pantalla: el plano mide entre 380 y 480 px de alto y no pasa del 47 % de la ventana (`layoutPlan`); los
