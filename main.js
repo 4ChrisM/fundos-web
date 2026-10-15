@@ -1455,8 +1455,8 @@
       if (d.casa) d.casa.classList.toggle("is-guia", !!ok);
       if (!S.guia) return;
       gPaso.textContent = ok ? "Paso 2 de 2" : "Paso 1 de 2";
-      gTxt.textContent = ok ? "Lote " + l.n + " elegido. Toca «Diseñar mi casa aquí» para ubicar tu casa en 3D."
-        : l && l.estado === "vendida" ? "Ese lote está vendido: elige uno disponible para diseñar tu casa."
+      gTxt.textContent = ok ? "Lote " + l.n + " elegido. Toca «Diseñar mi fundo aquí» para ubicar tu casa en 3D."
+        : l && l.estado === "vendida" ? "Ese lote está vendido: elige uno disponible para diseñar tu fundo."
         : "Elige tu parcela: toca un lote disponible en el plano.";
     }
     Plan.guia = function (on) { S.guia = !!on; updGuia(); };
