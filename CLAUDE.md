@@ -259,7 +259,7 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   angostas, abre en pestaña nueva los enlaces que salen del mapa y avisa su alto con `postMessage({fundosEntorno})`.
   Código para Squarespace: `docs/squarespace-mapa.html`.
 - **Medición de visitas** (`lib/analitica.js`, cargado en `index.html`, `entorno.html` y `vitrina.html`): Google
-  Analytics 4 (el cliente eligió solo Google; Clarity queda disponible), solo si `analitica.ga4` del manifiesto tiene ID
+  Analytics 4 (el cliente eligió solo Google; Clarity queda disponible), ID `G-Q5JZT7NZP3` en `analitica.ga4` del manifiesto
   (vacío = no se carga nada). Eventos: `generate_lead` (WhatsApp con mensaje armado; `formulario`: visita, portada,
   vende-tu-campo, proveedores, simulacion, casa, favoritos, consulta-lote; marcarlo como evento clave en GA),
   `contacto_whatsapp`, `tour_360`, `ver_lotes`, `ver_entorno` (un solo escucha de clics), y desde `main.js` con
