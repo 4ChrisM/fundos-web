@@ -43,10 +43,9 @@ const { vista, proyecto, clasica } = require("./_vista");
       r.galeria = await p.$$eval(".sellers > .seller", ls => ({ n: ls.length, ancho: Math.round(ls[0].getBoundingClientRect().width), filas: new Set(ls.map(l => Math.round(l.getBoundingClientRect().top))).size }));
     }
     await vista(p, "proyectos");
-    await p.evaluate(() => document.getElementById("proyectos").scrollIntoView());
     await p.waitForTimeout(600);
     await p.screenshot({ path: `ux/tc-${tag}-proy.png` });
-    r.projOverflow = await p.$eval(".projects", e => [e.scrollWidth, e.clientWidth]);
+    r.projOverflow = await p.$eval(".mch-row", e => [e.scrollWidth, e.clientWidth]);
     // hash de carga
     await p.goto("http://127.0.0.1:8765/#preguntas", { waitUntil: "networkidle" });
     await p.waitForTimeout(900);

@@ -21,19 +21,18 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Fundos Inmobiliaria","url":"https://www.fundosinmobiliaria.com/","slogan":"La tierra como punto de partida.","areaServed":["Malalcahuello","Marchigüe","Puerto Varas"],"address":{"@type":"PostalAddress","addressCountry":"CL"}}
 </script>
-<script>/* Propuestas para votar (pestaña Proyectos solo con el mapa): ?mapa=vertical | ?mapa=horizontal */(function(){var m=/[?&]mapa=(vertical|horizontal)\b/.exec(location.search);if(m){document.documentElement.classList.add("pm","pm-"+m[1].charAt(0));if(/[?&]cerrado=1\b/.test(location.search))document.documentElement.classList.add("pm-cerrado")}})();</script>
-<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"inicio","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo","trabaja-con-nosotros":"equipo","vende-tu-campo":"equipo",proveedores:"equipo","mas-proyectos":"proyectos"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
+<script>(function(){var d=document.documentElement,h=location.hash.slice(1),m={inicio:"proyectos","proyectos-inicio":"proyectos",buscador:"proyectos",proyectos:"proyectos",conoce:"proyectos",recorrido:"proyectos","tu-compra":"compra","como-comprar":"compra",simulador:"inicio","tu-casa":"compra",preguntas:"compra",portal:"compra",nosotros:"equipo",equipo:"equipo","trabaja-con-nosotros":"equipo","vende-tu-campo":"equipo",proveedores:"equipo","mas-proyectos":"proyectos"};d.setAttribute("data-vista",m[h]||(/^equipo-\d+$/.test(h)?"equipo":/^proyecto-/.test(h)?"proyectos":"inicio"))})();document.documentElement.classList.add("js");setTimeout(function(){if(!window.__fundosBoot){document.documentElement.classList.remove("js");document.documentElement.removeAttribute("data-vista")}},8000)</script>
 <link rel="preload" as="image" href="assets/video/puerto-varas.webp" media="(min-width: 960px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/video/puerto-varas-movil.webp" media="(max-width: 959px)" fetchpriority="high">
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261015x">
-<script defer src="lib/manifest.js?v=20261015x"></script>
-<script defer src="lib/analitica.js?v=20261015x"></script>
-<script defer src="lib/mapa-chile.js?v=20261015x"></script>
-<script defer src="lib/planos.js?v=20261015x"></script>
-<script defer src="main.js?v=20261015x"></script>
+<link rel="stylesheet" href="styles.css?v=20261015y">
+<script defer src="lib/manifest.js?v=20261015y"></script>
+<script defer src="lib/analitica.js?v=20261015y"></script>
+<script defer src="lib/mapa-chile.js?v=20261015y"></script>
+<script defer src="lib/planos.js?v=20261015y"></script>
+<script defer src="main.js?v=20261015y"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -196,7 +195,7 @@
   </div>
   <nav class="nav-links" aria-label="Principal">
     <a href="#puerto-varas" data-vista-link="inicio">Inicio</a>
-    <a href="#proyectos-inicio" data-vista-link="proyectos">Proyectos</a>
+    <a href="#mas-proyectos" data-vista-link="proyectos">Proyectos</a>
     <a href="#tu-compra" data-vista-link="compra">Tu compra</a>
     <a href="#nosotros" data-vista-link="equipo">Equipo</a>
     <a class="nl-casa" href="#plano" data-casa-guia aria-label="Diseña tu casa (nuevo)"><svg class="i" aria-hidden="true"><use href="#i-house"/></svg><span class="nl-l" aria-hidden="true">Diseña tu casa</span><span class="nl-c" aria-hidden="true">Tu casa</span><span class="nl-new" aria-hidden="true">Nuevo</span></a>
@@ -219,13 +218,13 @@
     </div>
     <nav class="menu-links" aria-label="Menú móvil">
       <a href="#puerto-varas" data-menu-link data-vista-link="inicio">Inicio</a>
-      <a href="#proyectos-inicio" data-menu-link data-vista-link="proyectos">Proyectos</a>
+      <a href="#mas-proyectos" data-menu-link data-vista-link="proyectos">Proyectos</a>
       <a href="#tu-compra" data-menu-link data-vista-link="compra">Tu compra</a>
       <a href="#nosotros" data-menu-link data-vista-link="equipo">Equipo</a>
       <a class="menu-casa" href="#plano" data-menu-link data-casa-guia><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Diseña tu casa<span class="nl-new">Nuevo</span></a>
       <span class="menu-sub">
         <a href="#plano" data-menu-link>Elige tu parcela</a>
-        <a href="#recorrido" data-menu-link>Recorrido 360°</a>
+        <a href="entorno.html#tour-360">Recorrido 360°</a>
         <a href="entorno.html">Mapa del entorno</a>
         <a href="#como-comprar" data-menu-link>Cómo comprar</a>
         <a href="#preguntas" data-menu-link>Preguntas</a>
@@ -414,283 +413,21 @@
   </div>
 </section>
 
-<!-- ================================ HERO ================================ -->
-<section class="hero" id="inicio" data-hero data-vista="proyectos">
-  <span class="vista-ancla" id="proyectos-inicio" aria-hidden="true"></span>
-  <div class="hero-art" aria-hidden="true">
-    <picture class="hero-photo">
-      <source media="(max-width: 959px)" srcset="assets/video/portada-movil.webp" width="720" height="900">
-      <img src="assets/video/portada-900.webp" srcset="assets/video/portada-900.webp 900w, assets/video/portada.webp 1600w" sizes="(min-width: 960px) 58vw, 100vw" alt="" width="1600" height="900" loading="lazy" decoding="async">
-    </picture>
-    <div class="hero-grain"></div>
-    <div class="hero-shade"></div>
-  </div>
-
-  <div class="hero-inner">
-    <p class="kicker hero-kicker"><span class="nw">Parcelas de 5.000 m²</span> <span class="nw">· Araucanía</span> <span class="nw">· O'Higgins · Los Lagos</span></p>
-    <h2 class="hero-title">
-      <span class="line"><span>La tierra como</span></span>
-      <span class="line"><span><em>punto de partida.</em></span></span>
-    </h2>
-    <p class="hero-sub">Somos el equipo de Fundos. Te ayudamos a elegir tu parcela en Malalcahuello, Marchigüe o Puerto Varas y te acompañamos desde la primera visita hasta la inscripción en el Conservador. Sin letra chica.</p>
-    <div class="hero-actions">
-      <a class="btn btn-gold btn-lg" href="#plano" data-plan-disp>Ver parcelas disponibles<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-      <a class="btn btn-ghost btn-lg" href="#visita"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>Agendar una visita</a>
-    </div>
-    <a class="hero-tour" href="#recorrido">
-      <span class="hero-tour-orb" aria-hidden="true"><svg class="i"><use href="#i-360"/></svg></span>
-      <span>Recorre nuestros proyectos en&nbsp;360°<small>Sin salir de esta página</small></span>
-    </a>
-  </div>
-
-  <a class="hero-team" href="#equipo"><span class="faces" aria-hidden="true"><img src="assets/img/cara-5.webp" alt="" width="34" height="34" loading="lazy" decoding="async"><img src="assets/img/cara-6.webp" alt="" width="34" height="34" loading="lazy" decoding="async"><img src="assets/img/cara-7.webp" alt="" width="34" height="34" loading="lazy" decoding="async"></span><span>Conoce a nuestro equipo<small>Personas reales, de la visita a la escritura</small></span></a>
-
-  <button class="hero-video-toggle" type="button" data-hero-video-toggle aria-label="Pausar el video de portada" hidden><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
-  <a class="hero-scroll" href="#buscador" aria-label="Bajar al buscador"><svg class="i" aria-hidden="true"><use href="#i-down"/></svg></a>
-</section>
-
-<!-- ============================== BUSCADOR ============================== -->
-<div class="finder-wrap" id="buscador" data-vista="proyectos">
-  <form class="finder" role="search" aria-label="Buscar parcelas" action="#plano" data-finder novalidate>
-    <div class="finder-field">
-      <label for="f-destino">Destino</label>
-      <select id="f-destino" name="destino">
-        <option value="todos">Todos los proyectos</option>
-        <option value="malalcahuello">Malalcahuello · Araucanía</option>
-        <option value="marchigue">Marchigüe · O'Higgins</option>
-        <option value="puerto-varas">Puerto Varas · Los Lagos</option>
-      </select>
-    </div>
-    <div class="finder-field">
-      <label for="f-presupuesto">Presupuesto</label>
-      <select id="f-presupuesto" name="presupuesto">
-        <option value="0">Cualquier presupuesto</option>
-        <option value="10000000">Hasta $10 millones</option>
-        <option value="15000000">Hasta $15 millones</option>
-        <option value="20000000">Hasta $20 millones</option>
-        <option value="30000000">Hasta $30 millones</option>
-        <option value="45000000">Hasta $45 millones</option>
-      </select>
-    </div>
-    <div class="finder-result">
-      <strong data-finder-count>107</strong>
-      <span data-finder-label>parcelas disponibles hoy</span>
-      <small class="finder-by" data-finder-by hidden></small>
-      <span class="sr-only" aria-live="polite" data-finder-live></span>
-    </div>
-    <button class="btn btn-dark finder-btn" type="submit"><span data-finder-cta>Ver parcelas</span><svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-  </form>
-  <ul class="trust">
-    <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>5.000 m² por parcela</li>
-    <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Reserva con $1.000.000, que incluye los gastos de escritura</li>
-    <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Acompañamiento hasta el CBR</li>
-    <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Seguimiento de tu compra en línea (próximamente)</li>
-  </ul>
-</div>
-
-<!-- ============================== VALORES (ticker) ============================== -->
-<div class="ticker" aria-hidden="true" data-vista="proyectos">
-  <div class="ticker-track">
-    <span>Transparencia</span><i>✳︎</i><span>Cercanía</span><i>✳︎</i><span>Innovación</span><i>✳︎</i><span>Confianza</span><i>✳︎</i><span>Tierra</span><i>✳︎</i><span>Pertenencia</span><i>✳︎</i>
-    <span>Transparencia</span><i>✳︎</i><span>Cercanía</span><i>✳︎</i><span>Innovación</span><i>✳︎</i><span>Confianza</span><i>✳︎</i><span>Tierra</span><i>✳︎</i><span>Pertenencia</span><i>✳︎</i>
-  </div>
-</div>
-
-<!-- ============================== PROYECTOS ============================== -->
-<section class="section light" id="proyectos" data-vista="proyectos" aria-labelledby="proyectos-title">
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">Nuestros proyectos</p>
-      <h2 id="proyectos-title">Tres paisajes.<br> <em>Un mismo cuidado.</em></h2>
-      <p class="lead">Parcelas de 5.000 m² en la cordillera de La Araucanía, el valle de Colchagua y el entorno del lago Llanquihue. Elige dónde quieres despertar.</p>
-    </header>
-
-    <div class="projects">
-      <!-- Malalcahuello -->
-      <article class="project reveal" data-project="malalcahuello">
-        <div class="project-art has-foto">
-          <img class="project-foto" src="assets/img/tour-malalcahuello-800.webp" srcset="assets/img/tour-malalcahuello-800.webp 800w, assets/img/tour-malalcahuello-1600.webp 1600w" sizes="(min-width: 1100px) 400px, (min-width: 700px) 50vw, 92vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Vista aérea de la parcelación de Malalcahuello" style="object-position: 40% 50%">
-          <svg viewBox="0 0 600 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-            <rect width="600" height="380" fill="url(#g-ma-sky)"/>
-            <circle cx="470" cy="78" r="60" fill="url(#g-moon)"/>
-            <circle cx="470" cy="78" r="17" fill="#EFEBE2" opacity=".9"/>
-            <g fill="#EFEBE2" opacity=".6"><circle cx="90" cy="40" r="1"/><circle cx="180" cy="86" r="1.2"/><circle cx="260" cy="30" r=".9"/><circle cx="380" cy="60" r="1"/><circle cx="560" cy="130" r=".9"/><circle cx="40" cy="120" r=".8"/></g>
-            <g class="pl" style="--d:.2">
-              <path d="M20 252C50 232 70 206 88 190L97 187C113 205 132 229 172 247Z" fill="#1A3022"/>
-              <path d="M88 190L97 187C101 192 105 197 109 203L103 201L98 207L93 200L86 205C86 200 87 195 88 190Z" fill="#E4DED2" opacity=".8"/>
-            </g>
-            <g class="pl" style="--d:.35">
-              <path d="M0 252C80 238 150 226 210 200C250 182 280 150 300 118L312 112L326 114L336 110C350 134 372 164 400 188C450 230 520 246 600 252V380H0Z" fill="#20392A"/>
-              <path d="M300 118L312 112L326 114L336 110C348 128 362 148 378 168L366 164L358 178L346 166L336 184L324 170L312 186L302 172L290 182L280 168L268 176C280 160 292 138 300 118Z" fill="url(#g-snow)"/>
-              <path d="M336 110C350 134 372 164 400 188C450 230 520 246 600 252" fill="none" stroke="#E9D2A0" stroke-opacity=".45" stroke-width="1.6"/>
-            </g>
-            <g class="pl" style="--d:.6">
-              <path d="M0 292C100 270 200 282 300 268C400 256 500 272 600 262V380H0Z" fill="#13271A"/>
-            </g>
-            <g class="pl" style="--d:1" fill="#08120C">
-              <path d="M0 336C150 318 300 332 450 320C520 314 570 320 600 324V380H0Z"/>
-              <path d="M256 296C286 300 318 307 322 318C326 331 290 339 292 351C294 365 340 372 352 380H432C402 368 352 362 350 350C348 338 378 330 372 316C366 303 302 296 262 294Z" fill="url(#g-ma-river)" opacity=".9"/>
-              <path d="M262 296C302 301 344 309 345 320C346 334 318 341 320 352C322 364 362 373 392 380" fill="none" stroke="#F7F5F0" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
-              <path d="M66 330V238h3v92z"/><path d="M40 256Q67 228 94 256Q67 240 40 256zM46 244Q67 220 88 244Q67 230 46 244zM53 234Q67 214 81 234Q67 222 53 234z"/>
-              <path d="M118 334V256h2.6v78z"/><path d="M96 272Q119 248 142 272Q119 258 96 272zM101 262Q119 242 137 262Q119 250 101 262zM107 253Q119 236 131 253Q119 243 107 253z"/>
-              <path d="M530 328V230h3v98z"/><path d="M503 250Q531 220 559 250Q531 234 503 250zM509 238Q531 212 553 238Q531 224 509 238zM516 227Q531 206 546 227Q531 214 516 227z"/>
-            </g>
-          </svg>
-          <button class="art-play" type="button" data-video-open="malalcahuello" hidden><span class="art-play-dot"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span>Ver video</button>
-          <a class="art-360" href="#recorrido" data-tour-open="malalcahuello"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrido 360°</a>
-          <span class="badge">17 disponibles</span>
-        </div>
-        <div class="project-body">
-          <p class="project-meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>La Araucanía · Cordillera</p>
-          <h3>Malalcahuello</h3>
-          <p class="project-desc">Bosque nativo, volcanes y el río Lolén. Nieve en invierno; pesca, senderos y termas el resto del año.</p>
-          <ul class="chips">
-            <li>Frente al río Lolén</li><li>Precio oferta</li><li>Cerca de Corralco</li>
-          </ul>
-          <dl class="facts">
-            <div><dt>Desde</dt><dd>$9.990.000</dd></div>
-            <div><dt>Superficie</dt><dd>5.000 m²</dd></div>
-            <div><dt>Reserva</dt><dd>$1.000.000 <small class="fact-nota">incluye escritura</small></dd></div>
-          </dl>
-          <div class="project-actions">
-            <a class="btn btn-dark" href="#plano" data-goto-plan="malalcahuello">Ver lotes<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-            <a class="btn btn-line" href="#proyecto-malalcahuello">Conocer el proyecto</a>
-          </div>
-          <a class="link-entorno" href="entorno.html?p=malalcahuello"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>Descubre el entorno: rutas y tiempos</a>
-        </div>
-      </article>
-
-      <!-- Marchigüe -->
-      <article class="project reveal" data-project="marchigue">
-        <div class="project-art has-foto">
-          <img class="project-foto" src="assets/img/tour-marchigue-800.webp" srcset="assets/img/tour-marchigue-800.webp 800w, assets/img/tour-marchigue-1600.webp 1600w" sizes="(min-width: 1100px) 400px, (min-width: 700px) 50vw, 92vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Vista aérea de la parcelación de Marchigüe" style="object-position: 35% 60%">
-          <svg viewBox="0 0 600 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-            <rect width="600" height="380" fill="url(#g-mc-sky)"/>
-            <circle cx="430" cy="150" r="90" fill="#FFF3D6" opacity=".35"/>
-            <circle cx="430" cy="150" r="38" fill="#FBF0D8"/>
-            <g class="pl" style="--d:.2">
-              <path d="M0 232C100 202 200 212 300 198C400 184 500 206 600 192V380H0Z" fill="#BE9F68" opacity=".75"/>
-            </g>
-            <g class="pl" style="--d:.4">
-              <path d="M0 262C120 238 240 252 360 238C460 226 540 238 600 234V380H0Z" fill="#8C8A5A"/>
-              <g fill="#5E663F"><circle cx="470" cy="236" r="7"/><circle cx="482" cy="233" r="6"/><circle cx="160" cy="246" r="6"/></g>
-            </g>
-            <g class="pl" style="--d:.7">
-              <path d="M0 304C150 264 330 262 600 292V380H0Z" fill="url(#g-mc-vine)"/>
-              <g stroke="#2E3B24" stroke-width="2.2" opacity=".75" fill="none">
-                <path d="M300 276L-60 380"/><path d="M300 276L0 380"/><path d="M300 276L60 380"/><path d="M300 276L120 380"/><path d="M300 276L180 380"/><path d="M300 276L240 380"/><path d="M300 276L300 380"/><path d="M300 276L360 380"/><path d="M300 276L420 380"/><path d="M300 276L480 380"/><path d="M300 276L540 380"/><path d="M300 276L600 380"/><path d="M300 276L660 380"/>
-              </g>
-              <path d="M0 304C150 264 330 262 600 292" fill="none" stroke="#E9D2A0" stroke-opacity=".5" stroke-width="1.4"/>
-            </g>
-            <g class="pl" style="--d:1">
-              <path d="M104 300V264" stroke="#2B3421" stroke-width="4"/>
-              <g fill="#2F3B26"><circle cx="92" cy="258" r="15"/><circle cx="110" cy="250" r="17"/><circle cx="124" cy="262" r="13"/><circle cx="100" cy="244" r="12"/></g>
-              <path d="M0 352C200 336 400 346 600 336V380H0Z" fill="#2B3421"/>
-            </g>
-          </svg>
-          <button class="art-play" type="button" data-video-open="marchigue" hidden><span class="art-play-dot"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span>Ver video</button>
-          <a class="art-360" href="#recorrido" data-tour-open="marchigue"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrido 360°</a>
-          <span class="badge">12 disponibles</span>
-        </div>
-        <div class="project-body">
-          <p class="project-meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>O'Higgins · Valle de Colchagua</p>
-          <h3>Marchigüe</h3>
-          <p class="project-desc">Lomajes suaves, viñedos y cielos despejados. Clima templado todo el año, a una hora de Pichilemu.</p>
-          <ul class="chips">
-            <li>Zona de viñas</li><li>Precio oferta</li><li>Clima templado</li>
-          </ul>
-          <dl class="facts">
-            <div><dt>Desde</dt><dd>$7.990.000</dd></div>
-            <div><dt>Superficie</dt><dd>5.000 m²</dd></div>
-            <div><dt>Reserva</dt><dd>$1.000.000 <small class="fact-nota">incluye escritura</small></dd></div>
-          </dl>
-          <div class="project-actions">
-            <a class="btn btn-dark" href="#plano" data-goto-plan="marchigue">Ver lotes<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-            <a class="btn btn-line" href="#proyecto-marchigue">Conocer el proyecto</a>
-          </div>
-          <a class="link-entorno" href="entorno.html?p=marchigue"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>Descubre el entorno: rutas y tiempos</a>
-        </div>
-      </article>
-
-      <!-- Puerto Varas -->
-      <article class="project reveal" data-project="puerto-varas">
-        <div class="project-art has-foto">
-          <img class="project-foto" src="assets/img/tour-puerto-varas-800.webp" srcset="assets/img/tour-puerto-varas-800.webp 800w, assets/img/tour-puerto-varas-1600.webp 1600w" sizes="(min-width: 1100px) 400px, (min-width: 700px) 50vw, 92vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Vista aérea de la parcelación de Puerto Varas" style="object-position: 50% 55%">
-          <svg viewBox="0 0 600 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-            <rect width="600" height="380" fill="url(#g-pv-sky)"/>
-            <g class="pl" style="--d:.2">
-              <path d="M420 252C450 232 470 216 484 206L494 211L500 203L510 213C530 229 560 242 600 248V252Z" fill="#A6B0A3" opacity=".85"/>
-            </g>
-            <g class="pl" style="--d:.35">
-              <path d="M110 252C190 206 250 150 290 96L300 90L310 96C350 150 410 206 490 252Z" fill="url(#g-pv-cone)"/>
-              <path d="M262 132C276 114 288 100 300 90L310 96C322 110 334 126 344 140L334 137L327 150L318 140L308 156L298 142L288 154L280 140L270 146Z" fill="#FFFFFF"/>
-            </g>
-            <g class="pl" style="--d:.5">
-              <rect y="250" width="600" height="80" fill="url(#g-pv-lake)"/>
-              <path d="M150 252C220 268 262 292 300 318C338 292 380 268 450 252Z" fill="#8F9C8C" opacity=".22"/>
-              <g stroke="#F7F5F0" stroke-linecap="round" opacity=".7"><path d="M60 270h60M180 282h90M330 276h70M470 290h80M90 300h50M250 306h60M400 312h60"/></g>
-              <rect y="246" width="600" height="18" fill="#F7F5F0" opacity=".35"/>
-            </g>
-            <g class="pl" style="--d:1" fill="#16301F">
-              <path d="M0 324C60 316 120 320 180 314C260 306 340 318 420 312C500 306 560 314 600 310V380H0Z"/>
-              <path d="M20 322C14 306 14 284 20 268C26 284 26 306 20 322ZM42 320C35 300 35 272 42 252C49 272 49 300 42 320ZM64 322C58 306 58 286 64 272C70 286 70 306 64 322ZM520 316C513 296 513 268 520 248C527 268 527 296 520 316ZM544 318C538 302 538 280 544 264C550 280 550 302 544 318ZM566 314C559 294 559 266 566 246C573 266 573 294 566 314ZM588 316C582 300 582 280 588 266C594 280 594 300 588 316Z"/>
-            </g>
-          </svg>
-          <button class="art-play" type="button" data-video-open="puerto-varas" hidden><span class="art-play-dot"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span>Ver video</button>
-          <a class="art-360" href="#recorrido" data-tour-open="puerto-varas"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Recorrido 360°</a>
-          <span class="badge">78 disponibles</span>
-        </div>
-        <div class="project-body">
-          <p class="project-meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>Los Lagos · Entre mar y lago</p>
-          <h3>Puerto Varas</h3>
-          <p class="project-desc">Parcelas planas con rol propio y vista a los volcanes Osorno y Calbuco, con acceso controlado. A 25 minutos de Puerto Montt y de Puerto Varas.</p>
-          <ul class="chips">
-            <li>Vista a los volcanes</li><li>100&nbsp;% plano</li><li data-chip-total="puerto-varas">79 parcelas en total</li>
-          </ul>
-          <dl class="facts">
-            <div><dt>Desde</dt><dd>$27.990.000</dd></div>
-            <div><dt>Superficie</dt><dd>5.000 m²</dd></div>
-            <div><dt>Reserva</dt><dd>$1.000.000 <small class="fact-nota">incluye escritura</small></dd></div>
-          </dl>
-          <div class="project-actions">
-            <a class="btn btn-dark" href="#plano" data-goto-plan="puerto-varas">Ver lotes<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-            <a class="btn btn-line" href="#puerto-varas">Conocer el proyecto</a>
-          </div>
-          <a class="link-entorno" href="entorno.html"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>Descubre el entorno: rutas y tiempos</a>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<!-- ============================== CONOCE CADA PROYECTO ==============================
-     Se arma desde lib/manifest.js (foto, caracteristicas, cercanias…): un proyecto nuevo solo necesita sus datos.
-     Enlace directo: #proyecto-ID. El proyecto destacado tiene su propia pestaña y aquí solo se enlaza. -->
-<!-- Invitación a "Tu casa" (diseña tu parcela en 3D) -->
 <!-- ============================== MÁS PROYECTOS (se arman desde lib/manifest.js: masProyectos) ============================== -->
 <section class="section light mas-proyectos" id="mas-proyectos" data-vista="proyectos" aria-labelledby="mas-proyectos-title" data-mas-proyectos hidden>
   <div class="container">
     <header class="section-head reveal">
-      <p class="kicker">Más proyectos</p>
+      <p class="kicker">Nuestros proyectos</p>
       <h2 id="mas-proyectos-title">Fundos en <em>todo Chile</em></h2>
-      <p class="lead">Parcelas de 5.000&nbsp;m² en la costa, los lagos, los valles y la cordillera, de Valparaíso a Los Lagos. Toca un fundo para ver su ficha y fotos, o pide información y un asesor te cuenta los detalles.</p>
+      <p class="lead">Parcelas de 5.000&nbsp;m² de Valparaíso a Los Lagos: tres proyectos con plano y recorrido 360° y diez más en la costa, los lagos, los valles y la cordillera. Toca un fundo para ver su ficha y fotos.</p>
     </header>
-    <!-- Sala de cine (elegida por el cliente, paleta Arena): Chile completo de pie con un recuadro que viaja al fundo,
-         la "lupa" con ese tramo en grande y el carrusel de los fundos de norte a sur; al tocar uno se despliega su ficha -->
+    <!-- Ganó la opción vertical (votación del equipo, oct-2026): mapa largo de Chile con los fundos a la izquierda y la
+         galería de norte a sur por región a la derecha; tocar un fundo abre su ficha en la ventana -->
     <div class="mch" data-mch hidden>
-      <div class="mch-mapas">
-        <div class="mch-chile" data-mch-chile></div>
-        <div class="mch-lupa" data-mch-lupa></div>
-      </div>
+      <div class="mch-mapa" data-mch-mapa></div>
       <div class="mch-der">
-        <div class="mch-fila-h"><p class="mch-fila-t">Todos los fundos, de norte a sur</p><button class="mch-auto" type="button" data-mch-auto aria-pressed="true"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1h3v10H2zM7 1h3v10H7z"/></svg><span>Pausar</span></button></div>
-        <div class="mch-fila">
-          <button class="mch-flecha is-prev" type="button" data-mch-mover="-1" aria-label="Fundos más al norte"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-          <ul class="mch-row" data-mch-list aria-label="Fundos de norte a sur"></ul>
-          <button class="mch-flecha" type="button" data-mch-mover="1" aria-label="Fundos más al sur"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-        </div>
-        <div class="mch-act" data-mch-act></div>
+        <p class="mch-fila-t">Los fundos, de norte a sur</p>
+        <ul class="mch-row" data-mch-list aria-label="Fundos de norte a sur"></ul>
       </div>
     </div>
     <dialog class="mch-ficha" id="fundos-ficha" data-mch-ficha aria-label="Ficha del fundo"></dialog>
@@ -699,118 +436,8 @@
   </div>
 </section>
 
-<section class="section cream casa-promo" id="disena-proyectos" data-vista="proyectos" aria-labelledby="disena-proyectos-t">
-  <div class="container casa-promo-in">
-    <div class="casa-promo-txt reveal">
-      <p class="kicker"><span class="pv-badge">Nuevo</span> Diseña tu parcela</p>
-      <h2 id="disena-proyectos-t">Imagina tu casa <em>en tu parcela.</em></h2>
-      <p class="lead">Elige un lote y ubica tu casa, la piscina y el quincho a escala en 3D. Mira cuánto puedes construir: hasta 500&nbsp;m² en una parcela de 5.000&nbsp;m².</p>
-      <div class="casa-promo-acts">
-        <a class="btn btn-gold btn-lg" href="#plano" data-casa-guia><svg class="i" aria-hidden="true"><use href="#i-house"/></svg>Elige tu parcela y diseña<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        <a class="casa-promo-alt" href="#tu-casa">o pruébalo con un lote de ejemplo</a>
-      </div>
-      <ol class="casa-promo-pasos"><li><b>1</b>Elige un lote en el plano</li><li><b>2</b>Ubica tu casa en 3D</li><li><b>3</b>Envía tu diseño a un asesor</li></ol>
-    </div>
-    <figure class="casa-promo-img reveal">
-      <a href="#plano" data-casa-guia tabindex="-1" aria-hidden="true">
-        <img src="assets/img/casa-parcela-800.webp" srcset="assets/img/casa-parcela-800.webp 800w, assets/img/casa-parcela-1400.webp 1400w" sizes="(min-width: 960px) 600px, 92vw" width="1400" height="900" alt="" loading="lazy" decoding="async">
-        <span class="casa-promo-mini"><img src="assets/img/tu-casa-800.webp" width="800" height="514" alt="" loading="lazy" decoding="async"><b><svg class="i"><use href="#i-house"/></svg>Diséñala en 3D</b></span>
-      </a>
-      <figcaption class="casa-promo-cred">Casa de campo en Puyuhuapi, Aysén (referencial). Foto: <a href="https://commons.wikimedia.org/wiki/File:Puyuhuapi_2.jpg" target="_blank" rel="noopener">LBM1948</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>, recortada.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<section class="section dark py-sec" id="conoce" data-vista="proyectos" aria-labelledby="conoce-title" data-py hidden>
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">Conoce cada proyecto</p>
-      <h2 id="conoce-title">Cada lugar, <em>con su propio carácter</em></h2>
-    </header>
-    <div class="py-tabs" role="tablist" aria-label="Proyectos" data-py-tabs></div>
-    <div class="py-panel" id="py-panel" role="tabpanel" tabindex="-1" data-py-panel></div>
-  </div>
-</section>
-
-<!-- ============================== RECORRIDO 360° ============================== -->
-<section class="section cream tour-section" id="recorrido" data-vista="proyectos" aria-labelledby="tour-title">
-  <div class="container">
-    <header class="section-head reveal">
-      <p class="kicker">Recorrido virtual 360°</p>
-      <h2 id="tour-title">Camina el terreno <em>antes de viajar.</em></h2>
-      <p class="lead">Entra a cada proyecto como si estuvieras ahí: mira alrededor, recorre los caminos y ubica los lotes, sin salir de esta página. En el celular, mueve el teléfono para mirar.</p>
-    </header>
-
-    <div class="tour reveal" data-tour>
-      <nav class="tour-picker" aria-label="Elige el recorrido">
-        <a class="tour-pick" href="https://cmaulenb.github.io/fundoslonquimaynieve/" target="_blank" rel="noopener" data-tour-pick="malalcahuello" aria-current="true">
-          <span class="tour-pick-art" aria-hidden="true"></span>
-          <span class="tour-pick-text"><strong>Malalcahuello</strong><small>Cordillera · río Lolén</small></span>
-          <svg class="i tour-pick-go" aria-hidden="true"><use href="#i-360"/></svg>
-        </a>
-        <a class="tour-pick" href="https://marchigue.netlify.app/" target="_blank" rel="noopener" data-tour-pick="marchigue">
-          <span class="tour-pick-art" aria-hidden="true"></span>
-          <span class="tour-pick-text"><strong>Marchigüe</strong><small>Valle de Colchagua</small></span>
-          <svg class="i tour-pick-go" aria-hidden="true"><use href="#i-360"/></svg>
-        </a>
-        <a class="tour-pick" href="https://6aab0a2a79cbb906fe66b800--tourspuertovaras.netlify.app/" target="_blank" rel="noopener" data-tour-pick="puerto-varas">
-          <span class="tour-pick-art" aria-hidden="true"></span>
-          <span class="tour-pick-text"><strong>Puerto Varas</strong><small>Volcanes · parcelas planas</small></span>
-          <svg class="i tour-pick-go" aria-hidden="true"><use href="#i-360"/></svg>
-        </a>
-      </nav>
-
-      <div class="tour-stage" data-tour-stage data-state="poster">
-        <div class="tour-poster" data-tour-poster aria-hidden="true"></div>
-        <div class="tour-veil" aria-hidden="true"></div>
-
-        <div class="tour-intro">
-          <a class="tour-lens" href="https://cmaulenb.github.io/fundoslonquimaynieve/" target="_blank" rel="noopener" data-tour-enter>
-            <svg class="tour-ring" viewBox="0 0 160 160" aria-hidden="true" focusable="false">
-              <defs><path id="tour-ring-path" d="M80 80m-63 0a63 63 0 1 1 126 0a63 63 0 1 1-126 0"/></defs>
-              <circle class="tour-ring-ticks" cx="80" cy="80" r="76"/>
-              <text><textPath href="#tour-ring-path" textLength="392" lengthAdjust="spacing">Recorrido virtual · 360° · Fundos Inmobiliaria ·</textPath></text>
-            </svg>
-            <span class="tour-lens-core"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg><span data-tour-cta>Entrar</span></span>
-            <span class="sr-only" data-tour-label>al recorrido 360° de Malalcahuello</span>
-          </a>
-          <p class="tour-name"><span data-tour-region>La Araucanía · Cordillera</span><strong data-tour-name>Malalcahuello</strong></p>
-          <p class="tour-tip">Arrastra para mirar alrededor · Pellizca<span class="on-mouse"> o usa la rueda</span> para acercarte</p>
-        </div>
-
-        <div class="tour-frame" data-tour-frame></div>
-
-        <div class="tour-hud" data-tour-hud>
-          <p class="tour-live"><span class="tour-dot" aria-hidden="true"></span><span data-tour-hud-name>Malalcahuello</span><span class="tour-live-tag">360°</span></p>
-          <div class="tour-hud-actions">
-            <a class="icon-btn" href="https://cmaulenb.github.io/fundoslonquimaynieve/" target="_blank" rel="noopener" data-tour-newtab aria-label="Abrir el recorrido en una pestaña nueva" title="Abrir en una pestaña nueva"><svg class="i" aria-hidden="true"><use href="#i-external"/></svg></a>
-            <button class="icon-btn" type="button" data-tour-full aria-label="Ver en pantalla completa" title="Pantalla completa"><svg class="i" aria-hidden="true"><use href="#i-expand"/></svg></button>
-            <button class="icon-btn" type="button" data-tour-close aria-label="Salir del recorrido" title="Salir del recorrido"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
-          </div>
-        </div>
-        <p class="tour-drag" aria-hidden="true"><svg class="i"><use href="#i-360"/></svg>Arrastra para mirar</p>
-
-        <div class="tour-blocked" data-tour-blocked>
-          <p>Esta vista previa no permite mostrar el recorrido dentro de la página. En el sitio publicado se ve aquí mismo.</p>
-          <a class="btn btn-gold" href="https://cmaulenb.github.io/fundoslonquimaynieve/" target="_blank" rel="noopener" data-tour-newtab><svg class="i" aria-hidden="true"><use href="#i-external"/></svg>Abrir el recorrido 360°</a>
-        </div>
-        <p class="sr-only" aria-live="polite" data-tour-status></p>
-      </div>
-
-      <div class="tour-dock">
-        <p><svg class="i" aria-hidden="true"><use href="#i-compass"/></svg><span><span data-tour-dock-q>¿Te interesa</span> <strong data-tour-dock-name>Malalcahuello</strong>? Revisa sus lotes o visítalo en persona.</span></p>
-        <div class="tour-dock-actions">
-          <a class="btn btn-dark btn-sm" href="#plano" data-tour-plan>Ver lotes<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-          <a class="btn btn-line btn-sm" href="#visita" data-tour-visit><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>Agendar visita</a>
-          <a class="btn btn-line btn-sm" href="https://wa.me/?text=" target="_blank" rel="noopener" data-tour-share><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Compartir</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============================== PLANO INTERACTIVO ============================== -->
-<section class="section dark plan-section" id="plano" data-vista="inicio proyectos" aria-labelledby="plano-title">
+<section class="section dark plan-section" id="plano" data-vista="inicio" aria-labelledby="plano-title">
   <div class="container">
     <header class="section-head reveal">
       <p class="kicker">Elige tu parcela</p>
@@ -1397,7 +1024,7 @@
 
 
 <!-- ============================== VISITA / CONTACTO ============================== -->
-<section class="section dark visit" id="visita" data-vista="inicio proyectos compra equipo" aria-labelledby="visita-title">
+<section class="section dark visit" id="visita" data-vista="inicio compra equipo" aria-labelledby="visita-title">
   <svg class="visit-lines" viewBox="0 0 1600 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
     <g fill="none" stroke="url(#g-furrow)" stroke-linecap="round">
       <path class="furrow" pathLength="1" stroke-width="1.6" d="M-40 260C300 160 700 150 1100 230"/>
@@ -1503,7 +1130,7 @@
     </nav>
     <nav class="footer-col" aria-label="Tu compra">
       <h2>Tu compra</h2>
-      <a href="#recorrido">Recorrido 360°</a>
+      <a href="entorno.html#tour-360">Recorrido 360°</a>
       <a href="#plano">Elige tu parcela</a>
       <a href="#como-comprar">Cómo comprar</a>
       <a href="#portal">Mi compra (próximamente)</a>
@@ -1514,7 +1141,7 @@
       <h2>Trabaja con nosotros</h2>
       <a href="#vende-tu-campo">Vende tu campo</a>
       <a href="#proveedores">Ofrece tus servicios</a>
-      <a href="#mas-proyectos" data-mp-link hidden>Más proyectos</a>
+      <a href="#mas-proyectos" data-mp-link hidden>Todos los fundos</a>
     </nav>
     <div class="footer-col">
       <h2>Contacto</h2>

@@ -70,38 +70,22 @@ const ARGS = ["--proxy-server=" + (process.env.HTTPS_PROXY || "http://127.0.0.1:
   results.preventaVisible = await page.locator("[data-preventa-panel]").isVisible();
   await page.locator("[data-plan]").screenshot({ path: "i-plan-preventa.png" });
 
-  // Buscador → plano
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-  await page.waitForTimeout(300);
-  await page.selectOption("#f-destino", "malalcahuello");
-  await page.selectOption("#f-presupuesto", "20000000");
-  await page.waitForTimeout(600);
-  results.finderCount = await page.locator("[data-finder-count]").textContent();
-  results.finderLabel = await page.locator("[data-finder-label]").textContent();
-  await page.selectOption("#f-destino", "puerto-varas");
-  await page.waitForTimeout(200);
-  results.finderPreventa = await page.locator("[data-finder-label]").textContent();
-  await page.selectOption("#f-destino", "malalcahuello");
-  await page.locator(".finder-btn").click();
-  await page.waitForTimeout(1500);
-  results.afterFinderTab = await page.locator('.tab[aria-selected="true"]').getAttribute("data-tab");
-  results.afterFinderPrice = await page.locator("[data-price-out]").textContent();
-  results.afterFinderSummary = await page.locator("[data-summary]").textContent();
-  results.scrollAfterFinder = await page.evaluate(() => Math.round(document.getElementById("plano").getBoundingClientRect().top));
-
-  // Conoce cada proyecto: "Conocer el proyecto" lleva al apartado con ese proyecto elegido
-  await page.evaluate(() => document.getElementById("proyectos").scrollIntoView({ behavior: "instant" }));
+  // "Conocer el proyecto" (Otros proyectos, en Inicio) abre la ficha de ese fundo en la pestaña Proyectos
+  await page.evaluate(() => document.getElementById("otros-proyectos").scrollIntoView({ behavior: "instant" }));
   await page.waitForTimeout(800);
-  await page.locator('.project[data-project="marchigue"] a[href="#proyecto-marchigue"]').click();
+  await page.locator('#otros-proyectos a[href="#proyecto-marchigue"]').click();
   await page.waitForTimeout(1200);
   results.fichaProyecto = await page.evaluate(() => ({
-    elegido: document.querySelector("[data-py-tab][aria-selected=true]").dataset.pyTab,
-    titulo: document.querySelector(".py h3").textContent,
-    top: Math.round(document.getElementById("conoce").getBoundingClientRect().top),
-    caracteristicas: document.querySelectorAll(".py-why li").length,
+    vista: document.documentElement.dataset.vista,
+    abierta: document.querySelector("[data-mch-ficha]").open,
+    titulo: document.querySelector(".mch-ficha .mf-t").textContent,
+    caracteristicas: document.querySelectorAll(".mch-ficha .py-why li").length,
     hash: location.hash
   }));
-  await page.locator(".py").screenshot({ path: "i-ficha.png" });
+  await page.locator(".mch-ficha .mf-scroll").screenshot({ path: "i-ficha.png" });
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
+  await vista(page, "inicio");   // el formulario de visita no va en la pestaña Proyectos
 
   // Cómo pagarlo (cotizador dentro del lote) en cuotas, en una pestaña aparte para no cambiar el estado de esta
   {
@@ -133,11 +117,11 @@ const ARGS = ["--proxy-server=" + (process.env.HTTPS_PROXY || "http://127.0.0.1:
   await page.locator(".visit-form").screenshot({ path: "i-form-ok.png" });
 
   // Reservar un lote → formulario precargado
-  await vista(page, "proyectos");
+  await vista(page, "inicio");
   await page.evaluate(() => document.getElementById("plano").scrollIntoView({ behavior: "instant" }));
   await page.waitForTimeout(600);
   if (await page.locator('label.st-reservada').isVisible()) await page.locator('label.st-reservada').click(); // vuelve a mostrar reservados (estado anterior: solo disponibles)
-  await page.locator('.lot:not(.is-dim)').first().click({ force: true });
+  await page.locator('.lot.st-disponible:not(.is-dim)').first().click({ force: true });
   await page.locator("[data-d-reserve]").click();
   await page.waitForTimeout(1500);
   results.prefillMsg = await page.inputValue("#v-mensaje");

@@ -60,9 +60,8 @@ async function page(browser, w, h, mob) {
   await d.context().close();
   // ---- 390 móvil
   let m = await page(browser, 390, 844, true);
-  await m.evaluate(() => document.querySelector(".finder").scrollIntoView({ block: "center", behavior: "instant" })); await W(400);
-  await m.selectOption(".finder select >> nth=1", { index: 2 }); await W(600);
-  await m.click(".finder-btn"); await W(1800);
+  // llegar al plano desde un enlace (antes el buscador de la portada de Proyectos)
+  await m.evaluate(() => document.querySelector('[data-goto-plan="marchigue"]').click()); await W(1800);
   out.mFinder = await m.evaluate(() => { const s = document.querySelector(".plan-summary").getBoundingClientRect(), t = document.querySelector(".filters-toggle").getBoundingClientRect(), c = document.querySelector(".plan-canvas").getBoundingClientRect(); return { summaryW: Math.round(s.width), toggleRight: Math.round(t.right), canvasTop: Math.round(c.top), others: document.querySelector("[data-plan-others]").hidden }; });
   await m.screenshot({ path: "ux/qafix-m-finder.png" });
   // chip: los lotes que calzan quedan a la vista
@@ -86,10 +85,6 @@ async function page(browser, w, h, mob) {
   await m.evaluate(() => document.querySelector('[data-zoom="fit"]').click()); await W(700);
   out.pvFitCrowded = await m.evaluate(() => document.querySelector(".plan-canvas svg").classList.contains("is-crowded"));
   await m.screenshot({ path: "ux/qafix-m-pvfit.png" });
-  // tarjeta: Recorrido 360° aterriza con el visor a la vista
-  await m.evaluate(() => document.querySelector('.project .art-360').scrollIntoView({ block: "center", behavior: "instant" })); await W(300);
-  await m.evaluate(() => document.querySelector('.project .art-360').click()); await W(2600);
-  out.tourLand = await m.evaluate(() => { const s = document.querySelector(".tour-stage").getBoundingClientRect(); return [Math.round(s.top), Math.round(s.bottom)]; });
   // CTA Ver lotes llega al plano
   await m.evaluate(() => document.querySelector('[data-goto-plan="marchigue"]').scrollIntoView({ block: "center", behavior: "instant" })); await W(300);
   await m.evaluate(() => document.querySelector('[data-goto-plan="marchigue"]').click()); await W(1500);

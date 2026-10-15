@@ -27,13 +27,13 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
 
 ## Estructura y datos
 - **Pestañas** (`initVistas` en `main.js`): Inicio (`#puerto-varas`, portada con Puerto Varas destacado) · Proyectos · Tu compra · Equipo. Cada sección dice
-  en `data-vista` en qué pestañas aparece (`#plano` en "inicio proyectos"; `#recorrido` solo en Proyectos: en la
-  pestaña Inicio los botones 360° abren `entorno.html#tour-360`; `#visita` en todas) y el
+  en `data-vista` en qué pestañas aparece (`#plano` solo en Inicio; `#visita` en todas menos Proyectos; los botones 360°
+  abren `entorno.html…#tour-360` del proyecto) y el
   CSS esconde el resto (`html.js[data-vista=…]`). Sin JavaScript se ve todo seguido. Un script en el `<head>` fija la
   pestaña según el `#` para que no parpadee. Los enlaces internos (`#simulador`, `#plano`, `#equipo-4`…) cambian de
-  pestaña solos; las pestañas llevan al comienzo (`#puerto-varas`, `#proyectos-inicio`, `#tu-compra`, `#nosotros`).
+  pestaña solos; las pestañas llevan al comienzo (`#puerto-varas`, `#mas-proyectos`, `#tu-compra`, `#nosotros`).
   En celular y tablet (< 1024 px) las pestañas van en una franja bajo la barra (`--tabs-h`; usar `navBottomPx()` para
-  medir la barra). Al cambiar de pestaña se dispara `resize` (plano y recorrido se reacomodan) y `fundos:vista`.
+  medir la barra). Al cambiar de pestaña se dispara `resize` (el plano y el mapa de Chile se reacomodan) y `fundos:vista`.
 - **Inicio** (feedback del equipo de ventas, octubre 2026): la pestaña se llamaba "Puerto Varas" y la gente creía que
   solo vendían ahí. Ahora se llama **Inicio**; la portada tiene un título general ("Tu lugar en el campo, a tu nombre"),
   nombra los tres proyectos y presenta Puerto Varas como "Nuevo"; al pie, la franja **Nuestros proyectos** (`.pv-proys`,
@@ -49,21 +49,22 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   (`videoDestacado`, bucle sin texto armado con los videos del cliente: lago, Frutillar, Petrohué, Osorno y Puerto
   Varas; versión vertical para celular), datos (desde, disponibles), la vitrina del entorno (mapa en miniatura con
   las rutas de `lib/entorno-datos.js`, que se carga al acercarse; tiempos y videos que abren `entorno.html#lugar`) y
-  es el proyecto con que parten el plano y el recorrido. Al final de esa pestaña, "Cotiza también nuestros otros
+  es el proyecto con que parte el plano. Al final de esa pestaña, "Cotiza también nuestros otros
   proyectos" (`#otros-proyectos`, `[data-otro]`): Malalcahuello y Marchigüe con desde/disponibles del manifiesto,
   "Cotizar" (precarga el formulario de visita) y "Ver lotes". El plano de Puerto Varas (ancho, `.plan.is-wide`) va con
   el detalle a la derecha y baja de alto (`layoutPlan`); el panel toma el alto del plano y muestra 3 lotes más baratos. Las pruebas usan `tools/pruebas/_vista.js` (`clasica()` deja
-  la página como antes: pestaña Proyectos con el plano en Malalcahuello).
-- **Conoce cada proyecto** (`#conoce`, pestaña Proyectos, `initFichas` en `main.js`): un apartado por proyecto, más
-  chico que la pestaña Puerto Varas (foto de portada con crédito, desde/disponibles/superficie/reserva, características,
-  "Cerca de tu parcela" con enlace al mapa del entorno, "Ver lotes", "Cotizar", 360° y video). Se arma **solo desde el
-  manifiesto** (`foto`, `caracteristicas` con `icono` = `<symbol id="i-…">`, `descripcion`, `cercanias`, `tour`, `video`,
-  `entorno`): un proyecto nuevo aparece en el selector sin tocar HTML. El cliente no quiere una pestaña por proyecto
-  (vendrán muchos): el selector es una franja que se desliza. El destacado no se repite (su botón lleva a su pestaña).
-  Enlace directo `#proyecto-ID` (abre la pestaña y elige el proyecto); "Conocer el proyecto" de las tarjetas y de "otros
-  proyectos" lleva ahí. Reemplazó la antigua ficha en ventana (`#proyecto`, `data-open-project`). Sin JavaScript no se ve.
+  la pestaña Inicio con el plano en Malalcahuello).
+- **Pestaña Proyectos = solo el mapa "Fundos en todo Chile"** (`#mas-proyectos`; pedido del cliente, oct-2026: "que la
+  página de proyectos sea solo de los proyectos"; el equipo votó entre una versión vertical y una horizontal y **ganó la
+  vertical**). Se quitaron de esa pestaña la portada con el video de caballos, el buscador, la franja de valores, las
+  tarjetas de proyectos, el aviso de Tu casa, "Conoce cada proyecto" y el recorrido 360° en la página (con sus módulos
+  `initHero`, `initFinder`, `initProjects`, `initFichas` e `initTour`, y su CSS). Los enlaces viejos (`#proyectos`,
+  `#proyectos-inicio`, `#conoce`, `#recorrido`, `#inicio`, `#buscador`, `#recorrido-ID`) llevan al mapa y `#proyecto-ID`
+  ("Conocer el proyecto" de Inicio) abre la ficha de ese fundo en la ventana. El recorrido 360° de cada proyecto se abre
+  en su mapa del entorno (`entorno.html[?p=ID]#tour-360`), también desde el menú y el pie. `videoPortada` del manifiesto
+  y `assets/video/portada*` ya no se usan.
 - `index.html` todo el contenido (se lee sin JS) · `styles.css` tokens del manual + estilos · `main.js` módulos IIFE
-  (`initPlan`, `initTour`, `initSim`, `initVisit`, `initSellers`, `initVideo`, `initCompra`, …) aislados con `safe()`.
+  (`initPlan`, `initVisit`, `initSellers`, `initVideo`, `initCompra`, `initMapaChile`, …) aislados con `safe()`.
 - `lib/manifest.js` **único lugar de datos**: contacto, proyectos, lotes (`[n, categoría, estado]`), categorías de
   precio (color, precio, precio lista), financiamiento, `equipo` (nombre, apodo, cargo, foto, bio, whatsapp, video)
   y `videoPortada` (mp4/webm y versión `Movil`). Contacto general real (oct-2026): WhatsApp +56 9 9292 2429 y
@@ -84,7 +85,7 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
     rutas y sus `originales/`) y escriben `lib/entorno-ID.js` y `assets/entorno/ID/`. Se abren con
     `entorno.html?p=ID` (lista blanca en el cargador al final de `entorno.html`; sin `p` es Puerto Varas) y la llave
     `pagina` pone marca, bajada, texto y enlace de vuelta. En el sitio: `entorno` del proyecto en el manifiesto
-    (apartado "Conoce cada proyecto") y enlaces "Descubre el entorno" en las tarjetas de proyectos y de "otros proyectos".
+    (ficha del fundo en Proyectos) y enlaces "Descubre el entorno" en las tarjetas de "otros proyectos".
     La coordenada que dio el cliente para **Malalcahuello está en el sector Lolén (comuna de Lonquimay)**, a 20 min de
     Lonquimay y 50 min del pueblo de Malalcahuello; el mapa incluye el pueblo y el volcán Batea Mahuida (pedido del
     cliente). En Marchigüe el nombre del sector no está confirmado. Todos los textos de lugares de estos dos mapas
@@ -171,7 +172,7 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   lote) que abre la herramienta en ese lote. El aviso ofrece además "o pruébalo con un lote de ejemplo" (`#tu-casa`).
   **Acceso visible** (el cliente lo encontraba escondido): "Diseña tu casa" con etiqueta "Nuevo" en la barra (`.nl-casa`;
   en la franja de celular, "Tu casa" con un punto) y en el menú (`.menu-casa`), y un aviso con imagen (`.casa-promo`,
-  `#disena-inicio` en Inicio tras "Por qué" y `#disena-proyectos` en Proyectos tras las tarjetas). La imagen del aviso
+  `#disena-inicio` en Inicio tras "Por qué"). La imagen del aviso
   es una **foto real** de una casa de campo en Puyuhuapi, Aysén (Wikimedia Commons, LBM1948, CC BY-SA 4.0, recortada;
   `assets/img/casa-parcela-800/1400.webp`, crédito obligatorio en el pie) con una miniatura del diseño en 3D encima
   (`assets/img/tu-casa-800.webp`, captura de la herramienta). Se bajó con un flujo temporal de GitHub Actions, ya borrado.
@@ -207,74 +208,44 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   Montt (textos resumidos de su sitio; los nombres antiguos dentro de esos textos, como "Fundo Río Mar" o "La Gran
   Reserva", no se usan).
 - **Mapa "Fundos en todo Chile"** (`[data-mch]` en `#mas-proyectos`, `initMapaChile`; pedido del cliente: "jugar con la
-  latitud"): **Sala de cine con paleta Arena** (elegida por el cliente tras dos artefactos de propuestas; antes fue una
-  franja con Chile acostado, que el cliente descartó: "Chile acostado no es representativo", y el fondo negro "opacaba
-  la figura del país"). **Chile completo de pie** (Arica a Magallanes, continental, aunque no haya proyectos en todo el
-  país) desde `lib/mapa-chile.js`, **generado** por `tools/mapa_chile_build.py` (límites de la BCN vía
-  github.com/fcortes/Chile-GeoJSON, simplificados con shapely, proyección equirectangular `proy`), con latitudes cada 5° y
-  un recuadro dorado (`.mch-win`) que viaja al fundo elegido; al lado, la **lupa** (`[data-mch-lupa]`): el mismo mapa con
-  un `viewBox` de 6,5° de latitud que se anima hasta el fundo, con regiones, ciudades de referencia (`CIU`, ceden su
-  nombre si chocan), latitud de cada grado, línea dorada en la latitud del fundo y los nombres sin choques ni cortes en
-  el borde (`rotulos()`; textos a tamaño fijo en pantalla con `--fs`). A la derecha (pedido del cliente: mapa más chico, carrusel arriba y resumen abajo) el
-  carrusel tipo Netflix de norte a sur (`.mch-row`, flechas en computador; al pasar el mouse la tarjeta se eleva con
-  borde dorado y "Ver ficha" en la esquina, sin salirse de la fila, que antes la cortaba; en celular el activo es el primero
-  de la fila). **El carrusel avanza solo** (pedido del cliente: un fundo cada 3 s, vuelve al comienzo, y la lupa viaja
-  con él); se detiene con el mouse encima, con el foco adentro, con la ficha abierta, fuera de la vista, 12 s tras tocar
-  la fila y con el botón "Pausar" (`[data-mch-auto]`); con movimiento reducido parte en pausa. **Todas las tarjetas llevan emblema dibujado** (pedido del
-  cliente, también Puerto Varas, Marchigüe y Malalcahuello: escenas en `EMB` a partir de sus logos), los tres con plano
-  con el sello "Plano y recorrido 360°". Bajo el carrusel, el **resumen del fundo activo** (`[data-mch-act]`, `.mch-res`:
-  primera foto de `galeria` o el emblema, región y latitud, texto, datos y "Ver ficha y fotos" + "Ver lotes" o "Quiero
-  información"), que cambia con el carrusel (los dos botones lado a lado cuando caben). Tocar una tarjeta solo elige el fundo
-  (resumen y mapa; detiene el avance 12 s); "Ver ficha y fotos" abre la **ficha en una ventana sobre la página** (`<dialog>` con
-  `showModal`, pedido del cliente: "que muestre todo el proyecto"), con **flechas a los costados** (`.mf-flecha`, en los
-  márgenes en computador y abajo en celular), flechas del teclado, deslizar la foto en celular y "Anterior/Siguiente" al
-  final para pasar por los 13 fundos (el carrusel acompaña); se cierra con ×, Escape o tocando fuera, y las acciones
-  (ver lotes, cotizar, 360°) la cierran antes de ir. La ficha tiene el mismo estilo oscuro de
-  "Conoce cada proyecto" (reusa las clases `.py-*`: foto grande con el nombre, miniaturas, franja de datos, características
-  con íconos, "Cerca de tu parcela" y acciones; sin fotos, el emblema en un recuadro crema) (`[data-mch-ficha]`): fotos con miniaturas (`galeria` del
-  proyecto en el manifiesto, armadas por `tools/galeria_build.py` en `assets/img/galeria/`; el satelital del entorno
-  lleva crédito Sentinel-2/EOX). **Los 13 fundos tienen fotos** (oct-2026): los 10 de `masProyectos` con fotos del
-  cliente, subidas a `subidas/` como "NN. Nombre.webp" (el número da el orden, la primera va en el resumen; `ALIAS` del
-  script reconoce el fundo), convertidas y borradas de la rama; los títulos (`alt`) se escribieron a mano según lo que se
-  ve en cada foto (por confirmar con el cliente), descripción, datos (desde, disponibles, 5.000 m², reserva), destacados, cercanías y
-  "Ver lotes y precios" / "Recorrido 360°" / "Conocer el proyecto"; los de `masProyectos` muestran emblema, lema,
-  etiquetas (sin `galeria`, "Fotos del proyecto: próximamente") y "Quiero información" por WhatsApp. Tocar el Chile completo viaja al
-  fundo más cercano en latitud; tocar un punto de la lupa mueve el carrusel. Un punto por proyecto (dorado los 3 con
-  plano: lat/lon del enlace `mapa` del manifiesto; claros los de `masProyectos`: `lat`/`lon` aproximados); la región sale
-  de dónde cae el punto. Sin `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`, `mpCard`).
-  Crédito "Chile continental · límites regionales: BCN". Prueba: `tools/pruebas/fundos-chile.js`.
-- **Propuestas para votar: pestaña Proyectos solo con el mapa** (pedido del cliente, oct-2026: "que la página de
-  proyectos sea solo de los proyectos", sin la portada, las tarjetas, el aviso de Tu casa, "Conoce cada proyecto" ni el
-  recorrido 360°, y que el mapa sea la página). Se activan con `?mapa=vertical` o `?mapa=horizontal` en la dirección
-  (script en el `<head>` → `html.pm` y `pm-v`/`pm-h`); **sin el parámetro el sitio queda como antes**. En ese modo
-  `initVistas` marca esas secciones `data-vista="oculta"`, deja el plano solo en Inicio ("Ver lotes" lleva ahí), saca de
-  Proyectos el formulario de visita (#visita sigue en las otras pestañas; "Cotizar" lleva a Inicio), la
-  pestaña Proyectos parte en `#mas-proyectos` y `#proyecto-ID` ("Conocer el proyecto") abre la ficha de ese fundo en la
-  ventana; el 360° de la ficha abre el tour en otra pestaña. **Vertical** = "como la horizontal pero de pie" (pedido del cliente): **mapa estático y largo** a la izquierda
-  (`.mch.is-largo`, `armarV()`: tramo de Chile con punto y nombre por fundo a los costados con línea corta, el lado según
-  el ancho de Chile a esa latitud, latitudes cada 2°; una búsqueda binaria elige cuántos grados mostrar para que el mapa
-  llegue al final de la galería, hasta Chile entero, y se rehace al cambiar el alto; textos y puntos a tamaño fijo con
-  `--fs`) y a la derecha una **galería de norte a sur agrupada por región** en 3 columnas (`.mch.is-galeria`,
-  `.mch-grupo`), mitad y mitad. Tocar un fundo abre su ficha; al bajar se marca el fundo a media pantalla (sin mover el
-  mapa); sin resumen ni avance automático. **Horizontal**
-  (`.mch.is-horiz`, lo pidió el equipo): Chile completo acostado en una franja chica con el recuadro del tramo y, debajo,
-  el tramo de 31°S a 44°S a todo el ancho (norte a la izquierda, mar abajo) con punto y rótulo por fundo en pistas sin
-  choques (líneas acortadas: las pistas parten un poco dentro del mapa, con borde claro en el texto; el cliente probó una
-  versión "en una lámina" con rótulos junto al punto y prefirió esta) y latitudes cada 2° (en celular se desliza y sigue al fundo activo); mismo carrusel, resumen y ventana. **Enlaces cerrados para votar**: con
-  `&cerrado=1` (`html.pm-cerrado`) la página queda solo en Proyectos (en la barra solo la pestaña Proyectos; el resto del contenido se quita del
-  DOM): sin menú, pie, WhatsApp flotante ni botones
-  que lleven a otras partes del sitio (ver lotes, cotizar, mapa del entorno), el logo no enlaza, no se puede cambiar de
-  pestaña ni por `#`, y la barra muestra "Vista previa para votación · Opción A · Vertical" (o B · Horizontal). Cuando
-  el equipo elija, se deja una como la pestaña Proyectos por defecto, se quitan el parámetro y lo que no se use, y se
-  ajustan las pruebas que usan esas secciones (`interacciones`, `plano`, `recorrido`, `_vista.js`).
+  latitud"; es toda la pestaña Proyectos). Historia: el cliente descartó Chile acostado ("no es representativo") y el
+  fondo negro ("opacaba la figura del país"), eligió la paleta **Arena** y después pasó por una "sala de cine" (Chile
+  completo + lupa + carrusel que avanzaba solo + resumen); el equipo votó entre dos propuestas y **ganó la vertical**
+  (oct-2026), que es la actual: a la izquierda un **mapa largo y fijo** (`[data-mch-mapa]`, `armarV()`): tramo de Chile
+  con punto y nombre por fundo a los costados con línea corta (el lado según el ancho de Chile a esa latitud: costa a la
+  izquierda, cordillera a la derecha), latitudes cada 2°; una búsqueda binaria elige cuántos grados mostrar para que el
+  mapa llegue al final de la galería (hasta Chile entero) y se rehace al cambiar el alto de la galería (`ResizeObserver`);
+  textos y puntos a tamaño fijo en pantalla con `--fs`; en celular, un largo fijo (dos veces el ancho). Chile sale de
+  `lib/mapa-chile.js`, **generado** por `tools/mapa_chile_build.py` (límites de la BCN vía github.com/fcortes/Chile-GeoJSON,
+  simplificados con shapely, proyección equirectangular `proy`). A la derecha, la **galería de norte a sur agrupada por
+  región** (`.mch-row`, `.mch-grupo`; 3 columnas en computador, 2 en celular), mitad y mitad con el mapa. Al bajar se marca
+  el fundo que está a media pantalla (punto, nombre y región). **Todas las tarjetas llevan emblema dibujado** (escenas en
+  `EMB` a partir de los logos del cliente), los tres con plano con el sello "Plano y recorrido 360°"; al pasar el mouse la
+  tarjeta se eleva con borde dorado y "Ver ficha". Tocar una tarjeta, un punto o un nombre del mapa abre la **ficha en una
+  ventana sobre la página** (`<dialog>` con `showModal`, `[data-mch-ficha]`, pedido del cliente: "que muestre todo el
+  proyecto"), con **flechas a los costados** (`.mf-flecha`, en los márgenes en computador y abajo en celular), flechas del
+  teclado, deslizar la foto en celular y "Anterior/Siguiente" al final para pasar por los 13 fundos; se cierra con ×,
+  Escape o tocando fuera, y "Ver lotes" y "Cotizar" la cierran antes de ir (a Inicio). Estilo oscuro con las clases
+  `.py-*` (foto grande con el nombre, miniaturas, franja de datos, características con íconos, "Cerca de tu parcela" y
+  acciones; sin fotos, el emblema en un recuadro crema). Fotos con miniaturas (`galeria` del proyecto en el manifiesto,
+  armadas por `tools/galeria_build.py` en `assets/img/galeria/`; el satelital del entorno lleva crédito Sentinel-2/EOX).
+  **Los 13 fundos tienen fotos** (oct-2026): los 10 de `masProyectos` con fotos del cliente, subidas a `subidas/` como
+  "NN. Nombre.webp" (el número da el orden; `ALIAS` del script reconoce el fundo), convertidas y borradas de la rama; los
+  títulos (`alt`) se escribieron a mano según lo que se ve en cada foto (por confirmar con el cliente). Los 3 con plano
+  muestran descripción, datos (desde, disponibles, 5.000 m², reserva), destacados, cercanías y "Ver lotes y precios" /
+  "Cotizar" / "Recorrido 360°" (al mapa del entorno); los de `masProyectos`, emblema, lema, etiquetas y "Quiero
+  información" por WhatsApp / "Agendar una conversación". Un punto por proyecto (dorado los 3 con plano: lat/lon del
+  enlace `mapa` del manifiesto; claros los de `masProyectos`: `lat`/`lon` aproximados); la región sale de dónde cae el
+  punto. Sin `lib/mapa-chile.js`, las tarjetas van en la grilla simple (`[data-mp-list]`, `mpCard`). Crédito "Chile
+  continental · límites regionales: BCN". Prueba: `tools/pruebas/fundos-chile.js`.
 - **Formulario de la portada** (`[data-pv-lead]`, `initPvLead`): translúcido (vidrio con desenfoque),
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el
   mensaje ("plano y precios", "de lanzamiento" si es el destacado), lo muestra y lo envía con un enlace de WhatsApp, igual que `#visita`.
 - **Fotos de las parcelas** (`assets/img/tour-ID-*`, 800/1600 px y miniatura): vistas aéreas reales sacadas de la
-  panorámica de cada tour 3DVista (material del cliente, sin crédito). Se usan en el fondo del recorrido 360° y su
-  selector (`tourFoto`; sin él, la ilustración de la tarjeta), en las tarjetas de "otros proyectos" y en el apartado
-  "Conoce cada proyecto" (`foto`; si alguna vez se usa una foto ajena, `credito` y `url` muestran el crédito). Antes
+  panorámica de cada tour 3DVista (material del cliente, sin crédito). Se usan en las tarjetas de "otros proyectos" y en la
+  franja "Nuestros proyectos" de Inicio (`tourFoto`, `foto`; antes también en el recorrido 360° en la página y "Conoce
+  cada proyecto", ya quitados). Antes
   hubo fotos de Wikimedia Commons; se reemplazaron por estas. Se arman con `tools/tour_fondo.py` (ver su encabezado). Los tours
   no se alcanzan desde la nube: las caras se bajaron con un flujo temporal de GitHub Actions, ya borrado.
 - **Vitrina para otros sitios** (`vitrina.html`, generada por `tools/vitrina_build.py` desde la sección `#entorno` de
@@ -339,7 +310,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   queda como **"Próximamente"** (etiqueta `.pronto` en la barra, el menú, la pestaña y la sección; sello en el celular de
   muestra; botón "Avísame cuando esté listo" por WhatsApp). No nombrar Fundos 360° en textos visibles hasta que el
   cliente lo pida (el sitio sigue con `noindex` hasta el cambio de dominio).
-- Portada: video de caballos pastando (entregado por el cliente, `assets/video/portada*`: bucle sin salto con fundido, sin audio, versión vertical para celular) en el marco de la portada de Proyectos; de respaldo, un cuadro del mismo video (`portada.webp`, `portada-movil.webp`). La foto grupal del equipo se quitó (incluía a Marjorie, que salió): en Nosotros va un mosaico con las fotos actuales (`.team-mosaic`, actualizarlo si cambia el equipo). Las tarjetas de proyectos (`.project-art.has-foto`) usan la vista aérea de cada parcela; la ilustración SVG queda oculta (la clonan otros módulos como respaldo).
+- La portada con el video de caballos (pestaña Proyectos) se quitó cuando Proyectos pasó a ser solo el mapa de Chile. La foto grupal del equipo se quitó (incluía a Marjorie, que salió): en Nosotros va un mosaico con las fotos actuales (`.team-mosaic`, actualizarlo si cambia el equipo).
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
   Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Stefy, Diego, Geonela y Elvis; grabados por el cliente en la misma oficina). Todas las
   fotos (`assets/img/equipo-ID.webp`, **cuerpo completo**, 3:4 como las tarjetas) son de una sesión del cliente en la misma
@@ -382,5 +353,5 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   van como pestañas en `#tu-compra` (`initCompra`; los enlaces a esos `#id` abren su pestaña). Desde oct-2026 esas
   pestañas son una **fila liviana** de texto con subrayado dorado, clara y **no fija** (`.tc-bar`; el título "Todo sobre tu
   compra" queda solo para lectores de pantalla): el cliente sentía que la barra oscura fija con píldoras congestionaba; Nosotros compacto con
-  valores cortos y el equipo en galería (antes carrusel); proyectos en carrusel en celular; indicador de sección (`[data-nav-where]`)
+  valores cortos y el equipo en galería (antes carrusel); indicador de sección (`[data-nav-where]`)
   y barra de avance (`--avance` en `.nav`). Medir el largo con `tools/pruebas/largo.js` si se agregan secciones.
