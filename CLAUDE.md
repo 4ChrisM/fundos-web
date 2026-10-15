@@ -12,8 +12,8 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   (MX/TXT) no se tocan. Ya es el sitio oficial: sin `noindex` (salvo `vitrina.html`), con `robots.txt`, `sitemap.xml`,
   `canonical`. Antes vivió en `fundos.biplot.cl` (CNAME `fundos` de biplot.cl) y, hasta
   octubre 2026, en `Biplot/biplot` (`propuestas/fundos-inmobiliaria/`, con su historial; redirige a fundos.biplot.cl).
-- **Sistema del cliente:** Fundos 360° (`4ChrisM/fundos-os`, Next.js + Supabase, módulo de leads). Ver en README el
-  pendiente de conectar el formulario y la disponibilidad.
+- **Sistema del cliente:** Fundos 360° (`4ChrisM/fundos-os`, Next.js + Supabase, módulo de leads). Formulario y disponibilidad ya conectados (ver "Leads a Fundos 360°" y
+  "Disponibilidad desde Fundos 360°").
 - **Vista previa privada (artefacto de Claude):** https://claude.ai/artifact/NthH9NFHsid6PzqL8HN9wU
   (se actualiza con `tools/artefacto_build.py`, ver abajo). Ahí los recorridos 360° no se ven: el visor bloquea iframes.
 
@@ -268,6 +268,15 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   vista) contra bots. Del lado de Fundos 360°: `app/api/leads/web/route.ts` de `4ChrisM/fundos-os` (solo acepta el
   origen fundosinmobiliaria.com, crea el lead sin asignar con origen "Sitio web", no duplica el mismo teléfono en 10
   min). "Vende tu campo" y "Proveedores" no van al CRM de ventas.
+- **Disponibilidad desde Fundos 360°** (oct-2026, pedido del cliente: "solo la comercial y que no se filtre información"):
+  `GET fundos360.disponibilidad` del manifiesto (`app/api/planos/disponibilidad/route.ts` de `fundos-os`) devuelve por
+  proyecto solo los lotes disponibles `[n, precio, precio sin promoción | null]`, lo mismo que el plano comercial; todo
+  lo demás se ve vendido. El `<head>` de `index.html` la pide adelantada (`window.__fundosDisp`, misma URL); `main.js`
+  (`conDisponibilidad`) espera hasta 1,5 s antes de `boot()`, la aplica sobre los lotes del manifiesto
+  (`aplicarDisponibilidad`: categoría por precio, o una nueva `f360-…` con el color de su tramo) y la guarda 24 h en
+  `localStorage` "fundos-disponibilidad" para cuando no responda a tiempo. Sin respuesta ni guardada, quedan los lotes
+  del manifiesto (respaldo; `tools/planos_fundos360.py` los sigue escribiendo). Solo responde al origen del sitio: en
+  local y en la nube (proxy) usa el respaldo; probar con `page.route` que simule la respuesta.
 - **Medición de visitas** (`lib/analitica.js`, cargado en `index.html`, `entorno.html` y `vitrina.html`): Google
   Analytics 4 (el cliente eligió solo Google; Clarity queda disponible), ID `G-Q5JZT7NZP3` en `analitica.ga4` del manifiesto
   (vacío = no se carga nada). Eventos: `generate_lead` (WhatsApp con mensaje armado; `formulario`: visita, portada,

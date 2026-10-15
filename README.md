@@ -32,7 +32,7 @@ Además: barra de acción fija en móvil (WhatsApp + Agendar visita), botón flo
 Todo lo editable está en `lib/manifest.js`.
 
 - [x] **Contacto:** WhatsApp general +56 9 9292 2429 y ventas@fundosinmobiliaria.com (dados por el cliente, oct-2026). Horario: martes a viernes de 10:00 a 19:00; visitas a terreno los fines de semana.
-- [ ] **Lotes, precios y estados:** son referenciales, basados en ejemplos del manual. Lo ideal es leerlos desde Fundos 360° (módulo Parcelas) para mostrar la disponibilidad real.
+- [x] **Lotes, precios y estados:** se leen en vivo desde el plano comercial de Fundos 360° (`/api/planos/disponibilidad`); los del manifiesto quedan de respaldo.
 - [ ] **Superficie por lote:** se asume 5.000 m² en todos los proyectos (confirmar, sobre todo Puerto Varas).
 - [x] **Financiamiento:** Fundos aún no tiene; el cotizador muestra solo el pago al contado (`financiamiento.habilitado = false`). Si se habilita, confirmar tasa, pie mínimo y plazos.
 - [ ] **Preguntas frecuentes:** revisar las respuestas (condiciones de devolución de la reserva, construcción, plazos).
@@ -50,7 +50,7 @@ Todo lo editable está en `lib/manifest.js`.
 Publicada en https://fundosinmobiliaria.com/ (cada cambio entra por un pull request a `main`).
 
 
-- [ ] **Conectar con Fundos 360° (`4ChrisM/fundos-os`):** que el formulario de visita cree el lead en Fundos 360° (además de abrir WhatsApp) y que el plano lea la disponibilidad real de las parcelas. El webhook actual (`/api/leads/webhook`) pide una clave secreta y no sirve para una página pública: hay que agregar en Fundos 360° una ruta pública para la web (p. ej. `/api/leads/web`) con campo trampa, límite de envíos y solo desde fundos.biplot.cl, que cree el lead con origen "Sitio web", proyecto y parcela, en "pendiente de llamado"; y otra de solo lectura con la disponibilidad por proyecto.
+- [x] **Conectar con Fundos 360° (`4ChrisM/fundos-os`):** los formularios crean el lead (`/api/leads/web`, origen "Sitio web") y el plano lee la disponibilidad comercial (`/api/planos/disponibilidad`: solo lotes disponibles y su precio, nada más).
 
 - [ ] **Mapa "Descubre tu entorno" (`entorno.html`):** imagen satelital ya reemplazada por Sentinel-2 cloudless 2016 (libre para uso comercial con crédito). Falta bajar las fotos de Wikimedia Commons (requiere que la red permita `commons.wikimedia.org` y `upload.wikimedia.org`; fotos propias del cliente, si las tiene, son mejores). Videos del cliente ya integrados en 10 lugares (Alerce, parque, Puerto Varas, Frutillar, lago, Puerto Montt, Osorno, Petrohué, Calbuco y Caleta Angelmó, que también está en "Míralo en video" de la portada); faltan los demás si los tiene (Todos los Santos, Alerce Andino…). El de Frutillar podría ser una muestra recortada del convertidor: confirmar con el original. El cliente debe aprobar los textos de los lugares nuevos (marcados con `"revisar": true`).
 - [ ] **Mapas del entorno de Malalcahuello y Marchigüe** (`entorno.html?p=malalcahuello`, `?p=marchigue`, publicados en octubre 2026): confirmar con el cliente todos los textos de lugares (todos `"revisar": true`); la coordenada de Malalcahuello está en el sector Lolén (Lonquimay), a 20 min de Lonquimay y 50 min del pueblo, así que el chip "Cerca de Corralco" de la tarjeta (1 h 10 min) conviene revisarlo; confirmar el nombre del sector de Marchigüe y la frase "a una hora de Pichilemu" (antes decía "40 minutos"; la ruta calculada da 1 h). Sin videos ni fotos todavía: si el cliente tiene tomas de dron de esas zonas, se integran como las de Puerto Varas.

@@ -72,15 +72,77 @@
   var ESTADO = { disponible: "Disponible", reservada: "Reservado", vendida: "Vendido" };
 
   // El precio de cada lote sale de su categoría (colores del masterplan)
-  proyectos.forEach(function (p) {
-    var cats = p.categorias || {};
-    (p.lotes || []).forEach(function (l) {
-      var c = cats[l.cat];
-      l.precio = c ? c.precio : null;
-      l.lista = c && c.lista ? c.lista : null;
-      l.m2 = l.m2 || 5000;
+  function prepararLotes() {
+    proyectos.forEach(function (p) {
+      var cats = p.categorias || {};
+      (p.lotes || []).forEach(function (l) {
+        var c = cats[l.cat];
+        l.precio = c ? c.precio : null;
+        l.lista = c && c.lista ? c.lista : null;
+        l.m2 = l.m2 || 5000;
+      });
     });
-  });
+  }
+
+  /* Disponibilidad real desde Fundos 360° (fundos360.disponibilidad del manifiesto): solo lo que muestra su plano
+     comercial, por proyecto los lotes disponibles con su precio ([n, precio, precio sin promoción | null]); el resto
+     queda vendido. Si no responde a tiempo se usa la última respuesta guardada (24 h) o, si no hay, el manifiesto. */
+  var DISP_KEY = "fundos-disponibilidad", DISP_ESPERA = 1500, DISP_VIGENCIA = 24 * 3600 * 1000;
+  var COLORES_EXTRA = ["#bb9800", "#009fe3", "#7fbd61", "#b10bff", "#263687", "#bbcf15", "#00c6f4", "#6a66ff"];
+  function pedirDisponibilidad() {
+    var url = (B.fundos360 || {}).disponibilidad;
+    if (!url || !window.fetch) return null;
+    if (window.__fundosDisp) return window.__fundosDisp;   // pedido adelantado en el <head> de index.html
+    return fetch(url, { mode: "cors", credentials: "omit" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  }
+  function aplicarDisponibilidad(d) {
+    if (!d || typeof d !== "object" || !d.proyectos || typeof d.proyectos !== "object") return false;
+    var cambio = false;
+    proyectos.forEach(function (p) {
+      var info = d.proyectos[p.id];
+      if (!info || !Array.isArray(info.disponibles) || !p.lotes || !p.lotes.length) return;
+      var mapa = {};
+      info.disponibles.forEach(function (x) {
+        if (Array.isArray(x) && x[0] === Math.floor(x[0]) && x[1] >= 100000 && x[1] < 1e10) mapa[x[0]] = { precio: x[1], antes: x[2] > x[1] ? x[2] : null };
+      });
+      var cats = p.categorias = p.categorias || {}, k = 0;
+      function categoria(precio, antes) {
+        for (var key in cats) if (cats[key].precio === precio && (!antes || cats[key].lista === antes)) return key;
+        var nueva = "f360-" + precio + "-" + (antes || 0);
+        if (!cats[nueva]) {
+          var base = null;   // un precio con promoción toma el color de su tramo
+          for (var c in cats) if (antes && cats[c].precio === antes) base = cats[c].color;
+          cats[nueva] = { color: base || COLORES_EXTRA[k++ % COLORES_EXTRA.length], precio: precio, lista: antes };
+        }
+        return nueva;
+      }
+      p.lotes.forEach(function (l) {
+        var m = mapa[l.n];
+        l.estado = m ? "disponible" : "vendida";
+        l.cat = m ? categoria(m.precio, m.antes) : null;
+      });
+      cambio = true;
+    });
+    return cambio;
+  }
+  function conDisponibilidad(seguir) {
+    var listo = false, pedido = pedirDisponibilidad();
+    function guardada() {
+      try { var g = JSON.parse(localStorage.getItem(DISP_KEY) || "null"); return g && Date.now() - g.t < DISP_VIGENCIA ? g.d : null; } catch (e) { return null; }
+    }
+    function fin(d) {
+      if (listo) return; listo = true;
+      safe(function () { aplicarDisponibilidad(d || guardada()); }, "disponibilidad");
+      prepararLotes();
+      seguir();
+    }
+    if (!pedido) return fin(null);
+    pedido.then(function (d) {
+      if (d && d.proyectos) try { localStorage.setItem(DISP_KEY, JSON.stringify({ t: Date.now(), d: d })); } catch (e) { /* sin almacenamiento */ }
+      fin(d && d.proyectos ? d : null);
+    });
+    setTimeout(function () { fin(null); }, DISP_ESPERA);
+  }
   function precioTxt(l) { return l.precio ? clp(l.precio) : "Vendido"; }
 
   function paintRange(input) {
@@ -3725,6 +3787,7 @@
     $$('input[type="range"]').forEach(paintRange);
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
-  else boot();
+  function arrancar() { conDisponibilidad(boot); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar);
+  else arrancar();
 })();
