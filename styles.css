@@ -1352,6 +1352,7 @@ h2 em { text-wrap: balance; }
 .team-mosaic-grid li { position: relative; min-height: 0; overflow: hidden; background: var(--g800); }
 .team-photo .team-mosaic-grid img { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: 50% 12%; border-radius: 0; box-shadow: none; transition: transform .8s var(--ease-out); }
 .team-mosaic-grid li:hover img { transform: scale(1.05); }
+.team-mosaic-brand { grid-column: span 2; }   /* 6 fotos + la marca en dos celdas = 4 × 2 */
 .team-mosaic-brand a { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem; padding: .6rem; background: var(--g900); color: var(--n050); text-align: center; font: 600 .82rem/1.3 var(--sans); text-decoration: none; }
 .team-photo .team-mosaic-brand img { position: static; width: 52px; height: auto; object-fit: contain; }
 .team-mosaic-brand a:hover span { color: var(--gold); }
