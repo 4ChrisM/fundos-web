@@ -345,7 +345,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   cliente lo pida (el sitio sigue con `noindex` hasta el cambio de dominio).
 - La portada con el video de caballos (pestaña Proyectos) se quitó cuando Proyectos pasó a ser solo el mapa de Chile. La foto grupal del equipo se quitó (incluía a Marjorie, que salió): en Nosotros va un mosaico con las fotos actuales (`.team-mosaic`, actualizarlo si cambia el equipo).
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
-  Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Stefy, Diego, Geonela y Elvis; grabados por el cliente en la misma oficina). Todas las
+  Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Diego, Geonela y Elvis; grabados por el cliente en la misma oficina). Todas las
   fotos (`assets/img/equipo-ID.webp`, **cuerpo completo**, 3:4 como las tarjetas) son de una sesión del cliente en la misma
   oficina; foto y saludo de la tarjeta (`video.tarjeta`) se recortan con la misma ventana (90 % del cuadro) y la cara en
   el mismo lugar para que el cambio foto→video no salte; esa foto
@@ -354,14 +354,14 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   originales en el historial (`0475102`, `2eafd5d`, `d0152bd`, `679a800`; Valentina, Diego y Geonela en `bfd319b`);
   fotos originales en `f87e740`. El equipo es una **galería en filas** (el cliente no quería deslizar ni paneles chicos):
   tarjetas grandes, 4 por fila en computador ("Conversemos" en el último lugar), 3 en tablet y 2 en celular; el
-  saludo se reproduce en la misma tarjeta. **Marjorie Castellón salió del equipo** (pedido del cliente). Elvis Jiménez aún sin
+  saludo se reproduce en la misma tarjeta. **Marjorie Castellón y Stefany Villalobos salieron del equipo** (pedido del cliente; Stefany en oct-2026: se quitaron su tarjeta, su foto del mosaico, sus fotos y videos; quedan en el historial). Con 6 personas, la marca del mosaico ocupa dos celdas. Elvis Jiménez aún sin
   presentación escrita. **Contacto de cada asesor** (dado por el cliente, oct-2026): `whatsapp`, `telefono` y `correo` en
   `equipo` del manifiesto; la ficha muestra teléfono (tel:) y correo (mailto:), "Escribir por WhatsApp" va a su número y
   "Agendar con…" envía el formulario de visita a su WhatsApp (mientras el mensaje lo nombre). Los archivos de Elvis siguen
   llamándose `equipo-elvys.*`. Material nuevo: el cliente lo sube a `subidas/` en la rama de trabajo (los
   originales no van a `main`; se convierten con ffmpeg a MP4 + WebM con `loudnorm`).
   No suponer género ni cargos: los cargos los dio el cliente (oct-2026): "Asesora inmobiliaria" (Jeanette, Valentina,
-  Geonela, María del Mar, Stefany) y "Asesor inmobiliario" (Elvis, Diego); a una persona nueva, preguntarlo.
+  Geonela, María del Mar) y "Asesor inmobiliario" (Elvis, Diego); a una persona nueva, preguntarlo.
 - Santo Domingo fuera de la propuesta principal (plano, cotizador, 360°); desde oct-2026 aparece solo como tarjeta en Más proyectos (lo pidió el cliente). No bajar videos de internet: solo material propio del cliente.
 - Planos con líneas rectas como el masterplan. En computador la herramienta completa (proyectos, filtros, chips,
   plano y leyenda en franja baja) cabe en la pantalla: el plano mide entre 380 y 480 px de alto y no pasa del 47 % de la ventana (`layoutPlan`); los
