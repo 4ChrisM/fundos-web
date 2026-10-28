@@ -231,7 +231,7 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `.py-*` (foto grande con el nombre, miniaturas, franja de datos, características con íconos, "Cerca de tu parcela" y
   acciones; sin fotos, el emblema en un recuadro crema). Fotos con miniaturas (`galeria` del proyecto en el manifiesto,
   armadas por `tools/galeria_build.py` en `assets/img/galeria/`; el satelital del entorno lleva crédito Sentinel-2/EOX).
-  **Los 13 fundos tienen fotos** (oct-2026): los 10 de `masProyectos` con fotos del cliente, subidas a `subidas/` como
+  **Los 13 fundos tienen fotos** (oct-2026): Malalcahuello (7) y Marchigüe (5) solo con fotos del cliente desde el 28-oct-2026 (se quitaron la vista aérea del tour y los satelitales de su galería; se descartó un aviso con precios); los 10 de `masProyectos` con fotos del cliente, subidas a `subidas/` como
   "NN. Nombre.webp" (el número da el orden; `ALIAS` del script reconoce el fundo), convertidas y borradas de la rama; los
   títulos (`alt`) se escribieron a mano según lo que se ve en cada foto (por confirmar con el cliente). Los 3 con plano
   muestran descripción, datos (desde, disponibles, 5.000 m², reserva), destacados, cercanías y "Ver lotes y precios" /
