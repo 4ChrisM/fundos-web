@@ -230,7 +230,11 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   Escape o tocando fuera, y "Ver lotes" y "Cotizar" la cierran antes de ir (a Inicio). Estilo oscuro con las clases
   `.py-*` (foto grande con el nombre, miniaturas, franja de datos, características con íconos, "Cerca de tu parcela" y
   acciones; sin fotos, el emblema en un recuadro crema). Fotos con miniaturas (`galeria` del proyecto en el manifiesto,
-  armadas por `tools/galeria_build.py` en `assets/img/galeria/`; el satelital del entorno lleva crédito Sentinel-2/EOX).
+  armadas por `tools/galeria_build.py` en `assets/img/galeria/`; **fotos en grande** (pedido del cliente, oct-2026): "Ver en
+  grande" en la foto (`.py-zoom`, o tocar la foto) abre `Visor` de `main.js`, un `<dialog class="vz">` a pantalla completa
+  con flechas, teclado, deslizar (y hacia abajo cierra) y Escape; usa `grande` de cada foto (`<proyecto>-<n>-xl.webp`,
+  1920 px, `galeria_build.py --xl <carpeta con los originales>`, recuperados del historial con `git archive`) y al
+  cerrar deja en la ficha la última foto vista; evento `ver_fotos`; el satelital del entorno lleva crédito Sentinel-2/EOX).
   **Los 13 fundos tienen fotos** (oct-2026): Malalcahuello (7) y Marchigüe (5) solo con fotos del cliente desde el 28-oct-2026 (se quitaron la vista aérea del tour y los satelitales de su galería; se descartó un aviso con precios); los 10 de `masProyectos` con fotos del cliente, subidas a `subidas/` como
   "NN. Nombre.webp" (el número da el orden; `ALIAS` del script reconoce el fundo), convertidas y borradas de la rama; los
   títulos (`alt`) se escribieron a mano según lo que se ve en cada foto (por confirmar con el cliente). Los 3 con plano
