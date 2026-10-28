@@ -7,7 +7,10 @@ de fotos del cliente subidas a subidas/ (si el original ya no está, se deja lo 
 deja la lista en `galeria` de cada proyecto en lib/manifest.js (eso se escribe a mano: ver FUENTES abajo). Las imágenes
 con transparencia (satelital recortado del plano) se apoyan sobre el verde de la marca.
 
-Uso: python3 tools/galeria_build.py
+Uso: python3 tools/galeria_build.py            (galería de 1000 px y miniaturas)
+     python3 tools/galeria_build.py --xl [dir]   (solo las versiones grandes <proyecto>-<n>-xl.webp, 1920 px, para el
+                                                  visor a pantalla completa; [dir] es una carpeta con las subidas
+                                                  originales, por ejemplo recuperadas del historial con git archive)
 """
 from pathlib import Path
 from PIL import Image, ImageOps
@@ -29,11 +32,12 @@ ALIAS = {"santo domingo": "santo-domingo", "rapel": "lago-rapel", "lago rapel": 
          "malalcahuello": "malalcahuello", "marchigue": "marchigue"}
 
 
-def subidas():
+def subidas(base=None):
     import re
     import unicodedata
     out = {}
-    for f in sorted((RAIZ / "subidas").glob("*"), key=lambda x: x.name):
+    base = Path(base) if base else RAIZ / "subidas"
+    for f in sorted(base.glob("*"), key=lambda x: x.name):
         m = re.match(r"^(\d+)\.\s*(.+?)\.(webp|jpe?g|png)$", f.name, re.I)
         if not m:
             continue
@@ -41,7 +45,7 @@ def subidas():
         if clave not in ALIAS:
             print("sin fundo:", f.name)
             continue
-        out.setdefault(ALIAS[clave], []).append((int(m.group(1)), str(f.relative_to(RAIZ))))
+        out.setdefault(ALIAS[clave], []).append((int(m.group(1)), str(f if base != RAIZ / "subidas" else f.relative_to(RAIZ))))
     return {k: [f for _, f in sorted(v)] for k, v in out.items()}
 
 
@@ -53,16 +57,25 @@ def guardar(im, ancho, destino, calidad):
 
 
 def main():
+    import sys
+    xl = "--xl" in sys.argv
+    base = sys.argv[sys.argv.index("--xl") + 1] if xl and len(sys.argv) > sys.argv.index("--xl") + 1 else None
     out = RAIZ / "assets" / "img" / "galeria"
     out.mkdir(parents=True, exist_ok=True)
-    for pid, fuentes in list(FUENTES.items()) + list(subidas().items()):
+    for pid, fuentes in list(FUENTES.items()) + list(subidas(base).items()):
         for n, f in enumerate(fuentes, 1):
-            if not (RAIZ / f).exists():   # original ya borrado: se deja lo convertido
+            ruta = RAIZ / f
+            if not ruta.exists():   # original ya borrado: se deja lo convertido
                 continue
-            im = ImageOps.exif_transpose(Image.open(RAIZ / f)).convert("RGBA")
+            im = ImageOps.exif_transpose(Image.open(ruta)).convert("RGBA")
             fondo = Image.new("RGBA", im.size, (36, 56, 42, 255))
             fondo.alpha_composite(im)
             im = fondo.convert("RGB")
+            if xl:
+                if max(im.size) > 1000:   # solo vale la pena si el original es más grande que la galería
+                    guardar(im, 1920, out / f"{pid}-{n}-xl.webp", 78)
+                    print(pid, n, "xl", f)
+                continue
             guardar(im, 1000, out / f"{pid}-{n}.webp", 72)
             guardar(im, 240, out / f"{pid}-{n}-mini.webp", 62)
             print(pid, n, f)

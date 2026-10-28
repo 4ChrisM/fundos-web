@@ -166,6 +166,67 @@
   var Casa = { set: function () {} };
   var Vista = { set: function () { return false; }, current: function () { return ""; } };
   var Video = { open: function () {} };   // visor de video de un proyecto (initVideo)
+
+  /* Visor de fotos a pantalla completa (fichas de "Fundos en todo Chile"): Visor.abrir(lista, i, alCerrar) con
+     lista = [{ src, grande, alt, credito }]. Muestra primero la foto de la galería (ya cargada) y la cambia por la
+     grande (1920 px) cuando llega; flechas, teclado, deslizar en el celular y Escape. Un <dialog> propio sobre la ficha. */
+  var Visor = (function () {
+    var dlg = null, lista = [], i = 0, fin = null, sx = null, sy = 0;
+    function ico(n) { return '<svg class="i" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; }
+    function armar() {
+      dlg = document.createElement("dialog");
+      dlg.className = "vz";
+      dlg.setAttribute("aria-label", "Fotos en grande");
+      dlg.innerHTML = '<div class="vz-top"><p class="vz-cuenta" aria-live="polite" data-vz-cuenta></p>' +
+        '<button class="vz-x" type="button" data-vz-cerrar aria-label="Cerrar las fotos">' + ico("close") + "</button></div>" +
+        '<figure class="vz-fig"><img class="vz-img" data-vz-img alt=""><figcaption class="vz-cap" data-vz-cap></figcaption></figure>' +
+        '<button class="vz-flecha is-prev" type="button" data-vz-ir="-1" aria-label="Foto anterior">' + ico("arrow") + "</button>" +
+        '<button class="vz-flecha" type="button" data-vz-ir="1" aria-label="Foto siguiente">' + ico("arrow") + "</button>";
+      document.body.appendChild(dlg);
+      dlg.addEventListener("click", function (e) {
+        if (e.target.closest("[data-vz-cerrar]") || e.target === dlg || e.target.classList.contains("vz-fig")) { cerrar(); return; }
+        var b = e.target.closest("[data-vz-ir]");
+        if (b) ir(+b.getAttribute("data-vz-ir"));
+      });
+      dlg.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); ir(e.key === "ArrowLeft" ? -1 : 1); }
+      });
+      dlg.addEventListener("close", function () { var f = fin; fin = null; document.documentElement.classList.remove("vz-abierto"); if (f) f(i); });
+      dlg.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+      dlg.addEventListener("touchend", function (e) {
+        if (sx == null) return;
+        var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; sx = null;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) ir(dx < 0 ? 1 : -1);
+        else if (dy > 90 && Math.abs(dy) > Math.abs(dx) * 1.4) cerrar();   // deslizar hacia abajo cierra
+      });
+    }
+    function precargar(k) { var g = lista[(k + lista.length) % lista.length]; if (g && g.grande) { var im = new Image(); im.src = g.grande; } }
+    function mostrar() {
+      var g = lista[i], img = dlg.querySelector("[data-vz-img]");
+      img.src = g.src; img.alt = g.alt || "";
+      if (g.grande) {
+        var hd = new Image();
+        hd.onload = function () { if (lista[i] === g) img.src = g.grande; };
+        hd.src = g.grande;
+      }
+      dlg.querySelector("[data-vz-cap]").innerHTML = "<span>" + esc(g.alt || "") + "</span>" + (g.credito ? "<small>" + esc(g.credito) + "</small>" : "");
+      dlg.querySelector("[data-vz-cuenta]").textContent = (i + 1) + " de " + lista.length;
+      if (lista.length > 1) { precargar(i + 1); precargar(i - 1); }
+    }
+    function ir(d) { if (lista.length < 2) return; i = (i + d + lista.length) % lista.length; mostrar(); }
+    function cerrar() { if (dlg && dlg.open) { if (typeof dlg.close === "function") dlg.close(); else { dlg.removeAttribute("open"); dlg.dispatchEvent(new Event("close")); } } }
+    function abrir(l, k, alCerrar) {
+      if (!l || !l.length) return;
+      if (!dlg) armar();
+      lista = l; i = Math.max(0, Math.min(k || 0, l.length - 1)); fin = alCerrar || null;
+      dlg.classList.toggle("is-una", l.length < 2);
+      mostrar();
+      document.documentElement.classList.add("vz-abierto");
+      if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+      var x = dlg.querySelector("[data-vz-cerrar]"); if (x) x.focus();
+    }
+    return { abrir: abrir, cerrar: cerrar };
+  })();
   var DESTACADO = proyecto(B.destacado) ? B.destacado : "";
 
   // Alto real de la barra superior (con la franja de pestañas en celular y tablet)
@@ -2116,7 +2177,9 @@
         '<div class="py-hero-in"><p class="kicker">' + esc([rn(p), x.zona].filter(Boolean).join(" · ")) + " · " + lat(p) + "</p>" +
         '<h3 class="mf-t">Fundos de <em>' + esc(p.corto) + "</em></h3>" + (!p.main && x.lema ? '<p class="mf-lema">' + esc(x.lema) + "</p>" : "") +
         '<p class="py-desc">' + esc((p.main ? x.descripcion || x.resumen : x.descripcion) || "").replace(/^Fundos de [^:]+: /, "") + "</p></div>" +
-        (g0 ? '<p class="py-cred" data-mf-cap><span>' + esc(g0.alt) + "</span>" + (g0.credito ? "<span>" + esc(g0.credito) + "</span>" : "") + "</p>" : "") + "</div>";
+        (g0 ? '<p class="py-cred" data-mf-cap><span>' + esc(g0.alt) + "</span>" + (g0.credito ? "<span>" + esc(g0.credito) + "</span>" : "") + "</p>" +
+          '<button class="py-zoom" type="button" data-mf-zoom aria-label="Ver las fotos en grande">' + ico("expand") + "<span>Ver en grande</span>" +
+          (gal.length > 1 ? '<small data-mf-zoom-n>1/' + gal.length + "</small>" : "") + "</button>" : "") + "</div>";
       var mini = gal.length > 1 ? '<div class="mf-mini" role="group" aria-label="Fotos de Fundos de ' + esc(p.corto) + '">' + gal.map(function (g, i) { return '<button type="button" data-i="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="' + esc(g.alt) + '"><img src="' + esc(g.mini || g.src) + '" alt="" loading="lazy" decoding="async"></button>'; }).join("") + "</div>"
         : (g0 ? "" : '<p class="mf-pronto">' + ico("sparkle") + "Fotos del proyecto: próximamente</p>");
       var stats = p.main
@@ -2155,15 +2218,22 @@
       if (!ficha.open) { if (typeof ficha.showModal === "function") ficha.showModal(); else ficha.setAttribute("open", ""); }
       abierta = id;
       $$(".mch-tile-b", row).forEach(function (b) { b.setAttribute("aria-expanded", String(b.parentNode.getAttribute("data-p") === id)); });
-      var mi = $(".mf-mini", ficha);
+      var mi = $(".mf-mini", ficha), fotoI = 0;
+      function verFoto(k) {   // cambia la foto grande de la ficha (miniaturas y al volver del visor)
+        var g = gal[k], img = $(".py-hero > img", ficha);
+        if (!g || !img) return;
+        fotoI = k; img.src = g.src; img.alt = g.alt;
+        $("[data-mf-cap]", ficha).innerHTML = "<span>" + esc(g.alt) + "</span>" + (g.credito ? "<span>" + esc(g.credito) + "</span>" : "");
+        var n = $("[data-mf-zoom-n]", ficha); if (n) n.textContent = (k + 1) + "/" + gal.length;
+        if (mi) $$("button", mi).forEach(function (o) { o.setAttribute("aria-pressed", String(+o.getAttribute("data-i") === k)); });
+      }
       if (mi) mi.addEventListener("click", function (e) {
         var b = e.target.closest("button[data-i]");
-        if (!b) return;
-        var g = gal[+b.getAttribute("data-i")], img = $(".py-hero > img", ficha);
-        img.src = g.src; img.alt = g.alt;
-        $("[data-mf-cap]", ficha).innerHTML = "<span>" + esc(g.alt) + "</span>" + (g.credito ? "<span>" + esc(g.credito) + "</span>" : "");
-        $$("button", mi).forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+        if (b) verFoto(+b.getAttribute("data-i"));
       });
+      function zoom() { Visor.abrir(gal, fotoI, function (k) { verFoto(k); }); medir("ver_fotos", { fundo: p.nombre }); }
+      var zb = $("[data-mf-zoom]", ficha); if (zb) zb.addEventListener("click", zoom);
+      var hi = $(".py-hero > img", ficha); if (hi) hi.addEventListener("click", zoom);
       $$("[data-mf]", ficha).forEach(function (a) {
         a.addEventListener("click", function () {
           cerrarFicha();   // las acciones llevan a otra parte de la página: primero se cierra la ventana
