@@ -10,25 +10,23 @@ con transparencia (satelital recortado del plano) se apoyan sobre el verde de la
 Uso: python3 tools/galeria_build.py
 """
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageOps
 
 RAIZ = Path(__file__).resolve().parent.parent
 V = "assets/entorno/videos/"
 FUENTES = {
     "puerto-varas": ["assets/img/tour-puerto-varas-1600.webp", V + "osorno.webp", V + "calbuco.webp", V + "lago.webp",
                      V + "petrohue.webp", V + "frutillar.webp"],
-    "malalcahuello": ["assets/img/tour-malalcahuello-1600.webp", "assets/planos/malalcahuello-satelite.webp",
-                      "assets/entorno/malalcahuello/sat-detalle.webp"],
-    "marchigue": ["assets/img/tour-marchigue-1600.webp", "assets/planos/marchigue-satelite.webp",
-                  "assets/entorno/marchigue/sat-detalle.webp"],
 }
+# Malalcahuello y Marchigüe usan solo fotos del cliente (oct-2026; antes vista aérea del tour y satelitales).
 # Fotos del cliente: se suben a subidas/ en la rama de trabajo como "NN. Nombre del fundo.ext" (el número da el orden;
 # la primera de cada fundo es la del resumen bajo el carrusel). Los originales no van a main: tras convertirlas se borran
 # y este script deja lo ya convertido. Los títulos (`alt`) se escriben a mano en `galeria` del manifiesto.
 ALIAS = {"santo domingo": "santo-domingo", "rapel": "lago-rapel", "lago rapel": "lago-rapel", "bucalemu": "bucalemu",
          "talca": "talca", "retiro": "retiro", "san fabian": "san-fabian", "san fabial": "san-fabian",
          "cobquecura": "cobquecura", "liucura": "rio-liucura", "rio liucura": "rio-liucura", "rio negro": "rio-negro",
-         "puerto montt": "puerto-montt"}
+         "puerto montt": "puerto-montt",
+         "malalcahuello": "malalcahuello", "marchigue": "marchigue"}
 
 
 def subidas():
@@ -61,7 +59,7 @@ def main():
         for n, f in enumerate(fuentes, 1):
             if not (RAIZ / f).exists():   # original ya borrado: se deja lo convertido
                 continue
-            im = Image.open(RAIZ / f).convert("RGBA")
+            im = ImageOps.exif_transpose(Image.open(RAIZ / f)).convert("RGBA")
             fondo = Image.new("RGBA", im.size, (36, 56, 42, 255))
             fondo.alpha_composite(im)
             im = fondo.convert("RGB")
