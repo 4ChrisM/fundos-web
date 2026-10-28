@@ -274,13 +274,20 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   min). "Vende tu campo" y "Proveedores" no van al CRM de ventas.
 - **Disponibilidad desde Fundos 360°** (oct-2026, pedido del cliente: "solo la comercial y que no se filtre información"):
   `GET fundos360.disponibilidad` del manifiesto (`app/api/planos/disponibilidad/route.ts` de `fundos-os`) devuelve por
-  proyecto solo los lotes disponibles `[n, precio, precio sin promoción | null]`, lo mismo que el plano comercial; todo
-  lo demás se ve vendido. El `<head>` de `index.html` la pide adelantada (`window.__fundosDisp`, misma URL); `main.js`
+  proyecto solo los lotes disponibles `[n, precio, null]` con el **precio real, sin promociones** (pedido del cliente,
+  28-oct-2026; el tercer lugar era el precio sin promoción y ahora llega siempre en null), los mismos lotes que el plano
+  comercial; todo lo demás se ve vendido. El `<head>` de `index.html` la pide adelantada (`window.__fundosDisp`, misma URL); `main.js`
   (`conDisponibilidad`) espera hasta 1,5 s antes de `boot()`, la aplica sobre los lotes del manifiesto
   (`aplicarDisponibilidad`: categoría por precio, o una nueva `f360-…` con el color de su tramo) y la guarda 24 h en
   `localStorage` "fundos-disponibilidad" para cuando no responda a tiempo. Sin respuesta ni guardada, quedan los lotes
   del manifiesto (respaldo; `tools/planos_fundos360.py` los sigue escribiendo). Solo responde al origen del sitio: en
   local y en la nube (proxy) usa el respaldo; probar con `page.route` que simule la respuesta.
+- **Solo el precio real, sin precio anterior tachado** (pedido del cliente, 28-oct-2026): el sitio muestra el precio de
+  cada lote y nada más. El `lista` de las `categorias` (el "precio lista" de la leyenda de los PDF, que
+  `tools/planos_fundos360.py` sigue escribiendo) se borra en `prepararLotes()` después de que `aplicarDisponibilidad()`
+  lo usó para dar a un precio nuevo el color de su tramo; así no aparece en las fichas de precio, la leyenda (título
+  "Precios"), la vista de lista, el detalle del lote ni las alternativas. Para volver a mostrarlo habría que quitar
+  esa línea de `prepararLotes()`.
 - **Medición de visitas** (`lib/analitica.js`, cargado en `index.html`, `entorno.html` y `vitrina.html`): Google
   Analytics 4 (el cliente eligió solo Google; Clarity queda disponible), ID `G-Q5JZT7NZP3` en `analitica.ga4` del manifiesto
   (vacío = no se carga nada). Eventos: `generate_lead` (WhatsApp con mensaje armado; `formulario`: visita, portada,
@@ -369,7 +376,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
 - Santo Domingo fuera de la propuesta principal (plano, cotizador, 360°); desde oct-2026 aparece solo como tarjeta en Más proyectos (lo pidió el cliente). No bajar videos de internet: solo material propio del cliente.
 - Planos con líneas rectas como el masterplan. En computador la herramienta completa (proyectos, filtros, chips,
   plano y leyenda en franja baja) cabe en la pantalla: el plano mide entre 380 y 480 px de alto y no pasa del 47 % de la ventana (`layoutPlan`); los
-  chips de precio van en una sola fila (precio arriba, precio lista y disponibles abajo); el
+  chips de precio van en una sola fila (precio arriba y disponibles abajo); el
   detalle del lote toma el mismo alto (`--stage-h`) y los enlaces a `#plano` llevan directo a la herramienta.
   En celular el plano parte acercado (lotes tocables) con botón para ver completo.
 - **Cotizador dentro del lote** (oct-2026, pedido del cliente: "no vale la pena tenerlo aparte"): ya no hay pestaña
