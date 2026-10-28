@@ -319,6 +319,25 @@
    "revisar": true
   },
   {
+   "id": "salto_alaska",
+   "nombre": "Salto Alaska",
+   "corto": "Salto Alaska",
+   "cat": "naturaleza",
+   "icono": "cascada",
+   "lat": -38.50482,
+   "lon": -71.41301,
+   "destino": [
+    -38.50482,
+    -71.41301
+   ],
+   "sub": "Cascada de unos 40 m al pie del cerro Alaska, cerca de Lonquimay",
+   "texto": "Es una caída de agua de unos 40 m al pie del cerro Alaska, alimentada por las aguas que bajan de la Cordillera de Las Raíces. Está a unos 7 km al suroeste de Lonquimay y es parte del Geoparque Kütralkura. Tiene zona de picnic y de camping.",
+   "nota": "Se llega desde Lonquimay por la Ruta R-963, de ripio; algunos tramos son mejores con vehículo alto. Se cobra una entrada por vehículo.",
+   "destinoTxt": "hasta el Salto Alaska por la Ruta R-963 (ripio)",
+   "llegada": "Salto Alaska",
+   "revisar": true
+  },
+  {
    "id": "salto_princesa",
    "nombre": "Salto de la Princesa",
    "corto": "Salto Princesa",
