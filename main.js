@@ -71,22 +71,26 @@
   }
   var ESTADO = { disponible: "Disponible", reservada: "Reservado", vendida: "Vendido" };
 
-  // El precio de cada lote sale de su categoría (colores del masterplan)
+  /* El precio de cada lote sale de su categoría (colores del masterplan). Solo el precio real: el "precio lista" de la
+     leyenda de los PDF no se muestra en ninguna parte (ni tachado como "precio anterior", ni en la leyenda, la lista,
+     el detalle o las alternativas; pedido del cliente, 28-oct-2026), así que se borra aquí, después de que
+     aplicarDisponibilidad() lo usó para dar color a un precio nuevo. */
   function prepararLotes() {
     proyectos.forEach(function (p) {
       var cats = p.categorias || {};
+      for (var k in cats) delete cats[k].lista;
       (p.lotes || []).forEach(function (l) {
         var c = cats[l.cat];
         l.precio = c ? c.precio : null;
-        l.lista = c && c.lista ? c.lista : null;
+        l.lista = null;
         l.m2 = l.m2 || 5000;
       });
     });
   }
 
   /* Disponibilidad real desde Fundos 360° (fundos360.disponibilidad del manifiesto): solo lo que muestra su plano
-     comercial, por proyecto los lotes disponibles con su precio ([n, precio, precio sin promoción | null]); el resto
-     queda vendido. Si no responde a tiempo se usa la última respuesta guardada (24 h) o, si no hay, el manifiesto. */
+     comercial, por proyecto los lotes disponibles con su precio real, sin promociones ([n, precio, null]; el tercer
+     lugar fue el precio sin promoción y desde el 28-oct-2026 llega siempre en null); el resto queda vendido. Si no responde a tiempo se usa la última respuesta guardada (24 h) o, si no hay, el manifiesto. */
   var DISP_KEY = "fundos-disponibilidad", DISP_ESPERA = 1500, DISP_VIGENCIA = 24 * 3600 * 1000;
   var COLORES_EXTRA = ["#bb9800", "#009fe3", "#7fbd61", "#b10bff", "#263687", "#bbcf15", "#00c6f4", "#6a66ff"];
   function pedirDisponibilidad() {
@@ -110,8 +114,9 @@
         for (var key in cats) if (cats[key].precio === precio && (!antes || cats[key].lista === antes)) return key;
         var nueva = "f360-" + precio + "-" + (antes || 0);
         if (!cats[nueva]) {
-          var base = null;   // un precio con promoción toma el color de su tramo
-          for (var c in cats) if (antes && cats[c].precio === antes) base = cats[c].color;
+          // Un precio nuevo toma el color de su tramo: el que tenía ese precio como "lista" en la leyenda
+          var base = null;
+          for (var c in cats) if ((antes && cats[c].precio === antes) || cats[c].lista === precio) base = cats[c].color;
           cats[nueva] = { color: base || COLORES_EXTRA[k++ % COLORES_EXTRA.length], precio: precio, lista: antes };
         }
         return nueva;
