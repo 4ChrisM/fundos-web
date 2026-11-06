@@ -23,6 +23,7 @@ Se corren desde una carpeta temporal porque guardan capturas (`ux/*.png`). Cada 
 | `equipo.js` | Tarjetas y ficha de cada persona, video del saludo, "Agendar con…", enlace `#equipo-6` |
 | `plano-en-pantalla.js` | Alto del plano + chips en distintas pantallas (debe terminar dentro del alto visible) |
 | `pestanas.js` | "Todo sobre tu compra": pestañas, teclado, enlaces `#tu-casa`/`#portal`/`#preguntas`, indicador de sección, carruseles |
+| `comparar.js` | Comparador de lotes (favoritos lado a lado, quitar, Escape, celular sin desborde) y "Mi selección": arma el enlace para un cliente con asesora, lo abre como el cliente, guarda en favoritos y "Ver en el plano"; enlace roto |
 | `casa.js` | "Tu casa": lote a escala, mover (mouse y toque, sin desplazar la página), agregar, medidas, aviso al pasar el 10 %, teclado y "Dibuja tu casa en este lote" desde el plano |
 | `fundos-chile.js` | Pestaña Proyectos ("Fundos en todo Chile"): solo el mapa, mapa largo del alto de la galería, regiones, ventana con la ficha y fotos (Puerto Varas, Talca), flechas y teclado para pasar de fundo, Escape, tocar un nombre del mapa, "Ver lotes" lleva al plano, `#proyecto-ID` y enlaces viejos, sin desborde (1440, 1280, 390, 320) |
 | `largo.js` | Largo de la página en pantallas, total y por sección (computador y celular) |

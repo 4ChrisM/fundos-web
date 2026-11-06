@@ -278,7 +278,7 @@
       if (!id) return null;
       if (VIEJAS.indexOf(id) >= 0 || /^(proyecto|recorrido)-/.test(id)) return $("#mas-proyectos");
       var el = document.getElementById(id);
-      if (!el && /^lote-/.test(id)) el = $("#plano");
+      if (!el && /^(lote-|seleccion)/.test(id)) el = $("#plano");
       if (!el && id === "simulador") el = $("#plano");   // el simulador ahora vive dentro del lote
       if (!el && /^equipo-\d+$/.test(id)) el = $("#nosotros");
       return el;
@@ -539,6 +539,78 @@
     return h.join("");
   }
 
+  /* Medidas de un lote calculadas de su forma en lib/planos.js (comparador de lotes). La forma está en puntos del PDF:
+     se escala a la superficie real del lote (m²). Largo × ancho = el menor rectángulo que lo contiene; frente a camino =
+     los bordes que tocan una servidumbre o el camino principal (a menos de 6 m: en Marchigüe y Malalcahuello el plano
+     deja una franja entre el lote y la servidumbre); agua = distancia al estero o río más cercano del plano. Aproximado. */
+  var Geo = (function () {
+    var cache = {};
+    function anillos(d) {
+      return (d || "").split(/(?=M)/).map(function (s) {
+        var r = [], re = /(-?[\d.]+)[ ,]+(-?[\d.]+)/g, m;
+        while ((m = re.exec(s))) r.push([+m[1], +m[2]]);
+        return r;
+      }).filter(function (r) { return r.length > 1; });
+    }
+    function segs(r, cerrado) {
+      var s = [];
+      for (var i = 0; i < r.length - 1; i++) s.push([r[i], r[i + 1]]);
+      if (cerrado && r.length > 2) s.push([r[r.length - 1], r[0]]);
+      return s;
+    }
+    function dSeg(p, a, b) {
+      var dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy;
+      var t = L ? clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L, 0, 1) : 0;
+      return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
+    }
+    function dMin(p, ss) { var m = Infinity; for (var i = 0; i < ss.length; i++) m = Math.min(m, dSeg(p, ss[i][0], ss[i][1])); return m; }
+    function area(r) {
+      var a = 0;
+      for (var i = 0; i < r.length; i++) { var p = r[i], q = r[(i + 1) % r.length]; a += p[0] * q[1] - q[0] * p[1]; }
+      return Math.abs(a) / 2;
+    }
+    function medir(id, l) {
+      var key = id + ":" + l.n;
+      if (cache[key] !== undefined) return cache[key];
+      var pl = (B.planos || {})[id], q = pl && pl.lotes[l.n], r = q && anillos(q.d)[0];
+      if (!r || r.length < 3 || !area(r) || !l.m2) return (cache[key] = null);
+      var k = Math.sqrt(l.m2 / area(r)), lados = segs(r, true), best = null;
+      lados.forEach(function (s) {
+        var a = Math.atan2(s[1][1] - s[0][1], s[1][0] - s[0][0]), c = Math.cos(a), si = Math.sin(a);
+        var x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+        r.forEach(function (p) {
+          var x = p[0] * c + p[1] * si, y = -p[0] * si + p[1] * c;
+          x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+        });
+        var A = (x1 - x0) * (y1 - y0);
+        if (!best || A < best.A) best = { A: A, w: x1 - x0, h: y1 - y0 };
+      });
+      var cs = [];
+      (pl.calles || []).forEach(function (c) { anillos(c.d).forEach(function (a) { cs = cs.concat(segs(a, true)); }); });
+      if (typeof pl.caminoPrincipal === "string") anillos(pl.caminoPrincipal).forEach(function (a) { cs = cs.concat(segs(a, true)); });
+      var tol = 6 / k, frente = 0;
+      if (cs.length) lados.forEach(function (s) {
+        var mid = [(s[0][0] + s[1][0]) / 2, (s[0][1] + s[1][1]) / 2];
+        if (dMin(mid, cs) < tol && Math.min(dMin(s[0], cs), dMin(s[1], cs)) < tol) frente += Math.hypot(s[1][0] - s[0][0], s[1][1] - s[0][1]);
+      });
+      var agua = null;
+      (pl.agua || []).forEach(function (w) {
+        var ws = [];
+        anillos(w.d).forEach(function (a) { ws = ws.concat(segs(a, !w.trazo)); });
+        if (!ws.length) return;
+        var m = Infinity;
+        r.forEach(function (p) { m = Math.min(m, dMin(p, ws)); });
+        ws.forEach(function (s) { m = Math.min(m, dMin(s[0], lados)); });
+        if (!agua || m * k < agua.m) agua = { nombre: w.nombre || "Estero", m: m * k };
+      });
+      return (cache[key] = {
+        largo: Math.round(Math.max(best.w, best.h) * k), ancho: Math.round(Math.min(best.w, best.h) * k),
+        frente: Math.round(frente * k), agua: agua && { nombre: agua.nombre, m: Math.round(agua.m) }
+      });
+    }
+    return { medir: medir };
+  })();
+
   function initPlan() {
     var root = $("[data-plan]");
     if (!root) return;
@@ -563,6 +635,7 @@
     var favBox = $("[data-favs]"), favCount = $("[data-favs-count]"), favLabel = $("[data-favs-label]");
     var favList = $("[data-favs-list]"), favSend = $("[data-favs-send]"), favClear = $("[data-favs-clear]");
     var favMain = $("[data-favs-main]"), favUndo = $("[data-favs-undo]"), favRestore = $("[data-favs-restore]");
+    var favCmp = $("[data-favs-cmp]"), favShare = $("[data-favs-share]");
 
     var first = proyecto(DESTACADO) && proyecto(DESTACADO).lotes.length ? proyecto(DESTACADO) : proyectos.filter(function (p) { return p.lotes && p.lotes.length; })[0];
     var S = {
@@ -1228,6 +1301,7 @@
         return '<button type="button" class="fav-chip" data-fav="' + esc(k) + '">' + esc(p.nombre) + " " + l.n + "</button>";
       }).join("");
       favSend.href = waHref("Hola Fundos, guardé estos lotes y me gustaría recibir más información:\n" + lines.join("\n"));
+      if (favCmp) { favCmp.hidden = favs.length < 2; $("span", favCmp).textContent = "Comparar (" + Math.min(favs.length, 4) + ")"; }
     }
     function toggleFav(id, n) {
       var k = id + ":" + n, i = favs.indexOf(k), added = i < 0;
@@ -1555,6 +1629,284 @@
       refreshFavs();
     });
 
+    /* ---- Comparador de lotes y "Mi selección" (propuesta de 10 ideas, nov-2026: ideas 4 y 5) ----
+       Comparar: los favoritos lado a lado (hasta 4) con precio, superficie, precio por m², medidas, frente a camino y
+       agua (Geo.medir) y lo que cuesta comprarlo. Compartir: un enlace #seleccion?l=puerto-varas.24.12&para=Daniela&asesor=valentina
+       que abre la misma tabla para quien lo recibe, con precio y disponibilidad del momento en que lo abre y el botón para
+       responderle a su asesor. No se guarda nada fuera del enlace (el nombre va en el # y no llega a Google Analytics). */
+    var CMP_MAX = 4, cmp = null, cmpSel = [], cmpComp = null, cmpVoltear = 0;
+    var gente = B.equipo || [], AKEY = "fundos-asesor";
+    function slug(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+    function corto(e) { return e.apodo || String(e.nombre).split(" ")[0]; }
+    function asesorId(e) { return slug(corto(e)); }
+    function asesorDe(id) { for (var i = 0; i < gente.length; i++) if (id && asesorId(gente[i]) === id) return gente[i]; return null; }
+    function itemDe(k) { var a = String(k).split(":"), p = proyecto(a[0]), l = p && lotOf(p, +a[1]); return l ? { k: k, p: p, l: l } : null; }
+    function vendido(l) { return l.estado === "vendida" || !l.precio; }
+    function ico(n) { return '<svg class="i" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; }
+    function leerSeleccion(h) {
+      var m = /^#seleccion(?:\?(.*))?$/.exec(h || "");
+      if (!m) return null;
+      var q, ks = [];
+      try { q = new URLSearchParams(m[1] || ""); } catch (e) { return null; }
+      (q.get("l") || "").split(",").forEach(function (g) {
+        var a = g.split("."), p = proyecto(a[0]);
+        if (p) a.slice(1).forEach(function (n) { var k = p.id + ":" + n; if (/^\d+$/.test(n) && lotOf(p, +n) && ks.indexOf(k) < 0) ks.push(k); });
+      });
+      return { ks: ks.slice(0, CMP_MAX), para: (q.get("para") || "").replace(/\s+/g, " ").trim().slice(0, 40), asesor: asesorDe(q.get("asesor")) };
+    }
+    function urlSeleccion(ks, para, asesor) {
+      var grupos = [], porP = {};
+      ks.forEach(function (k) {
+        var a = k.split(":");
+        if (!porP[a[0]]) { porP[a[0]] = [a[0]]; grupos.push(porP[a[0]]); }
+        porP[a[0]].push(a[1]);
+      });
+      var q = "l=" + grupos.map(function (g) { return g.join("."); }).join(",");
+      if (para) q += "&para=" + encodeURIComponent(para);
+      if (asesor) q += "&asesor=" + asesorId(asesor);
+      var base = location.protocol === "file:" ? location.href.split("#")[0] : location.origin + location.pathname;
+      return base + "#seleccion?" + q;
+    }
+    // Recorte del plano alrededor del lote (su forma real con los vecinos, caminos y agua), sobre la foto satelital
+    function miniPlano(p, l, i) {
+      var pl = (B.planos || {})[p.id], q = pl && pl.lotes[l.n];
+      if (!q) return "";
+      var xs = [], ys = [], re = /(-?[\d.]+)[ ,]+(-?[\d.]+)/g, m;
+      while ((m = re.exec(q.d))) { xs.push(+m[1]); ys.push(+m[2]); }
+      var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+      var cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, w = Math.max(x1 - x0, (y1 - y0) * 4 / 3) * 2.2, h = w * 3 / 4, vb = pl.viewBox;
+      // el recorte no sale del plano (en los lotes de la orilla quedaría un trozo vacío)
+      if (w < vb[2]) cx = clamp(cx, vb[0] + w / 2, vb[0] + vb[2] - w / 2);
+      if (h < vb[3]) cy = clamp(cy, vb[1] + h / 2, vb[1] + vb[3] - h / 2);
+      var id = "cmp-c" + i, s = [];
+      s.push('<svg class="cmp-map" viewBox="' + [cx - w / 2, cy - h / 2, w, h].map(function (v) { return +v.toFixed(1); }).join(" ") + '" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">');
+      if (pl.fondo) s.push('<defs><clipPath id="' + id + '"><path d="' + pl.contorno + '"/></clipPath></defs><g clip-path="url(#' + id + ')"><image href="' + esc(pl.fondo.src) + '" width="1" height="1" preserveAspectRatio="none" transform="matrix(' + pl.fondo.matriz.join(" ") + ')"/></g>');
+      else s.push('<path class="cmp-m-predio" d="' + pl.contorno + '"/>');
+      (pl.calles || []).forEach(function (c) { s.push('<path class="cmp-m-calle" d="' + c.d + '"/>'); });
+      (pl.agua || []).forEach(function (a) { s.push('<path class="cmp-m-agua' + (a.trazo ? " is-trazo" : "") + '" d="' + a.d + '"/>'); });
+      Object.keys(pl.lotes).forEach(function (n) { if (+n !== l.n) s.push('<path class="cmp-m-lote" d="' + pl.lotes[n].d + '"/>'); });
+      s.push('<path class="cmp-m-sel" d="' + q.d + '"/></svg>');
+      return s.join("");
+    }
+    function lista(arr) { return arr.length < 2 ? arr.join("") : arr.slice(0, -1).join(", ") + " y " + arr[arr.length - 1]; }
+    // "lotes 24 y 12 de Puerto Varas, lote 5 de Malalcahuello"
+    function resumenLotes(items) {
+      var porP = [], m = {};
+      items.forEach(function (x) { if (!m[x.p.id]) { m[x.p.id] = { p: x.p, ns: [] }; porP.push(m[x.p.id]); } m[x.p.id].ns.push(x.l.n); });
+      return porP.map(function (g) { return (g.ns.length > 1 ? "lotes " : "lote ") + lista(g.ns) + " de " + g.p.nombre; }).join("; ");
+    }
+    function armarCmp() {
+      cmp = document.createElement("dialog");
+      cmp.className = "cmp";
+      cmp.setAttribute("aria-labelledby", "cmp-t");
+      cmp.innerHTML = '<div class="cmp-in">' +
+        '<header class="cmp-head"><div class="cmp-head-t"><p class="kicker" data-cmp-kicker></p><h2 id="cmp-t" data-cmp-titulo></h2><div class="cmp-asesor" data-cmp-asesor hidden></div></div>' +
+        '<button class="cmp-x" type="button" data-cmp-cerrar aria-label="Cerrar la comparación">' + ico("close") + "</button></header>" +
+        '<div class="cmp-chips" data-cmp-chips hidden></div>' +
+        '<div class="cmp-scroll" data-cmp-scroll tabindex="0" aria-label="Tabla de comparación"><table class="cmp-tabla" data-cmp-tabla></table></div>' +
+        '<p class="cmp-nota">Medidas aproximadas, calculadas del plano. Precio y disponibilidad al momento de abrir esta página; se confirman al reservar.</p>' +
+        '<p class="cmp-aviso" data-cmp-aviso role="status" hidden></p>' +
+        '<div class="cmp-share" data-cmp-share hidden>' +
+          '<p class="cmp-share-t">Comparte estos lotes con un enlace</p>' +
+          '<div class="cmp-share-f"><label><span>Para <small>nombre de quien lo recibe (opcional)</small></span><input id="cmp-para" type="text" maxlength="40" autocomplete="off" data-cmp-para></label>' +
+          '<label><span>Asesor <small>para que te responda a ti (opcional)</small></span><select id="cmp-asesor" data-cmp-asesor-sel><option value="">Sin asesor</option>' +
+          gente.map(function (e) { return '<option value="' + asesorId(e) + '">' + esc(e.nombre) + "</option>"; }).join("") + "</select></label></div>" +
+          '<div class="cmp-link"><input id="cmp-url" type="text" readonly aria-label="Enlace de la selección" data-cmp-url><button class="btn btn-ghost btn-sm" type="button" data-cmp-copiar>Copiar enlace</button></div>' +
+          '<div class="cmp-share-acts"><a class="btn btn-gold btn-sm" href="https://wa.me/" target="_blank" rel="noopener" data-cmp-share-wa>' + ico("whatsapp") + "Enviar por WhatsApp</a>" +
+          '<button class="btn btn-ghost btn-sm" type="button" data-cmp-nativo hidden>' + ico("send") + "Compartir…</button></div>" +
+          '<p class="cmp-share-n">Quien lo abra verá estos lotes con el precio y la disponibilidad de ese momento. El enlace no guarda datos en el sitio.</p>' +
+        "</div>" +
+        '<footer class="cmp-acts" data-cmp-acts></footer></div>';
+      document.body.appendChild(cmp);
+      cmp.addEventListener("close", function () { document.documentElement.classList.remove("cmp-abierto"); });
+      cmp.addEventListener("click", function (e) {
+        if (e.target === cmp || e.target.closest("[data-cmp-cerrar]")) { cmp.close(); return; }
+        var b;
+        if ((b = e.target.closest("[data-cmp-quitar]"))) {
+          cmpSel = cmpSel.filter(function (k) { return k !== b.getAttribute("data-cmp-quitar"); });
+          if (!cmpSel.length) { cmp.close(); return; }
+          pintarCmp();
+        } else if ((b = e.target.closest("[data-cmp-chip]"))) {
+          var k = b.getAttribute("data-cmp-chip"), i = cmpSel.indexOf(k);
+          if (i >= 0) { if (cmpSel.length > 1) cmpSel.splice(i, 1); }
+          else if (cmpSel.length < CMP_MAX) cmpSel.push(k);
+          else { aviso("Puedes comparar hasta " + CMP_MAX + " lotes a la vez. Quita uno para agregar otro."); return; }
+          pintarCmp();
+        } else if ((b = e.target.closest("[data-cmp-ver]"))) {
+          var x = itemDe(b.getAttribute("data-cmp-ver"));
+          cmp.close();
+          if (x) irAlLote(x.p.id, x.l.n);
+        } else if ((b = e.target.closest("[data-cmp-casa]"))) {
+          var y = itemDe(b.getAttribute("data-cmp-casa"));
+          cmp.close();
+          if (y) Casa.set(y.p.id, y.l.n);
+        } else if (e.target.closest("[data-cmp-compartir]")) {
+          var sh = $("[data-cmp-share]", cmp), abrir = sh.hidden;
+          sh.hidden = !abrir;
+          e.target.closest("[data-cmp-compartir]").setAttribute("aria-expanded", String(abrir));
+          if (abrir) {
+            linkCmp();
+            var inner = $(".cmp-in", cmp);
+            window.setTimeout(function () {
+              $("[data-cmp-para]", cmp).focus({ preventScroll: true });
+              inner.scrollTo({ top: inner.scrollHeight, behavior: reduced ? "auto" : "smooth" });
+            }, 30);
+          }
+        } else if (e.target.closest("[data-sel-guardar]")) {
+          var nuevos = 0;
+          cmpSel.forEach(function (k) { if (favs.indexOf(k) < 0) { favs.push(k); nuevos++; } });
+          saveFavs(favs);
+          refreshFavs();
+          aviso(nuevos ? (nuevos === 1 ? "Guardamos 1 lote" : "Guardamos " + nuevos + " lotes") + " en tus favoritos. Los encuentras bajo el plano." : "Estos lotes ya estaban en tus favoritos.");
+        } else if (e.target.closest("[data-cmp-copiar]")) {
+          var inp = $("[data-cmp-url]", cmp), ok = function () { aviso("Enlace copiado. Pégalo donde quieras enviarlo."); };
+          var plan = function () { inp.focus(); inp.select(); try { if (document.execCommand("copy")) ok(); else aviso("Selecciona el enlace y cópialo."); } catch (er) { aviso("Selecciona el enlace y cópialo."); } };
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(inp.value).then(ok, plan); else plan();
+        } else if (e.target.closest("[data-cmp-nativo]")) {
+          try { navigator.share({ title: "Lotes de Fundos", text: textoCompartir(), url: $("[data-cmp-url]", cmp).value }).catch(function () {}); } catch (er) {}
+        }
+      });
+      $("[data-cmp-para]", cmp).addEventListener("input", linkCmp);
+      $("[data-cmp-asesor-sel]", cmp).addEventListener("change", function () {
+        try { localStorage.setItem(AKEY, this.value); } catch (er) {}
+        linkCmp();
+      });
+      $("[data-cmp-nativo]", cmp).hidden = !navigator.share;
+      // En el celular la tabla se desliza de lado: la columna de títulos queda fija
+    }
+    function aviso(t) {
+      var a = $("[data-cmp-aviso]", cmp);
+      a.textContent = t;
+      a.hidden = false;
+      window.clearTimeout(cmpVoltear);
+      cmpVoltear = window.setTimeout(function () { a.hidden = true; }, 5000);
+    }
+    function textoCompartir() {
+      var para = $("[data-cmp-para]", cmp).value.trim(), items = cmpSel.map(itemDe).filter(Boolean);
+      return (para ? "Hola " + para + ", te" : "Te") + " comparto " + (items.length > 1 ? "los lotes" : "el lote") + " de Fundos que vimos (" + resumenLotes(items) + "). Ahí puedes compararlos, ver su ubicación y el valor para comprarlos:";
+    }
+    function linkCmp() {
+      if (!cmp) return;
+      var para = $("[data-cmp-para]", cmp).value.replace(/\s+/g, " ").trim(), as = asesorDe($("[data-cmp-asesor-sel]", cmp).value);
+      var url = urlSeleccion(cmpSel, para, as);
+      $("[data-cmp-url]", cmp).value = url;
+      $("[data-cmp-share-wa]", cmp).href = "https://wa.me/?text=" + encodeURIComponent(textoCompartir() + "\n" + url);
+    }
+    function pintarCmp() {
+      var items = cmpSel.map(itemDe).filter(Boolean), comp = cmpComp;
+      var titulo = $("[data-cmp-titulo]", cmp), kick = $("[data-cmp-kicker]", cmp), asBox = $("[data-cmp-asesor]", cmp);
+      if (comp) {
+        kick.textContent = comp.para ? "Selección para " + comp.para : "Selección de lotes";
+        titulo.textContent = items.length > 1 ? "Los lotes que elegimos para ti" : "El lote que elegimos para ti";
+      } else {
+        kick.textContent = "Comparador";
+        titulo.textContent = items.length > 1 ? "Compara tus lotes" : "Tu lote guardado";
+      }
+      var as = comp && comp.asesor;
+      asBox.hidden = !as;
+      asBox.innerHTML = as ? '<img src="' + esc(as.foto) + '" alt="" width="44" height="44" loading="lazy"><p>Preparada por <b>' + esc(as.nombre) + "</b><span>" + esc(as.cargo || "") + "</span></p>" : "";
+      // Chips para elegir qué favoritos comparar (si hay más de 4)
+      var chips = $("[data-cmp-chips]", cmp), pool = comp ? [] : favs;
+      chips.hidden = pool.length <= CMP_MAX;
+      chips.innerHTML = pool.length > CMP_MAX ? '<p>Elige hasta ' + CMP_MAX + " lotes</p>" + pool.map(function (k) {
+        var x = itemDe(k);
+        return x ? '<button type="button" class="cmp-chip" data-cmp-chip="' + esc(k) + '" aria-pressed="' + (cmpSel.indexOf(k) >= 0) + '">' + esc(x.p.nombre) + " " + x.l.n + "</button>" : "";
+      }).join("") : "";
+      // Tabla
+      var disp = items.filter(function (x) { return !vendido(x.l); });
+      var geos = items.map(function (x) { return Geo.medir(x.p.id, x.l); });
+      var minP = disp.length > 1 ? Math.min.apply(null, disp.map(function (x) { return x.l.precio; })) : 0;
+      var minM = disp.length > 1 ? Math.min.apply(null, disp.map(function (x) { return x.l.precio / x.l.m2; })) : 0;
+      var maxS = disp.length > 1 ? Math.max.apply(null, disp.map(function (x) { return x.l.m2; })) : 0;
+      var difS = disp.some(function (x) { return x.l.m2 !== maxS; });
+      var mejor = function (t) { return '<span class="cmp-mejor">' + t + "</span>"; };
+      var na = '<span class="cmp-na">—</span>';
+      var head = items.map(function (x, i) {
+        return '<th scope="col" class="cmp-col' + (vendido(x.l) ? " is-off" : "") + '"><div class="cmp-card">' + miniPlano(x.p, x.l, i) +
+          '<p class="cmp-proy">' + esc(x.p.nombre) + " · " + esc(x.p.region) + "</p>" +
+          '<p class="cmp-lote">Lote ' + x.l.n + ' <span class="cmp-est" data-estado="' + x.l.estado + '">' + ESTADO[x.l.estado] + "</span></p>" +
+          (comp || items.length < 2 ? "" : '<button type="button" class="cmp-quitar" data-cmp-quitar="' + esc(x.k) + '" aria-label="Quitar el lote ' + x.l.n + ' de la comparación">' + ico("close") + "</button>") +
+          "</div></th>";
+      }).join("");
+      function fila(t, celdas, cls) { return '<tr' + (cls ? ' class="' + cls + '"' : "") + '><th scope="row">' + t + "</th>" + celdas.map(function (c) { return "<td>" + c + "</td>"; }).join("") + "</tr>"; }
+      var filas = [];
+      filas.push(fila("Precio", items.map(function (x) {
+        if (vendido(x.l)) return '<span class="cmp-off">Ya no está disponible</span>';
+        return '<b class="cmp-precio">' + clp(x.l.precio) + "</b>" + (minP && x.l.precio === minP ? mejor("Menor precio") : "");
+      }), "is-precio"));
+      filas.push(fila("Superficie", items.map(function (x) { return m2(x.l.m2) + (difS && !vendido(x.l) && x.l.m2 === maxS ? mejor("Más grande") : ""); })));
+      filas.push(fila("Precio por m²", items.map(function (x) {
+        if (vendido(x.l)) return na;
+        var v = x.l.precio / x.l.m2;
+        return clp(v) + (minM && Math.abs(v - minM) < 0.5 && minP !== x.l.precio ? mejor("Mejor valor por m²") : "");
+      })));
+      filas.push(fila("Medidas aprox.", geos.map(function (g) { return g ? g.largo + " × " + g.ancho + " m" : na; })));
+      filas.push(fila("Frente a camino", geos.map(function (g) { return g && g.frente ? "Aprox. " + g.frente + " m" : '<span class="cmp-na">Por confirmar</span>'; })));
+      if (geos.some(function (g) { return g && g.agua; })) filas.push(fila("Agua cerca", geos.map(function (g) {
+        if (!g || !g.agua) return na;
+        var nom = g.agua.nombre.charAt(0).toLowerCase() + g.agua.nombre.slice(1);   // "el estero", "el río Lolén"
+        return g.agua.m <= 10 ? "Colinda con el " + esc(nom) : "A unos " + (g.agua.m < 100 ? g.agua.m : Math.round(g.agua.m / 10) * 10) + " m del " + esc(nom);
+      })));
+      filas.push(fila("Para comprarlo", items.map(function (x) {
+        if (vendido(x.l)) return na;
+        return '<dl class="cmp-pago"><div><dt>Reserva</dt><dd>' + clp(RESERVA) + "</dd></div><div><dt>Al escriturar</dt><dd>" + clp(x.l.precio) + '</dd></div><div class="is-total"><dt>Total</dt><dd>' + clp(x.l.precio + RESERVA) + "</dd></div></dl>";
+      }), "is-pago"));
+      filas.push(fila('<span class="sr-only">Acciones</span>', items.map(function (x) {
+        return '<div class="cmp-col-acts"><button type="button" class="btn btn-ghost btn-sm" data-cmp-ver="' + esc(x.k) + '">' + ico("pin") + (vendido(x.l) ? "Ver lotes parecidos" : "Ver en el plano") + "</button>" +
+          (vendido(x.l) ? "" : '<button type="button" class="link-btn cmp-casa" data-cmp-casa="' + esc(x.k) + '">' + ico("house") + "Diseña tu fundo aquí</button>") + "</div>";
+      }), "is-acts"));
+      var tabla = $("[data-cmp-tabla]", cmp);
+      tabla.style.setProperty("--n", items.length);
+      tabla.innerHTML = '<caption class="sr-only">Comparación de ' + items.length + " lotes</caption><thead><tr><td class=\"cmp-corner\"></td>" + head + "</tr></thead><tbody>" + filas.join("") + "</tbody>";
+      // Botones de abajo
+      var acts = $("[data-cmp-acts]", cmp), dispTxt = resumenLotes(disp.length ? disp : items);
+      var msg, quien = as ? corto(as) : "";
+      if (comp) msg = "Hola" + (quien ? " " + quien : " Fundos") + ", revisé la selección que me " + (quien ? "enviaste" : "enviaron") + " (" + dispTxt + "). Me gustaría conversar.";
+      else msg = "Hola Fundos, estoy comparando " + dispTxt + ". ¿Me pueden asesorar para elegir?";
+      var waNum = as && as.whatsapp ? as.whatsapp : contacto.whatsapp;
+      var waHrefX = "https://wa.me/" + (waNum || "") + "?text=" + encodeURIComponent(msg + "\n" + urlSeleccion(cmpSel, comp ? comp.para : "", as));
+      acts.innerHTML = '<a class="btn btn-gold btn-sm" href="' + esc(waHrefX) + '" target="_blank" rel="noopener" ' + (comp ? "data-sel-wa" : "data-cmp-wa") + ">" + ico("whatsapp") + (comp ? "Responder a " + esc(quien || "Fundos") : "Pedir asesoría por WhatsApp") + "</a>" +
+        (comp ? '<button class="btn btn-ghost btn-sm" type="button" data-sel-guardar>' + ico("heart") + "Guardar en mis favoritos</button>" : "") +
+        '<button class="btn btn-ghost btn-sm" type="button" data-cmp-compartir aria-expanded="' + !$("[data-cmp-share]", cmp).hidden + '">' + ico("send") + (comp ? "Compartir" : "Compartir esta selección") + "</button>";
+      linkCmp();
+    }
+    // Abre el comparador: sin argumentos, con los favoritos; con una selección compartida, con sus lotes
+    function abrirCmp(sel) {
+      if (!cmp) armarCmp();
+      cmpComp = sel || null;
+      if (sel) cmpSel = sel.ks.slice();
+      else {
+        var vivos = favs.filter(function (k) { return cmpSel.indexOf(k) >= 0; });
+        cmpSel = vivos.length >= Math.min(2, favs.length) ? vivos.slice(0, CMP_MAX) : favs.slice(-CMP_MAX);
+      }
+      if (!cmpSel.length) return;
+      $("[data-cmp-share]", cmp).hidden = true;
+      $("[data-cmp-aviso]", cmp).hidden = true;
+      $("[data-cmp-para]", cmp).value = sel ? sel.para : "";
+      var guardado = "";
+      try { guardado = localStorage.getItem(AKEY) || ""; } catch (er) {}
+      $("[data-cmp-asesor-sel]", cmp).value = sel ? (sel.asesor ? asesorId(sel.asesor) : "") : (asesorDe(guardado) ? guardado : "");
+      pintarCmp();
+      document.documentElement.classList.add("cmp-abierto");
+      if (!cmp.open) { if (cmp.showModal) cmp.showModal(); else cmp.setAttribute("open", ""); }
+      $("[data-cmp-scroll]", cmp).scrollLeft = 0;
+      if (sel) medir("ver_seleccion", { lotes: cmpSel.length, asesor: sel.asesor ? corto(sel.asesor) : "" });
+      else medir("comparar_lotes", { lotes: cmpSel.length });
+    }
+    function irAlLote(id, n) {
+      if (id !== S.id || !built) setProject(id);
+      if (S.view !== "plano") setView("plano");
+      var r = stage.getBoundingClientRect();
+      window.scrollTo({ top: window.scrollY + r.top - navBottom() - 12, behavior: reduced ? "auto" : "smooth" });
+      window.setTimeout(function () { select(n); }, reduced ? 0 : 350);
+    }
+    if (favCmp) favCmp.addEventListener("click", function () { abrirCmp(); });
+    if (favShare) favShare.addEventListener("click", function () {
+      abrirCmp();
+      var b = cmp && $("[data-cmp-compartir]", cmp);
+      if (b && $("[data-cmp-share]", cmp).hidden) b.click();
+    });
+
     function landPlan() {
       var y = window.scrollY + root.getBoundingClientRect().top - navBottom() - 8;
       window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
@@ -1613,6 +1965,19 @@
 
     // Enlace directo a un lote: #lote-malalcahuello-12 (al cargar y al hacer clic en enlaces internos)
     function fromHash(atLoad) {
+      // Selección compartida (#seleccion?l=…): el plano parte en el proyecto del primer lote y se abre la comparación
+      var sel = leerSeleccion(location.hash);
+      if (sel) {
+        if (!sel.ks.length) return false;
+        var p0 = proyecto(sel.ks[0].split(":")[0]);
+        if (p0.id !== S.id || atLoad || !built) setProject(p0.id);
+        if (S.view !== "plano") setView("plano");
+        window.setTimeout(function () {
+          jumpTo(window.scrollY + stage.getBoundingClientRect().top - navBottom() - 12);
+          abrirCmp(sel);
+        }, atLoad ? 160 : 0);
+        return true;
+      }
       var m = /^#lote-([a-z0-9-]+)-(\d+)$/.exec(location.hash);
       var p = m && proyecto(m[1]);
       if (!p || !p.lotes.length) return false;

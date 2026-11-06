@@ -248,6 +248,21 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   a la derecha del título desde 1100 px (ahí la pausa del video pasa a la izquierda) y bajo los botones en pantallas
   menores. Proyecto (selector armado desde el manifiesto), nombre, teléfono, correo opcional y autorización; arma el
   mensaje ("plano y precios", "de lanzamiento" si es el destacado), lo muestra y lo envía con un enlace de WhatsApp, igual que `#visita`.
+- **Comparador de lotes y "Mi selección"** (ideas 4 y 5 de la propuesta de 10 ideas, nov-2026, artefacto
+  https://claude.ai/artifact/JW5exL6RJo9Bw1qYJ3SkWu): bajo el plano, junto a los favoritos, "Comparar (n)" (con 2 o más) y
+  "Compartir" abren un `<dialog class="cmp">` (en `initPlan`, `abrirCmp`/`pintarCmp`): hasta 4 lotes lado a lado (chips para
+  elegir si hay más favoritos) con un recorte del plano sobre el satelital, precio, superficie, precio por m², medidas
+  aprox., frente a camino, agua cerca y "Para comprarlo" (reserva + al escriturar = total), con "Menor precio"/"Más
+  grande"/"Mejor valor por m²", "Ver en el plano" y "Diseña tu fundo aquí". Las medidas salen de `Geo.medir` (forma de
+  `lib/planos.js` escalada a la superficie: menor rectángulo, bordes a menos de 6 m de una servidumbre o del camino
+  principal, distancia al estero o río; aproximadas). "Compartir esta selección": nombre de quien lo recibe y asesor
+  (opcionales; el asesor elegido se recuerda en `localStorage` "fundos-asesor") → enlace
+  `#seleccion?l=puerto-varas.24.12,malalcahuello.5&para=Daniela&asesor=valentina` (asesor = apodo o primer nombre sin
+  tildes), copiar, WhatsApp o compartir del sistema. Quien abre el enlace ve "Selección para Daniela · Preparada por …"
+  con precio y disponibilidad del momento (un lote ya vendido dice "Ya no está disponible" y ofrece lotes parecidos),
+  "Responder a <asesor>" (al WhatsApp del asesor, o al general), "Guardar en mis favoritos" y "Compartir". Nada se guarda
+  fuera del enlace; GA no recibe el `#` (`page_location` sin hash en `lib/analitica.js`). Eventos: `comparar_lotes`,
+  `ver_seleccion`, `compartir_seleccion` y `generate_lead` (comparador, seleccion). Prueba: `tools/pruebas/comparar.js`.
 - **Fotos de las parcelas** (`assets/img/tour-ID-*`, 800/1600 px y miniatura): vistas aéreas reales sacadas de la
   panorámica de cada tour 3DVista (material del cliente, sin crédito). Se usan en las tarjetas de "otros proyectos" y en la
   franja "Nuestros proyectos" de Inicio (`tourFoto`, `foto`; antes también en el recorrido 360° en la página y "Conoce
