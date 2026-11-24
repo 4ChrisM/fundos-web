@@ -33,7 +33,7 @@ const B = "http://127.0.0.1:8765/";
   await p.evaluate(() => { location.hash = "#after-office"; });
   await p.waitForTimeout(900);
   out.alCambiar = await p.evaluate(() => document.querySelector('[data-tst="testimonios"] video').paused);
-  await p.evaluate(() => document.querySelector("#after-office").scrollIntoView({ behavior: "instant", block: "center" }));
+  await p.evaluate(() => document.querySelector("#nosotros").scrollIntoView({ behavior: "instant" }));
   await p.waitForTimeout(400);
   await p.screenshot({ path: "ux/ao-1440.png" });
   await p.click('[data-tst="after-office"] [data-tst-play]');
