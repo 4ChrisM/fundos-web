@@ -2806,7 +2806,55 @@
         cajas.forEach(function (o) { var ov = $("video", o); if (o !== box && ov && !ov.paused) ov.pause(); });
         if (!box.medido) { box.medido = true; medir("ver_video", { video: box.getAttribute("data-tst") }); }
       });
+      horizontal(box, v);
     });
+    /* Pantalla completa en computador (pedido del cliente, nov-2026): el mismo <video> cambia a la edición horizontal
+       (data-tst-h, con el logo de Fundos al costado) y sigue en el momento equivalente; al salir vuelve al vertical donde
+       iba. Las dos ediciones no están cortadas igual: data-tst-mapa da, por cada segundo del vertical, cuánto más adelante
+       va el horizontal (medido comparando los cuadros de ambos videos). */
+    function horizontal(box, v) {
+      var base = box.getAttribute("data-tst-h"), mapa = [];
+      if (!base) return;
+      try { mapa = JSON.parse(box.getAttribute("data-tst-mapa") || "[]"); } catch (e) { mapa = []; }
+      var grande = window.matchMedia("(min-width: 900px)"), enH = false, poster = v.getAttribute("poster");
+      function desfase(t) {
+        if (!mapa.length) return 0;
+        var i = Math.max(0, Math.min(mapa.length - 1, Math.floor(t))), j = Math.min(mapa.length - 1, i + 1), f = t - Math.floor(t);
+        return mapa[i] + (mapa[j] - mapa[i]) * Math.max(0, Math.min(1, f));
+      }
+      function aH(t) { return Math.max(0, t + desfase(t)); }
+      function aV(th) {   // inversa: el segundo del vertical que corresponde (búsqueda por bisección; el mapa avanza siempre)
+        var lo = 0, hi = mapa.length || th + 1;
+        for (var k = 0; k < 30; k++) { var mid = (lo + hi) / 2; if (aH(mid) < th) lo = mid; else hi = mid; }
+        return lo;
+      }
+      function cambiar(aHor) {
+        var t = v.currentTime || 0, sonando = !v.paused && !v.ended, nt = aHor ? aH(t) : aV(t);
+        enH = aHor;
+        v.removeAttribute("poster");
+        if (aHor) {
+          v.setAttribute("data-h", "");
+          v.src = base + (v.canPlayType("video/mp4") ? ".mp4" : ".webm");
+        } else {
+          v.removeAttribute("data-h");
+          v.removeAttribute("src");
+        }
+        v.load();
+        v.addEventListener("loadedmetadata", function listo() {
+          v.removeEventListener("loadedmetadata", listo);
+          try { v.currentTime = Math.min(nt, (v.duration || nt) - 0.1); } catch (e) { /* sin buscar */ }
+          if (sonando) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+          if (!aHor && poster) v.setAttribute("poster", poster);
+        });
+      }
+      function revisar() {
+        var fe = document.fullscreenElement || document.webkitFullscreenElement;
+        if (fe === v && !enH && grande.matches) cambiar(true);
+        else if (fe !== v && enH) cambiar(false);
+      }
+      document.addEventListener("fullscreenchange", revisar);
+      document.addEventListener("webkitfullscreenchange", revisar);
+    }
     // Al cambiar de pestaña, el video que sonaba se detiene
     document.addEventListener("fundos:vista", function () { cajas.forEach(function (o) { var ov = $("video", o); if (ov && !ov.paused) ov.pause(); }); });
   }
