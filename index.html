@@ -29,13 +29,13 @@
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/cormorant-garamond-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/mulish.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=20261112a">
+<link rel="stylesheet" href="styles.css?v=20261124a">
 <link rel="preconnect" href="https://fundos-os.vercel.app" crossorigin>
-<script defer src="lib/manifest.js?v=20261112a"></script>
-<script defer src="lib/analitica.js?v=20261112a"></script>
-<script defer src="lib/mapa-chile.js?v=20261112a"></script>
-<script defer src="lib/planos.js?v=20261112a"></script>
-<script defer src="main.js?v=20261112a"></script>
+<script defer src="lib/manifest.js?v=20261124a"></script>
+<script defer src="lib/analitica.js?v=20261124a"></script>
+<script defer src="lib/mapa-chile.js?v=20261124a"></script>
+<script defer src="lib/planos.js?v=20261124a"></script>
+<script defer src="main.js?v=20261124a"></script>
 </head>
 <body>
 <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -414,6 +414,37 @@
         <a class="btn btn-ghost" href="entorno.html#tour-360"><svg class="i" aria-hidden="true"><use href="#i-360"/></svg>Tour 360° de la parcela</a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- Testimonios de propietarios (video del cliente, nov-2026; originales en el borrador privado "testimonios-originales" de GitHub) -->
+<section class="section light tst" id="testimonios" data-vista="inicio" aria-labelledby="tst-title">
+  <div class="container tst-in">
+    <div class="tst-txt reveal">
+      <p class="kicker">Testimonios</p>
+      <h2 id="tst-title">Lo que dicen <em>nuestros propietarios</em></h2>
+      <p class="lead">Familias que ya tienen su parcela con Fundos cuentan, en sus propias palabras, cómo vivieron la compra y la visita a su terreno.</p>
+      <ul class="tst-temas">
+        <li><svg class="i" aria-hidden="true"><use href="#i-people"/></svg>La atención del equipo</li>
+        <li><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg>La visita a terreno</li>
+        <li><svg class="i" aria-hidden="true"><use href="#i-key"/></svg>Su experiencia al comprar</li>
+      </ul>
+      <div class="tst-acts">
+        <a class="btn btn-gold btn-lg" href="#visita"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>Agenda tu visita a terreno</a>
+        <a class="btn btn-line" href="#plano">Ver lotes disponibles<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+    <figure class="tst-media reveal">
+      <div class="tst-tel" data-tst="testimonios">
+          <video class="tst-video" controls preload="none" playsinline poster="assets/video/testimonios.webp" width="720" height="1280" aria-label="Testimonios de propietarios de Fundos, 1 minuto 12 segundos, con subtítulos">
+            <source src="assets/video/testimonios.mp4" type="video/mp4" media="(min-width: 900px) and (min-resolution: 2dppx)">
+            <source src="assets/video/testimonios-720.mp4" type="video/mp4">
+            <source src="assets/video/testimonios.webm" type="video/webm">
+          </video>
+          <button class="tst-play" type="button" data-tst-play hidden><span class="tst-play-c" aria-hidden="true"><svg class="i"><use href="#i-play"/></svg></span><span class="tst-play-t">Ver video<small>1:12</small></span><span class="sr-only">: Testimonios de propietarios de Fundos, 1 minuto 12 segundos, con subtítulos</span></button>
+        </div>
+      <figcaption>Testimonios de propietarios de Fundos, en sus palabras.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -948,6 +979,26 @@
           <a class="btn btn-gold" href="#visita">Agendar con el equipo<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </li>
       </ul>
+    </div>
+
+    <!-- After Office Fundos 2026 (video del cliente, nov-2026) -->
+    <div class="ao" id="after-office">
+      <figure class="tst-media ao-media reveal">
+        <div class="tst-tel" data-tst="after-office">
+          <video class="tst-video" controls preload="none" playsinline poster="assets/video/after-office.webp" width="720" height="1280" aria-label="After Office Fundos 2026, 30 segundos">
+            <source src="assets/video/after-office.mp4" type="video/mp4" media="(min-width: 900px) and (min-resolution: 2dppx)">
+            <source src="assets/video/after-office-720.mp4" type="video/mp4">
+            <source src="assets/video/after-office.webm" type="video/webm">
+          </video>
+          <button class="tst-play" type="button" data-tst-play hidden><span class="tst-play-c" aria-hidden="true"><svg class="i"><use href="#i-play"/></svg></span><span class="tst-play-t">Ver video<small>0:30</small></span><span class="sr-only">: After Office Fundos 2026, 30 segundos</span></button>
+        </div>
+      </figure>
+      <div class="ao-txt reveal">
+        <p class="kicker">Así vivimos Fundos</p>
+        <h3 class="sellers-title">After Office <em>Fundos 2026</em></h3>
+        <p>Una tarde para conversar sin apuro, mirar los proyectos en pantalla grande y resolver dudas con el equipo. Así nos gusta acompañar a quienes eligen su parcela con nosotros.</p>
+        <a class="btn btn-gold" href="#visita">Agendar con el equipo<svg class="i i-go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
     </div>
   </div>
 </section>
