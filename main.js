@@ -2785,6 +2785,32 @@
     if (!made) document.addEventListener("fundos:vista", make);
   }
 
+  /* Videos de testimonios y After Office ([data-tst]): portada con un botón grande "Ver video"; al tocarlo parte con
+     sonido y quedan los controles del navegador. Sin JavaScript, el <video> trae sus controles. Solo uno suena a la vez. */
+  function initTestimonios() {
+    var cajas = $$("[data-tst]");
+    cajas.forEach(function (box) {
+      var v = $("video", box), b = $("[data-tst-play]", box);
+      if (!v || !b) return;
+      v.controls = false;
+      b.hidden = false;
+      b.addEventListener("click", function () {
+        v.controls = true;
+        var p = v.play();
+        if (p && p.catch) p.catch(function () { box.classList.remove("is-on"); b.hidden = false; });
+      });
+      v.addEventListener("play", function () {
+        box.classList.add("is-on");
+        b.hidden = true;
+        v.controls = true;
+        cajas.forEach(function (o) { var ov = $("video", o); if (o !== box && ov && !ov.paused) ov.pause(); });
+        if (!box.medido) { box.medido = true; medir("ver_video", { video: box.getAttribute("data-tst") }); }
+      });
+    });
+    // Al cambiar de pestaña, el video que sonaba se detiene
+    document.addEventListener("fundos:vista", function () { cajas.forEach(function (o) { var ov = $("video", o); if (ov && !ov.paused) ov.pause(); }); });
+  }
+
   function initVideo() {
     // Portada de Inicio: video de fondo sobre una imagen que queda de respaldo. Se crea cuando su pestaña se ve.
     heroVideo($("[data-pvhero]"), B.videoDestacado || {}, $("[data-pv-toggle]"));
@@ -4215,6 +4241,7 @@
     safe(initVisit, "initVisit");
     safe(initPlan, "initPlan");
     safe(initVideo, "initVideo");
+    safe(initTestimonios, "initTestimonios");
     safe(initMobileBar, "initMobileBar");
     safe(initFaq, "initFaq");
     safe(initCompra, "initCompra");

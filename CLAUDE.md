@@ -263,6 +263,18 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   "Responder a <asesor>" (al WhatsApp del asesor, o al general), "Guardar en mis favoritos" y "Compartir". Nada se guarda
   fuera del enlace; GA no recibe el `#` (`page_location` sin hash en `lib/analitica.js`). Eventos: `comparar_lotes`,
   `ver_seleccion`, `compartir_seleccion` y `generate_lead` (comparador, seleccion). Prueba: `tools/pruebas/comparar.js`.
+- **Testimonios y After Office** (videos del cliente, nov-2026; las personas autorizaron salir en el sitio): en Inicio,
+  `#testimonios` ("Lo que dicen nuestros propietarios", entre el entorno y el plano) con el recap de entrevistas
+  vertical (1:12, subtítulos ya incrustados); en Equipo, `#after-office` ("Así vivimos Fundos", al final de `#nosotros`)
+  con el recap del After Office 2026 (0:30). Cada video va en un marco de celular (`.tst-tel`, `[data-tst]`,
+  `initTestimonios`): portada `.webp`, botón "Ver video" que parte con sonido y deja los controles del navegador, solo uno
+  suena a la vez y se pausa al cambiar de pestaña; `preload="none"` (no baja nada hasta tocarlo). Archivos en
+  `assets/video/testimonios*` y `after-office*`: MP4 1080p (solo pantallas retina de 900 px o más), MP4 720p y WebM 720p,
+  30 cuadros por segundo, audio normalizado (`loudnorm`). El recap horizontal (mismo video sobre fondo verde con logo) no
+  se usa. **Originales** (60 fps, ~17 Mb/s) en el **borrador privado de release `testimonios-originales`** de GitHub
+  (solo lo ven los administradores; no publicarlo): método para videos pesados, porque "Add files via upload" acepta
+  hasta 25 MB y un release hasta 2 GB por archivo; desde la sesión se bajan con la API (`/releases/assets/ID`,
+  `Accept: application/octet-stream`). Evento `ver_video`. Prueba: `tools/pruebas/testimonios.js`.
 - **Fotos de las parcelas** (`assets/img/tour-ID-*`, 800/1600 px y miniatura): vistas aéreas reales sacadas de la
   panorámica de cada tour 3DVista (material del cliente, sin crédito). Se usan en las tarjetas de "otros proyectos" y en la
   franja "Nuestros proyectos" de Inicio (`tourFoto`, `foto`; antes también en el recorrido 360° en la página y "Conoce
