@@ -265,11 +265,11 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   `ver_seleccion`, `compartir_seleccion` y `generate_lead` (comparador, seleccion). Prueba: `tools/pruebas/comparar.js`.
 - **Testimonios y After Office** (videos del cliente, nov-2026; las personas autorizaron salir en el sitio): en Inicio,
   `#testimonios` ("Lo que dicen nuestros propietarios", entre el entorno y el plano) con el recap de entrevistas
-  vertical (1:12, subtítulos ya incrustados); en Equipo, `#after-office` ("Así vivimos Fundos", al final de `#nosotros`)
-  con el recap del After Office 2026 (0:30). Cada video va en un marco de celular (`.tst-tel`, `[data-tst]`,
+  vertical (1:12, subtítulos ya incrustados); en Equipo, `#after-office` (en "Quiénes somos", a la derecha del texto, **en lugar del mosaico
+  de fotos del equipo**, pedido del cliente, nov-2026) con el recap del After Office 2026 (0:30). Cada video va en un marco de celular (`.tst-tel`, `[data-tst]`,
   `initTestimonios`): portada `.webp`, botón "Ver video" que parte con sonido y deja los controles del navegador, solo uno
   suena a la vez y se pausa al cambiar de pestaña; `preload="none"` (no baja nada hasta tocarlo). Archivos en
-  `assets/video/testimonios*` y `after-office*`: MP4 1080p (solo pantallas retina de 900 px o más), MP4 720p y WebM 720p,
+  `assets/video/testimonios*` y `after-office*`: MP4 1080p (computadores, desde 900 px; en pantalla completa `object-fit: contain`: con cover se ampliaba una franja del vertical y se pixelaba), MP4 720p y WebM 720p,
   30 cuadros por segundo, audio normalizado (`loudnorm`). El recap horizontal (mismo video sobre fondo verde con logo) no
   se usa. **Originales** (60 fps, ~17 Mb/s) en el **borrador privado de release `testimonios-originales`** de GitHub
   (solo lo ven los administradores; no publicarlo): método para videos pesados, porque "Add files via upload" acepta
@@ -381,7 +381,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   queda como **"Próximamente"** (etiqueta `.pronto` en la barra, el menú, la pestaña y la sección; sello en el celular de
   muestra; botón "Avísame cuando esté listo" por WhatsApp). No nombrar Fundos 360° en textos visibles hasta que el
   cliente lo pida (el sitio sigue con `noindex` hasta el cambio de dominio).
-- La portada con el video de caballos (pestaña Proyectos) se quitó cuando Proyectos pasó a ser solo el mapa de Chile. La foto grupal del equipo se quitó (incluía a Marjorie, que salió): en Nosotros va un mosaico con las fotos actuales (`.team-mosaic`, actualizarlo si cambia el equipo).
+- La portada con el video de caballos (pestaña Proyectos) se quitó cuando Proyectos pasó a ser solo el mapa de Chile. La foto grupal del equipo se quitó (incluía a Marjorie, que salió); después hubo un mosaico con las fotos del equipo (`.team-mosaic`) y desde nov-2026 en ese lugar va el video del After Office (pedido del cliente; las fotos siguen en las tarjetas del equipo).
 - Una tarjeta y una ficha (ventana) por persona del equipo, con su presentación en sus palabras (sin reescribirla).
   Saludos en video (octubre 2026): todo el equipo (Mari, Valentina, Jeanette, Diego, Geonela y Elvis; grabados por el cliente en la misma oficina). Todas las
   fotos (`assets/img/equipo-ID.webp`, **cuerpo completo**, 3:4 como las tarjetas) son de una sesión del cliente en la misma
@@ -392,7 +392,7 @@ Mínimo antes de publicar: `interacciones.js`, `plano.js`, `qa.js`, `anchos.js` 
   originales en el historial (`0475102`, `2eafd5d`, `d0152bd`, `679a800`; Valentina, Diego y Geonela en `bfd319b`);
   fotos originales en `f87e740`. El equipo es una **galería en filas** (el cliente no quería deslizar ni paneles chicos):
   tarjetas grandes, 4 por fila en computador ("Conversemos" en el último lugar), 3 en tablet y 2 en celular; el
-  saludo se reproduce en la misma tarjeta. **Marjorie Castellón y Stefany Villalobos salieron del equipo** (pedido del cliente; Stefany en oct-2026: se quitaron su tarjeta, su foto del mosaico, sus fotos y videos; quedan en el historial). Con 6 personas, la marca del mosaico ocupa dos celdas. Elvis Jiménez aún sin
+  saludo se reproduce en la misma tarjeta. **Marjorie Castellón y Stefany Villalobos salieron del equipo** (pedido del cliente; Stefany en oct-2026: se quitaron su tarjeta, su foto del mosaico, sus fotos y videos; quedan en el historial). Elvis Jiménez aún sin
   presentación escrita. **Contacto de cada asesor** (dado por el cliente, oct-2026): `whatsapp`, `telefono` y `correo` en
   `equipo` del manifiesto; la ficha muestra teléfono (tel:) y correo (mailto:), "Escribir por WhatsApp" va a su número y
   "Agendar con…" envía el formulario de visita a su WhatsApp (mientras el mensaje lo nombre). Los archivos de Elvis siguen
