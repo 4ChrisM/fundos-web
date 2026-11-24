@@ -274,7 +274,15 @@ Toda la interfaz y los textos van en **español de Chile**. Lee también `README
   se usa. **Originales** (60 fps, ~17 Mb/s) en el **borrador privado de release `testimonios-originales`** de GitHub
   (solo lo ven los administradores; no publicarlo): método para videos pesados, porque "Add files via upload" acepta
   hasta 25 MB y un release hasta 2 GB por archivo; desde la sesión se bajan con la API (`/releases/assets/ID`,
-  `Accept: application/octet-stream`). Evento `ver_video`. Prueba: `tools/pruebas/testimonios.js`.
+  `Accept: application/octet-stream`). **Pantalla completa en computador** (pedido del cliente: "más inmersivo"; se le mostró que en la edición horizontal
+  las personas se ven ~70 % del tamaño y eligió igual esa opción): al entrar a pantalla completa (≥ 900 px) el mismo
+  `<video>` cambia a `assets/video/testimonios-h.mp4|.webm` (recap horizontal con el logo, fondo #0D1811 en las franjas) y
+  sigue en el momento equivalente; al salir vuelve al vertical donde iba (`horizontal()` en `initTestimonios`). Las dos
+  ediciones no están cortadas igual (el horizontal se adelanta hasta 4,7 s): `data-tst-mapa` trae, por segundo del vertical,
+  el desfase medido comparando los cuadros de ambos videos (alineación monótona), con su inversa por bisección. Si cambia
+  la edición de cualquiera de los dos, hay que volver a medir el mapa. Ojo al probar en local: `python3 -m http.server` no
+  responde rangos, así que buscar un segundo no funciona ahí (en GitHub Pages sí).
+  Evento `ver_video`. Prueba: `tools/pruebas/testimonios.js`.
 - **Fotos de las parcelas** (`assets/img/tour-ID-*`, 800/1600 px y miniatura): vistas aéreas reales sacadas de la
   panorámica de cada tour 3DVista (material del cliente, sin crédito). Se usan en las tarjetas de "otros proyectos" y en la
   franja "Nuestros proyectos" de Inicio (`tourFoto`, `foto`; antes también en el recorrido 360° en la página y "Conoce
